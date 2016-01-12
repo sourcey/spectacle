@@ -1,6 +1,6 @@
 # Spectacle
 
-[Spectacle](http://sourcey.com/spectacle) is a static documentation generator that lets you autogenerate your documentation from a OpenAPI/Swagger 2.0 JSON specification file. With Spectacle you can have beautiful HTML5 documentation for your API ready to be deployed in a matter of minutes.
+Spectacle is a static documentation generator that lets you autogenerate your documentation from a OpenAPI/Swagger 2.0 JSON specification file. With Spectacle you can have beautiful HTML5 documentation for your API ready to be deployed in a matter of minutes.
 
 Here's what Spectacle features:
 
@@ -9,7 +9,9 @@ Here's what Spectacle features:
 * Modern and readable design
 * Embedded option to generate docs without a layout for convenient integration with your own website
 * Development mode with file watcher and live reload for regenerating docs when your spec is updated
-* Simple and extendable Handlebars templates and SCSS styles
+* Extendable Handlebars templates and SCSS styles
+
+More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
 
 ## Getting Started
 
@@ -57,15 +59,15 @@ $ spectacle -h
 
 Most options are self explanatory, but the following options warrant some further explanation:
 
-* **--development-mode**: This option starts a development server with a file watcher and live reload, and will automatically regenerate your docs when any of your spec or app files change.
+* **--development-mode** `-d`: This option starts a development server with a file watcher and live reload, and will automatically regenerate your docs when any of your spec or app files change.
 
-* **--start-server **: This option starts a production server without any development options enabled that serves the contents of your `--target-dir`.
+* **--start-server** `-s`: This option starts a production server without any development options enabled that serves the contents of your `--target-dir`.
 
-* **--embeddable**: This option lets you build a minimal version of the documentation without the HTML `<body>` tags, so you can embed Spectacle into your own website template. More info on [custom builds](#custom-builds) here.
+* **--embeddable** `-e`: This option lets you build a minimal version of the documentation without the HTML `<body>` tags, so you can embed Spectacle into your own website template. More info on [custom builds](#custom-builds) here.
 
-* **--app-dir**: This option overrides the default directory which contains all the Handlebars templates, SCSS, and JavaScript source files. This option is useful for development because you can copy the contents of `app` to a remote location or a separate repo for custom builds.
+* **--app-dir** `-a`: This option overrides the default directory which contains all the Handlebars templates, SCSS, and JavaScript source files. This option is useful for development because you can copy the contents of `app` to a remote location or a separate repo for custom builds.
 
-* **--target-dir**: This option specifies where the generated documentation HTML files will be output.
+* **--target-dir** `-t`: This option specifies where the generated documentation HTML files will be output.
 
 ## Custom Builds
 
@@ -75,4 +77,4 @@ To fork Spectacle go to `https://github.com/sourcey/spectacle`, and press the 'F
 
 Alternatively, you can just copy the contents of `app` from the main repo which contains all the source files such as templates, stylesheets and JavaScripts. Now just pass the path to your custom `app` path to the CLI like so: `spectacle -a /path/to/your/app your_swagger_api.json`
 
-Good luck and enjoy Spectacle!
+Good luck and enjoy Spectacle! All contributions are welcome.
