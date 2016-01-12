@@ -1,0 +1,54 @@
+{{!--
+ Renders the security-section of the HTML-page
+ TODO: Parameters
+ @api public
+--}}
+
+{{#if securityDefinitions}}
+  <!-- <h1 id="security" data-traverse-target="security">Security</h1> -->
+  <h1 id="authentication" data-traverse-target="authentication">Authentication</h1>
+
+  {{#each securityDefinitions}}
+    <div id="security-definition-{{@key}}" class="panel">
+      <div class="doc-row">
+        <div class="doc-copy">
+          <h3 class="security-definition-title">
+            <span class="security-name">{{@key}}</span>
+            <span class="swagger-security-definition-{{type}}"></span>
+          </h3>
+          <section class="swagger-security-definition-properties">
+            {{#each this}}
+              {{#ifeq @key 'type'}}
+              {{else}}
+                <div class="prop-row security-definition-property">
+                  <div class="prop-name">
+                    <div class="prop-title security-definition-property-name">{{@key}}</div>
+                  </div>
+                  <div class="prop-value security-definition-property-type">
+                    {{this}}
+                  </div>
+                </div>
+              {{/ifeq}}
+            {{/each}}
+          </section>
+
+          <!-- <h3 class="security-definition-title">
+            <span class="security-name">{{@key}}</span>
+            <strong><span class="swagger-security-definition-{{type}}"></span></strong>
+          </h3>
+          <section class="swagger-security-definition-properties">
+            {{#each this}}
+              {{#ifeq @key 'type'}}
+              {{else}}
+                <div class="security-definition-property">
+                  <strong class="security-definition-property-name">{{@key}}:</strong>
+                  <span class="security-definition-property-type">{{this}}</span>
+                <div>
+              {{/ifeq}}
+            {{/each}}
+          </section> -->
+        </div>
+      </div>
+    </div>
+  {{/each}}
+{{/if}}

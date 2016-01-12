@@ -1,0 +1,20 @@
+{{!--
+  Renders a json-schema "allOf"-definition.
+--}}
+<section class="json-schema-allOf">
+  {{! Display ref (i.e. superclasses)}}
+  <section class="json-schema-allOf-inherited">
+    <ul>
+      {{#each .}}
+        {{>json-schema/reference .}}
+      {{/each}}
+    </ul>
+  </section>
+  <section class="json-schema-allOf-additional">
+    {{#each .}}
+      {{#unless $ref}}
+        {{>json-schema/body}}
+      {{/unless}}
+    {{/each}}
+  </section>
+</section>

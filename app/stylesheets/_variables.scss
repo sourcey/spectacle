@@ -1,0 +1,71 @@
+//
+//= Layout variables
+//
+
+// The height of the top bar
+$topbar-height: 50px;
+
+// The width of the column padding
+$column-padding: 2.25rem;
+
+// The accent color to use for nav highlights and section headings
+$accent-color: #f68b1f;
+
+// The dark backgorund color behind code examples
+$dark-background-color: $black;
+
+// Medium device width (from Foundation)
+$medium-width: 40em;
+
+// Large device width (from Foundation)
+$large-width: 64em;
+
+//
+// JSON schema labels
+
+$msg-json-section-description: "Description";
+$msg-json-section-properties: "Properties";
+$msg-json-section-items: "Items";
+$msg-json-section-inherited: "Inherited";
+$msg-json-section-anyOf: "Any of";
+$msg-json-discriminator: "discriminator";
+$msg-json-read-only: "read only";
+$msg-json-required: "required";
+$msg-json-ref-prefix: "Details: ";
+$msg-json-section-additionalProperties: "Additional properties";
+$msg-json-section-example: "Example";
+
+//
+// Swagger labels
+
+$msg-swagger-data-type: 'Data type';
+$msg-swagger-description: 'Description';
+
+$msg-swagger-section-operation-path: 'Path';
+$msg-swagger-section-operation-description: $msg-swagger-description;
+$msg-swagger-section-request-params: 'Request parameters';
+$msg-swagger-section-request-body: 'Request body';
+$msg-swagger-section-responses: 'Responses';
+
+$msg-swagger-param-key: 'Key';
+$msg-swagger-param-name: 'Name';
+$msg-swagger-param-description: $msg-swagger-description;
+$msg-swagger-param-data-type: 'Data type';
+$msg-swagger-param-type: 'Type';
+
+$msg-swagger-response-header-name: 'Header';
+$msg-swagger-response-header-description: $msg-swagger-description;
+$msg-swagger-response-header-data-type: 'Data type';
+
+$msg-swagger-section-request-security: 'Security';
+$msg-swagger-request-security-scopes: 'Scopes';
+$msg-swagger-request-security-schema: 'Schema';
+$msg-swagger-security-definition-properties: 'Properties';
+$msg-swagger-security-definition-type-basic: '(HTTP Basic Authentication)';
+$msg-swagger-security-definition-type-oauth2: '(OAuth2 Authentication)';
+$msg-swagger-security-definition-type-apikey: '(API Key Authentication)';
+$msg-swagger-badge-global: 'global';
+
+$msg-swagger-response-code: 'Code';
+$msg-swagger-response-description: 'Description';
+$msg-swagger-response-schema: 'Schema';

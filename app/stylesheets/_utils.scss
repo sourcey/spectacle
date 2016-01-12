@@ -1,0 +1,43 @@
+//
+//= Mixins and helpers
+//
+
+// Named sections
+@mixin named-section($title) {
+  &:before {
+    content: $title;
+    display: block;
+    @extend h6;
+    margin-bottom: 0.5em;
+    color: $accent-color;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+}
+
+@mixin small-label($style:'alert') {
+  @include label();
+  @extend .label.#{$style};
+  font-size: 0.75rem;
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+
+@mixin named-label($name, $style:'alert') {
+  &:before {
+    @include small-label($style);
+    content: $name;
+  }
+}
+
+// Draw a panel in a given color
+@mixin swagger-panel-operation($color) {
+  background-color: $color;
+}
+
+@mixin table-header($label,$width: auto) {
+  width: auto;
+  &:before {
+    content: $label;
+  }
+}

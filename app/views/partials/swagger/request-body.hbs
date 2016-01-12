@@ -1,0 +1,35 @@
+{{!--
+    Renders the request-body section of an operation.
+    @param {string[]} consumes a list of request content type eligible for this operation.
+    @param {Parameter} body the param-Object of the `body`-parameter
+    @api public
+--}}
+
+<section class="swagger-request-body">
+  {{!--
+    {{#if consumes}}
+      <p>{{>swagger/list-of-labels values=consumes}}</p>
+    {{else if @root.consumes}}
+      <p>
+        <!-- <a href="#swagger-default-consumes">Consumes: </a> -->
+        {{>swagger/list-of-labels values=@root.consumes}}
+      </p>
+    {{/if}}
+  --}}
+  {{#if body}}
+    {{#with body}}
+      <div class="prop-row">
+        <div class="prop-name">
+          <div class="swagger-request-model">
+            {{>json-schema/reference schema}}
+          </div>
+        </div>
+        <div class="prop-value columns small-6">
+          <!-- <div class="swagger-request-description"> -->
+            {{md description}}
+          <!-- </div> -->
+        </div>
+      </div>
+    {{/with}}
+  {{/if}}
+</section>

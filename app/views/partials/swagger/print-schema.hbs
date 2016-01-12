@@ -1,0 +1,7 @@
+{{#if $ref}}
+  <div class="hljs">{{{printSchemaReference $ref type=type}}}</div>
+{{else if items.$ref}}
+  <div class="hljs">{{printSchemaReference items.$ref type=type}}</div>
+{{else}}
+  <div class="hljs">{{!printSchema .}}</div>
+{{/if}}

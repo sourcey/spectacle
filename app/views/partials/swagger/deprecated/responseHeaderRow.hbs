@@ -1,0 +1,20 @@
+{{!--
+    Display a single parameter in a table row.
+    @param {Header} header a (Header)[https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#headerObject] object 
+    @param {string} name the name of  the response header
+    @api public
+--}}
+<tr class="swagger-response-header-{{htmlId name}}">
+    <td>
+        {{name}}
+    <td>{{md header.description}}</td>
+    <td>
+        {{>json-schema/datatype header}}
+        {{#if header.items}}
+            ,{{>json-schema/datatype header.items}}
+        {{/if}}
+        {{#if header.collectionFormat}}
+            <div class="swagger-param-collection-format">{{md (swagger-collection-format header.collectionFormat)}}</div>
+        {{/if}}
+    </td>
+</tr>

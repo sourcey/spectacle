@@ -1,0 +1,16 @@
+{{!--
+  Renders a json-schema "anyOf"-definition.
+--}}
+<section class="json-schema-anyOf">
+  {{! Display ref (i.e. superclasses)}}
+  <dl>
+    {{#each .}}
+      <dt>
+        {{>json-schema/datatype}}
+      </dt>
+      <dd>
+        {{>json-schema/body $ref=""}}
+      </dd>
+    {{/each}}
+  </dl>
+</section>

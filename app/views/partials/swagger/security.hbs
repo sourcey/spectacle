@@ -1,0 +1,35 @@
+{{!--
+    Renders the security definitions of the Rest-service.
+    @param {Security[]} security TODO
+    @api public
+--}}
+{{#if security}}
+  <div class="doc-row">
+    <div class="doc-copy">
+      <section class="swagger-request-security">
+          <table class="table">
+              <thead>
+              <tr>
+                  <th class="swagger-request-security-schema"></th>
+                  <th class="swagger-request-security-scopes"></th>
+              </tr>
+              </thead>
+              <tbody>
+              {{#each security}}
+                  {{#each this}}
+                      <tr>
+                          <td><a href="#security-definition-{{@key}}">{{@key}}</a></td>
+                          <td>
+                              {{#each this}}
+                                  {{#unless @first}}, {{/unless}}{{this}}
+                              {{/each}}
+                          </td>
+                      </tr>
+                  {{/each}}
+              {{/each}}
+              </tbody>
+          </table>
+      </section>
+    </div>
+  </div>
+{{/if}}

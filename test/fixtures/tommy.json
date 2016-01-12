@@ -1,0 +1,2469 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "PayApp",
+        "description": "PayApp Payroll System",
+        "version": "1.0.0"
+    },
+    "host": "api.mytommy.com",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "basePath": "/api/v1",
+    "securityDefinitions": {
+        "basicAuth": {
+            "type": "basic",
+            "description": "HTTP Basic Authentication. Works over `HTTP` and `HTTPS`"
+        },
+        "api_key": {
+            "type": "apiKey",
+            "name": "api_key",
+            "in": "header"
+        },
+        "petstore_auth": {
+          "type": "oauth2",
+          "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+          "flow": "implicit",
+          "scopes": {
+            "write:pets": "modify pets in your account",
+            "read:pets": "read your pets"
+          }
+        }
+    },
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/user/accounts": {
+            "get": {
+                "summary": "List of Accounts including Employer(s)",
+                "description": "Returns different accounts with its type (user, own employer, other employer) *Page 3_Account (part1)\n",
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of accounts",
+                        "examples": {
+                            "application/json": {
+                                "name": "Puma",
+                                "type": "Dog",
+                                "color": "Black",
+                                "gender": "Female",
+                                "breed": "Mixed"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            }
+                        },
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Accounts"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employer/{employer_id}": {
+            "get": {
+                "summary": "Employer Own Profile",
+                "description": "Employer profile. \n*Pages 3_Account_EmployerProfile p1, 3_Account_EmployerProfile p2\n",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Unique employer identifier to be used for fetching specific employer profile data."
+                    }
+                ],
+                "tags": [
+                    "Employer"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile information for an employer",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerOwnProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Employer Data",
+                "description": "This updates individual or group of employer's records\n*Pages 3_Account_EmployerProfile_*\n",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Unique employer identifier to be used for fetching specific employer profile data."
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "Unique employer identifier to be used for fetching specific employer profile data.",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerOwnProfile"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Employer"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employer update success"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employer/employees/listbylocation/{employer_id}/{location_id}": {
+            "get": {
+                "summary": "Employer Employee List by Location",
+                "description": "List all employees under the employer's location\n",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Unique employer identifier to be used for fetching specific employer profile data."
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Employees",
+                    "Employer"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of employees profile",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employer/employees": {
+            "get": {
+                "summary": "Employer Employee List",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "Unique employer identifier to be used for fetching specific employer profile data."
+                    }
+                ],
+                "tags": [
+                    "Employees"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of employees profile",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employee_id}": {
+            "get": {
+                "summary": "Employee Profile",
+                "description": "E_Employee-Profile (part1)\n",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employee profile",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/unavailability/{employee_id}/{date_start}/{date_end}": {
+            "get": {
+                "summary": "Employee Profile Availability",
+                "description": "E_Employee-Profile_Availability (Calendar View - date clicked)\n",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "date_start",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_end",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employee unavailability within the current selecte date range",
+                        "schema": {
+                            "$ref": "#/definitions/Unavailability"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/unavailability": {
+            "post": {
+                "summary": "Add Employee Unavailability",
+                "description": "E_Employee-Profile_Availability (Calendar View - date clicked)\n",
+                "tags": [
+                    "Unavailability"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts unavailability form data.",
+                        "schema": {
+                            "$ref": "#/definitions/Unavailability"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unavailability added successfully"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/unavailability/{employee_unavailability_id}": {
+            "delete": {
+                "summary": "Delete Employee Unavailability",
+                "description": "E_Employee-Profile_Availability_Edit (Delete confirmation)\n",
+                "tags": [
+                    "Unavailability"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_unavailability_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unavailability deleted successfully"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/shift/{employee_id}/{date_start}/{date_end}": {
+            "get": {
+                "summary": "Employee Profile Shifts",
+                "description": "E_Employee-Profile_Shifts (calendar view – clicked)\nE_Employee-Profile_Shifts (List View)\n",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "date_start",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_end",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employee shifts within the current selecte date range",
+                        "schema": {
+                            "$ref": "#/definitions/EmployeeShifts"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employer/shiftbylocation/calendar/{employer_id}/{location_id}/{date_start}/{date_end}": {
+            "get": {
+                "summary": "Employe Shifts",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "date_start",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_end",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employer shifts count within the current selecte date range",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerShiftsMonth"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employer/shiftbylocation/list/{employer_id}/{location_id}/{date_start}/{date_end}": {
+            "get": {
+                "summary": "Employe Shifts",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "date_start",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_end",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employer shifts count within the current selecte date range",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerShifts"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/publish": {
+            "put": {
+                "summary": "Publish Employer Shifts",
+                "parameters": [
+                    {
+                        "name": "employer_shift_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "shift published"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/{employer_shift_id}": {
+            "put": {
+                "summary": "Employer Shift Update",
+                "parameters": [
+                    {
+                        "name": "employer_shift_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts shift form data.",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerShifts"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "shift details updated"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift": {
+            "post": {
+                "summary": "Add Employer Shift",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts shift form data.",
+                        "schema": {
+                            "$ref": "#/definitions/EmployerShifts"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "shift added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/shift/{employee_id}": {
+            "get": {
+                "summary": "Employee Shift",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "shift added",
+                        "schema": {
+                            "$ref": "#/definitions/EmployeeShift"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/scheduled/{employer_shift_id}": {
+            "get": {
+                "summary": "List Employees Scheduled on this Shift",
+                "parameters": [
+                    {
+                        "name": "employer_shift_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of employees",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/add/employee/{employer_shift_id}": {
+            "post": {
+                "summary": "Add employee on shift",
+                "parameters": [
+                    {
+                        "name": "employer_shift_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "add employee to shift"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/employee/{employer_shift_assigned_id}/": {
+            "delete": {
+                "summary": "Remove employee on shift",
+                "parameters": [
+                    {
+                        "name": "employer_shift_assigned_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Shift"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "employee removed"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/employer/employee-profile/{location_id}": {
+            "get": {
+                "summary": "Employer Own Profile",
+                "description": "List all employees under the employer's location\n",
+                "parameters": [
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Employees",
+                    "Employer"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of employees profile",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "put": {
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ],
+                "summary": "Update User Data",
+                "description": "This updates individual or group of user's records\n*Pages 3_Account_EmployerProfile_*\n",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts any users data to be updated.",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User update success"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/password": {
+            "put": {
+                "summary": "Update User Data",
+                "description": "This updates individual or group of user's records\n*Pages 3_Account_EmployerProfile_*\n",
+                "parameters": [
+                    {
+                        "name": "new_password",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "New password"
+                    },
+                    {
+                        "name": "old_password",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "Old password"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User password updated"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "get": {
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Will send `Authenticated` if authentication is succesful, otherwise it will send `Unauthorized`"
+                    },
+                    "400": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/employee/accept-employer/{employer_id}": {
+            "get": {
+                "summary": "Accept Employer",
+                "description": "4_Messages_ChatWindow_EmploymentOffer_Reject(confirm)\n4_Messages_ChatWindow_EmploymentOffer_Accept(confirm)\n",
+                "parameters": [
+                    {
+                        "name": "employer_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Employer ID"
+                    },
+                    {
+                        "name": "response",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "Either Accept or Reject"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User's accepted",
+                        "schema": {
+                            "$ref": "#/definitions/UserProfile"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid email/password supplied"
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "summary": "logout user",
+                "description": "Logs out current logged in user session\n*Page 3_Account (part3)\n",
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/industry": {
+            "get": {
+                "summary": "List all industries",
+                "description": "fetch industries, used in select/list\n*Page 3_Account_EmployerProfile (Industry select)\n",
+                "tags": [
+                    "Industry"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Industry Lists",
+                        "schema": {
+                            "$ref": "#/definitions/Industries"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents": {
+            "post": {
+                "summary": "Add new document",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts document data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/Documents"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document successfully added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}": {
+            "put": {
+                "summary": "Edit document",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Document ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "description": "accepts document data to be edited.",
+                        "schema": {
+                            "type": "array",
+                            "$ref": "#/definitions/Documents"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/Documents"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/document-pages/{document_id}": {
+            "get": {
+                "summary": "List document page",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Document ID"
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "Document Page List",
+                        "schema": {
+                            "$ref": "#/definitions/DocumentPages"
+                        }
+                    }
+                }
+            }
+        },
+        "/document/shared": {
+            "get": {
+                "summary": "List document shared",
+                "tags": [
+                    "Documents"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "Document Page List",
+                        "schema": {
+                            "$ref": "#/definitions/DocumentShared"
+                        }
+                    }
+                }
+            }
+        },
+        "/document/share/{document_id}": {
+            "delete": {
+                "summary": "Remove employer to document share",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Document ID"
+                    },
+                    {
+                        "name": "employer_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "Employer ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document unshared successful"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/documents/shared/{employee_id}": {
+            "get": {
+                "summary": "List all employee's documents",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Employee ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee document lists",
+                        "schema": {
+                            "$ref": "#/definitions/Documents"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/document/shared/{document_id}": {
+            "get": {
+                "summary": "Employee's document Details",
+                "tags": [
+                    "Documents"
+                ],
+                "parameters": [
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Employee ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee document details",
+                        "schema": {
+                            "$ref": "#/definitions/Documents"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/locations/{employee_id}": {
+            "post": {
+                "summary": "Employee's list of locations",
+                "tags": [
+                    "Locations"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts locations page data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/Locations"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee location added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/location/{employee_location_id}": {
+            "delete": {
+                "summary": "remove location from employee",
+                "tags": [
+                    "Locations"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_location_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee Location ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully remove employees locations"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/notes/{employee_id}": {
+            "post": {
+                "summary": "Add Employee's notes",
+                "tags": [
+                    "Notes"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts noted page data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/Note"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee notes added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/note/{employee_notes_id}": {
+            "delete": {
+                "summary": "Delte employee's note",
+                "tags": [
+                    "Notes"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_notes_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Note ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee note deleted"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/roles/{employee_id}": {
+            "get": {
+                "summary": "Employee Role List",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role list",
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/role": {
+            "post": {
+                "summary": "Add Employee Role",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts role page data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/role/{employee_role_id}": {
+            "get": {
+                "summary": "Get Employee Role Details",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_role_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee Role ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role details",
+                        "schema": {
+                            "$ref": "#/definitions/RoleDetails"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/role/variation/{employee_role_variation_id}": {
+            "get": {
+                "summary": "Get Employee Role Variation Details",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_role_variation_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee Role Variation ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role variation details",
+                        "schema": {
+                            "$ref": "#/definitions/RoleVariation"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/role/variation": {
+            "post": {
+                "summary": "Add Employee Role Variation",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee Role Variation ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts variation page data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/RoleVariation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role variation added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/role/variations/{employee_role_id}": {
+            "get": {
+                "summary": "Get Employee Role Variation List",
+                "tags": [
+                    "Role"
+                ],
+                "parameters": [
+                    {
+                        "name": "employee_role_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employee Role ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee role details",
+                        "schema": {
+                            "$ref": "#/definitions/RoleVariation"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/bank": {
+            "get": {
+                "summary": "List All User Bank",
+                "tags": [
+                    "Bank"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "User Banks List",
+                        "schema": {
+                            "$ref": "#/definitions/UserBank"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/bank/{user_bank_id}": {
+            "get": {
+                "summary": "Get User Bank",
+                "tags": [
+                    "Bank"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_bank_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "User Bank ID"
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "User Bank Details",
+                        "schema": {
+                            "$ref": "#/definitions/UserBank"
+                        }
+                    }
+                }
+            }
+        },
+        "/bank": {
+            "get": {
+                "summary": "List All Bank",
+                "tags": [
+                    "Bank"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "Banks List",
+                        "schema": {
+                            "$ref": "#/definitions/Bank"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/bank/allotment/{user_bank_id}": {
+            "post": {
+                "summary": "Add User Bank Allotment",
+                "tags": [
+                    "Bank"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_bank_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "User Bank ID"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "description": "accepts user bank allotment data to be added.",
+                        "schema": {
+                            "$ref": "#/definitions/BankAllotment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Bank Allotment successfully added"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/superfund": {
+            "get": {
+                "summary": "List All Superfund",
+                "tags": [
+                    "SuperFund"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "SuportFund List",
+                        "schema": {
+                            "$ref": "#/definitions/SuperFund"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/superfund": {
+            "get": {
+                "summary": "List All User SuperFund",
+                "tags": [
+                    "SuperFund"
+                ],
+                "responses": {
+                    "default": {
+                        "description": "List User superfund",
+                        "schema": {
+                            "$ref": "#/definitions/UserSuperFund"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/superfund/{user_supperfund_id}": {
+            "get": {
+                "summary": "GetUser SuperFund Details",
+                "tags": [
+                    "SuperFund"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_supperfund_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "User SuperFund ID"
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "User superfund details",
+                        "schema": {
+                            "$ref": "#/definitions/UserSuperFund"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/superfund/employer/{user_supperfund_id}": {
+            "get": {
+                "summary": "List All Employer with SuperFund",
+                "tags": [
+                    "SuperFund"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_supperfund_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "User SuperFund ID"
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "List Employer with superfund",
+                        "schema": {
+                            "$ref": "#/definitions/UserEmployerSuperFund"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/superfund/employer/remove/{user_supperfund_id}": {
+            "post": {
+                "summary": "Remove User Employer SupportFund",
+                "tags": [
+                    "SuperFund"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_supperfund_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "User SuperFund ID"
+                    },
+                    {
+                        "name": "employer_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer",
+                        "description": "Employer ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Employer SuperFund successfully remove"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/pay-approval-options": {
+            "get": {
+                "summary": "List all Pay approval options",
+                "description": "used in select/list\n*Page 3_Account_EmployerProfile_PayRun (Approval Day Frequency select)\n",
+                "tags": [
+                    "Payroll"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay Approval Options List",
+                        "schema": {
+                            "$ref": "#/definitions/PayrollApprovalOptions"
+                        }
+                    }
+                }
+            }
+        },
+        "/pay-interval-options": {
+            "get": {
+                "summary": "List all Pay interval options",
+                "description": "used in select/list\n*Page 3_Account_EmployerProfile_PayRun (Interval select)\n",
+                "tags": [
+                    "Payroll"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay Interval Options List",
+                        "schema": {
+                            "$ref": "#/definitions/PayrollIntervalOptions"
+                        }
+                    }
+                }
+            }
+        },
+        "/pay-release-options": {
+            "get": {
+                "summary": "List all Pay release options",
+                "description": "used in select/list\n*Page 3_Account_EmployerProfile_PayRun (Interval select)\n",
+                "tags": [
+                    "Payroll"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay Interval Release List",
+                        "schema": {
+                            "$ref": "#/definitions/PayrollReleaseOptions"
+                        }
+                    }
+                }
+            }
+        },
+        "/tax-entity-type-options": {
+            "get": {
+                "summary": "List all Tax entity Type",
+                "description": "used in select/list\n*Page 3_Account_EmployerProfile_Tax (Entity Type Select)\n",
+                "tags": [
+                    "Entity",
+                    "Tax"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tax Entity Type List",
+                        "schema": {
+                            "$ref": "#/definitions/TaxEntityTypeOptions"
+                        }
+                    }
+                }
+            }
+        },
+        "/tax-reporting-options": {
+            "get": {
+                "summary": "List all Tax Reporting Option",
+                "description": "used in select/list\n*Page 3_Account_EmployerProfile_Tax (Reporting Period Select)\n",
+                "tags": [
+                    "Reporting",
+                    "Tax"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tax Reporting Option",
+                        "schema": {
+                            "$ref": "#/definitions/TaxReportingOptions"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "EmployeeShift": {
+            "properties": {
+                "user_id": {
+                    "type": "integer",
+                    "description": "User ID."
+                },
+                "employer_shift_assigned_id": {
+                    "type": "integer",
+                    "description": "Shift ID."
+                },
+                "role_name": {
+                    "type": "string",
+                    "description": "User last name."
+                },
+                "shift_current_time": {
+                    "type": "string",
+                    "description": "Shift details."
+                },
+                "user_name_last": {
+                    "type": "string",
+                    "description": "User last name."
+                },
+                "user_name_first": {
+                    "type": "string",
+                    "description": "User first name."
+                },
+                "user_email": {
+                    "type": "string",
+                    "description": "User email."
+                },
+                "user_iconurl": {
+                    "type": "string",
+                    "description": "User Icon URL."
+                },
+                "user_phone": {
+                    "type": "string",
+                    "description": "User Phone Number."
+                },
+                "shift_status": {
+                    "type": "string",
+                    "description": "indicated they have started their shift."
+                }
+            }
+        },
+        "UserProfile": {
+            "properties": {
+                "user_id": {
+                    "type": "integer",
+                    "description": "User ID."
+                },
+                "user_name_last": {
+                    "type": "string",
+                    "description": "User last name."
+                },
+                "user_name_first": {
+                    "type": "string",
+                    "description": "User first name."
+                },
+                "user_email": {
+                    "type": "string",
+                    "description": "User email."
+                },
+                "user_dob": {
+                    "type": "string",
+                    "description": "User Date of Birth."
+                },
+                "user_iconurl": {
+                    "type": "string",
+                    "description": "User Icon URL."
+                },
+                "user_status": {
+                    "type": "string",
+                    "description": "User Status."
+                },
+                "user_phone": {
+                    "type": "string",
+                    "description": "User Phone Number."
+                },
+                "address": {
+                    "type": "array",
+                    "description": "Full address of the user.",
+                    "items": {
+                        "$ref": "#/definitions/UserAddress"
+                    }
+                }
+            }
+        },
+        "EmployerOwnProfile": {
+            "properties": {
+                "employer_id": {
+                    "type": "integer",
+                    "description": "Employer ID."
+                },
+                "employer_business_name": {
+                    "type": "string",
+                    "description": "Business name of the employer."
+                },
+                "employer_iconurl": {
+                    "type": "string",
+                    "description": "Icon URL/Thumbnail of the employer."
+                },
+                "user_name_last": {
+                    "type": "string",
+                    "description": "Employer last name."
+                },
+                "user_name_first": {
+                    "type": "string",
+                    "description": "Employer first name."
+                },
+                "employer_email": {
+                    "type": "string",
+                    "description": "Employer email."
+                },
+                "employer_phone": {
+                    "type": "string",
+                    "description": "Employer phone number."
+                },
+                "industry_id": {
+                    "type": "string",
+                    "description": "Employer industry."
+                },
+                "employer_abn": {
+                    "type": "string",
+                    "description": "Employer ABN number."
+                },
+                "employer_acn": {
+                    "type": "string",
+                    "description": "Employer ACN number."
+                },
+                "employer_contact_email": {
+                    "type": "string",
+                    "description": "Employer contact email."
+                },
+                "employer_contact_name": {
+                    "type": "string",
+                    "description": "Employer contact phone."
+                },
+                "payroll_interval_id": {
+                    "type": "integer",
+                    "description": "Employer payroll interval id."
+                },
+                "payroll_approval_id": {
+                    "type": "integer",
+                    "description": "Employer payroll approval id."
+                },
+                "payroll_release_id": {
+                    "type": "integer",
+                    "description": "Employer payroll release id."
+                },
+                "tax_entity_id": {
+                    "type": "integer",
+                    "description": "Employer tax entity id."
+                },
+                "tax_reporting_id": {
+                    "type": "integer",
+                    "description": "Employer tax reporting id."
+                },
+                "employer_tax_gst": {
+                    "type": "integer",
+                    "description": "Employer tax gst."
+                },
+                "employer_tax_payrolltax": {
+                    "type": "integer",
+                    "description": "Employer tax payroll tax."
+                },
+                "address": {
+                    "type": "array",
+                    "description": "Full address of the employer.",
+                    "items": {
+                        "$ref": "#/definitions/EmployerAddress"
+                    }
+                }
+            }
+        },
+        "EmployeeShifts": {
+            "properties": {
+                "employer_shift_assigned_id": {
+                    "type": "integer"
+                },
+                "employer_id": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "location_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "object",
+                    "description": "start date and time"
+                },
+                "end_date": {
+                    "type": "object",
+                    "description": "end date and time"
+                },
+                "note": {
+                    "type": "string",
+                    "description": "notes for the shift"
+                }
+            }
+        },
+        "EmployerShifts": {
+            "properties": {
+                "employer_shift_id": {
+                    "type": "integer"
+                },
+                "employer_id": {
+                    "type": "integer"
+                },
+                "location_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "employer_shift_time_start": {
+                    "type": "string",
+                    "description": "start date and time"
+                },
+                "employer_shift_time_end": {
+                    "type": "string",
+                    "description": "end date and time"
+                },
+                "employer_shift_repeat": {
+                    "type": "boolean"
+                },
+                "notes": {
+                    "type": "string"
+                }
+            }
+        },
+        "EmployerShiftsMonth": {
+            "properties": {
+                "employer_shift_id": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "object",
+                    "description": "start date and time"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "shift counts"
+                },
+                "publish": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Unavailability": {
+            "properties": {
+                "employee_unavailability_id": {
+                    "type": "integer",
+                    "description": "unavailability id"
+                },
+                "employee_unavailability_date_start": {
+                    "type": "string",
+                    "description": "start date and time"
+                },
+                "employee_unavailability_date_endv": {
+                    "type": "string",
+                    "description": "end date and time"
+                },
+                "employee_id": {
+                    "type": "integer",
+                    "description": "employee id"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "notes"
+                },
+                "employee_unavailability_special_day": {
+                    "type": "string",
+                    "description": "special day"
+                },
+                "employee_unavailability_fullday": {
+                    "type": "boolean",
+                    "description": "Fullday or not"
+                }
+            }
+        },
+        "Documents": {
+            "properties": {
+                "user_document_id": {
+                    "type": "integer"
+                },
+                "user_document_name": {
+                    "type": "string",
+                    "description": "Document name"
+                },
+                "user_document_issuer": {
+                    "type": "string",
+                    "description": "Document issuer"
+                },
+                "user_document_expiry": {
+                    "type": "string",
+                    "description": "Document expiry"
+                }
+            }
+        },
+        "DocumentPages": {
+            "properties": {
+                "user_document_page_id": {
+                    "type": "integer"
+                },
+                "user_document_page_url": {
+                    "type": "string",
+                    "description": "Document page url"
+                },
+                "user_document_sort": {
+                    "type": "string",
+                    "description": "Document page order"
+                },
+                "user_document_id": {
+                    "type": "string",
+                    "description": "Document id"
+                }
+            }
+        },
+        "DocumentShared": {
+            "properties": {
+                "user_document_share_id": {
+                    "type": "integer"
+                },
+                "user_document_id": {
+                    "type": "integer",
+                    "description": "Document ID"
+                },
+                "employer_id": {
+                    "type": "string",
+                    "description": "Employer ID"
+                }
+            }
+        },
+        "Bank": {
+            "properties": {
+                "bank_id": {
+                    "type": "integer"
+                },
+                "bank_status": {
+                    "type": "string",
+                    "description": "Status"
+                },
+                "bank_name": {
+                    "type": "string",
+                    "description": "Bank Short Name"
+                },
+                "bank_fullname": {
+                    "type": "string",
+                    "description": "Bank Fullname"
+                },
+                "bank_description": {
+                    "type": "string",
+                    "description": "Bank Description"
+                },
+                "bank_iconurl": {
+                    "type": "string",
+                    "description": "Bank Icon"
+                }
+            }
+        },
+        "UserBank": {
+            "properties": {
+                "user_bank_id": {
+                    "type": "integer"
+                },
+                "bank_id": {
+                    "type": "integer",
+                    "description": "Bank ID"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "description": "User ID"
+                },
+                "user_bank_status": {
+                    "type": "string",
+                    "description": "Status"
+                },
+                "user_bank_name": {
+                    "type": "string",
+                    "description": "Bank Label"
+                },
+                "user_bank_bsb": {
+                    "type": "string",
+                    "description": "Bank BSB"
+                },
+                "user_bank_number": {
+                    "type": "string",
+                    "description": "Bank Number"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Create at"
+                }
+            }
+        },
+        "BankAllotment": {
+            "properties": {
+                "user_bank_allotment_id": {
+                    "type": "integer"
+                },
+                "user_bank_id": {
+                    "type": "integer",
+                    "description": "User Bank ID"
+                },
+                "employer_id": {
+                    "type": "integer",
+                    "description": "Employer ID"
+                },
+                "user_bank_allotment_percent": {
+                    "type": "string",
+                    "description": "Percent Bank Allotment"
+                },
+                "user_bank_allotment_fixed": {
+                    "type": "string",
+                    "description": "Fixed Bank Allotment"
+                },
+                "pay_type": {
+                    "type": "string",
+                    "description": "Pay Type"
+                }
+            }
+        },
+        "SuperFund": {
+            "properties": {
+                "superfund_id": {
+                    "type": "integer"
+                },
+                "superfund_name": {
+                    "type": "string",
+                    "description": "Status"
+                },
+                "superfund_description": {
+                    "type": "string",
+                    "description": "SuperFund Description"
+                }
+            }
+        },
+        "UserSuperFund": {
+            "properties": {
+                "user_superfund_id": {
+                    "type": "integer"
+                },
+                "superfund_id": {
+                    "type": "integer"
+                },
+                "user_superfund_number": {
+                    "type": "string",
+                    "description": "Suprtfund Number"
+                },
+                "user_superfund_status": {
+                    "type": "string",
+                    "description": "Status"
+                }
+            }
+        },
+        "UserEmployerSuperFund": {
+            "properties": {
+                "user_employer_superfund_id": {
+                    "type": "integer"
+                },
+                "user_superfund_id": {
+                    "type": "integer"
+                },
+                "employer_id": {
+                    "type": "integer"
+                },
+                "employer_name": {
+                    "type": "string"
+                },
+                "user_superfund_status": {
+                    "type": "string",
+                    "description": "Status"
+                }
+            }
+        },
+        "Accounts": {
+            "properties": {
+                "acount_id": {
+                    "type": "integer",
+                    "description": "ID of the account, either id of the employer of id of the user."
+                },
+                "display_name": {
+                    "type": "string",
+                    "description": "Display name of the account."
+                },
+                "icon_url": {
+                    "type": "string",
+                    "description": "thumbnail of the account."
+                },
+                "account_type": {
+                    "type": "string",
+                    "description": "Account Type(User, Own Employer, Employer)."
+                }
+            }
+        },
+        "EmployerAddress": {
+            "properties": {
+                "employer_address_line1": {
+                    "type": "string",
+                    "description": "Employer current address line one"
+                },
+                "employer_address_line2": {
+                    "type": "string",
+                    "description": "Employer current address line two"
+                },
+                "employer_address_city": {
+                    "type": "string",
+                    "description": "Employer current city"
+                },
+                "employer_postcode": {
+                    "type": "string",
+                    "description": "Employer current postcode"
+                },
+                "employer_state": {
+                    "type": "string",
+                    "description": "Employer current state/province"
+                },
+                "country_id": {
+                    "type": "string",
+                    "description": "Employer current country"
+                }
+            }
+        },
+        "UserAddress": {
+            "properties": {
+                "user_address_line1": {
+                    "type": "string",
+                    "description": "User current address line one"
+                },
+                "user_address_line2": {
+                    "type": "string",
+                    "description": "User current address line two"
+                },
+                "user_address_city": {
+                    "type": "string",
+                    "description": "User current city"
+                },
+                "user_postcode": {
+                    "type": "string",
+                    "description": "User current postcode"
+                },
+                "user_state": {
+                    "type": "string",
+                    "description": "User current state/province"
+                },
+                "country_id": {
+                    "type": "string",
+                    "description": "User current country"
+                }
+            }
+        },
+        "Industries": {
+            "properties": {
+                "industry_id": {
+                    "type": "string",
+                    "description": "Industry ID"
+                },
+                "industry_name": {
+                    "type": "string",
+                    "description": "Industry Name"
+                },
+                "industry_code": {
+                    "type": "string",
+                    "description": "Industry CODE"
+                },
+                "industry_description": {
+                    "type": "string",
+                    "description": "Industry description"
+                }
+            }
+        },
+        "PayrollApprovalOptions": {
+            "properties": {
+                "payroll_approval_id": {
+                    "type": "string"
+                },
+                "payroll_approval_name": {
+                    "type": "string",
+                    "description": "Short name for the payroll approval timing"
+                }
+            }
+        },
+        "PayrollIntervalOptions": {
+            "properties": {
+                "payroll_interval_id": {
+                    "type": "string"
+                },
+                "payroll_interval_name": {
+                    "type": "string",
+                    "description": "Short name for the payroll interval"
+                }
+            }
+        },
+        "PayrollReleaseOptions": {
+            "properties": {
+                "payroll_release_id": {
+                    "type": "string"
+                },
+                "payroll_release_name": {
+                    "type": "string",
+                    "description": "Short name for the payroll release"
+                }
+            }
+        },
+        "TaxEntityTypeOptions": {
+            "properties": {
+                "tax_entity_id": {
+                    "type": "string"
+                },
+                "tax_entity_name": {
+                    "type": "string",
+                    "description": "Entity Type"
+                }
+            }
+        },
+        "TaxReportingOptions": {
+            "properties": {
+                "entity_type_id": {
+                    "type": "string"
+                },
+                "entity_type_name": {
+                    "type": "string",
+                    "description": "Entity Type"
+                }
+            }
+        },
+        "Locations": {
+            "properties": {
+                "location_id": {
+                    "type": "integer"
+                },
+                "employee_location_id": {
+                    "type": "integer"
+                },
+                "employee_location_name": {
+                    "type": "string",
+                    "description": "Location name"
+                }
+            }
+        },
+        "Role": {
+            "properties": {
+                "employee_role_id": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RoleDetails": {
+            "properties": {
+                "employee_role_id": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "last_shift": {
+                    "type": "string"
+                },
+                "first_shift": {
+                    "type": "string"
+                },
+                "payroll_variations": {
+                    "type": "string"
+                }
+            }
+        },
+        "RoleVariation": {
+            "properties": {
+                "employee_role_variations_id": {
+                    "type": "integer"
+                },
+                "employee_role_id": {
+                    "type": "integer"
+                },
+                "variations_type": {
+                    "type": "string"
+                },
+                "variations_value": {
+                    "type": "string"
+                }
+            }
+        },
+        "Note": {
+            "properties": {
+                "employee_notes_id": {
+                    "type": "integer"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "to_user_id": {
+                    "type": "integer"
+                },
+                "location_id": {
+                    "type": "integer"
+                },
+                "employer_shift_id": {
+                    "type": "integer"
+                },
+                "employee_notes": {
+                    "type": "string",
+                    "description": "Notes"
+                }
+            }
+        },
+        "Error": {
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

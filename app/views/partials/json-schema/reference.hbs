@@ -1,0 +1,10 @@
+{{!Renders a reference to a subschema}}
+{{#if $ref}}
+  <span class="{{#if type}}json-schema-ref-{{type}}{{/if}}">
+    <a class="json-schema-ref" href="{{$ref}}">{{schemaSubschemaName $ref}}</a>
+  </span>
+{{else if items.$ref}}
+  <span class="{{#if type}}json-schema-ref-{{type}}{{/if}}">
+    <a class="json-schema-ref" href="{{items.$ref}}">{{schemaSubschemaName items.$ref}}</a>
+  </span>
+{{/if}}

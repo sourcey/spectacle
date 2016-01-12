@@ -1,0 +1,64 @@
+{{!
+    When properties are renderered this partial renders the datatype of a property,
+    with a link to the type-definition (in case of a $ref).
+    Depending on the input, it renders an augmented data-type (e.g. "string[]"),
+    the 'format'-value (e.g. "date-time") and "enum"-values.
+
+    @param {boolean} discriminator true, this property is a swagger-discriminator (in which case enums are rendered as links)
+}}
+<span class="json-property-type">
+  {{~#if $ref}}
+    {{~>json-schema/reference .}}
+  {{~else}}
+    {{~schemaDatatype .}}
+  {{~/if}}
+</span>
+{{~#if format}}
+  <span class="json-property-format">({{format}})</span>
+{{~/if~}}
+
+{{!-- Enum values --}}
+{{~#if enum}}
+  <span class="json-property-enum" title="Possible values">, x &isin; {
+    {{#each enum}}
+      {{! Render enums in the descriminator as links to the appropriate definitions}}
+      {{#if ../discriminator}}
+        <span class="json-property-enum-item"><a href="#definition-{{.}}">{{.}}</a></span>
+      {{else}}
+        <span class="json-property-enum-item">{{.}}</span>
+      {{/if}}
+      {{#ifeq ../default .}}
+        (default)
+      {{/ifeq}}
+      {{#unless @last}},{{/unless}}
+    {{/each}}
+    }
+  </span>
+{{~/if}}
+
+{{!-- min- and max-values --}}
+<span class="json-property-range" title="Value limits">
+  {{~schemaRange . ~}}
+</span>
+
+{{!-- Default values (for non-enum types) --}}
+{{~#unless enum}}
+  {{~#if default}}
+    <span class="json-property-default-value">{{~default}}</span>
+  {{/if}}
+{{~/unless}}
+{{#if minLength}}
+  <span class="json-property-range" title="String length limits">
+    {{#if maxLength}}
+      ({{minLength}} to {{maxLength}} chars)
+    {{else}}
+      (at least {{minLength}} chars)
+    {{/if}}
+  </span>
+{{else}}
+  {{#if maxLength}}
+    <span class="json-property-range" title="String length limits">
+      (up to {{maxlength}} chars)
+    </span>
+  {{/if}}
+{{/if}}

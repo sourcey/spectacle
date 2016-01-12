@@ -1,0 +1,37 @@
+<div id="introduction" data-traverse-target="introduction" class="doc-row">
+  <div class="doc-copy">
+    {{md info.description}}
+  </div>
+  <div class="doc-examples">
+    <section>
+      <h5>API Endpoint</h5>
+      <div class="hljs">
+        <pre><code>{{swaggerEndpoint}}</code></pre>
+      </div>
+
+      {{#if consumes}}
+        <h5>Request Content-Types:
+          <span>{{#each consumes}}{{.}}{{#unless @last}}, {{/unless}}{{/each}}</span>
+        </h5>
+      {{/if}}
+
+      {{#if produces}}
+        <h5>Response Content-Types:
+          <span>{{#each produces}}{{.}}{{#unless @last}}, {{/unless}}{{/each}}</span>
+        </h5>
+      {{/if}}
+
+      {{#if schemes}}
+        <h5>Schemes:
+          <span>{{#each schemes}}{{.}}{{#unless @last}}, {{/unless}}{{/each}}</span>
+        </h5>
+      {{/if}}
+
+      {{#if info.version}}
+        <h5>Version:
+          <span>{{info.version}}</span>
+        </h5>
+      {{/if}}
+    </section>
+  </div>
+</div>

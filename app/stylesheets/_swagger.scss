@@ -1,0 +1,141 @@
+// Panels
+.swagger-panel-operation {
+  &-get {
+    //@include swagger-panel-operation(#e7f6ec);
+  }
+  &-get {
+    //@include swagger-panel-operation(#e7f0f7);
+  }
+  &-put {
+    //@include swagger-panel-operation(#f9f2e9);
+  }
+  &-patch {
+    //@include swagger-panel-operation(#FCE9E3);
+  }
+  &-options {
+    //@include swagger-panel-operation(#e7f0f7);
+  }
+  &-delete {
+    //@include swagger-panel-operation(#f5e8e8);
+  }
+  &-head {
+    //@include swagger-panel-operation(#fcffcd);
+  }
+}
+
+.swagger-operation-path {
+  @include named-section($msg-swagger-section-operation-path);
+}
+
+.swagger-operation-description {
+  @include named-section($msg-swagger-section-operation-description);
+}
+
+.swagger-request-params {
+  @include named-section($msg-swagger-section-request-params);
+}
+
+.swagger-request-body {
+  @include named-section($msg-swagger-section-request-body);
+}
+
+.swagger-responses {
+  @include named-section($msg-swagger-section-responses);
+}
+
+.swagger-global {
+  @include named-label($msg-swagger-badge-global);
+}
+
+
+// Tables
+table.table {
+
+  th.swagger-param-key {
+    @include table-header($msg-swagger-param-key, 10%);
+  }
+  th.swagger-param-name {
+    @include table-header($msg-swagger-param-name, 10%);
+  }
+  th.swagger-param-description {
+    @include table-header($msg-swagger-param-description);
+  }
+  th.swagger-param-data-type {
+    @include table-header($msg-swagger-param-data-type, 30%);
+  }
+  th.swagger-param-type {
+    @include table-header($msg-swagger-param-type, 10%);
+  }
+
+  th.swagger-request-security-schema {
+    @include table-header($msg-swagger-request-security-schema, 50%);
+  }
+  th.swagger-request-security-scopes {
+    @include table-header($msg-swagger-request-security-scopes, 50%);
+  }
+
+  // Response headers
+  th.swagger-response-header-name {
+    @include table-header($msg-swagger-response-header-name)
+  }
+
+  th.swagger-response-header-description {
+    @include table-header($msg-swagger-response-header-description)
+  }
+
+  th.swagger-response-header-data-type {
+    @include table-header($msg-swagger-response-header-data-type)
+  }
+
+  // Response table
+  th.swagger-response-code {
+    @include table-header($msg-swagger-response-code)
+  }
+
+  th.swagger-response-description {
+    @include table-header($msg-swagger-response-description)
+  }
+
+  th.swagger-response-schema {
+    @include table-header($msg-swagger-response-schema)
+  }
+}
+.swagger-response-name-value {
+  font-weight: bold;
+}
+
+.swagger-param-collection-format {
+}
+
+.swagger-response-description-text {
+  padding-bottom: 0.5em;
+}
+
+.swagger-request-security {
+  @include named-section($msg-swagger-section-request-security);
+}
+
+.swagger-security-definition-properties {
+  // @include named-section($msg-swagger-security-definition-properties);
+}
+
+.swagger-security-definition {
+  &-basic {
+    &:before {
+      color: $medium-gray;
+      content: $msg-swagger-security-definition-type-basic;
+    }
+  }
+  &-oauth2 {
+    &:before {
+      color: $medium-gray;
+      content: $msg-swagger-security-definition-type-oauth2;
+    }
+  }
+  &-apiKey {
+    &:before {
+      color: $medium-gray;
+      content: $msg-swagger-security-definition-type-apikey;
+    }
+  }
+}

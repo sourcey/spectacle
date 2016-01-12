@@ -1,0 +1,48 @@
+{{!--
+    Renders the parameter table within a operation definition.
+    @param {Array<Parameter>|Object<Parameter>} parameters a list of Swagger-Parameter objects
+       If this is an object, an it is expected to be the global parameter list
+       https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#parametersDefinitionsObject
+       and the key of each entry is display in a column in front of the other columns.
+    @api public
+--}}
+
+{{#if parameters}}
+  <section class="swagger-request-params">
+    {{#each parameters}}
+      <div class="prop-row prop-group">
+        <div class="prop-name">
+          <div class="prop-title">{{name}}</div>
+          {{#if required}}
+            <span class="json-property-required"></span>
+          {{/if}}
+          {{!--
+          {{#if schema.$ref}}
+            <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span>
+          {{/if}}
+          --}}
+        </div>
+        <div class="prop-value">
+          {{>swagger/description description}}
+        </div>
+      </div>
+      {{! parameter `collectionFormat` field }}
+      {{~#if collectionFormat ~}}
+        <div class="prop-row prop-inner">
+          <div class="prop-name param-label">format</div>
+          <div class="prop-value">{{md (swaggerCollectionFormat collectionFormat name) stripParagraph=true}}</div>
+        </div>
+      {{~/if}}
+      {{! parameter `type` field }}
+      <div class="prop-row prop-inner">
+        <div class="prop-name param-label">type</div>
+        <div class="prop-value">{{~>json-schema/datatype . ~}}</div>
+      </div>
+      {{! parameter `in` field }}
+      <div class="prop-row prop-inner">
+        <div class="prop-name param-label">in</div>
+        <div class="prop-value">{{in}}</div>
+      </div>
+    {{/each}}
+  </section>
+{{/if}}

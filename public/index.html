@@ -1,0 +1,729 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swagger Petstore | API Reference</title>
+    <link rel="stylesheet" href="stylesheets/main.min.css">
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="/javascripts/main.js"></script>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="dropdown menu" data-dropdown-menu="">
+          <li id="logo" class="menu-text">
+              Swagger Petstore <span>API Reference</span>
+              <!-- <span class="default-logo">Your Logo Here</span> -->
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="page" class="row collapse expanded">
+      <div id="docs" class="medium-9 large-10 medium-push-3 large-push-2 columns">
+        <article>
+          <div id="introduction" data-traverse-target="introduction" class="doc-row">
+            <div class="doc-copy">
+              <p>A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification</p>
+          
+            </div>
+            <div class="doc-examples">
+              <section>
+                <h5>API Endpoint</h5>
+                <div class="hljs">
+                  <pre><code>http://petstore.swagger.io/api</code></pre>
+                </div>
+          
+                  <h5>Request Content-Types:
+                    <span>application/json</span>
+                  </h5>
+          
+                  <h5>Response Content-Types:
+                    <span>application/json</span>
+                  </h5>
+          
+                  <h5>Schemes:
+                    <span>http</span>
+                  </h5>
+          
+                  <h5>Version:
+                    <span>1.0.0</span>
+                  </h5>
+              </section>
+            </div>
+          </div>
+          
+            <h1>Paths</h1>
+            
+              
+              <span id="path--pets"></span>
+                  
+                  <div id="operation--pets-get" class="operation panel" data-traverse-target="operation--pets-get">
+                  
+                    <h2 class="operation-title">
+                        <div class="operation-name">
+                          <span class="operation-name">GET</span>
+                          <span class="operation-path">/pets</span>
+                        </div>
+                    </h2>
+                  
+                  
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-operation-description">
+                            <p>Returns all pets from the system that the user has access to
+                  Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.</p>
+                  <p>Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.</p>
+                  
+                          </section>
+                        </div>
+                      </div>
+                  
+                    <div class="doc-row">
+                      <div class="doc-copy">
+                  
+                        
+                          <section class="swagger-request-params">
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">tags</div>
+                                </div>
+                                <div class="prop-value">
+                                  
+                                    <p class="no-description">(no description)</p>
+                                </div>
+                              </div>
+                        <div class="prop-row prop-inner">
+                                  <div class="prop-name param-label">format</div>
+                                  <div class="prop-value">comma separated (<code>tags=aaa,bbb</code>)</div>
+                                </div>      <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">type</div>
+                                <div class="prop-value"><span class="json-property-type">string[]</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                        
+                        </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">in</div>
+                                <div class="prop-value">query</div>
+                              </div>
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">limit</div>
+                                </div>
+                                <div class="prop-value">
+                                  
+                                    <p class="no-description">(no description)</p>
+                                </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">type</div>
+                                <div class="prop-value"><span class="json-property-type">integer</span>  <span class="json-property-format">(int32)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                        
+                        </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">in</div>
+                                <div class="prop-value">query</div>
+                              </div>
+                          </section>
+                      </div>
+                  
+                      <div class="doc-examples"></div>
+                    </div>
+                  
+                    
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-responses">
+                    
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">200 OK</div>
+                                    <div class="prop-ref">  <span class="json-schema-ref-array">
+                        <a class="json-schema-ref" href="#/definitions/Pet">Pet</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>pet response</p>
+                    
+                                </div>
+                              </div>
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">default </div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>unexpected error</p>
+                    
+                                </div>
+                              </div>
+                          </section>
+                        </div>
+                        <div class="doc-examples">        <section>
+                              <h5>Response Example <span>(200 OK)</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+[
+  {
+    &quot;<span class="hljs-attr">allOf</span>&quot;: [
+      {
+        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-NewPet">&quot;#/definitions/NewPet&quot;</a></span>
+      },
+      {
+        &quot;<span class="hljs-attr">properties</span>&quot;: {
+          &quot;<span class="hljs-attr">id</span>&quot;: {
+            &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
+            &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
+          }
+        },
+        &quot;<span class="hljs-attr">required</span>&quot;: [
+          <span class="hljs-string">&quot;id&quot;</span>
+        ]
+      }
+    ],
+    &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  }
+]
+                              </code></pre>
+                              </div>
+                            </section>
+                                  <section>
+                              <h5>Response Example <span>(default )</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div id="operation--pets-post" class="operation panel" data-traverse-target="operation--pets-post">
+                  
+                    <h2 class="operation-title">
+                        <div class="operation-name">
+                          <span class="operation-name">POST</span>
+                          <span class="operation-path">/pets</span>
+                        </div>
+                    </h2>
+                  
+                  
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-operation-description">
+                            <p>Creates a new pet in the store.  Duplicates are allowed</p>
+                  
+                          </section>
+                        </div>
+                      </div>
+                  
+                    <div class="doc-row">
+                      <div class="doc-copy">
+                          
+                          <section class="swagger-request-body">
+                                <div class="prop-row">
+                                  <div class="prop-name">
+                                    <div class="swagger-request-model">
+                                        <span class="">
+                                          <a class="json-schema-ref" href="#/definitions/NewPet">NewPet</a>
+                                        </span>
+                                    </div>
+                                  </div>
+                                  <div class="prop-value columns small-6">
+                                    <!-- <div class="swagger-request-description"> -->
+                                      <p>Pet to add to the store</p>
+                          
+                                    <!-- </div> -->
+                                  </div>
+                                </div>
+                          </section>
+                  
+                        
+                      </div>
+                  
+                      <div class="doc-examples">
+                          <section>
+                            <h5>Request Example</h5>
+                              <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tag</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
+}
+                            </code></pre>
+                            </div>
+                          </section>
+                        </div>
+                    </div>
+                  
+                    
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-responses">
+                    
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">200 OK</div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Pet">Pet</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>pet response</p>
+                    
+                                </div>
+                              </div>
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">default </div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>unexpected error</p>
+                    
+                                </div>
+                              </div>
+                          </section>
+                        </div>
+                        <div class="doc-examples">        <section>
+                              <h5>Response Example <span>(200 OK)</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">allOf</span>&quot;: [
+    {
+      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-NewPet">&quot;#/definitions/NewPet&quot;</a></span>
+    },
+    {
+      &quot;<span class="hljs-attr">properties</span>&quot;: {
+        &quot;<span class="hljs-attr">id</span>&quot;: {
+          &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
+          &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
+        }
+      },
+      &quot;<span class="hljs-attr">required</span>&quot;: [
+        <span class="hljs-string">&quot;id&quot;</span>
+      ]
+    }
+  ],
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                                  <section>
+                              <h5>Response Example <span>(default )</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                          </div>
+                      </div>
+                  </div>
+              
+              <span id="path--pets--id-"></span>
+                  
+                  <div id="operation--pets--id--delete" class="operation panel" data-traverse-target="operation--pets--id--delete">
+                  
+                    <h2 class="operation-title">
+                        <div class="operation-name">
+                          <span class="operation-name">DELETE</span>
+                          <span class="operation-path">/pets/{id}</span>
+                        </div>
+                    </h2>
+                  
+                  
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-operation-description">
+                            <p>deletes a single pet based on the ID supplied</p>
+                  
+                          </section>
+                        </div>
+                      </div>
+                  
+                    <div class="doc-row">
+                      <div class="doc-copy">
+                  
+                        
+                          <section class="swagger-request-params">
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">id</div>
+                                    <span class="json-property-required"></span>
+                                </div>
+                                <div class="prop-value">
+                                  
+                                    <p class="no-description">(no description)</p>
+                                </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">type</div>
+                                <div class="prop-value"><span class="json-property-type">integer</span>  <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                        
+                        </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">in</div>
+                                <div class="prop-value">path</div>
+                              </div>
+                          </section>
+                      </div>
+                  
+                      <div class="doc-examples"></div>
+                    </div>
+                  
+                    
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-responses">
+                    
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">204 No Content</div>
+                                </div>
+                                <div class="prop-value">
+                                  <p>pet deleted</p>
+                    
+                                </div>
+                              </div>
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">default </div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>unexpected error</p>
+                    
+                                </div>
+                              </div>
+                          </section>
+                        </div>
+                        <div class="doc-examples">        <section>
+                              <h5>Response Example <span>(default )</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div id="operation--pets--id--get" class="operation panel" data-traverse-target="operation--pets--id--get">
+                  
+                    <h2 class="operation-title">
+                        <div class="operation-name">
+                          <span class="operation-name">GET</span>
+                          <span class="operation-path">/pets/{id}</span>
+                        </div>
+                    </h2>
+                  
+                  
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-operation-description">
+                            <p>Returns a user based on a single ID, if the user does not have access to the pet</p>
+                  
+                          </section>
+                        </div>
+                      </div>
+                  
+                    <div class="doc-row">
+                      <div class="doc-copy">
+                  
+                        
+                          <section class="swagger-request-params">
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">id</div>
+                                    <span class="json-property-required"></span>
+                                </div>
+                                <div class="prop-value">
+                                  
+                                    <p class="no-description">(no description)</p>
+                                </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">type</div>
+                                <div class="prop-value"><span class="json-property-type">integer</span>  <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                        
+                        </div>
+                              </div>
+                              <div class="prop-row prop-inner">
+                                <div class="prop-name param-label">in</div>
+                                <div class="prop-value">path</div>
+                              </div>
+                          </section>
+                      </div>
+                  
+                      <div class="doc-examples"></div>
+                    </div>
+                  
+                    
+                      <div class="doc-row">
+                        <div class="doc-copy">
+                          <section class="swagger-responses">
+                    
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">200 OK</div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Pet">Pet</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>pet response</p>
+                    
+                                </div>
+                              </div>
+                              <div class="prop-row prop-group">
+                                <div class="prop-name">
+                                  <div class="prop-title">default </div>
+                                    <div class="prop-ref">  <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                      </span>
+                    </div>
+                                    <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                                </div>
+                                <div class="prop-value">
+                                  <p>unexpected error</p>
+                    
+                                </div>
+                              </div>
+                          </section>
+                        </div>
+                        <div class="doc-examples">        <section>
+                              <h5>Response Example <span>(200 OK)</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">allOf</span>&quot;: [
+    {
+      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-NewPet">&quot;#/definitions/NewPet&quot;</a></span>
+    },
+    {
+      &quot;<span class="hljs-attr">properties</span>&quot;: {
+        &quot;<span class="hljs-attr">id</span>&quot;: {
+          &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
+          &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
+        }
+      },
+      &quot;<span class="hljs-attr">required</span>&quot;: [
+        <span class="hljs-string">&quot;id&quot;</span>
+      ]
+    }
+  ],
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                                  <section>
+                              <h5>Response Example <span>(default )</span></h5>
+                                <div class="hljs"><pre><code class="lang-json">
+{
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
+}
+                              </code></pre>
+                              </div>
+                            </section>
+                          </div>
+                      </div>
+                  </div>
+        
+          
+            <h1>Schema definitions</h1>
+          
+              <div id="definition-Error" class="panel panel-definition" data-traverse-target="definition-Error">
+                    <h2 class="panel-title">
+                      <a name="/definitions/Error"></a>Error:
+                      <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              </span>
+                    </h2>
+                <div class="doc-row">
+                  <div class="doc-copy">
+                      
+                          <section class="json-schema-properties">
+                            <dl>
+                                <dt data-property-name="code">
+                                  <span class="json-property-name">code:</span>
+                                  <span class="json-property-type">object</span>
+                                  <span class="json-property-range" title="Value limits"></span>
+                                  
+                                    <span class="json-property-required"></span>
+                                </dt>
+                                <dt data-property-name="message">
+                                  <span class="json-property-name">message:</span>
+                                  <span class="json-property-type">object</span>
+                                  <span class="json-property-range" title="Value limits"></span>
+                                  
+                                    <span class="json-property-required"></span>
+                                </dt>
+                            </dl>
+                          </section>
+                  </div>
+                </div>
+              </div>
+              <div id="definition-NewPet" class="panel panel-definition" data-traverse-target="definition-NewPet">
+                    <h2 class="panel-title">
+                      <a name="/definitions/NewPet"></a>NewPet:
+                      <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              </span>
+                    </h2>
+                <div class="doc-row">
+                  <div class="doc-copy">
+                      
+                          <section class="json-schema-properties">
+                            <dl>
+                                <dt data-property-name="name">
+                                  <span class="json-property-name">name:</span>
+                                  <span class="json-property-type">object</span>
+                                  <span class="json-property-range" title="Value limits"></span>
+                                  
+                                    <span class="json-property-required"></span>
+                                </dt>
+                                <dt data-property-name="tag">
+                                  <span class="json-property-name">tag:</span>
+                                  <span class="json-property-type">object</span>
+                                  <span class="json-property-range" title="Value limits"></span>
+                                  
+                                </dt>
+                            </dl>
+                          </section>
+                  </div>
+                </div>
+              </div>
+              <div id="definition-Pet" class="panel panel-definition" data-traverse-target="definition-Pet">
+                    <h2 class="panel-title">
+                      <a name="/definitions/Pet"></a>Pet:
+                      <span class="json-property-type"><span class="json-property-type"></span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              </span>
+                    </h2>
+                <div class="doc-row">
+                  <div class="doc-copy">
+                      
+                        <section class="json-schema-allOf">
+                          <section class="json-schema-allOf-inherited">
+                            <ul>
+                                  <span class="">
+                                    <a class="json-schema-ref" href="#/definitions/NewPet">NewPet</a>
+                                  </span>
+                            </ul>
+                          </section>
+                          <section class="json-schema-allOf-additional">
+                                
+                                  <section class="json-schema-properties">
+                                    <dl>
+                                        <dt data-property-name="id">
+                                          <span class="json-property-name">id:</span>
+                                          <span class="json-property-type">integer</span>  <span class="json-property-format">(int64)</span>
+                                          <span class="json-property-range" title="Value limits"></span>
+                                          
+                                            <span class="json-property-required"></span>
+                                        </dt>
+                                    </dl>
+                                  </section>
+                          </section>
+                        </section>
+                  </div>
+                </div>
+              </div>
+        
+          <div class="doc-row no-margin">
+            <div class="doc-copy doc-separator">
+              <a class="powered-by" href="http://sourcey.com/spectacle">Documentation by <span>Spectacle</span></a>
+            </div>
+          </div>
+        </article>
+        <div class="example-box doc-content"></div>
+      </div>
+      <div id="sidebar" class="medium-3 large-2 medium-pull-9 large-pull-10 columns">
+        <nav id="nav" role="navigation">
+          <h5>API Reference</h5>
+          <a href="#introduction">Introduction</a>
+        
+        
+            <h5>Paths</h5>
+              <!-- <section>
+                <a href="#path--pets">/pets</a>
+                <ul> -->
+                    <!-- <li> -->
+                      <a href="#operation--pets-get">
+                          GET /pets
+                      </a>
+                    <!-- </li> -->
+                    <!-- <li> -->
+                      <a href="#operation--pets-post">
+                          POST /pets
+                      </a>
+                    <!-- </li> -->
+                <!-- </ul>
+              </section> -->
+              <!-- <section>
+                <a href="#path--pets--id-">/pets/{id}</a>
+                <ul> -->
+                    <!-- <li> -->
+                      <a href="#operation--pets--id--get">
+                          GET /pets/{id}
+                      </a>
+                    <!-- </li> -->
+                    <!-- <li> -->
+                      <a href="#operation--pets--id--delete">
+                          DELETE /pets/{id}
+                      </a>
+                    <!-- </li> -->
+                <!-- </ul>
+              </section> -->
+        
+          <h5>Schema Definitions</h5>
+            <a href="#definition-Error">
+              Error
+            </a>
+            <a href="#definition-NewPet">
+              NewPet
+            </a>
+            <a href="#definition-Pet">
+              Pet
+            </a>
+        </nav>
+      </div>
+    </div>
+  </body>
+</html>

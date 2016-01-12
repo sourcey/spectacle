@@ -1,0 +1,35 @@
+{{!--
+    Renders the parameter table within a operation definition.
+    @param {Array<Parameter>|Object<Parameter>} parameters a list of Swagger-Parameter objects
+       If this is an object, an it is expected to be the global parameter list
+       https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#parametersDefinitionsObject
+       and the key of each entry is display in a column in front of the other columns.
+    @api public
+--}}
+
+{{#if parameters}}
+  <section class="doc-row swagger-request-params">
+    <div class="doc-copy">
+      <table class="table">
+        <thead>
+        <tr>
+          <th class="swagger-prop-name"></th>
+          <th class="swagger-prop-valueription"></th>
+          <th class="swagger-param-type"></th>
+          <th class="swagger-param-data-type"></th>
+          <th class="swagger-param-annotation"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each parameters}}
+          {{#if $ref}}
+            {{> swagger/parameterRow parameter=(json-schema-resolve-ref $ref) $ref=$ref}}
+          {{else}}
+            {{> swagger/parameterRow parameter=.}}
+          {{/if}}
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{{/if}}
