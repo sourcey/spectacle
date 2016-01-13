@@ -1,17 +1,15 @@
 # Spectacle
 
-Spectacle is a static documentation generator that lets you autogenerate your documentation from a OpenAPI/Swagger 2.0 JSON specification file. With Spectacle you can have beautiful HTML5 documentation for your API ready to be deployed in a matter of minutes.
+Spectacle helps you "save time and look good" by automatically generating beautiful HTML5 documentation from your OpenAPI/Swagger 2.0 API specification. More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
 
-Here's what Spectacle features:
+## Features:
 
-* OpenAPI/Swagger 2.0 support
-* Mobile friendly responsive HTML5 and CSS3 grid layout
-* Modern and readable design
-* Embedded option to generate docs without a layout for convenient integration with your own website
-* Development mode with file watcher and live reload for regenerating docs when your spec is updated
-* Extendable Handlebars templates and SCSS styles
-
-More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
+* **No more out-of-date documentation**: With Spectacle you don't need to worry about out of date documentation any more. All you need is a well written spec and Spectacle to autogenerate your documentation each time it changes. Check out [Ompimizing Your Workflow](#ompimizing-your-workflow)
+* **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification which is the new standard for documenting REST APIs.
+* **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 grid layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that works beautifully across all devices.
+* **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
+* **Live preview developer mode**: Spectacle comes with a development mode that starts a local HTTP server with a file watcher and live reload so you can preview changes to your live documentation in your browser as you write your spec.
+* **Configurable templates and styles**: Nobody wants to be boxed in, which is Spectacle comes with easily configurable Handlebars templates and SCSS styles so you can add your own flavor. See [Custom Builds](#custom-builds)
 
 ## Getting Started
 
@@ -25,15 +23,18 @@ Next pass your `swagger.json` document use the CLI to generate your documentatio
 
 ```bash
 spectacle your_swagger_api.json
+
+# Or use the petstore.json example
+# spectacle test/fixtures/petstore.json
 ```
 
-Your documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by starting the internal web server like so:
+Your generated documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by starting the internal web server like so:
 
 ```bash
 spectacle -s
 ```
 
-Now point your browser to [http://localhost:4400/](http://localhost:4400/) in order to view your docs.
+Now point your browser to [http://localhost:4400/](http://localhost:4400/) and presto - sexy docs for your API!
 
 ## Configuration Options
 
@@ -76,5 +77,9 @@ The best option for building your own custom functionality into Spectacle is to 
 To fork Spectacle go to `https://github.com/sourcey/spectacle`, and press the 'Fork' button. Now you can `git clone git@github.com:<yourname>/spectacle.git` to make your own changes.
 
 Alternatively, you can just copy the contents of `app` from the main repo which contains all the source files such as templates, stylesheets and JavaScripts. Now just pass the path to your custom `app` path to the CLI like so: `spectacle -a /path/to/your/app your_swagger_api.json`
+
+## Ompimizing Your Workflow
+
+If you're a developer you may also want to check out [inline code generators](http://swagger.io/open-source-integrations/) that build your OpenAPI/Swagger API from source code comments so you can automate your entuire workflow from `code > spec > documentation`.
 
 Good luck and enjoy Spectacle! All contributions are welcome.

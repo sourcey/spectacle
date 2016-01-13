@@ -1,6 +1,6 @@
 {
   "name": "spectacle-docs",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Generate beautiful HTML5 documentation from a OpenAPI/Swagger 2.0 specification",
   "bin": {
     "spectacle": "bin/cli.js"

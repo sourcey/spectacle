@@ -29,7 +29,7 @@ program.version(package.version)
     .parse(process.argv);
 
 // Show help if no specfile or options are specified
-if (program.args.length <= 1 || program.rawArgs.length <= 1) {
+if (program.args.length < 1 && program.rawArgs.length < 1) {
     program.help();
 }
 
