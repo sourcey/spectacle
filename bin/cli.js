@@ -16,16 +16,18 @@ process.chdir(__dirname + '/..');
 program.version(package.version)
     .usage('spactacle [options] <specfile>')
     .description(package.description)
-    .option('-A, --skip-assets', 'omit CSS and JavaScript generation (default: false)', Boolean, false)
+    .option('-A, --skip-assets', 'omit CSS and JavaScript generation (default: false)')
     .option('-e, --embeddable', 'omit the HTML <body/> and generate the documentation content only (default: false)')
     .option('-d, --development-mode', 'start HTTP server with the file watcher and live reload (default: false)')
     .option('-s, --start-server', 'start the HTTP server without any development features')
     .option('-p, --port <dir>', 'the port number for the HTTP server to listen on (default: 4400)', Number, 4400)
     .option('-t, --target-dir <dir>', 'the target build directory (default: ./public)', String, './public')
+    .option('-f, --target-file <file>', 'the target build HTML file (default: index.html)', String, 'index.html')
     .option('-a, --app-dir <dir>', 'the application source directory (default: ./app)', String, './app')
+    .option('-c, --cache-dir <dir>', 'the intermediate cache directory (default: ./.cache)', String, './.cache')
     // .option('-f, --spec-file <file>', 'the input OpenAPI/Swagger spec file (default: test/fixtures/petstore.json)', String, 'test/fixtures/petstore.json')
     // .option('-c, --config-file <file>', 'Specify a custom configuration file (default: config.json)')
-    // .option('-c, --cache-dir <dir>', 'the intermediate cache directory (default: ./.cache)', String, './.cache')
+
     .parse(process.argv);
 
 // Show help if no specfile or options are specified
@@ -36,7 +38,7 @@ if (program.args.length < 1 && program.rawArgs.length < 1) {
 //
 //= Load the specification and set variables
 
-var specFile = program.args[0],
+var specFile = program.args[0] || 'test/fixtures/petstore.json',
     schema = require(path.resolve(specFile)),
     templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(schema);
 
@@ -45,9 +47,6 @@ var specFile = program.args[0],
 
 grunt.initConfig({
     pkg: package,
-    // jshint: {
-    //     all: [program.appDir + '/**/*.js']
-    // },
     compass: {
         dist: {
             options: {
@@ -64,25 +63,25 @@ grunt.initConfig({
     concat: {
         js: {
             src: [program.appDir + '/javascripts/**/*.js', '!' + program.appDir + '/javascripts/jquery*.js'],
-            dest: program.targetDir + '/javascripts/main.js',
+            dest: program.targetDir + '/spectacle.js',
         },
         css: {
             src: [program.cacheDir + '/stylesheets/*.css'],
-            dest: program.targetDir + '/stylesheets/main.css',
+            dest: program.targetDir + '/spectacle.css',
         }
     },
     uglify: {
         build: {
-            src: program.targetDir + '/javascripts/main.js',
-            dest: program.targetDir + '/javascripts/main.min.js'
+            src: program.targetDir + '/spectacle.js',
+            dest: program.targetDir + '/spectacle.min.js'
         }
     },
     cssmin: {
         minify: {
             expand: true,
-            cwd: program.targetDir + '/stylesheets',
+            cwd: program.targetDir,
             src: ['*.css', '!*.min.css'],
-            dest: program.targetDir + '/stylesheets',
+            dest: program.targetDir,
             ext: '.min.css'
         }
     },
@@ -106,7 +105,7 @@ grunt.initConfig({
         compile: {
             files: [{
                 src: program.appDir + '/views/' + (program.embeddable ? 'minimal.hbs' : 'main.hbs'),
-                dest: program.cacheDir + '/index.html'
+                dest: program.cacheDir + '/' + program.targetFile
             }],
             templateData: templateData,
             helpers: program.appDir + '/helpers/*.js',
@@ -161,9 +160,9 @@ grunt.loadNpmTasks('grunt-contrib-connect');
 grunt.loadNpmTasks('grunt-compile-handlebars');
 
 grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {
-  fs.createReadStream(program.cacheDir + '/index.html')
+  fs.createReadStream(program.cacheDir + '/' + program.targetFile)
     .pipe(predentation())
-    .pipe(fs.createWriteStream(program.targetDir + '/index.html'));
+    .pipe(fs.createWriteStream(program.targetDir + '/' + program.targetFile));
 });
 
 grunt.registerTask('stylesheets', ['compass', 'concat:css', 'cssmin']);
@@ -175,14 +174,14 @@ grunt.registerTask('develop', ['server', 'watch']);
 
 // Report, etc when all tasks have completed.
 grunt.task.options({
-  error: function(e) {
-    console.warn('Task error:', e);
+    error: function(e) {
+        console.warn('Task error:', e);
 
-    // TODO: fail here or push on?
-  },
-  done: function() {
-    console.log('All tasks complete');
-  }
+        // TODO: fail here or push on?
+    },
+    done: function() {
+        console.log('All tasks complete');
+    }
 });
 
 //

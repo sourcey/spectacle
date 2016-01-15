@@ -4,10 +4,14 @@
   </div>
   <div class="doc-examples">
     <section>
-      <h5>API Endpoint</h5>
-      <div class="hljs">
-        <pre><code>{{swaggerEndpoint}}</code></pre>
-      </div>
+      {{#if host}}
+        <h5>API Endpoint</h5>
+        <div class="hljs">
+          <pre><code>
+            {{swaggerEndpoint}}
+          </code></pre>
+        </div>
+      {{/if}}
 
       {{#if consumes}}
         <h5>Request Content-Types:

@@ -1,10 +1,10 @@
 # Spectacle
 
-Spectacle helps you "save time and look good" by automatically generating beautiful HTML5 documentation from your OpenAPI/Swagger 2.0 API specification. More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
+Spectacle helps you "save time and look good" by automatically generating beautiful HTML5 documentation from your OpenAPI/Swagger 2.0 API specification.
 
 ## Features:
 
-* **No more out-of-date documentation**: With Spectacle you don't need to worry about out of date documentation any more. All you need is a well written spec and Spectacle to autogenerate your documentation each time it changes. Check out [Ompimizing Your Workflow](#ompimizing-your-workflow)
+* **No more out-of-date documentation**: With Spectacle you don't need to worry about out of date documentation any more. All you need is a well written spec and Spectacle to autogenerate your documentation each time it changes. Check out [Optimizing Your Workflow](#optimizing-your-workflow)
 * **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification which is the new standard for documenting REST APIs.
 * **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 grid layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that works beautifully across all devices.
 * **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
@@ -78,8 +78,16 @@ To fork Spectacle go to `https://github.com/sourcey/spectacle`, and press the 'F
 
 Alternatively, you can just copy the contents of `app` from the main repo which contains all the source files such as templates, stylesheets and JavaScripts. Now just pass the path to your custom `app` path to the CLI like so: `spectacle -a /path/to/your/app your_swagger_api.json`
 
-## Ompimizing Your Workflow
+## Optimizing Your Workflow
 
 If you're a developer you may also want to check out [inline code generators](http://swagger.io/open-source-integrations/) that build your OpenAPI/Swagger API from source code comments so you can automate your entuire workflow from `code > spec > documentation`.
 
-Good luck and enjoy Spectacle! All contributions are welcome.
+## More Information
+
+More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
+
+Please use the [GitHub issue tracker](https://github.com/sourcey/spectacle/issues) if you have any ideas or bugs to report.
+
+All contributions are welcome.
+
+Good luck and enjoy Spectacle!

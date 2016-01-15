@@ -1,7 +1,7 @@
 {
   "name": "spectacle-docs",
-  "version": "0.2.3",
-  "description": "Generate beautiful HTML5 documentation from a OpenAPI/Swagger 2.0 specification",
+  "version": "0.2.4",
+  "description": "Generate beautiful static HTML5 documentation from OpenAPI/Swagger 2.0 specs",
   "bin": {
     "spectacle": "bin/cli.js"
   },
@@ -41,7 +41,6 @@
     "grunt-contrib-connect": "^0.11.2",
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-handlebars": "^0.11.0",
-    "grunt-contrib-jshint": "^0.11.3",
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "handlebars": "^4.0.5",
@@ -49,7 +48,6 @@
     "json-stable-stringify": "*",
     "lodash": "*",
     "marked": "*",
-    "node-sass": "^3.4.2",
     "predentation": "^0.1.1",
     "trace": "^1.1.0"
   }
