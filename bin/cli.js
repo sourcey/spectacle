@@ -5,7 +5,8 @@ var program = require('commander'),
     fs = require('fs'),
     path = require('path'),
     predentation = require('predentation'),
-    package = require('../package');
+    package = require('../package'),
+    _ = require('lodash');
 
 // Set CWD to root dir
 process.chdir(__dirname + '/..');
@@ -16,7 +17,8 @@ process.chdir(__dirname + '/..');
 program.version(package.version)
     .usage('spactacle [options] <specfile>')
     .description(package.description)
-    .option('-A, --skip-assets', 'omit CSS and JavaScript generation (default: false)')
+    .option('-S, --no-css', 'omit CSS generation (default: false)')
+    .option('-J, --no-js', 'omit JavaScript generation (default: false)')
     .option('-e, --embeddable', 'omit the HTML <body/> and generate the documentation content only (default: false)')
     .option('-d, --development-mode', 'start HTTP server with the file watcher and live reload (default: false)')
     .option('-s, --start-server', 'start the HTTP server without any development features')
@@ -24,10 +26,9 @@ program.version(package.version)
     .option('-t, --target-dir <dir>', 'the target build directory (default: ./public)', String, './public')
     .option('-f, --target-file <file>', 'the target build HTML file (default: index.html)', String, 'index.html')
     .option('-a, --app-dir <dir>', 'the application source directory (default: ./app)', String, './app')
-    .option('-c, --cache-dir <dir>', 'the intermediate cache directory (default: ./.cache)', String, './.cache')
+    .option('-i, --cache-dir <dir>', 'the intermediate build cache directory (default: ./.cache)', String, './.cache')
+    .option('-c, --config-file <file>', 'specify a custom configuration file (default: ./app/lib/config.js)', String, './app/lib/config.js')
     // .option('-f, --spec-file <file>', 'the input OpenAPI/Swagger spec file (default: test/fixtures/petstore.json)', String, 'test/fixtures/petstore.json')
-    // .option('-c, --config-file <file>', 'Specify a custom configuration file (default: config.json)')
-
     .parse(process.argv);
 
 // Show help if no specfile or options are specified
@@ -35,120 +36,20 @@ if (program.args.length < 1 && program.rawArgs.length < 1) {
     program.help();
 }
 
+// Set the specFile option for passing to the `config.js` file
+program.specFile = program.args[0] || 'test/fixtures/petstore.json';
+
 //
 //= Load the specification and set variables
 
-var specFile = program.args[0] || 'test/fixtures/petstore.json',
-    schema = require(path.resolve(specFile)),
-    templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(schema);
+var specData = require(path.resolve(program.specFile)),
+    specTemplate = require(path.resolve(program.appDir + '/lib/preprocessor'))(specData),
+    config = require(path.resolve(program.configFile))(grunt, program, specTemplate);
 
 //
-//= Setup Grunt for the heavy lifting
+//= Setup Grunt to do the heavy lifting
 
-grunt.initConfig({
-    pkg: package,
-    compass: {
-        dist: {
-            options: {
-                sassDir: program.appDir + '/stylesheets',
-                cssDir: program.cacheDir + '/stylesheets',
-                environment: 'development',
-                outputStyle: 'compressed',
-                importPath: [
-                    path.resolve(__dirname, '..', 'node_modules', 'foundation-sites', 'scss')
-                ]
-            }
-        }
-    },
-    concat: {
-        js: {
-            src: [program.appDir + '/javascripts/**/*.js', '!' + program.appDir + '/javascripts/jquery*.js'],
-            dest: program.targetDir + '/spectacle.js',
-        },
-        css: {
-            src: [program.cacheDir + '/stylesheets/*.css'],
-            dest: program.targetDir + '/spectacle.css',
-        }
-    },
-    uglify: {
-        build: {
-            src: program.targetDir + '/spectacle.js',
-            dest: program.targetDir + '/spectacle.min.js'
-        }
-    },
-    cssmin: {
-        minify: {
-            expand: true,
-            cwd: program.targetDir,
-            src: ['*.css', '!*.min.css'],
-            dest: program.targetDir,
-            ext: '.min.css'
-        }
-    },
-    // handlebars: {
-    //     compile: {
-    //         files: {
-    //            program.cacheDir + '/hbs/templates.js': [program.appDir + '/views/**/*.hbs']
-    //         }
-    //     },
-    //     options: {
-    //         namespace: 'Spectacle.templates',
-    //         partialsUseNamespace: true,
-    //         processName: function(filePath) {
-    //             var parts = filePath.split('/'),
-    //                 target = parts[parts.length - 1];
-    //             return target.split('.')[0];
-    //         }
-    //     }
-    // },
-    'compile-handlebars': {
-        compile: {
-            files: [{
-                src: program.appDir + '/views/' + (program.embeddable ? 'minimal.hbs' : 'main.hbs'),
-                dest: program.cacheDir + '/' + program.targetFile
-            }],
-            templateData: templateData,
-            helpers: program.appDir + '/helpers/*.js',
-            partials: program.appDir + '/views/partials/**/*.hbs'
-        },
-    },
-    clean: {
-        cache: [program.cacheDir],
-        assets: [program.targetDir + '/**/*.css', program.targetDir + '/**/*.js'],
-        html: [program.cacheDir + '/**/*.html', program.targetDir + '/**/*.html']
-    },
-    connect: {
-        server: {
-            options: {
-                hostname: '*',
-                port: program.port,
-                base: program.targetDir,
-                livereload: true
-            }
-        }
-    },
-    watch: {
-        options: {
-            livereload: true
-        },
-        js: {
-            files: [program.appDir + '/javascripts/**/*.js'],
-            tasks: ['javascripts']
-        },
-        css: {
-            files: [program.appDir + '/stylesheets/**/*.scss'],
-            tasks: ['stylesheets']
-        },
-        templates: {
-            files: [
-              program.appDir + '/views/**/*.hbs',
-              program.appDir + '/helpers/**/*.js',
-              program.appDir + '/lib/**/*.js'
-            ],
-            tasks: ['templates']
-        }
-    }
-});
+grunt.initConfig(_.merge({ pkg: package }, config));
 
 grunt.loadNpmTasks('grunt-contrib-concat');
 grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -167,7 +68,7 @@ grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags
 
 grunt.registerTask('stylesheets', ['compass', 'concat:css', 'cssmin']);
 grunt.registerTask('javascripts', ['concat:js', 'uglify']);
-grunt.registerTask('templates', ['clean:html', 'compile-handlebars', 'predentation']); //, 'handlebars'
+grunt.registerTask('templates', ['clean:html', 'compile-handlebars', 'predentation']);
 grunt.registerTask('default', ['stylesheets', 'javascripts', 'templates']);
 grunt.registerTask('server', ['connect']);
 grunt.registerTask('develop', ['server', 'watch']);
@@ -191,8 +92,11 @@ if (program.startServer) {
     grunt.task.run('server');
 }
 else {
-  if (!program.skipAssets) {
-      grunt.task.run(['stylesheets', 'javascripts']);
+  if (!program.noCss) {
+      grunt.task.run('stylesheets');
+  }
+  if (!program.noJs) {
+      grunt.task.run('javascripts');
   }
   grunt.task.run('templates');
   if (program.developmentMode) {
