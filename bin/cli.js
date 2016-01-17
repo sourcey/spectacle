@@ -17,8 +17,8 @@ process.chdir(__dirname + '/..');
 program.version(package.version)
     .usage('spactacle [options] <specfile>')
     .description(package.description)
-    .option('-S, --no-css', 'omit CSS generation (default: false)')
-    .option('-J, --no-js', 'omit JavaScript generation (default: false)')
+    .option('-C, --disable-css', 'omit CSS generation (default: false)')
+    .option('-J, --disable-js', 'omit JavaScript generation (default: false)')
     .option('-e, --embeddable', 'omit the HTML <body/> and generate the documentation content only (default: false)')
     .option('-d, --development-mode', 'start HTTP server with the file watcher and live reload (default: false)')
     .option('-s, --start-server', 'start the HTTP server without any development features')
@@ -92,10 +92,10 @@ if (program.startServer) {
     grunt.task.run('server');
 }
 else {
-  if (!program.noCss) {
+  if (!program.disableCss) {
       grunt.task.run('stylesheets');
   }
-  if (!program.noJs) {
+  if (!program.disableJs) {
       grunt.task.run('javascripts');
   }
   grunt.task.run('templates');

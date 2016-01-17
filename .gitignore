@@ -1,6 +1,6 @@
 ~*
 *~
-bak
-node_modules
+*bak
 *cache
-npm-debug.log
+*.log
+node_modules

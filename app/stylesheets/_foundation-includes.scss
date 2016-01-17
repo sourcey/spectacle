@@ -1,9 +1,10 @@
 //
-// Include Foundation components
+//= Include Foundation components
 
 @import 'foundation';
 
-// TODO: Conditionally include `foundation-global-styles`
+// TODO: Conditionally include `foundation-global-styles`.
+// It's better if we don't have ANY global includes.
 @include foundation-global-styles;
 
 #spectacle {
