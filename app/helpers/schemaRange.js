@@ -1,3 +1,5 @@
+var util = require("util");
+
 /**
  *
  * @param range a json-schema object with minimum, maximum, exclusiveMinimum, exclusiveMaximum

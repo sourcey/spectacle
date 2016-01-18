@@ -1,0 +1,80 @@
+//
+//= Drawer layout
+//
+
+.drawer-layout {
+  .drawer {
+    box-shadow: 0 0 10px rgba($black, 0.5);
+    transition: transform $default-transition-length ease;
+    backface-visibility: hidden;
+
+    &.slide-left {
+      transform: translateX(-250px);
+    }
+    &.slide-right {
+      transform: translateX(250px);
+    }
+    .drawer-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba($white, 0.25);
+    }
+
+    @include breakpoint(large) {
+      &.slide-left {
+        transform: none;
+        margin-left: -250px;
+      }
+      &.slide-right {
+        transform: none;
+        margin-left: 250px;
+      }
+      .drawer-overlay {
+        display: none;
+      }
+    }
+  }
+
+  @include breakpoint(large) {
+    &.drawer-slide-left-large {
+      .drawer {
+        margin-left: -250px;
+      }
+      .floating-menu-icon {
+        opacity: 0;
+      }
+    }
+    &.drawer-slide-right-large {
+      .drawer {
+        margin-left: 250px;
+      }
+      .floating-menu-icon {
+        opacity: 0;
+      }
+    }
+  }
+
+  &.drawer-open {
+    .floating-menu-icon {
+      opacity: 0;
+    }
+  }
+
+  .floating-menu-icon {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    background-color: rgba($black, 0.75);
+    padding: 0.65rem;
+    z-index: 1;
+    border-radius: 5px;
+    transition: opacity $default-transition-length linear;
+
+    .hamburger {
+      @include hamburger($color: $white, $color-hover: $medium-gray);
+    }
+  }
+}

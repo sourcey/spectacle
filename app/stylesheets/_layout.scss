@@ -13,65 +13,67 @@
   margin: 0 !important;
 }
 
+button:focus {
+  outline: none;
+}
+
 .default-label {
-  @include small-label('secondary');
+  @include small-label($secondary-color);
 }
 
 //
 // Topbar layout
 
-.top-bar {
-  padding: 0.5rem;
-  height: $topbar-height;
-  color: $white;
-
-  // Make it fixed
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1;
-}
+// .top-bar {
+//   padding: 0.5rem;
+//   height: $topbar-height;
+//   color: $white;
+//
+//   // Make it fixed
+//   position: fixed;
+//   left: 0;
+//   right: 0;
+//   top: 0;
+//   z-index: 1;
+// }
+//
 
 #logo {
-  span {
-    opacity: 0.5;
-    margin-left: 5px;
-  }
 }
 
-//
-// Page layout
-
-#page {
-  margin-top: $topbar-height;
-}
+// Include the Foundation grid (the only required component)
+@include foundation-grid();
 
 //
 // Sidebar layout
 
 #sidebar {
-  padding-top: 1rem;
-  padding-left: 1rem;
+  padding-top: 1.5rem;
+  padding-left: 1.5rem;
   padding-right: 1rem;
   padding-bottom: 2rem;
   border-right: 1px solid #eee;
-  background-color: #f6f6f6 !important;
+  background-color: #f6f6f6;
   height: 100vh;
-  //height: 100%;
-  overflow: scroll;
+  overflow: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  width: $drawer-size;
 
   h5 {
-    margin: 1.25rem 0 0.5rem;
+    margin: 1.5rem 0 0.75rem;
     text-transform: uppercase;
     color: $medium-gray;
+    color: $accent-color;
     font-size: 0.9rem;
   }
 
   a {
     display: block;
-    font-size: 0.95rem;
-    margin: 0 0 0.175rem;
+    // font-size: 0.95rem;
+    margin: 0 0 0.25rem;
     color: scale-color($black, $lightness: 15%);
     white-space: nowrap;
     overflow: hidden;
@@ -79,9 +81,9 @@
     text-overflow: ellipsis;
 
     &.active {
-      // color: $primary-color;
-      color: $accent-color;
-      font-weight: bold;
+      color: $accent-color; //$primary-color;
+      color: $primary-color;
+      // font-weight: bold;
     }
   }
 
@@ -102,23 +104,19 @@
       }
     }
   }
-}
 
-@media screen and (min-width: $medium-width) { // medium and up
-  #sidebar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: $topbar-height;
+  .close-button {
+    opacity: 0.5;
   }
 }
+
 
 //
 // Documentation layout
 
 .doc-content {
   @extend .large-6;
+  // @include grid-column(6, $column-padding);
   padding-left: $column-padding !important;
   padding-right: $column-padding !important;
 }
@@ -131,27 +129,31 @@
 }
 
 #docs {
+  background: $white;
   overflow: hidden;
+  position: relative;
 
   .example-box {
     display: none;
   }
-  @media screen and (min-width: $large-width) { // medium and up
+
+  @include breakpoint(large) {
     .example-box {
       // width: 50%;
       display: block;
-      background-color: #2E2F28;
-      background-color: #23241f;
+      // background-color: #2E2F28;
+      background-color: $black;
       position: absolute;
       right: 0;
       top: 0;
       bottom: 0;
-      z-index: -1;
     }
   }
 }
 
 article {
+  position: relative;
+
   .no-description {
     color: $dark-gray;
   }
@@ -173,14 +175,9 @@ article {
     margin-bottom: 0;
   }
 
-  #introduction {
-    padding-top: 2rem; // 30px
+  .tag-description {
+    // margin-bottom: 0 !important;
   }
-
-  // > h1:first-child {
-  //   margin-top: 0;
-  //   margin-bottom: 2.5rem;
-  // }
 
   //
   // Titles
@@ -193,6 +190,7 @@ article {
     padding-right: $column-padding;
     border-top: 1px solid #e8e8e8;
     border-bottom: 1px solid #e2e2e2;
+    background-color: #f6f6f6;
     // border-top: 1px solid #ddd;
     // border-bottom: 1px solid #ccc;
     // background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
@@ -201,7 +199,24 @@ article {
     // background-image: -moz-linear-gradient(top, #fff, #f9f9f9);
     // background-image: -webkit-linear-gradient(top, #fff, #f9f9f9);
     // background-image: linear-gradient(to bottom, #fff, #f9f9f9);
-    background-color: #f6f6f6 !important;
+  }
+
+  h1.doc-title {
+    @extend .doc-content;
+    margin: 0;
+    padding-top: 2.15rem;
+    padding-bottom: 0;
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    color: scale-color($black, $lightness: 20%);
+
+    span {
+      display: none;
+      opacity: 0.65;
+      margin-left: 5px;
+      font-weight: normal;
+    }
   }
 
   h2 {
@@ -226,9 +241,13 @@ article {
     @extend .doc-content;
   }
 
-  h1+.panel > h2, h1+span+.panel > h2, h1+span+span+.panel > h2 {
+  h1+.panel > h2 {
     margin-top: 0;
     border-top: none;
+  }
+
+  h1+.tag-description+.panel > h2 {
+    margin-top: 2rem;
   }
 
   h1+.panel h3 {
@@ -271,20 +290,24 @@ article {
 
     .prop-name {
       @extend .columns;
-      @extend .small-4;
-      @extend .text-right;
+      @extend .small-5;
+      // @extend .text-right;
+      text-align: right;
       padding-right: 0.85rem !important;
-      word-break: break-all;
+      word-break: break-word;
     }
     .prop-value {
       @extend .columns;
-      @extend .small-8;
+      @extend .small-7;
       padding-left: 0.85rem !important;
       word-wrap: break-word;
     }
 
     &.prop-inner {
-      @extend small;
+      // @extend small;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      font-size: $small-font-size;
 
       .prop-name {
         color: $dark-gray;
@@ -298,7 +321,7 @@ article {
   .doc-row {
     @extend .row;
     @extend .collapse;
-    margin: 30px 0 20px;
+    margin: 2rem 0 20px;
   }
 
   .doc-copy {
@@ -333,13 +356,13 @@ article {
         //color: $dark-gray;
       }
     }
-  }
 
-  @media screen and (max-width: $large-width) { // medium and lower
-    .doc-examples:not(:empty) {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      padding-bottom: 0.5rem;
+    @include breakpoint(medium down) {
+      &:not(:empty) {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        padding-bottom: 0.5rem;
+      }
     }
   }
 
@@ -347,7 +370,8 @@ article {
   // Powered by link
 
   .powered-by {
-    @extend small;
+    // @extend small;
+    font-size: $small-font-size;
     color: $medium-gray;
 
     span {
@@ -365,7 +389,9 @@ article {
       text-align: right;
       right: 0;
     }
-    @media screen and (min-width: $large-width) { // large and up
+
+    @include breakpoint(large) {
+    // @media screen and (min-width: $large-width) { // large and up
       .operation-tags {
         right: 50%;
       }
@@ -378,18 +404,18 @@ article {
 
 //
 // Code highlighting
-//
 
 .hljs {
-  padding: 0;
+  padding: 0 !important;
+  margin-bottom: 1.5rem;
 
   pre {
     line-height: 1.25;
-    padding: 0.15rem 2rem;
+    padding: 1.5rem 2rem;
 
     border-radius: 5px;
     box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
-    margin-bottom: 1.5rem;
+    margin: 0;
     border-top: 1px solid #000;
     border-bottom: 1px solid #404040;
 

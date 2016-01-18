@@ -2,23 +2,29 @@
 //= Layout variables
 //
 
-// The height of the top bar
-$topbar-height: 50px !default;
+// Width of the off-canvas menu.
+$drawer-size: 250px !default;
+
+// Length of animation.
+$default-transition-length: 0.5s !default;
 
 // The width of the column padding
 $column-padding: 2.25rem !default;
 
-// The accent color to use for nav highlights and section headings
+// The accent color to use for section headings
 $accent-color: #f68b1f !default;
 
 // The dark backgorund color behind code examples
 $dark-background-color: $black !default;
 
-// Medium device width (from Foundation)
-$medium-width: 40em !default;
+// The height of the top bar
+// $topbar-height: 50px !default;
 
-// Large device width (from Foundation)
-$large-width: 64em !default;
+// // Medium device width (from Foundation)
+// $medium-width: 40em !default;
+//
+// // Large device width (from Foundation)
+// $large-width: 64em !default;
 
 //
 // JSON schema labels

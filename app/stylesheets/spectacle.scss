@@ -2,10 +2,9 @@
 //= Spectacle
 //
 
-// Include Foundation
-// TODO: Don't include foundation if already included
+// Include Foundation components and utilities (but don't build anything)
 @import 'foundation-settings';
-@import 'foundation-includes';
+@import 'foundation/scss/foundation';
 
 // Include Spectacle
 @import 'index';

@@ -10,6 +10,7 @@
   {{else}}
     {{>swagger/paths}}
   {{/if}}
+  {{!printSchema .}}
 
   {{!swagger/paths paths=paths}}
   {{!swagger/parameterDefinitions parameters=parameters}}

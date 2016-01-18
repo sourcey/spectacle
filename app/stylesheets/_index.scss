@@ -2,15 +2,12 @@
 //= Main includes
 //
 
+// Scope everything inside #spectacle ...
 #spectacle {
-
-  // Include highlight.js style
-  @import 'monokai';
-
-  // Include Spectacle layout
   @import 'variables';
   @import 'utils';
   @import 'schema';
   @import 'layout';
-
+  @import 'drawer';
+  @import 'monokai';
 }

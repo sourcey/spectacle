@@ -7,7 +7,7 @@
   &:before {
     content: $title;
     display: block;
-    @extend h6;
+    // @extend h6;
     margin-bottom: 0.5em;
     color: $accent-color;
     text-transform: uppercase;
@@ -15,17 +15,19 @@
   }
 }
 
-@mixin small-label($style:'alert') {
+@mixin small-label($color: $alert-color) {
   @include label();
-  @extend .label.#{$style};
+  // @extend .label.#{$style};
+  background: $color;
+  color: foreground($color);
   font-size: 0.75rem;
   border-radius: 4px;
   padding: 3px 6px;
 }
 
-@mixin named-label($name, $style:'alert') {
+@mixin named-label($name, $color: $alert-color) {
   &:before {
-    @include small-label($style);
+    @include small-label($color);
     content: $name;
   }
 }

@@ -44,11 +44,11 @@
     </div>
   {{/if}}
 
-  {{#if operation.description}}
+  {{#if description}}
     <div class="doc-row">
       <div class="doc-copy">
         <section class="swagger-operation-description">
-          {{md operation.description}}
+          {{md description}}
         </section>
       </div>
     </div>
@@ -58,7 +58,7 @@
     <div class="doc-copy">
       {{! The _request_body variable is filled with the parameter `body` by the preprocessor. }}
       {{#if _show_requst_body_section}}
-        {{>swagger/request-body consumes=operation.consumes body=_request_body}}
+        {{>swagger/request-body consumes=consumes body=_request_body}}
       {{/if}}
 
       {{>swagger/parameters parameters=parameters}}

@@ -1,19 +1,13 @@
-<div class="top-bar">
-  <div class="top-bar-left">
-    <ul class="dropdown menu" data-dropdown-menu>
-      <li id="logo" class="menu-text">
-        {{#if logo}}
-          {{logo}}
-        {{else}}
-          {{info.title}} <span>API Reference</span>
-          <!-- <span class="default-logo">Your Logo Here</span> -->
-        {{/if}}
-      </li>
-    </ul>
+<div class="title-bar">
+  <div class="title-bar-left">
+    <div id="logo" class="title-bar-title">{{info.title}} <span>API Reference</span></div>
   </div>
   {{! Add right menu items like so... }}
+  <div class="title-bar-right">
+    <button class="menu-icon" type="button" data-open="sidebar"></button>
+  </div>
   {{!--
-  <div class="top-bar-right">
+  <div class="title-bar-right">
    <ul class="menu">
      <li><input type="search" placeholder="Search"></li>
      <li><button type="button" class="button">Search</button></li>

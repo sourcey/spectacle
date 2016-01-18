@@ -27,6 +27,7 @@ program.version(package.version)
     .option('-f, --target-file <file>', 'the target build HTML file (default: index.html)', String, 'index.html')
     .option('-a, --app-dir <dir>', 'the application source directory (default: ./app)', String, './app')
     .option('-i, --cache-dir <dir>', 'the intermediate build cache directory (default: ./.cache)', String, './.cache')
+    .option('-l, --logo-file <file>', 'specify a custom logo file (default: null)', String, null)
     .option('-c, --config-file <file>', 'specify a custom configuration file (default: ./app/lib/config.js)', String, './app/lib/config.js')
     // .option('-f, --spec-file <file>', 'the input OpenAPI/Swagger spec file (default: test/fixtures/petstore.json)', String, 'test/fixtures/petstore.json')
     .parse(process.argv);
@@ -37,7 +38,7 @@ if (program.args.length < 1 && program.rawArgs.length < 1) {
 }
 
 // Set the specFile option for passing to the `config.js` file
-program.specFile = program.args[0] || 'test/fixtures/petstore.json';
+program.specFile = program.args[0] || 'test/fixtures/cheese.json';
 
 //
 //= Load the specification and set variables
@@ -61,15 +62,34 @@ grunt.loadNpmTasks('grunt-contrib-connect');
 grunt.loadNpmTasks('grunt-compile-handlebars');
 
 grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {
-  fs.createReadStream(program.cacheDir + '/' + program.targetFile)
-    .pipe(predentation())
-    .pipe(fs.createWriteStream(program.targetDir + '/' + program.targetFile));
+  var html = fs.readFileSync(program.cacheDir + '/' + program.targetFile, 'utf8');
+  html = html.replace(/<pre.*?><code.*?>([\s\S]*?)<\/code><\/pre>/gmi, function(x, y) {
+    var lines = x.split('\n'), level = null;
+    if (lines) {
+
+      // Determine the level of indentation
+      lines.forEach(function(line) {
+        if (line[0] === '<') return;
+        var wsp = line.search(/\S/);
+        level = (level === null || (wsp < line.length && wsp < level)) ? wsp : level;
+      });
+
+      // Remove indentation
+      var regex = new RegExp('^\\s{' + level + '}');
+      lines.forEach(function(line, index, lines) {
+        lines[index] = line.replace(regex, '');
+      });
+    }
+    return lines.join('\n');
+  });
+  fs.writeFileSync(program.targetDir + '/' + program.targetFile, html);
 });
 
-grunt.registerTask('stylesheets', ['compass', 'concat:css', 'cssmin']);
+grunt.registerTask('stylesheets', ['compass:scss', 'concat:css', 'cssmin']);
 grunt.registerTask('javascripts', ['concat:js', 'uglify']);
 grunt.registerTask('templates', ['clean:html', 'compile-handlebars', 'predentation']);
-grunt.registerTask('default', ['stylesheets', 'javascripts', 'templates']);
+grunt.registerTask('foundation', ['compass:foundation_scss', 'concat:foundation_css']); // 'concat:foundation_js'
+grunt.registerTask('default', ['stylesheets', 'javascripts', 'foundation', 'templates']);
 grunt.registerTask('server', ['connect']);
 grunt.registerTask('develop', ['server', 'watch']);
 
@@ -77,7 +97,6 @@ grunt.registerTask('develop', ['server', 'watch']);
 grunt.task.options({
     error: function(e) {
         console.warn('Task error:', e);
-
         // TODO: fail here or push on?
     },
     done: function() {
@@ -93,7 +112,7 @@ if (program.startServer) {
 }
 else {
   if (!program.disableCss) {
-      grunt.task.run('stylesheets');
+      grunt.task.run(['stylesheets', 'foundation']);
   }
   if (!program.disableJs) {
       grunt.task.run('javascripts');

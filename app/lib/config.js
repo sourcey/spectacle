@@ -1,19 +1,34 @@
+var path = require('path');
+
 module.exports = function(grunt, options, spec) {
   return {
 
       // Compile SCSS source files into the cache directory
       compass: {
-          dist: {
+          scss: {
               options: {
-                  sassDir: options.appDir + '/stylesheets',
+                  specify: options.appDir + '/stylesheets/spectacle.scss',
+                  sassDir: path.resolve(options.appDir + '/stylesheets'),
                   cssDir: options.cacheDir + '/stylesheets',
                   environment: 'development',
-                  // outputStyle: 'compressed',
                   importPath: [
-                      'node_modules/foundation-sites/scss'
+                      options.appDir + '/vendor',
+                      options.appDir + '/vendor/foundation/scss'
                   ]
               }
-          }
+          },
+          foundation_scss: {
+              options: {
+                  specify: path.resolve(options.appDir + '/stylesheets/foundation.scss'),
+                  sassDir: path.resolve(options.appDir + '/stylesheets'),
+                  cssDir: options.cacheDir + '/stylesheets',
+                  environment: 'development',
+                  importPath: [
+                      options.appDir + '/vendor',
+                      options.appDir + '/vendor/foundation/scss'
+                  ]
+              }
+          },
       },
 
       concat: {
@@ -26,17 +41,39 @@ module.exports = function(grunt, options, spec) {
 
           // Concentrate compiled CSS files into the traget directory
           css: {
-              src: [options.cacheDir + '/stylesheets/*.css'],
+              src: [options.cacheDir + '/stylesheets/spectacle.css'],
               dest: options.targetDir + '/stylesheets/spectacle.css',
+          },
+
+          // // Concentrate required Foundation JS files into the traget directory
+          // foundation_js: {
+          //     src: [
+          //         options.appDir + '/vendor/foundation/js/foundation.core.js',
+          //         options.appDir + '/vendor/foundation/js/foundation.util.mediaQuery.js',
+          //         options.appDir + '/vendor/foundation/js/foundation.util.triggers.js',
+          //         options.appDir + '/vendor/foundation/js/foundation.util.motion.js',
+          //         options.appDir + '/vendor/foundation/js/foundation.offcanvas.js'
+          //     ],
+          //     dest: options.targetDir + '/javascripts/foundation.js',
+          // },
+
+          // Concentrate compiled Foundation CSS files into the traget directory
+          foundation_css: {
+              src: [options.cacheDir + '/stylesheets/foundation.css'],
+              dest: options.targetDir + '/stylesheets/foundation.css',
           }
       },
 
       // Minify compiled JS files in the traget directory
       uglify: {
-          build: {
+          js: {
               src: options.targetDir + '/javascripts/spectacle.js',
               dest: options.targetDir + '/javascripts/spectacle.min.js'
           }
+          // foundation_js: {
+          //     src: options.targetDir + '/javascripts/foundation.js',
+          //     dest: options.targetDir + '/javascripts/foundation.min.js'
+          // }
       },
 
       // Minify compiled CSS files in the traget directory
@@ -77,7 +114,7 @@ module.exports = function(grunt, options, spec) {
                   hostname: '*',
                   port: options.port,
                   base: options.targetDir,
-                  livereload: true
+                  // livereload: true
               }
           }
       },
@@ -85,23 +122,28 @@ module.exports = function(grunt, options, spec) {
       // Watch the filesystem and regenerate docs if sources change
       watch: {
           options: {
-              livereload: true
+              // livereload: true,
+              spawn: false
           },
+          // options: {
+          //     livereload: true
+          // },
           js: {
               files: [options.appDir + '/javascripts/**/*.js'],
-              // tasks: ['javascripts']
+              tasks: ['javascripts']
           },
           css: {
               files: [options.appDir + '/stylesheets/**/*.scss'],
-              // tasks: ['stylesheets']
+              tasks: ['stylesheets']
           },
           templates: {
               files: [
+                options.specFile,
                 options.appDir + '/views/**/*.hbs',
                 options.appDir + '/helpers/**/*.js',
                 options.appDir + '/lib/**/*.js'
               ],
-              // tasks: ['templates']
+              tasks: ['templates']
           }
       }
   }
