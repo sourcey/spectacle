@@ -1,22 +1,32 @@
 # Spectacle
 
-Spectacle helps you "save time and look good" by automatically generating beautiful HTML5 documentation from your OpenAPI/Swagger 2.0 API specification.
+Spectacle lets you generate beautiful HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
+
+The goal of Spectacle is help you "save time and look good" by using a well written spec to automatically generate all your API docs. Using a well written API spec to generate your docs has a number of great advantages:
+
+* **Maintain a single source**: Save loads of time by removing the need to maintain a separate API spec and API documentation.
+* **No more out-of-date documentation**: Your documentation will always be up-to-date with your API spec.
+* **Be a better developer**: Your entire API system will be more stable and robust when built using your spec as a single source of truth.
+* **Documentation is just the beginning**: Generate all your API integrations from your spec; all the way from tests, to client implementations, to server code. See also [Optimizing Your Workflow](#optimizing-your-workflow)
+
+## Live Demo
+
+See a demo of Spectacle in action here: http://cheesestore.github.io
 
 ## Features:
 
-* **No more out-of-date documentation**: With Spectacle you don't need to worry about out of date documentation any more. All you need is a well written spec and Spectacle to autogenerate your documentation each time it changes. Check out [Optimizing Your Workflow](#optimizing-your-workflow)
 * **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification which is the new standard for documenting REST APIs.
-* **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 grid layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that works beautifully across all devices.
+* **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
 * **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
 * **Live preview developer mode**: Spectacle comes with a development mode that starts a local HTTP server with a file watcher and live reload so you can preview changes to your live documentation in your browser as you write your spec.
-* **Configurable templates and styles**: Nobody wants to be boxed in, which is Spectacle comes with easily configurable Handlebars templates and SCSS styles so you can add your own flavor. See [Custom Builds](#custom-builds)
+* **Configurable templates and styles**: Spectacle is built with easily configurable Handlebars templates and SCSS styles so you can add your own flavor. See [Custom Builds](#custom-builds)
 
 ## Getting Started
 
 Simply install Spectacle from `npm` like so:
 
 ```bash
-npm install spectacle-docs
+npm install -g spectacle-docs
 ```
 
 Next pass your `swagger.json` document use the CLI to generate your documentation.
@@ -24,8 +34,8 @@ Next pass your `swagger.json` document use the CLI to generate your documentatio
 ```bash
 spectacle your_swagger_api.json
 
-# Or use the petstore.json example
-# spectacle test/fixtures/petstore.json
+# Or use the cheese.json example to test it out
+# spectacle test/fixtures/cheese.json
 ```
 
 Your generated documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by starting the internal web server like so:
@@ -47,15 +57,20 @@ $ spectacle -h
 
   Options:
 
-    -h, --help              output usage information
-    -V, --version           output the version number
-    -A, --skip-assets       omit CSS and JavaScript generation (default: false)
-    -e, --embeddable        omit the HTML <body/> and generate the documentation content only (default: false)
-    -d, --development-mode  start HTTP server with the file watcher and live reload (default: false)
-    -s, --start-server      start the HTTP server without any development features
-    -p, --port <dir>        the port number for the HTTP server to listen on (default: 4400)
-    -a, --app-dir <dir>     the application source directory (default: ./app)
-    -t, --target-dir <dir>  the target build directory (default: ./public)
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -C, --disable-css         omit CSS generation (default: false)
+  -J, --disable-js          omit JavaScript generation (default: false)
+  -e, --embeddable          omit the HTML <body/> and generate the documentation content only (default: false)
+  -d, --development-mode    start HTTP server with the file watcher and live reload (default: false)
+  -s, --start-server        start the HTTP server without any development features
+  -p, --port <dir>          the port number for the HTTP server to listen on (default: 4400)
+  -t, --target-dir <dir>    the target build directory (default: ./public)
+  -f, --target-file <file>  the target build HTML file (default: index.html)
+  -a, --app-dir <dir>       the application source directory (default: ./app)
+  -i, --cache-dir <dir>     the intermediate build cache directory (default: ./.cache)
+  -l, --logo-file <file>    specify a custom logo file (default: null)
+  -c, --config-file <file>  specify a custom configuration file (default: ./app/lib/config.js)
 ```
 
 Most options are self explanatory, but the following options warrant some further explanation:
@@ -80,7 +95,14 @@ Alternatively, you can just copy the contents of `app` from the main repo which 
 
 ## Optimizing Your Workflow
 
-If you're a developer you may also want to check out [inline code generators](http://swagger.io/open-source-integrations/) that build your OpenAPI/Swagger API from source code comments so you can automate your entuire workflow from `code > spec > documentation`.
+If you're a developer you are always looking for ways to optimize your workflow. The great thing about the Swagger spec is that it enables you to use your API spec as a source for automating and generating all parts of your API system, such as:
+
+* **Inline Code Generators**: Generate your Swagger JSON or YAML from your source code comments.
+* **Automate Testing**: Automate testing for all your API endpoints.
+* **Code Generation**: Automatically generate client and server code from your spec.
+* **Generate Documentation**: Really?
+
+For a list of open source libraries in many languages check here: http://swagger.io/open-source-integrations/
 
 ## More Information
 
