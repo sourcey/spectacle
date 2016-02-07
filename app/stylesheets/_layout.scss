@@ -39,6 +39,14 @@ button:focus {
 //
 
 #logo {
+  text-align: center;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
+
+  img {
+    max-height: 70px;
+  }
 }
 
 // Include the Foundation grid (the only required component)
@@ -63,10 +71,10 @@ button:focus {
   width: $drawer-size;
 
   h5 {
-    margin: 1.5rem 0 0.75rem;
+    margin: 1.5rem 0 0.65rem;
     text-transform: uppercase;
-    color: $medium-gray;
-    color: $accent-color;
+    color: scale-color($medium-gray, $lightness: -10%);
+    // color: $accent-color;
     font-size: 0.9rem;
   }
 
@@ -81,7 +89,7 @@ button:focus {
     text-overflow: ellipsis;
 
     &.active {
-      color: $accent-color; //$primary-color;
+      // color: $accent-color; //$primary-color;
       color: $primary-color;
       // font-weight: bold;
     }

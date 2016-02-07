@@ -1,21 +1,21 @@
 # Spectacle
 
-Spectacle lets you generate beautiful HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
+Spectacle generates beautiful static HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
 
-The goal of Spectacle is help you "save time and look good" by using a well written spec to automatically generate all your API docs. Using a well written API spec to generate your docs has a number of great advantages:
+The goal of Spectacle is help you "save time and look good" by using a well written spec to automatically generate your API docs. Using an API spec to generate your docs has a number of great advantages:
 
-* **Maintain a single source**: Save loads of time by removing the need to maintain a separate API spec and API documentation.
+* **Maintain a single source**: Save time by removing the need to maintain a separate API spec and API documentation.
 * **No more out-of-date documentation**: Your documentation will always be up-to-date with your API spec.
-* **Be a better developer**: Your entire API system will be more stable and robust when built using your spec as a single source of truth.
-* **Documentation is just the beginning**: Generate all your API integrations from your spec; all the way from tests, to client implementations, to server code. See also [Optimizing Your Workflow](#optimizing-your-workflow)
+* **Be a better developer**: Your entire API system will be more stable and robust when built around your spec as a single source of truth.
+* **Documentation is just the beginning**: Generate your API system from your spec, including; tests, client implementations, and server code. See also [Optimizing Your Workflow](#optimizing-your-workflow)
 
 ## Live Demo
 
-See a demo of Spectacle in action here: http://cheesestore.github.io
+See a demo of Spectacle in action here: [http://cheesestore.github.io](http://cheesestore.github.io)
 
-## Features:
+## Features
 
-* **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification which is the new standard for documenting REST APIs.
+* **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification - the new standard for documenting REST APIs.
 * **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
 * **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
 * **Live preview developer mode**: Spectacle comes with a development mode that starts a local HTTP server with a file watcher and live reload so you can preview changes to your live documentation in your browser as you write your spec.

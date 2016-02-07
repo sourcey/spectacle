@@ -49,5 +49,8 @@
     "lodash": "*",
     "marked": "*",
     "trace": "^1.1.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-copy": "^0.8.2"
   }
 }

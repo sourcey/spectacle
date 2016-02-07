@@ -6,20 +6,25 @@
   </head>
   <body id="spectacle">
     <div id="page" class="drawer-layout drawer-slide-right-large">
-        <div id="sidebar">
-          <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
-            <span aria-hidden="true">×</span>
-          </button>
-          {{>layout/nav}}
-        </div>
-          {{!layout/topbar}}
-          <div id="docs" class="row collapse expanded drawer" data-drawer>
-            <button class="floating-menu-icon" type="button" data-drawer-slide="right">
-              <span class="hamburger"></span>
-            </button>
-            <div class="example-box doc-content"></div>
-            {{>layout/content}}
+      <div id="sidebar">
+        <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
+          <span aria-hidden="true">×</span>
+        </button>
+        {{#if logo}}
+          <div id="logo">
+            <img src="/images/{{logo}}" title="{{info.title}}" />
           </div>
+        {{/if}}
+        {{>layout/nav}}
+      </div>
+      {{!layout/topbar}}
+      <div id="docs" class="row collapse expanded drawer" data-drawer>
+        <button class="floating-menu-icon" type="button" data-drawer-slide="right">
+          <span class="hamburger"></span>
+        </button>
+        <div class="example-box doc-content"></div>
+        {{>layout/content}}
+      </div>
     </div>
   </body>
 </html>

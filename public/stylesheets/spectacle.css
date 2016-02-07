@@ -422,6 +422,17 @@
   border-radius: 4px;
   padding: 3px 6px;
 }
+/* line 41, ../../app/stylesheets/_layout.scss */
+#spectacle #logo {
+  text-align: center;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
+}
+/* line 47, ../../app/stylesheets/_layout.scss */
+#spectacle #logo img {
+  max-height: 70px;
+}
 /* line 26, ../../app/vendor/foundation/scss/grid/_classes.scss */
 #spectacle .row, #spectacle article .prop-row, #spectacle article .doc-row {
   max-width: 78.94737rem;
@@ -1598,7 +1609,7 @@
     margin-right: 0;
   }
 }
-/* line 50, ../../app/stylesheets/_layout.scss */
+/* line 58, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar {
   padding-top: 1.5rem;
   padding-left: 1.5rem;
@@ -1614,15 +1625,14 @@
   top: 0;
   width: 250px;
 }
-/* line 65, ../../app/stylesheets/_layout.scss */
+/* line 73, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar h5 {
-  margin: 1.5rem 0 0.75rem;
+  margin: 1.5rem 0 0.65rem;
   text-transform: uppercase;
-  color: #cacaca;
-  color: #f68b1f;
+  color: #b6b6b6;
   font-size: 0.9rem;
 }
-/* line 73, ../../app/stylesheets/_layout.scss */
+/* line 81, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar a {
   display: block;
   margin: 0 0 0.25rem;
@@ -1632,53 +1642,52 @@
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
-/* line 83, ../../app/stylesheets/_layout.scss */
+/* line 91, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar a.active {
-  color: #f68b1f;
   color: #2199e8;
 }
-/* line 90, ../../app/stylesheets/_layout.scss */
+/* line 98, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar ul {
   list-style-type: none;
   padding: 0;
   margin: 0 0 0.75rem 0.75rem;
 }
-/* line 97, ../../app/stylesheets/_layout.scss */
+/* line 105, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar section > ul {
   display: none;
 }
-/* line 102, ../../app/stylesheets/_layout.scss */
+/* line 110, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar section.expand > ul {
   display: block;
 }
-/* line 108, ../../app/stylesheets/_layout.scss */
+/* line 116, ../../app/stylesheets/_layout.scss */
 #spectacle #sidebar .close-button {
   opacity: 0.5;
 }
-/* line 117, ../../app/stylesheets/_layout.scss */
+/* line 125, ../../app/stylesheets/_layout.scss */
 #spectacle .doc-content, #spectacle article h1.doc-title, #spectacle article > h1, #spectacle article > h2, #spectacle article .panel > h2, #spectacle article .panel > h3, #spectacle article .doc-copy, #spectacle article .doc-examples {
   padding-left: 2.25rem !important;
   padding-right: 2.25rem !important;
 }
-/* line 124, ../../app/stylesheets/_layout.scss */
+/* line 132, ../../app/stylesheets/_layout.scss */
 #spectacle .doc-separator, #spectacle article h2 {
   margin-top: 2em;
   padding-top: 2em;
   padding-bottom: 2em;
   border-top: 1px solid #e2e2e2;
 }
-/* line 131, ../../app/stylesheets/_layout.scss */
+/* line 139, ../../app/stylesheets/_layout.scss */
 #spectacle #docs {
   background: #fefefe;
   overflow: hidden;
   position: relative;
 }
-/* line 136, ../../app/stylesheets/_layout.scss */
+/* line 144, ../../app/stylesheets/_layout.scss */
 #spectacle #docs .example-box {
   display: none;
 }
 @media screen and (min-width: 64em) {
-  /* line 141, ../../app/stylesheets/_layout.scss */
+  /* line 149, ../../app/stylesheets/_layout.scss */
   #spectacle #docs .example-box {
     display: block;
     background-color: #23241f;
@@ -1688,32 +1697,32 @@
     bottom: 0;
   }
 }
-/* line 154, ../../app/stylesheets/_layout.scss */
+/* line 162, ../../app/stylesheets/_layout.scss */
 #spectacle article {
   position: relative;
 }
-/* line 157, ../../app/stylesheets/_layout.scss */
+/* line 165, ../../app/stylesheets/_layout.scss */
 #spectacle article .no-description {
   color: #7a7a7a;
 }
-/* line 161, ../../app/stylesheets/_layout.scss */
+/* line 169, ../../app/stylesheets/_layout.scss */
 #spectacle article dt {
   color: #23241f;
 }
-/* line 165, ../../app/stylesheets/_layout.scss */
+/* line 173, ../../app/stylesheets/_layout.scss */
 #spectacle article table.table {
   width: 100%;
 }
-/* line 169, ../../app/stylesheets/_layout.scss */
+/* line 177, ../../app/stylesheets/_layout.scss */
 #spectacle article code {
   font-size: 0.85em;
   border-radius: 3px;
 }
-/* line 174, ../../app/stylesheets/_layout.scss */
+/* line 182, ../../app/stylesheets/_layout.scss */
 #spectacle article p:last-child:first-child {
   margin-bottom: 0;
 }
-/* line 185, ../../app/stylesheets/_layout.scss */
+/* line 193, ../../app/stylesheets/_layout.scss */
 #spectacle article h1 {
   margin: 2.5rem 0 0;
   padding-top: 0.75rem;
@@ -1724,7 +1733,7 @@
   border-bottom: 1px solid #e2e2e2;
   background-color: #f6f6f6;
 }
-/* line 204, ../../app/stylesheets/_layout.scss */
+/* line 212, ../../app/stylesheets/_layout.scss */
 #spectacle article h1.doc-title {
   margin: 0;
   padding-top: 2.15rem;
@@ -1734,14 +1743,14 @@
   border: none;
   color: #515448;
 }
-/* line 214, ../../app/stylesheets/_layout.scss */
+/* line 222, ../../app/stylesheets/_layout.scss */
 #spectacle article h1.doc-title span {
   display: none;
   opacity: 0.65;
   margin-left: 5px;
   font-weight: normal;
 }
-/* line 222, ../../app/stylesheets/_layout.scss */
+/* line 230, ../../app/stylesheets/_layout.scss */
 #spectacle article h2 {
   margin-bottom: 0;
   padding-left: 2.25rem;
@@ -1754,101 +1763,101 @@
   background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
 }
-/* line 236, ../../app/stylesheets/_layout.scss */
+/* line 244, ../../app/stylesheets/_layout.scss */
 #spectacle article h3 {
   margin: 0rem 0 0.75rem;
 }
-/* line 244, ../../app/stylesheets/_layout.scss */
+/* line 252, ../../app/stylesheets/_layout.scss */
 #spectacle article h1 + .panel > h2 {
   margin-top: 0;
   border-top: none;
 }
-/* line 249, ../../app/stylesheets/_layout.scss */
+/* line 257, ../../app/stylesheets/_layout.scss */
 #spectacle article h1 + .tag-description + .panel > h2 {
   margin-top: 2rem;
 }
-/* line 253, ../../app/stylesheets/_layout.scss */
+/* line 261, ../../app/stylesheets/_layout.scss */
 #spectacle article h1 + .panel h3 {
   margin-top: 1rem;
 }
-/* line 260, ../../app/stylesheets/_layout.scss */
+/* line 268, ../../app/stylesheets/_layout.scss */
 #spectacle article .panel {
   position: relative;
 }
-/* line 274, ../../app/stylesheets/_layout.scss */
+/* line 282, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row {
   padding-top: 0.75em;
   padding-bottom: 0.75em;
   border-top: 1px solid #eee;
 }
-/* line 283, ../../app/stylesheets/_layout.scss */
+/* line 291, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row:first-child, #spectacle article .prop-row.prop-group {
   border-top: 1px solid #ddd;
 }
-/* line 287, ../../app/stylesheets/_layout.scss */
+/* line 295, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row .prop-title {
   font-weight: bold;
 }
-/* line 291, ../../app/stylesheets/_layout.scss */
+/* line 299, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row .prop-name {
   text-align: right;
   padding-right: 0.85rem !important;
   word-break: break-word;
 }
-/* line 299, ../../app/stylesheets/_layout.scss */
+/* line 307, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row .prop-value {
   padding-left: 0.85rem !important;
   word-wrap: break-word;
 }
-/* line 306, ../../app/stylesheets/_layout.scss */
+/* line 314, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row.prop-inner {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   font-size: 90%;
 }
-/* line 312, ../../app/stylesheets/_layout.scss */
+/* line 320, ../../app/stylesheets/_layout.scss */
 #spectacle article .prop-row.prop-inner .prop-name {
   color: #7a7a7a;
 }
-/* line 321, ../../app/stylesheets/_layout.scss */
+/* line 329, ../../app/stylesheets/_layout.scss */
 #spectacle article .doc-row {
   margin: 2rem 0 20px;
 }
-/* line 338, ../../app/stylesheets/_layout.scss */
+/* line 346, ../../app/stylesheets/_layout.scss */
 #spectacle article .doc-examples {
   padding-left: 2.25rem !important;
   padding-right: 2.25rem !important;
   color: #fefefe;
   background-color: #23241f;
 }
-/* line 348, ../../app/stylesheets/_layout.scss */
+/* line 356, ../../app/stylesheets/_layout.scss */
 #spectacle article .doc-examples h5 {
   color: #fefefe;
   font-size: 1rem;
   opacity: 0.8;
 }
-/* line 354, ../../app/stylesheets/_layout.scss */
+/* line 362, ../../app/stylesheets/_layout.scss */
 #spectacle article .doc-examples h5 span {
   opacity: 0.5;
 }
 @media screen and (max-width: 63.9375em) {
-  /* line 361, ../../app/stylesheets/_layout.scss */
+  /* line 369, ../../app/stylesheets/_layout.scss */
   #spectacle article .doc-examples:not(:empty) {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     padding-bottom: 0.5rem;
   }
 }
-/* line 372, ../../app/stylesheets/_layout.scss */
+/* line 380, ../../app/stylesheets/_layout.scss */
 #spectacle article .powered-by {
   font-size: 90%;
   color: #cacaca;
 }
-/* line 377, ../../app/stylesheets/_layout.scss */
+/* line 385, ../../app/stylesheets/_layout.scss */
 #spectacle article .powered-by span {
   color: #f68b1f;
 }
-/* line 386, ../../app/stylesheets/_layout.scss */
+/* line 394, ../../app/stylesheets/_layout.scss */
 #spectacle article .operation .operation-tags {
   position: absolute;
   top: 0;
@@ -1856,21 +1865,21 @@
   right: 0;
 }
 @media screen and (min-width: 64em) {
-  /* line 395, ../../app/stylesheets/_layout.scss */
+  /* line 403, ../../app/stylesheets/_layout.scss */
   #spectacle article .operation .operation-tags {
     right: 50%;
   }
 }
-/* line 399, ../../app/stylesheets/_layout.scss */
+/* line 407, ../../app/stylesheets/_layout.scss */
 #spectacle article .operation .operation-path {
   word-break: break-all;
 }
-/* line 408, ../../app/stylesheets/_layout.scss */
+/* line 416, ../../app/stylesheets/_layout.scss */
 #spectacle .hljs {
   padding: 0 !important;
   margin-bottom: 1.5rem;
 }
-/* line 412, ../../app/stylesheets/_layout.scss */
+/* line 420, ../../app/stylesheets/_layout.scss */
 #spectacle .hljs pre {
   line-height: 1.25;
   padding: 1.5rem 2rem;
@@ -1883,7 +1892,7 @@
   word-break: normal;
   word-spacing: normal;
 }
-/* line 427, ../../app/stylesheets/_layout.scss */
+/* line 435, ../../app/stylesheets/_layout.scss */
 #spectacle .hljs code {
   font-family: Consolas,"Liberation Mono",Courier,monospace;
   font-weight: inherit;

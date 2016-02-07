@@ -44,8 +44,8 @@ program.specFile = program.args[0] || 'test/fixtures/cheese.json';
 //= Load the specification and set variables
 
 var specData = require(path.resolve(program.specFile)),
-    specTemplate = require(path.resolve(program.appDir + '/lib/preprocessor'))(specData),
-    config = require(path.resolve(program.configFile))(grunt, program, specTemplate);
+    templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(program, specData),
+    config = require(path.resolve(program.configFile))(grunt, program, templateData);
 
 //
 //= Setup Grunt to do the heavy lifting
@@ -58,6 +58,7 @@ grunt.loadNpmTasks('grunt-contrib-compass');
 grunt.loadNpmTasks('grunt-contrib-cssmin');
 grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-contrib-clean');
+grunt.loadNpmTasks('grunt-contrib-copy');
 grunt.loadNpmTasks('grunt-contrib-connect');
 grunt.loadNpmTasks('grunt-compile-handlebars');
 
@@ -116,6 +117,9 @@ else {
   }
   if (!program.disableJs) {
       grunt.task.run('javascripts');
+  }
+  if (program.logoFile) {
+      grunt.task.run('copy:logo');
   }
   grunt.task.run('templates');
   if (program.developmentMode) {

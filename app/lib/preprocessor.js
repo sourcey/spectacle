@@ -1,15 +1,20 @@
-var _ = require('lodash')
+var path = require('path'),
+  _ = require('lodash');
 
-var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch']
+var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
 
-// Preprocessor for the swagger-json, so that some of the logic can be taken out of the
-// template
+// Preprocessor for the Swagger JSON so that some of the logic can be taken
+// out of the template.
 
-module.exports = function(swaggerJson) {
-  var copy = _.cloneDeep(swaggerJson)
-  var tagsByName = _.indexBy(copy.tags, 'name')
+module.exports = function(options, specData) {
+  var copy = _.cloneDeep(specData);
+  var tagsByName = _.indexBy(copy.tags, 'name');
 
-  copy.tags = copy.tags || []
+  copy.tags = copy.tags || [];
+
+  if (options.logoFile) {
+    copy.logo = path.basename(options.logoFile);
+  }
 
   // The "body"-parameter in each operation is stored in a
   // separate field "_request_body".

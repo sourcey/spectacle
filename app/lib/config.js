@@ -119,6 +119,14 @@ module.exports = function(grunt, options, spec) {
           }
       },
 
+      // Copy files to the target directory
+      copy: {
+          logo: {
+              src: options.logoFile,
+              dest: options.targetDir + '/images/' + path.basename(options.logoFile)
+          }
+      },
+
       // Watch the filesystem and regenerate docs if sources change
       watch: {
           options: {
