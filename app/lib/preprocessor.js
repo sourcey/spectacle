@@ -8,7 +8,7 @@ var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
 
 module.exports = function(options, specData) {
   var copy = _.cloneDeep(specData);
-  var tagsByName = _.indexBy(copy.tags, 'name');
+  var tagsByName = _.keyBy(copy.tags, 'name');
 
   copy.tags = copy.tags || [];
 

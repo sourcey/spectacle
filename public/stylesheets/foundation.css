@@ -10,7 +10,7 @@
  * 2. Prevent iOS and IE text size adjust after device orientation change,
  *    without disabling user zoom.
  */
-/* line 210, ../../app/vendor/foundation/scss/_global.scss */
+/* line 210, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 html {
   font-family: sans-serif;
   /* 1 */
@@ -23,7 +23,7 @@ html {
 /**
  * Remove default margin.
  */
-/* line 220, ../../app/vendor/foundation/scss/_global.scss */
+/* line 220, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 body {
   margin: 0;
 }
@@ -36,7 +36,7 @@ body {
  * and Firefox.
  * Correct `block` display not defined for `main` in IE 11.
  */
-/* line 234, ../../app/vendor/foundation/scss/_global.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 article,
 aside,
 details,
@@ -57,7 +57,7 @@ summary {
  * 1. Correct `inline-block` display not defined in IE 8/9.
  * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
  */
-/* line 255, ../../app/vendor/foundation/scss/_global.scss */
+/* line 255, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 audio,
 canvas,
 progress,
@@ -72,7 +72,7 @@ video {
  * Prevent modern browsers from displaying `audio` without controls.
  * Remove excess height in iOS 5 devices.
  */
-/* line 268, ../../app/vendor/foundation/scss/_global.scss */
+/* line 268, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 audio:not([controls]) {
   display: none;
   height: 0;
@@ -82,7 +82,7 @@ audio:not([controls]) {
  * Address `[hidden]` styling not present in IE 8/9/10.
  * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
  */
-/* line 278, ../../app/vendor/foundation/scss/_global.scss */
+/* line 278, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 [hidden],
 template {
   display: none;
@@ -93,7 +93,7 @@ template {
 /**
  * Remove the gray background color from active links in IE 10.
  */
-/* line 290, ../../app/vendor/foundation/scss/_global.scss */
+/* line 290, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 a {
   background-color: transparent;
 }
@@ -102,7 +102,7 @@ a {
  * Improve readability of focused elements when they are also in an
  * active/hover state.
  */
-/* line 299, ../../app/vendor/foundation/scss/_global.scss */
+/* line 299, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 a:active,
 a:hover {
   outline: 0;
@@ -113,7 +113,7 @@ a:hover {
 /**
  * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
  */
-/* line 311, ../../app/vendor/foundation/scss/_global.scss */
+/* line 311, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 abbr[title] {
   border-bottom: 1px dotted;
 }
@@ -121,7 +121,7 @@ abbr[title] {
 /**
  * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
  */
-/* line 319, ../../app/vendor/foundation/scss/_global.scss */
+/* line 319, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 b,
 strong {
   font-weight: bold;
@@ -130,7 +130,7 @@ strong {
 /**
  * Address styling not present in Safari and Chrome.
  */
-/* line 328, ../../app/vendor/foundation/scss/_global.scss */
+/* line 328, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 dfn {
   font-style: italic;
 }
@@ -139,7 +139,7 @@ dfn {
  * Address variable `h1` font-size and margin within `section` and `article`
  * contexts in Firefox 4+, Safari, and Chrome.
  */
-/* line 337, ../../app/vendor/foundation/scss/_global.scss */
+/* line 337, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
@@ -148,7 +148,7 @@ h1 {
 /**
  * Address styling not present in IE 8/9.
  */
-/* line 346, ../../app/vendor/foundation/scss/_global.scss */
+/* line 346, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 mark {
   background: #ff0;
   color: #000;
@@ -157,7 +157,7 @@ mark {
 /**
  * Address inconsistent and variable font size in all browsers.
  */
-/* line 355, ../../app/vendor/foundation/scss/_global.scss */
+/* line 355, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 small {
   font-size: 80%;
 }
@@ -165,7 +165,7 @@ small {
 /**
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
-/* line 363, ../../app/vendor/foundation/scss/_global.scss */
+/* line 363, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 sub,
 sup {
   font-size: 75%;
@@ -174,12 +174,12 @@ sup {
   vertical-align: baseline;
 }
 
-/* line 371, ../../app/vendor/foundation/scss/_global.scss */
+/* line 371, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 sup {
   top: -0.5em;
 }
 
-/* line 375, ../../app/vendor/foundation/scss/_global.scss */
+/* line 375, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 sub {
   bottom: -0.25em;
 }
@@ -189,7 +189,7 @@ sub {
 /**
  * Remove border when inside `a` element in IE 8/9/10.
  */
-/* line 386, ../../app/vendor/foundation/scss/_global.scss */
+/* line 386, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 img {
   border: 0;
 }
@@ -197,7 +197,7 @@ img {
 /**
  * Correct overflow not hidden in IE 9/10/11.
  */
-/* line 394, ../../app/vendor/foundation/scss/_global.scss */
+/* line 394, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 svg:not(:root) {
   overflow: hidden;
 }
@@ -207,7 +207,7 @@ svg:not(:root) {
 /**
  * Address margin not present in IE 8/9 and Safari.
  */
-/* line 405, ../../app/vendor/foundation/scss/_global.scss */
+/* line 405, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 figure {
   margin: 1em 40px;
 }
@@ -215,7 +215,7 @@ figure {
 /**
  * Address differences between Firefox and other browsers.
  */
-/* line 413, ../../app/vendor/foundation/scss/_global.scss */
+/* line 413, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 hr {
   box-sizing: content-box;
   height: 0;
@@ -224,7 +224,7 @@ hr {
 /**
  * Contain overflow in all browsers.
  */
-/* line 422, ../../app/vendor/foundation/scss/_global.scss */
+/* line 422, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 pre {
   overflow: auto;
 }
@@ -232,7 +232,7 @@ pre {
 /**
  * Address odd `em`-unit font size rendering in all browsers.
  */
-/* line 430, ../../app/vendor/foundation/scss/_global.scss */
+/* line 430, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 code,
 kbd,
 pre,
@@ -253,7 +253,7 @@ samp {
  * 2. Correct font properties not being inherited.
  * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
  */
-/* line 453, ../../app/vendor/foundation/scss/_global.scss */
+/* line 453, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button,
 input,
 optgroup,
@@ -270,7 +270,7 @@ textarea {
 /**
  * Address `overflow` set to `hidden` in IE 8/9/10/11.
  */
-/* line 467, ../../app/vendor/foundation/scss/_global.scss */
+/* line 467, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button {
   overflow: visible;
 }
@@ -281,7 +281,7 @@ button {
  * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
  * Correct `select` style inheritance in Firefox.
  */
-/* line 478, ../../app/vendor/foundation/scss/_global.scss */
+/* line 478, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button,
 select {
   text-transform: none;
@@ -294,7 +294,7 @@ select {
  * 3. Improve usability and consistency of cursor style between image-type
  *    `input` and others.
  */
-/* line 491, ../../app/vendor/foundation/scss/_global.scss */
+/* line 491, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button,
 html input[type="button"],
 input[type="reset"],
@@ -308,7 +308,7 @@ input[type="submit"] {
 /**
  * Re-set default cursor for disabled elements.
  */
-/* line 503, ../../app/vendor/foundation/scss/_global.scss */
+/* line 503, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button[disabled],
 html input[disabled] {
   cursor: default;
@@ -317,7 +317,7 @@ html input[disabled] {
 /**
  * Remove inner padding and border in Firefox 4+.
  */
-/* line 512, ../../app/vendor/foundation/scss/_global.scss */
+/* line 512, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
@@ -328,7 +328,7 @@ input::-moz-focus-inner {
  * Address Firefox 4+ setting `line-height` on `input` using `!important` in
  * the UA stylesheet.
  */
-/* line 523, ../../app/vendor/foundation/scss/_global.scss */
+/* line 523, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 input {
   line-height: normal;
 }
@@ -340,7 +340,7 @@ input {
  * 1. Address box sizing set to `content-box` in IE 8/9/10.
  * 2. Remove excess padding in IE 8/9/10.
  */
-/* line 535, ../../app/vendor/foundation/scss/_global.scss */
+/* line 535, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
@@ -354,7 +354,7 @@ input[type="radio"] {
  * `font-size` values of the `input`, it causes the cursor style of the
  * decrement button to change from `default` to `text`.
  */
-/* line 547, ../../app/vendor/foundation/scss/_global.scss */
+/* line 547, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   height: auto;
@@ -364,7 +364,7 @@ input[type="number"]::-webkit-outer-spin-button {
  * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
  * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
  */
-/* line 557, ../../app/vendor/foundation/scss/_global.scss */
+/* line 557, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 input[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
@@ -377,7 +377,7 @@ input[type="search"] {
  * Safari (but not Chrome) clips the cancel button when the search input has
  * padding (and `textfield` appearance).
  */
-/* line 568, ../../app/vendor/foundation/scss/_global.scss */
+/* line 568, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -386,7 +386,7 @@ input[type="search"]::-webkit-search-decoration {
 /**
  * Define consistent border, margin, and padding.
  */
-/* line 577, ../../app/vendor/foundation/scss/_global.scss */
+/* line 577, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 fieldset {
   border: 1px solid #c0c0c0;
   margin: 0 2px;
@@ -397,7 +397,7 @@ fieldset {
  * 1. Correct `color` not being inherited in IE 8/9/10/11.
  * 2. Remove padding so people aren't caught out if they zero out fieldsets.
  */
-/* line 588, ../../app/vendor/foundation/scss/_global.scss */
+/* line 588, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 legend {
   border: 0;
   /* 1 */
@@ -408,7 +408,7 @@ legend {
 /**
  * Remove default vertical scrollbar in IE 8/9/10/11.
  */
-/* line 597, ../../app/vendor/foundation/scss/_global.scss */
+/* line 597, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 textarea {
   overflow: auto;
 }
@@ -417,7 +417,7 @@ textarea {
  * Don't inherit the `font-weight` (applied by a rule above).
  * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
  */
-/* line 606, ../../app/vendor/foundation/scss/_global.scss */
+/* line 606, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 optgroup {
   font-weight: bold;
 }
@@ -427,37 +427,37 @@ optgroup {
 /**
  * Remove most spacing between table cells.
  */
-/* line 617, ../../app/vendor/foundation/scss/_global.scss */
+/* line 617, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 622, ../../app/vendor/foundation/scss/_global.scss */
+/* line 622, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 td,
 th {
   padding: 0;
 }
 
-/* line 119, ../../app/vendor/foundation/scss/_global.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 .foundation-mq {
   font-family: "small=0em&medium=40em&large=64em&xlarge=75em&xxlarge=90em";
 }
 
-/* line 123, ../../app/vendor/foundation/scss/_global.scss */
+/* line 123, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 html {
   font-size: 95%;
   box-sizing: border-box;
 }
 
-/* line 129, ../../app/vendor/foundation/scss/_global.scss */
+/* line 129, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 *,
 *:before,
 *:after {
   box-sizing: inherit;
 }
 
-/* line 136, ../../app/vendor/foundation/scss/_global.scss */
+/* line 136, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 body {
   padding: 0;
   margin: 0;
@@ -470,7 +470,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* line 151, ../../app/vendor/foundation/scss/_global.scss */
+/* line 151, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 img {
   max-width: 100%;
   height: auto;
@@ -479,20 +479,20 @@ img {
   vertical-align: middle;
 }
 
-/* line 163, ../../app/vendor/foundation/scss/_global.scss */
+/* line 163, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 textarea {
   height: auto;
   min-height: 50px;
   border-radius: 0;
 }
 
-/* line 170, ../../app/vendor/foundation/scss/_global.scss */
+/* line 170, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 select {
   width: 100%;
   border-radius: 0;
 }
 
-/* line 180, ../../app/vendor/foundation/scss/_global.scss */
+/* line 180, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 #map_canvas img,
 #map_canvas embed,
 #map_canvas object,
@@ -505,7 +505,7 @@ select {
   max-width: none !important;
 }
 
-/* line 188, ../../app/vendor/foundation/scss/_global.scss */
+/* line 188, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/_global.scss */
 button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -516,49 +516,49 @@ button {
   line-height: 1;
 }
 
-/* line 26, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 26, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row {
   max-width: 78.94737rem;
   margin-left: auto;
   margin-right: auto;
 }
-/* line 130, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 130, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 .row::before, .row::after {
   content: ' ';
   display: table;
 }
-/* line 136, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 136, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 .row::after {
   clear: both;
 }
-/* line 31, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 31, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row.collapse > .column, .row.collapse > .columns {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 35, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 35, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row .row {
   margin-left: -0.65789rem;
   margin-right: -0.65789rem;
 }
 @media screen and (min-width: 40em) {
-  /* line 35, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 35, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .row .row {
     margin-left: -0.98684rem;
     margin-right: -0.98684rem;
   }
 }
-/* line 47, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 47, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row .row.collapse {
   margin-left: 0;
   margin-right: 0;
 }
-/* line 54, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 54, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row.expanded {
   max-width: none;
 }
 
-/* line 60, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 60, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .column, .columns {
   padding-left: 0.65789rem;
   padding-right: 0.65789rem;
@@ -566,26 +566,26 @@ button {
   float: left;
 }
 @media screen and (min-width: 40em) {
-  /* line 60, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 60, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .column, .columns {
     padding-left: 0.98684rem;
     padding-right: 0.98684rem;
   }
 }
-/* line 80, ../../app/vendor/foundation/scss/grid/_column.scss */
+/* line 80, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_column.scss */
 .column:last-child:not(:first-child), .columns:last-child:not(:first-child) {
   float: right;
 }
-/* line 45, ../../app/vendor/foundation/scss/grid/_position.scss */
+/* line 45, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_position.scss */
 .column.end:last-child:last-child, .end.columns:last-child:last-child {
   float: left;
 }
 
-/* line 72, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 72, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .column.row.row, .row.row.columns {
   float: none;
 }
-/* line 76, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 76, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .row .column.row.row, .row .row.row.columns {
   padding-left: 0;
   padding-right: 0;
@@ -593,422 +593,422 @@ button {
   margin-right: 0;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-1 {
   width: 8.33333%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-1 {
   position: relative;
   left: 8.33333%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-1 {
   position: relative;
   left: -8.33333%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-0 {
   margin-left: 0%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-2 {
   width: 16.66667%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-2 {
   position: relative;
   left: 16.66667%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-2 {
   position: relative;
   left: -16.66667%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-1 {
   margin-left: 8.33333%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-3 {
   width: 25%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-3 {
   position: relative;
   left: 25%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-3 {
   position: relative;
   left: -25%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-2 {
   margin-left: 16.66667%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-4 {
   width: 33.33333%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-4 {
   position: relative;
   left: 33.33333%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-4 {
   position: relative;
   left: -33.33333%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-3 {
   margin-left: 25%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-5 {
   width: 41.66667%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-5 {
   position: relative;
   left: 41.66667%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-5 {
   position: relative;
   left: -41.66667%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-4 {
   margin-left: 33.33333%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-6 {
   width: 50%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-6 {
   position: relative;
   left: 50%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-6 {
   position: relative;
   left: -50%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-5 {
   margin-left: 41.66667%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-7 {
   width: 58.33333%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-7 {
   position: relative;
   left: 58.33333%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-7 {
   position: relative;
   left: -58.33333%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-6 {
   margin-left: 50%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-8 {
   width: 66.66667%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-8 {
   position: relative;
   left: 66.66667%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-8 {
   position: relative;
   left: -66.66667%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-7 {
   margin-left: 58.33333%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-9 {
   width: 75%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-9 {
   position: relative;
   left: 75%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-9 {
   position: relative;
   left: -75%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-8 {
   margin-left: 66.66667%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-10 {
   width: 83.33333%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-10 {
   position: relative;
   left: 83.33333%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-10 {
   position: relative;
   left: -83.33333%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-9 {
   margin-left: 75%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-11 {
   width: 91.66667%;
 }
 
-/* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-push-11 {
   position: relative;
   left: 91.66667%;
 }
 
-/* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-pull-11 {
   position: relative;
   left: -91.66667%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-10 {
   margin-left: 83.33333%;
 }
 
-/* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-12 {
   width: 100%;
 }
 
-/* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-offset-11 {
   margin-left: 91.66667%;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-1 > .column, .small-up-1 > .columns {
   width: 100%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-1 > .column:nth-of-type(1n), .small-up-1 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-1 > .column:nth-of-type(1n+1), .small-up-1 > .columns:nth-of-type(1n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-1 > .column:last-child, .small-up-1 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-2 > .column, .small-up-2 > .columns {
   width: 50%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-2 > .column:nth-of-type(1n), .small-up-2 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-2 > .column:nth-of-type(2n+1), .small-up-2 > .columns:nth-of-type(2n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-2 > .column:last-child, .small-up-2 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-3 > .column, .small-up-3 > .columns {
   width: 33.33333%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-3 > .column:nth-of-type(1n), .small-up-3 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-3 > .column:nth-of-type(3n+1), .small-up-3 > .columns:nth-of-type(3n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-3 > .column:last-child, .small-up-3 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-4 > .column, .small-up-4 > .columns {
   width: 25%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-4 > .column:nth-of-type(1n), .small-up-4 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-4 > .column:nth-of-type(4n+1), .small-up-4 > .columns:nth-of-type(4n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-4 > .column:last-child, .small-up-4 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-5 > .column, .small-up-5 > .columns {
   width: 20%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-5 > .column:nth-of-type(1n), .small-up-5 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-5 > .column:nth-of-type(5n+1), .small-up-5 > .columns:nth-of-type(5n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-5 > .column:last-child, .small-up-5 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-6 > .column, .small-up-6 > .columns {
   width: 16.66667%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-6 > .column:nth-of-type(1n), .small-up-6 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-6 > .column:nth-of-type(6n+1), .small-up-6 > .columns:nth-of-type(6n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-6 > .column:last-child, .small-up-6 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-7 > .column, .small-up-7 > .columns {
   width: 14.28571%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-7 > .column:nth-of-type(1n), .small-up-7 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-7 > .column:nth-of-type(7n+1), .small-up-7 > .columns:nth-of-type(7n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-7 > .column:last-child, .small-up-7 > .columns:last-child {
   float: left;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-8 > .column, .small-up-8 > .columns {
   width: 12.5%;
   float: left;
 }
-/* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-8 > .column:nth-of-type(1n), .small-up-8 > .columns:nth-of-type(1n) {
   clear: none;
 }
-/* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-8 > .column:nth-of-type(8n+1), .small-up-8 > .columns:nth-of-type(8n+1) {
   clear: both;
 }
-/* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+/* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
 .small-up-8 > .column:last-child, .small-up-8 > .columns:last-child {
   float: left;
 }
 
-/* line 119, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-collapse > .column, .small-collapse > .columns {
   padding-left: 0;
   padding-right: 0;
 }
 
-/* line 131, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 131, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-uncollapse > .column, .small-uncollapse > .columns {
   padding-left: 0.65789rem;
   padding-right: 0.65789rem;
 }
 
-/* line 135, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 135, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-centered {
   float: none;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* line 140, ../../app/vendor/foundation/scss/grid/_classes.scss */
+/* line 140, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
 .small-uncentered,
 .small-push-0,
 .small-pull-0 {
@@ -1018,422 +1018,422 @@ button {
 }
 
 @media screen and (min-width: 40em) {
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-1 {
     width: 8.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-1 {
     position: relative;
     left: 8.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-1 {
     position: relative;
     left: -8.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-0 {
     margin-left: 0%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-2 {
     width: 16.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-2 {
     position: relative;
     left: 16.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-2 {
     position: relative;
     left: -16.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-1 {
     margin-left: 8.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-3 {
     width: 25%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-3 {
     position: relative;
     left: 25%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-3 {
     position: relative;
     left: -25%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-2 {
     margin-left: 16.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-4 {
     width: 33.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-4 {
     position: relative;
     left: 33.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-4 {
     position: relative;
     left: -33.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-3 {
     margin-left: 25%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-5 {
     width: 41.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-5 {
     position: relative;
     left: 41.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-5 {
     position: relative;
     left: -41.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-4 {
     margin-left: 33.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-6 {
     width: 50%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-6 {
     position: relative;
     left: 50%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-6 {
     position: relative;
     left: -50%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-5 {
     margin-left: 41.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-7 {
     width: 58.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-7 {
     position: relative;
     left: 58.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-7 {
     position: relative;
     left: -58.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-6 {
     margin-left: 50%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-8 {
     width: 66.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-8 {
     position: relative;
     left: 66.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-8 {
     position: relative;
     left: -66.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-7 {
     margin-left: 58.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-9 {
     width: 75%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-9 {
     position: relative;
     left: 75%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-9 {
     position: relative;
     left: -75%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-8 {
     margin-left: 66.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-10 {
     width: 83.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-10 {
     position: relative;
     left: 83.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-10 {
     position: relative;
     left: -83.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-9 {
     margin-left: 75%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-11 {
     width: 91.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-push-11 {
     position: relative;
     left: 91.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-pull-11 {
     position: relative;
     left: -91.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-10 {
     margin-left: 83.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-12 {
     width: 100%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-offset-11 {
     margin-left: 91.66667%;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-1 > .column, .medium-up-1 > .columns {
     width: 100%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-1 > .column:nth-of-type(1n), .medium-up-1 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-1 > .column:nth-of-type(1n+1), .medium-up-1 > .columns:nth-of-type(1n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-1 > .column:last-child, .medium-up-1 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-2 > .column, .medium-up-2 > .columns {
     width: 50%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-2 > .column:nth-of-type(1n), .medium-up-2 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-2 > .column:nth-of-type(2n+1), .medium-up-2 > .columns:nth-of-type(2n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-2 > .column:last-child, .medium-up-2 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-3 > .column, .medium-up-3 > .columns {
     width: 33.33333%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-3 > .column:nth-of-type(1n), .medium-up-3 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-3 > .column:nth-of-type(3n+1), .medium-up-3 > .columns:nth-of-type(3n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-3 > .column:last-child, .medium-up-3 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-4 > .column, .medium-up-4 > .columns {
     width: 25%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-4 > .column:nth-of-type(1n), .medium-up-4 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-4 > .column:nth-of-type(4n+1), .medium-up-4 > .columns:nth-of-type(4n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-4 > .column:last-child, .medium-up-4 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-5 > .column, .medium-up-5 > .columns {
     width: 20%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-5 > .column:nth-of-type(1n), .medium-up-5 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-5 > .column:nth-of-type(5n+1), .medium-up-5 > .columns:nth-of-type(5n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-5 > .column:last-child, .medium-up-5 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-6 > .column, .medium-up-6 > .columns {
     width: 16.66667%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-6 > .column:nth-of-type(1n), .medium-up-6 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-6 > .column:nth-of-type(6n+1), .medium-up-6 > .columns:nth-of-type(6n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-6 > .column:last-child, .medium-up-6 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-7 > .column, .medium-up-7 > .columns {
     width: 14.28571%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-7 > .column:nth-of-type(1n), .medium-up-7 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-7 > .column:nth-of-type(7n+1), .medium-up-7 > .columns:nth-of-type(7n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-7 > .column:last-child, .medium-up-7 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-8 > .column, .medium-up-8 > .columns {
     width: 12.5%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-8 > .column:nth-of-type(1n), .medium-up-8 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-8 > .column:nth-of-type(8n+1), .medium-up-8 > .columns:nth-of-type(8n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .medium-up-8 > .column:last-child, .medium-up-8 > .columns:last-child {
     float: left;
   }
 
-  /* line 119, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-collapse > .column, .medium-collapse > .columns {
     padding-left: 0;
     padding-right: 0;
   }
 
-  /* line 131, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 131, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-uncollapse > .column, .medium-uncollapse > .columns {
     padding-left: 0.98684rem;
     padding-right: 0.98684rem;
   }
 
-  /* line 135, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 135, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-centered {
     float: none;
     margin-left: auto;
     margin-right: auto;
   }
 
-  /* line 140, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 140, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .medium-uncentered,
   .medium-push-0,
   .medium-pull-0 {
@@ -1443,422 +1443,422 @@ button {
   }
 }
 @media screen and (min-width: 64em) {
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-1 {
     width: 8.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-1 {
     position: relative;
     left: 8.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-1 {
     position: relative;
     left: -8.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-0 {
     margin-left: 0%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-2 {
     width: 16.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-2 {
     position: relative;
     left: 16.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-2 {
     position: relative;
     left: -16.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-1 {
     margin-left: 8.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-3 {
     width: 25%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-3 {
     position: relative;
     left: 25%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-3 {
     position: relative;
     left: -25%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-2 {
     margin-left: 16.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-4 {
     width: 33.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-4 {
     position: relative;
     left: 33.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-4 {
     position: relative;
     left: -33.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-3 {
     margin-left: 25%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-5 {
     width: 41.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-5 {
     position: relative;
     left: 41.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-5 {
     position: relative;
     left: -41.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-4 {
     margin-left: 33.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-6 {
     width: 50%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-6 {
     position: relative;
     left: 50%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-6 {
     position: relative;
     left: -50%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-5 {
     margin-left: 41.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-7 {
     width: 58.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-7 {
     position: relative;
     left: 58.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-7 {
     position: relative;
     left: -58.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-6 {
     margin-left: 50%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-8 {
     width: 66.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-8 {
     position: relative;
     left: 66.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-8 {
     position: relative;
     left: -66.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-7 {
     margin-left: 58.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-9 {
     width: 75%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-9 {
     position: relative;
     left: 75%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-9 {
     position: relative;
     left: -75%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-8 {
     margin-left: 66.66667%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-10 {
     width: 83.33333%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-10 {
     position: relative;
     left: 83.33333%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-10 {
     position: relative;
     left: -83.33333%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-9 {
     margin-left: 75%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-11 {
     width: 91.66667%;
   }
 
-  /* line 93, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 93, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-push-11 {
     position: relative;
     left: 91.66667%;
   }
 
-  /* line 97, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 97, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-pull-11 {
     position: relative;
     left: -91.66667%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-10 {
     margin-left: 83.33333%;
   }
 
-  /* line 87, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 87, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-12 {
     width: 100%;
   }
 
-  /* line 105, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 105, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-offset-11 {
     margin-left: 91.66667%;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-1 > .column, .large-up-1 > .columns {
     width: 100%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-1 > .column:nth-of-type(1n), .large-up-1 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-1 > .column:nth-of-type(1n+1), .large-up-1 > .columns:nth-of-type(1n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-1 > .column:last-child, .large-up-1 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-2 > .column, .large-up-2 > .columns {
     width: 50%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-2 > .column:nth-of-type(1n), .large-up-2 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-2 > .column:nth-of-type(2n+1), .large-up-2 > .columns:nth-of-type(2n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-2 > .column:last-child, .large-up-2 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-3 > .column, .large-up-3 > .columns {
     width: 33.33333%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-3 > .column:nth-of-type(1n), .large-up-3 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-3 > .column:nth-of-type(3n+1), .large-up-3 > .columns:nth-of-type(3n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-3 > .column:last-child, .large-up-3 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-4 > .column, .large-up-4 > .columns {
     width: 25%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-4 > .column:nth-of-type(1n), .large-up-4 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-4 > .column:nth-of-type(4n+1), .large-up-4 > .columns:nth-of-type(4n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-4 > .column:last-child, .large-up-4 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-5 > .column, .large-up-5 > .columns {
     width: 20%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-5 > .column:nth-of-type(1n), .large-up-5 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-5 > .column:nth-of-type(5n+1), .large-up-5 > .columns:nth-of-type(5n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-5 > .column:last-child, .large-up-5 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-6 > .column, .large-up-6 > .columns {
     width: 16.66667%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-6 > .column:nth-of-type(1n), .large-up-6 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-6 > .column:nth-of-type(6n+1), .large-up-6 > .columns:nth-of-type(6n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-6 > .column:last-child, .large-up-6 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-7 > .column, .large-up-7 > .columns {
     width: 14.28571%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-7 > .column:nth-of-type(1n), .large-up-7 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-7 > .column:nth-of-type(7n+1), .large-up-7 > .columns:nth-of-type(7n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-7 > .column:last-child, .large-up-7 > .columns:last-child {
     float: left;
   }
 
-  /* line 17, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-8 > .column, .large-up-8 > .columns {
     width: 12.5%;
     float: left;
   }
-  /* line 21, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 21, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-8 > .column:nth-of-type(1n), .large-up-8 > .columns:nth-of-type(1n) {
     clear: none;
   }
-  /* line 25, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-8 > .column:nth-of-type(8n+1), .large-up-8 > .columns:nth-of-type(8n+1) {
     clear: both;
   }
-  /* line 29, ../../app/vendor/foundation/scss/grid/_layout.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_layout.scss */
   .large-up-8 > .column:last-child, .large-up-8 > .columns:last-child {
     float: left;
   }
 
-  /* line 119, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-collapse > .column, .large-collapse > .columns {
     padding-left: 0;
     padding-right: 0;
   }
 
-  /* line 131, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 131, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-uncollapse > .column, .large-uncollapse > .columns {
     padding-left: 0.98684rem;
     padding-right: 0.98684rem;
   }
 
-  /* line 135, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 135, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-centered {
     float: none;
     margin-left: auto;
     margin-right: auto;
   }
 
-  /* line 140, ../../app/vendor/foundation/scss/grid/_classes.scss */
+  /* line 140, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/grid/_classes.scss */
   .large-uncentered,
   .large-push-0,
   .large-pull-0 {
@@ -1867,7 +1867,7 @@ button {
     margin-right: 0;
   }
 }
-/* line 232, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 232, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 div,
 dl,
 dt,
@@ -1891,7 +1891,7 @@ td {
   padding: 0;
 }
 
-/* line 256, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 256, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 p {
   font-size: inherit;
   line-height: 1.5;
@@ -1899,27 +1899,27 @@ p {
   text-rendering: optimizeLegibility;
 }
 
-/* line 264, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 264, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 em,
 i {
   font-style: italic;
   line-height: inherit;
 }
 
-/* line 271, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 271, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 strong,
 b {
   font-weight: bold;
   line-height: inherit;
 }
 
-/* line 278, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 278, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 small {
   font-size: 90%;
   line-height: inherit;
 }
 
-/* line 284, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 284, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h1,
 h2,
 h3,
@@ -1935,7 +1935,7 @@ h6 {
   margin-bottom: 1rem;
   line-height: 1.4;
 }
-/* line 299, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 299, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h1 small,
 h2 small,
 h3 small,
@@ -1946,84 +1946,84 @@ h6 small {
   line-height: 0;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h1 {
   font-size: 1.57895rem;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h2 {
   font-size: 1.31579rem;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h3 {
   font-size: 1.25rem;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h4 {
   font-size: 1.18421rem;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h5 {
   font-size: 1.11842rem;
 }
 
-/* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 h6 {
   font-size: 1.05263rem;
 }
 
 @media screen and (min-width: 40em) {
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h1 {
     font-size: 1.71053rem;
   }
 
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h2 {
     font-size: 1.57895rem;
   }
 
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h3 {
     font-size: 1.31579rem;
   }
 
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h4 {
     font-size: 1.18421rem;
   }
 
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h5 {
     font-size: 1.11842rem;
   }
 
-  /* line 309, ../../app/vendor/foundation/scss/typography/_base.scss */
+  /* line 309, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
   h6 {
     font-size: 1.05263rem;
   }
 }
-/* line 317, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 317, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 a {
   color: #2199e8;
   text-decoration: none;
   line-height: inherit;
   cursor: pointer;
 }
-/* line 323, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 323, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 a:hover, a:focus {
   color: #1585cf;
 }
-/* line 331, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 331, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 a img {
   border: 0;
 }
 
-/* line 337, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 337, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 hr {
   max-width: 78.94737rem;
   height: 0;
@@ -2035,7 +2035,7 @@ hr {
   clear: both;
 }
 
-/* line 349, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 349, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 ul,
 ol,
 dl {
@@ -2044,69 +2044,69 @@ dl {
   list-style-position: outside;
 }
 
-/* line 358, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 358, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 li {
   font-size: inherit;
 }
 
-/* line 363, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 363, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 ul {
   list-style-type: disc;
   margin-left: 1.25rem;
 }
 
-/* line 369, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 369, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 ol {
   margin-left: 1.25rem;
 }
 
-/* line 375, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 375, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 ul ul, ol ul, ul ol, ol ol {
   margin-left: 1.25rem;
   margin-bottom: 0;
 }
 
-/* line 382, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 382, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 dl {
   margin-bottom: 1rem;
 }
-/* line 385, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 385, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 dl dt {
   margin-bottom: 0.3rem;
   font-weight: bold;
 }
 
-/* line 392, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 392, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 blockquote {
   margin: 0 0 1rem;
   padding: 0.59211rem 1.31579rem 0 1.25rem;
   border-left: 1px solid #cacaca;
 }
-/* line 397, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 397, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 blockquote, blockquote p {
   line-height: 1.5;
   color: #7a7a7a;
 }
 
-/* line 404, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 404, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 cite {
   display: block;
   font-size: 0.85526rem;
   color: #7a7a7a;
 }
-/* line 409, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 409, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 cite:before {
   content: '\2014 \0020';
 }
 
-/* line 415, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 415, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 abbr {
   color: #3a3c33;
   cursor: help;
   border-bottom: 1px dotted #23241f;
 }
 
-/* line 422, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 422, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   font-weight: 400;
@@ -2116,7 +2116,7 @@ code {
   padding: 0.13158rem 0.32895rem 0.06579rem;
 }
 
-/* line 432, ../../app/vendor/foundation/scss/typography/_base.scss */
+/* line 432, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_base.scss */
 kbd {
   padding: 0.13158rem 0.26316rem 0;
   margin: 0;
@@ -2125,7 +2125,7 @@ kbd {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
 
-/* line 48, ../../app/vendor/foundation/scss/typography/_helpers.scss */
+/* line 48, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_helpers.scss */
 .subheader {
   margin-top: 0.2rem;
   margin-bottom: 0.5rem;
@@ -2134,97 +2134,97 @@ kbd {
   color: #7a7a7a;
 }
 
-/* line 57, ../../app/vendor/foundation/scss/typography/_helpers.scss */
+/* line 57, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_helpers.scss */
 .lead {
   font-size: 118.75%;
   line-height: 1.6;
 }
 
-/* line 63, ../../app/vendor/foundation/scss/typography/_helpers.scss */
+/* line 63, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_helpers.scss */
 .stat {
   font-size: 2.5rem;
   line-height: 1;
 }
-/* line 67, ../../app/vendor/foundation/scss/typography/_helpers.scss */
+/* line 67, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_helpers.scss */
 p + .stat {
   margin-top: -1rem;
 }
 
-/* line 73, ../../app/vendor/foundation/scss/typography/_helpers.scss */
+/* line 73, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_helpers.scss */
 .no-bullet {
   margin-left: 0;
   list-style: none;
 }
 
-/* line 15, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+/* line 15, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
 .text-left {
   text-align: left;
 }
 
-/* line 15, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+/* line 15, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
 .text-right {
   text-align: right;
 }
 
-/* line 15, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+/* line 15, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
 .text-center {
   text-align: center;
 }
 
-/* line 15, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+/* line 15, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
 .text-justify {
   text-align: justify;
 }
 
 @media screen and (min-width: 40em) {
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .medium-text-left {
     text-align: left;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .medium-text-right {
     text-align: right;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .medium-text-center {
     text-align: center;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .medium-text-justify {
     text-align: justify;
   }
 }
 @media screen and (min-width: 64em) {
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .large-text-left {
     text-align: left;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .large-text-right {
     text-align: right;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .large-text-center {
     text-align: center;
   }
 
-  /* line 10, ../../app/vendor/foundation/scss/typography/_alignment.scss */
+  /* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_alignment.scss */
   .large-text-justify {
     text-align: justify;
   }
 }
-/* line 12, ../../app/vendor/foundation/scss/typography/_print.scss */
+/* line 12, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
 .show-for-print {
   display: none !important;
 }
 
 @media print {
-  /* line 15, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 15, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   * {
     background: transparent !important;
     color: black !important;
@@ -2232,88 +2232,88 @@ p + .stat {
     text-shadow: none !important;
   }
 
-  /* line 22, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 22, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   .show-for-print {
     display: block !important;
   }
 
-  /* line 23, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 23, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   .hide-for-print {
     display: none !important;
   }
 
-  /* line 25, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 25, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   table.show-for-print {
     display: table !important;
   }
 
-  /* line 26, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 26, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   thead.show-for-print {
     display: table-header-group !important;
   }
 
-  /* line 27, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 27, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   tbody.show-for-print {
     display: table-row-group !important;
   }
 
-  /* line 28, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 28, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   tr.show-for-print {
     display: table-row !important;
   }
 
-  /* line 29, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 29, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   td.show-for-print {
     display: table-cell !important;
   }
 
-  /* line 30, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 30, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   th.show-for-print {
     display: table-cell !important;
   }
 
-  /* line 33, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 33, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   a,
   a:visited {
     text-decoration: underline;
   }
 
-  /* line 35, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 35, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   a[href]:after {
     content: " (" attr(href) ")";
   }
 
-  /* line 38, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 38, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   .ir a:after,
   a[href^='javascript:']:after,
   a[href^='#']:after {
     content: '';
   }
 
-  /* line 43, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 43, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   abbr[title]:after {
     content: " (" attr(title) ")";
   }
 
-  /* line 46, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 46, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   pre,
   blockquote {
     border: 1px solid #999;
     page-break-inside: avoid;
   }
 
-  /* line 53, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 53, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   thead {
     display: table-header-group;
   }
 
-  /* line 55, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 55, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   tr,
   img {
     page-break-inside: avoid;
   }
 
-  /* line 58, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 58, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   img {
     max-width: 100% !important;
   }
@@ -2321,7 +2321,7 @@ p + .stat {
   @page {
     margin: 0.5cm;
   }
-  /* line 62, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 62, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   p,
   h2,
   h3 {
@@ -2329,13 +2329,13 @@ p + .stat {
     widows: 3;
   }
 
-  /* line 70, ../../app/vendor/foundation/scss/typography/_print.scss */
+  /* line 70, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/typography/_print.scss */
   h2,
   h3 {
     page-break-after: avoid;
   }
 }
-/* line 200, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 200, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button {
   display: inline-block;
   text-align: center;
@@ -2352,155 +2352,155 @@ p + .stat {
   background-color: #2199e8;
   color: #fff;
 }
-/* line 157, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 157, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 [data-whatinput='mouse'] .button {
   outline: 0;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button:hover, .button:focus {
   background-color: #1583cc;
   color: #fff;
 }
-/* line 204, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 204, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.tiny {
   font-size: 0.6rem;
 }
-/* line 205, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 205, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.small {
   font-size: 0.75rem;
 }
-/* line 206, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 206, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.large {
   font-size: 1.25rem;
 }
-/* line 207, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 207, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.expanded {
   display: block;
   width: 100%;
   margin-left: 0;
   margin-right: 0;
 }
-/* line 212, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 212, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.primary {
   background-color: #2199e8;
   color: #fff;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.primary:hover, .button.primary:focus {
   background-color: #147cc0;
   color: #fff;
 }
-/* line 212, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 212, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.secondary {
   background-color: #777;
   color: #fff;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.secondary:hover, .button.secondary:focus {
   background-color: #5f5f5f;
   color: #fff;
 }
-/* line 212, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 212, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.success {
   background-color: #3adb76;
   color: #fff;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.success:hover, .button.success:focus {
   background-color: #22bb5b;
   color: #fff;
 }
-/* line 212, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 212, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.alert {
   background-color: #ec5840;
   color: #fff;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.alert:hover, .button.alert:focus {
   background-color: #da3116;
   color: #fff;
 }
-/* line 212, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 212, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.warning {
   background-color: #ffae00;
   color: #fff;
 }
-/* line 119, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.warning:hover, .button.warning:focus {
   background-color: #cc8b00;
   color: #fff;
 }
-/* line 229, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 229, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow {
   border: 1px solid #2199e8;
   color: #2199e8;
 }
-/* line 127, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 127, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow, .button.hollow:hover, .button.hollow:focus {
   background-color: transparent;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow:hover, .button.hollow:focus {
   border-color: #0c4d78;
   color: #0c4d78;
 }
-/* line 234, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.primary {
   border: 1px solid #2199e8;
   color: #2199e8;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.primary:hover, .button.hollow.primary:focus {
   border-color: #0c4d78;
   color: #0c4d78;
 }
-/* line 234, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.secondary {
   border: 1px solid #777;
   color: #777;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.secondary:hover, .button.hollow.secondary:focus {
   border-color: #3c3c3c;
   color: #3c3c3c;
 }
-/* line 234, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.success {
   border: 1px solid #3adb76;
   color: #3adb76;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.success:hover, .button.hollow.success:focus {
   border-color: #157539;
   color: #157539;
 }
-/* line 234, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.alert {
   border: 1px solid #ec5840;
   color: #ec5840;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.alert:hover, .button.hollow.alert:focus {
   border-color: #881f0e;
   color: #881f0e;
 }
-/* line 234, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 234, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.warning {
   border: 1px solid #ffae00;
   color: #ffae00;
 }
-/* line 139, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 139, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.hollow.warning:hover, .button.hollow.warning:focus {
   border-color: #805700;
   color: #805700;
 }
-/* line 242, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 242, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.disabled, .button[disabled] {
   opacity: 0.25;
   cursor: not-allowed;
   pointer-events: none;
 }
-/* line 161, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 161, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.dropdown::after {
   content: '';
   display: block;
@@ -2515,14 +2515,14 @@ p + .stat {
   margin-left: 1em;
   display: inline-block;
 }
-/* line 259, ../../app/vendor/foundation/scss/components/_button.scss */
+/* line 259, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_button.scss */
 .button.arrow-only::after {
   margin-left: 0;
   float: none;
   top: 0.2em;
 }
 
-/* line 102, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 102, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
 textarea {
   display: block;
@@ -2542,7 +2542,7 @@ textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-/* line 88, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 88, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 [type='text']:focus, [type='password']:focus, [type='date']:focus, [type='datetime']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='week']:focus, [type='email']:focus, [type='number']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='url']:focus, [type='color']:focus,
 textarea:focus {
   border: 1px solid #7a7a7a;
@@ -2552,16 +2552,16 @@ textarea:focus {
   transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
 }
 
-/* line 110, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 110, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 textarea {
   max-width: 100%;
 }
-/* line 113, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 113, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 textarea[rows] {
   height: auto;
 }
 
-/* line 121, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 121, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 input:disabled, input[readonly],
 textarea:disabled,
 textarea[readonly] {
@@ -2569,7 +2569,7 @@ textarea[readonly] {
   cursor: default;
 }
 
-/* line 129, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 129, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 [type='submit'],
 [type='button'] {
   border-radius: 0;
@@ -2577,19 +2577,19 @@ textarea[readonly] {
   -moz-appearance: none;
 }
 
-/* line 138, ../../app/vendor/foundation/scss/forms/_text.scss */
+/* line 138, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_text.scss */
 input[type='search'] {
   box-sizing: border-box;
 }
 
-/* line 10, ../../app/vendor/foundation/scss/forms/_checkbox.scss */
+/* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_checkbox.scss */
 [type='file'],
 [type='checkbox'],
 [type='radio'] {
   margin: 0 0 1.05263rem;
 }
 
-/* line 17, ../../app/vendor/foundation/scss/forms/_checkbox.scss */
+/* line 17, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_checkbox.scss */
 [type='checkbox'] + label,
 [type='radio'] + label {
   display: inline-block;
@@ -2599,18 +2599,18 @@ input[type='search'] {
   vertical-align: baseline;
 }
 
-/* line 27, ../../app/vendor/foundation/scss/forms/_checkbox.scss */
+/* line 27, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_checkbox.scss */
 label > [type='checkbox'],
 label > [type='label'] {
   margin-right: 0.52632rem;
 }
 
-/* line 33, ../../app/vendor/foundation/scss/forms/_checkbox.scss */
+/* line 33, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_checkbox.scss */
 [type='file'] {
   width: 100%;
 }
 
-/* line 41, ../../app/vendor/foundation/scss/forms/_label.scss */
+/* line 41, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_label.scss */
 label {
   display: block;
   margin: 0;
@@ -2619,13 +2619,13 @@ label {
   line-height: 1.8;
   color: #23241f;
 }
-/* line 44, ../../app/vendor/foundation/scss/forms/_label.scss */
+/* line 44, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_label.scss */
 label.middle {
   margin: 0 0 1.05263rem;
   padding: 0.59211rem 0;
 }
 
-/* line 22, ../../app/vendor/foundation/scss/forms/_help-text.scss */
+/* line 22, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_help-text.scss */
 .help-text {
   margin-top: -0.52632rem;
   font-size: 0.85526rem;
@@ -2633,29 +2633,29 @@ label.middle {
   color: #333;
 }
 
-/* line 28, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 28, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group {
   display: table;
   width: 100%;
   margin-bottom: 1.05263rem;
 }
-/* line 33, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 33, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group > :first-child {
   border-radius: 0 0 0 0;
 }
-/* line 38, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 38, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group > :last-child > * {
   border-radius: 0 0 0 0;
 }
 
-/* line 44, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 44, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-label, .input-group-field, .input-group-button {
   display: table-cell;
   margin: 0;
   vertical-align: middle;
 }
 
-/* line 50, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 50, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-label {
   text-align: center;
   width: 1%;
@@ -2665,22 +2665,22 @@ label.middle {
   color: #23241f;
   border: 1px solid #cacaca;
 }
-/* line 61, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 61, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-label:first-child {
   border-right: 0;
 }
-/* line 65, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 65, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-label:last-child {
   border-left: 0;
 }
 
-/* line 71, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 71, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-field {
   border-radius: 0;
   height: 2.63158rem;
 }
 
-/* line 77, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 77, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-button {
   height: 100%;
   padding-top: 0;
@@ -2688,32 +2688,32 @@ label.middle {
   text-align: center;
   width: 1%;
 }
-/* line 85, ../../app/vendor/foundation/scss/forms/_input-group.scss */
+/* line 85, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_input-group.scss */
 .input-group-button a,
 .input-group-button input,
 .input-group-button button {
   margin: 0;
 }
 
-/* line 40, ../../app/vendor/foundation/scss/forms/_fieldset.scss */
+/* line 40, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_fieldset.scss */
 fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
 
-/* line 46, ../../app/vendor/foundation/scss/forms/_fieldset.scss */
+/* line 46, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_fieldset.scss */
 legend {
   margin-bottom: 0.52632rem;
 }
 
-/* line 50, ../../app/vendor/foundation/scss/forms/_fieldset.scss */
+/* line 50, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_fieldset.scss */
 .fieldset {
   border: 1px solid #cacaca;
   padding: 1.31579rem;
   margin: 1.18421rem 0;
 }
-/* line 30, ../../app/vendor/foundation/scss/forms/_fieldset.scss */
+/* line 30, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_fieldset.scss */
 .fieldset legend {
   background: #fefefe;
   padding: 0 0.19737rem;
@@ -2721,7 +2721,7 @@ legend {
   margin-left: -0.19737rem;
 }
 
-/* line 60, ../../app/vendor/foundation/scss/forms/_select.scss */
+/* line 60, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_select.scss */
 select {
   height: 2.56579rem;
   padding: 0.52632rem;
@@ -2741,37 +2741,37 @@ select {
   background-repeat: no-repeat;
 }
 @media screen and (min-width: 0\0) {
-  /* line 60, ../../app/vendor/foundation/scss/forms/_select.scss */
+  /* line 60, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_select.scss */
   select {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAYAAACbU/80AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIpJREFUeNrEkckNgDAMBBfRkEt0ObRBBdsGXUDgmQfK4XhH2m8czQAAy27R3tsw4Qfe2x8uOO6oYLb6GlOor3GF+swURAOmUJ+RwtEJs9WvTGEYxBXqI1MQAZhCfUQKRzDMVj+TwrAIV6jvSUEkYAr1LSkcyTBb/V+KYfX7xAeusq3sLDtGH3kEGACPWIflNZfhRQAAAABJRU5ErkJggg==");
   }
 }
-/* line 44, ../../app/vendor/foundation/scss/forms/_select.scss */
+/* line 44, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_select.scss */
 select:disabled {
   background-color: #e6e6e6;
   cursor: default;
 }
-/* line 50, ../../app/vendor/foundation/scss/forms/_select.scss */
+/* line 50, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_select.scss */
 select::-ms-expand {
   display: none;
 }
-/* line 54, ../../app/vendor/foundation/scss/forms/_select.scss */
+/* line 54, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_select.scss */
 select[multiple] {
   height: auto;
 }
 
-/* line 43, ../../app/vendor/foundation/scss/forms/_error.scss */
+/* line 43, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_error.scss */
 .is-invalid-input:not(:focus) {
   background-color: rgba(236, 88, 64, 0.1);
   border-color: #ec5840;
 }
 
-/* line 69, ../../app/vendor/foundation/scss/forms/_error.scss */
+/* line 69, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_error.scss */
 .is-invalid-label {
   color: #ec5840;
 }
 
-/* line 75, ../../app/vendor/foundation/scss/forms/_error.scss */
+/* line 75, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_error.scss */
 .form-error {
   display: none;
   margin-top: -0.52632rem;
@@ -2780,92 +2780,92 @@ select[multiple] {
   font-weight: bold;
   color: #ec5840;
 }
-/* line 78, ../../app/vendor/foundation/scss/forms/_error.scss */
+/* line 78, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/forms/_error.scss */
 .form-error.is-visible {
   display: block;
 }
 
-/* line 61, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 61, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .hide {
   display: none !important;
 }
 
-/* line 65, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 65, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .invisible {
   visibility: hidden;
 }
 
 @media screen and (min-width: 0em) and (max-width: 39.9375em) {
-  /* line 81, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 81, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-small-only {
     display: none !important;
   }
 }
 
 @media screen and (max-width: 0em), screen and (min-width: 40em) {
-  /* line 85, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 85, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-small-only {
     display: none !important;
   }
 }
 
 @media screen and (min-width: 40em) {
-  /* line 72, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 72, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-medium {
     display: none !important;
   }
 }
 
 @media screen and (max-width: 39.9375em) {
-  /* line 76, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 76, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-medium {
     display: none !important;
   }
 }
 
 @media screen and (min-width: 40em) and (max-width: 63.9375em) {
-  /* line 81, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 81, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-medium-only {
     display: none !important;
   }
 }
 
 @media screen and (max-width: 39.9375em), screen and (min-width: 64em) {
-  /* line 85, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 85, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-medium-only {
     display: none !important;
   }
 }
 
 @media screen and (min-width: 64em) {
-  /* line 72, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 72, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-large {
     display: none !important;
   }
 }
 
 @media screen and (max-width: 63.9375em) {
-  /* line 76, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 76, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-large {
     display: none !important;
   }
 }
 
 @media screen and (min-width: 64em) and (max-width: 74.9375em) {
-  /* line 81, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 81, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-large-only {
     display: none !important;
   }
 }
 
 @media screen and (max-width: 63.9375em), screen and (min-width: 75em) {
-  /* line 85, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 85, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-large-only {
     display: none !important;
   }
 }
 
-/* line 92, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 92, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .show-for-sr,
 .show-on-focus {
   position: absolute !important;
@@ -2875,7 +2875,7 @@ select[multiple] {
   clip: rect(0, 0, 0, 0);
 }
 
-/* line 99, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 99, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .show-on-focus:active, .show-on-focus:focus {
   position: static !important;
   height: auto;
@@ -2884,74 +2884,74 @@ select[multiple] {
   clip: auto;
 }
 
-/* line 106, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 106, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .show-for-landscape,
 .hide-for-portrait {
   display: block !important;
 }
 @media screen and (orientation: landscape) {
-  /* line 106, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 106, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-landscape,
   .hide-for-portrait {
     display: block !important;
   }
 }
 @media screen and (orientation: portrait) {
-  /* line 106, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 106, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .show-for-landscape,
   .hide-for-portrait {
     display: none !important;
   }
 }
 
-/* line 119, ../../app/vendor/foundation/scss/components/_visibility.scss */
+/* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
 .hide-for-landscape,
 .show-for-portrait {
   display: none !important;
 }
 @media screen and (orientation: landscape) {
-  /* line 119, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-landscape,
   .show-for-portrait {
     display: none !important;
   }
 }
 @media screen and (orientation: portrait) {
-  /* line 119, ../../app/vendor/foundation/scss/components/_visibility.scss */
+  /* line 119, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_visibility.scss */
   .hide-for-landscape,
   .show-for-portrait {
     display: block !important;
   }
 }
 
-/* line 10, ../../app/vendor/foundation/scss/components/_float.scss */
+/* line 10, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_float.scss */
 .float-left {
   float: left !important;
 }
 
-/* line 14, ../../app/vendor/foundation/scss/components/_float.scss */
+/* line 14, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_float.scss */
 .float-right {
   float: right !important;
 }
 
-/* line 18, ../../app/vendor/foundation/scss/components/_float.scss */
+/* line 18, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_float.scss */
 .float-center {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* line 130, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 130, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 .clearfix::before, .clearfix::after {
   content: ' ';
   display: table;
 }
-/* line 136, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 136, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 .clearfix::after {
   clear: both;
 }
 
-/* line 58, ../../app/vendor/foundation/scss/components/_close-button.scss */
+/* line 58, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_close-button.scss */
 .close-button {
   position: absolute;
   color: #7a7a7a;
@@ -2961,16 +2961,16 @@ select[multiple] {
   line-height: 1;
   cursor: pointer;
 }
-/* line 157, ../../app/vendor/foundation/scss/util/_mixins.scss */
+/* line 157, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/util/_mixins.scss */
 [data-whatinput='mouse'] .close-button {
   outline: 0;
 }
-/* line 51, ../../app/vendor/foundation/scss/components/_close-button.scss */
+/* line 51, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_close-button.scss */
 .close-button:hover, .close-button:focus {
   color: #23241f;
 }
 
-/* line 41, ../../app/vendor/foundation/scss/components/_label.scss */
+/* line 41, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_label.scss */
 .label {
   display: inline-block;
   padding: 0.33333rem 0.5rem;
@@ -2982,33 +2982,33 @@ select[multiple] {
   background: #2199e8;
   color: #fefefe;
 }
-/* line 49, ../../app/vendor/foundation/scss/components/_label.scss */
+/* line 49, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_label.scss */
 .label.secondary {
   background: #777;
   color: #fefefe;
 }
-/* line 49, ../../app/vendor/foundation/scss/components/_label.scss */
+/* line 49, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_label.scss */
 .label.success {
   background: #3adb76;
   color: #fefefe;
 }
-/* line 49, ../../app/vendor/foundation/scss/components/_label.scss */
+/* line 49, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_label.scss */
 .label.alert {
   background: #ec5840;
   color: #fefefe;
 }
-/* line 49, ../../app/vendor/foundation/scss/components/_label.scss */
+/* line 49, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_label.scss */
 .label.warning {
   background: #ffae00;
   color: #fefefe;
 }
 
-/* line 196, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 196, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 table {
   margin-bottom: 1rem;
   border-radius: 0;
 }
-/* line 70, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 70, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 thead,
 tbody,
 tfoot {
@@ -3016,24 +3016,24 @@ tfoot {
   background-color: #fefefe;
 }
 
-/* line 78, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 78, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 caption {
   font-weight: bold;
   padding: 0.52632rem 0.65789rem 0.65789rem;
 }
 
-/* line 84, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 84, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 thead,
 tfoot {
   background: #f8f8f8;
   color: #3a3c33;
 }
-/* line 90, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 90, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 thead tr,
 tfoot tr {
   background: transparent;
 }
-/* line 95, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 95, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 thead th,
 thead td,
 tfoot th,
@@ -3043,49 +3043,49 @@ tfoot td {
   text-align: left;
 }
 
-/* line 108, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 108, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 tbody tr:nth-child(even) {
   background-color: #f1f1f1;
 }
-/* line 121, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 121, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 tbody th,
 tbody td {
   padding: 0.52632rem 0.65789rem 0.65789rem;
 }
 
 @media screen and (max-width: 63.9375em) {
-  /* line 175, ../../app/vendor/foundation/scss/components/_table.scss */
+  /* line 175, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
   table.stack thead {
     display: none;
   }
-  /* line 180, ../../app/vendor/foundation/scss/components/_table.scss */
+  /* line 180, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
   table.stack tfoot {
     display: none;
   }
-  /* line 184, ../../app/vendor/foundation/scss/components/_table.scss */
+  /* line 184, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
   table.stack tr,
   table.stack th,
   table.stack td {
     display: block;
   }
-  /* line 190, ../../app/vendor/foundation/scss/components/_table.scss */
+  /* line 190, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
   table.stack td {
     border-top: 0;
   }
 }
 
-/* line 206, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 206, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 table.scroll {
   display: block;
   width: 100%;
   overflow-x: auto;
 }
 
-/* line 140, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 140, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 table.hover tr:hover {
   background-color: #f9f9f9;
 }
-/* line 146, ../../app/vendor/foundation/scss/components/_table.scss */
+/* line 146, ../../../usr/local/lib/node_modules/spectacle-docs/app/vendor/foundation/scss/components/_table.scss */
 table.hover tr:nth-of-type(even):hover {
   background-color: #ececec;
 }

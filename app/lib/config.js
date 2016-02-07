@@ -102,6 +102,9 @@ module.exports = function(grunt, options, spec) {
 
       // Cleanup cache and traget files
       clean: {
+          options: {
+              force: true
+          },
           cache: [options.cacheDir],
           assets: [options.targetDir + '/stylesheets/**/*.css', options.targetDir + '/javascripts/**/*.js'],
           html: [options.cacheDir + '/**/*.html', options.targetDir + '/**/*.html']

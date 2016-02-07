@@ -3,12 +3,13 @@
 var program = require('commander'),
     grunt = require('grunt'),
     fs = require('fs'),
+    os = require('os'),
     path = require('path'),
-    predentation = require('predentation'),
     package = require('../package'),
     _ = require('lodash');
 
 // Set CWD to root dir
+var cwd = process.cwd();
 process.chdir(__dirname + '/..');
 
 //
@@ -23,10 +24,10 @@ program.version(package.version)
     .option('-d, --development-mode', 'start HTTP server with the file watcher and live reload (default: false)')
     .option('-s, --start-server', 'start the HTTP server without any development features')
     .option('-p, --port <dir>', 'the port number for the HTTP server to listen on (default: 4400)', Number, 4400)
-    .option('-t, --target-dir <dir>', 'the target build directory (default: ./public)', String, './public')
+    .option('-t, --target-dir <dir>', 'the target build directory (default: ' + cwd + '/public)', String, cwd + '/public')
     .option('-f, --target-file <file>', 'the target build HTML file (default: index.html)', String, 'index.html')
     .option('-a, --app-dir <dir>', 'the application source directory (default: ./app)', String, './app')
-    .option('-i, --cache-dir <dir>', 'the intermediate build cache directory (default: ./.cache)', String, './.cache')
+    //.option('-i, --cache-dir <dir>', 'the intermediate build cache directory (default: ./.cache)', String, './.cache')
     .option('-l, --logo-file <file>', 'specify a custom logo file (default: null)', String, null)
     .option('-c, --config-file <file>', 'specify a custom configuration file (default: ./app/lib/config.js)', String, './app/lib/config.js')
     // .option('-f, --spec-file <file>', 'the input OpenAPI/Swagger spec file (default: test/fixtures/petstore.json)', String, 'test/fixtures/petstore.json')
@@ -36,6 +37,9 @@ program.version(package.version)
 if (program.args.length < 1 && program.rawArgs.length < 1) {
     program.help();
 }
+
+// Set some necessary defaults
+program.cacheDir = os.tmpdir() + '/.spectacle';
 
 // Set the specFile option for passing to the `config.js` file
 program.specFile = program.args[0] || 'test/fixtures/cheese.json';
@@ -96,34 +100,34 @@ grunt.registerTask('develop', ['server', 'watch']);
 
 // Report, etc when all tasks have completed.
 grunt.task.options({
-    error: function(e) {
-        console.warn('Task error:', e);
-        // TODO: fail here or push on?
-    },
-    done: function() {
-        console.log('All tasks complete');
-    }
+  error: function(e) {
+    console.warn('Task error:', e);
+    // TODO: fail here or push on?
+  },
+  done: function() {
+    console.log('All tasks complete');
+  }
 });
 
 //
 //= Run the shiz
 
 if (program.startServer) {
-    grunt.task.run('server');
+  grunt.task.run('server');
 }
 else {
   if (!program.disableCss) {
-      grunt.task.run(['stylesheets', 'foundation']);
+    grunt.task.run(['stylesheets', 'foundation']);
   }
   if (!program.disableJs) {
-      grunt.task.run('javascripts');
+    grunt.task.run('javascripts');
   }
   if (program.logoFile) {
-      grunt.task.run('copy:logo');
+    grunt.task.run('copy:logo');
   }
   grunt.task.run('templates');
   if (program.developmentMode) {
-      grunt.task.run('develop');
+    grunt.task.run('develop');
   }
 }
 
