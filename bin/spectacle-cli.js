@@ -47,7 +47,7 @@ program.specFile = program.args[0] || 'test/fixtures/cheese.json';
 //
 //= Load the specification and set variables
 
-var specData = require(path.resolve(program.specFile)),
+var specData = require(path.resolve(process.cwd()+'/'+program.specFile)),
     templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(program, specData),
     config = require(path.resolve(program.configFile))(grunt, program, templateData);
 
