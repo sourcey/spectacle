@@ -126,7 +126,7 @@ module.exports = function(grunt, options, spec) {
       copy: {
           logo: {
               src: options.logoFile,
-              dest: options.targetDir + '/images/' + path.basename(options.logoFile)
+              dest: options.targetDir + '/images/' + path.basename(options.logoFile || '')
           }
       },
 
