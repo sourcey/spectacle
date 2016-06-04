@@ -47,7 +47,7 @@ program.specFile = program.args[0] || 'test/fixtures/cheese.json';
 //
 //= Load the specification and set variables
 
-var specData = require(path.resolve(cwd+'/'+program.specFile)),
+var specData = require(path.resolve(cwd + '/' + program.specFile)),
     templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(program, specData),
     config = require(path.resolve(program.configFile))(grunt, program, templateData);
 
@@ -67,27 +67,27 @@ grunt.loadNpmTasks('grunt-contrib-connect');
 grunt.loadNpmTasks('grunt-compile-handlebars');
 
 grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {
-  var html = fs.readFileSync(program.cacheDir + '/' + program.targetFile, 'utf8');
-  html = html.replace(/<pre.*?><code.*?>([\s\S]*?)<\/code><\/pre>/gmi, function(x, y) {
-    var lines = x.split('\n'), level = null;
-    if (lines) {
+    var html = fs.readFileSync(program.cacheDir + '/' + program.targetFile, 'utf8');
+    html = html.replace(/<pre.*?><code.*?>([\s\S]*?)<\/code><\/pre>/gmi, function(x, y) {
+        var lines = x.split('\n'), level = null;
+        if (lines) {
 
-      // Determine the level of indentation
-      lines.forEach(function(line) {
-        if (line[0] === '<') return;
-        var wsp = line.search(/\S/);
-        level = (level === null || (wsp < line.length && wsp < level)) ? wsp : level;
-      });
+            // Determine the level of indentation
+            lines.forEach(function(line) {
+                if (line[0] === '<') return;
+                var wsp = line.search(/\S/);
+                level = (level === null || (wsp < line.length && wsp < level)) ? wsp : level;
+            });
 
-      // Remove indentation
-      var regex = new RegExp('^\\s{' + level + '}');
-      lines.forEach(function(line, index, lines) {
-        lines[index] = line.replace(regex, '');
-      });
-    }
-    return lines.join('\n');
-  });
-  fs.writeFileSync(program.targetDir + '/' + program.targetFile, html);
+            // Remove indentation
+            var regex = new RegExp('^\\s{' + level + '}');
+            lines.forEach(function(line, index, lines) {
+                lines[index] = line.replace(regex, '');
+            });
+        }
+        return lines.join('\n');
+    });
+    fs.writeFileSync(program.targetDir + '/' + program.targetFile, html);
 });
 
 grunt.registerTask('stylesheets', ['compass:scss', 'concat:css', 'cssmin']);
@@ -100,35 +100,35 @@ grunt.registerTask('develop', ['server', 'watch']);
 
 // Report, etc when all tasks have completed.
 grunt.task.options({
-  error: function(e) {
-    console.warn('Task error:', e);
-    // TODO: fail here or push on?
-  },
-  done: function() {
-    console.log('All tasks complete');
-  }
+    error: function(e) {
+        console.warn('Task error:', e);
+        // TODO: fail here or push on?
+    },
+    done: function() {
+        console.log('All tasks complete');
+    }
 });
 
 //
 //= Run the shiz
 
 if (program.startServer) {
-  grunt.task.run('server');
+    grunt.task.run('server');
 }
 else {
-  if (!program.disableCss) {
-    grunt.task.run(['stylesheets', 'foundation']);
-  }
-  if (!program.disableJs) {
-    grunt.task.run('javascripts');
-  }
-  if (program.logoFile) {
-    grunt.task.run('copy:logo');
-  }
-  grunt.task.run('templates');
-  if (program.developmentMode) {
-    grunt.task.run('develop');
-  }
+    if (!program.disableCss) {
+        grunt.task.run(['stylesheets', 'foundation']);
+    }
+    if (!program.disableJs) {
+        grunt.task.run('javascripts');
+    }
+    if (program.logoFile) {
+        grunt.task.run('copy:logo');
+    }
+    grunt.task.run('templates');
+    if (program.developmentMode) {
+        grunt.task.run('develop');
+    }
 }
 
 grunt.task.start();

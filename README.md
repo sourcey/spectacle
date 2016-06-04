@@ -32,19 +32,13 @@ npm install -g spectacle-docs
 Next pass your `swagger.json` document use the CLI to generate your documentation.
 
 ```bash
-spectacle your_swagger_api.json
+spectacle -d your_swagger_api.json
 
 # Or use the cheese.json example to test it out
-# spectacle test/fixtures/cheese.json
+# spectacle -d -l test/fixtures/cheese.png test/fixtures/cheese.json
 ```
 
-Your generated documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by starting the internal web server like so:
-
-```bash
-spectacle -s
-```
-
-Now point your browser to [http://localhost:4400/](http://localhost:4400/) and presto - sexy docs for your API!
+Your generated documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by pointing your browser to [http://localhost:4400/](http://localhost:4400/).
 
 ## Configuration Options
 
@@ -53,24 +47,23 @@ The basic CLI options are detailed below:
 ```bash
 $ spectacle -h
 
-  Usage: cli spactacle [options] <specfile>
+  Usage: spectacle [options] <specfile>
 
   Options:
 
-  -h, --help                output usage information
-  -V, --version             output the version number
-  -C, --disable-css         omit CSS generation (default: false)
-  -J, --disable-js          omit JavaScript generation (default: false)
-  -e, --embeddable          omit the HTML <body/> and generate the documentation content only (default: false)
-  -d, --development-mode    start HTTP server with the file watcher and live reload (default: false)
-  -s, --start-server        start the HTTP server without any development features
-  -p, --port <dir>          the port number for the HTTP server to listen on (default: 4400)
-  -t, --target-dir <dir>    the target build directory (default: ./public)
-  -f, --target-file <file>  the target build HTML file (default: index.html)
-  -a, --app-dir <dir>       the application source directory (default: ./app)
-  -i, --cache-dir <dir>     the intermediate build cache directory (default: ./.cache)
-  -l, --logo-file <file>    specify a custom logo file (default: null)
-  -c, --config-file <file>  specify a custom configuration file (default: ./app/lib/config.js)
+    -h, --help                output usage information
+    -V, --version             output the version number
+    -C, --disable-css         omit CSS generation (default: false)
+    -J, --disable-js          omit JavaScript generation (default: false)
+    -e, --embeddable          omit the HTML <body/> and generate the documentation content only (default: false)
+    -d, --development-mode    start HTTP server with the file watcher and live reload (default: false)
+    -s, --start-server        start the HTTP server without any development features
+    -p, --port <dir>          the port number for the HTTP server to listen on (default: 4400)
+    -t, --target-dir <dir>    the target build directory (default: ./public)
+    -f, --target-file <file>  the target build HTML file (default: index.html)
+    -a, --app-dir <dir>       the application source directory (default: ./app)
+    -l, --logo-file <file>    specify a custom logo file (default: null)
+    -c, --config-file <file>  specify a custom configuration file (default: ./app/lib/config.js)
 ```
 
 Most options are self explanatory, but the following options warrant some further explanation:
