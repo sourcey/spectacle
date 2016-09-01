@@ -24,6 +24,8 @@
       {{! Render enums in the descriminator as links to the appropriate definitions}}
       {{#if ../discriminator}}
         <span class="json-property-enum-item"><a href="#definition-{{.}}">{{.}}</a></span>
+      {{else if $ref}}
+          {{~>json-schema/reference .}}
       {{else}}
         <span class="json-property-enum-item">{{.}}</span>
       {{/if}}
