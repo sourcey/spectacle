@@ -1,5 +1,4 @@
 var cheerio = require('cheerio');
-var entities = require('entities');
 var marked = require('marked');
 var highlight = require('highlight.js');
 
