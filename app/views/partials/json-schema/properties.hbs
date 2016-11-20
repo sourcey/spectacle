@@ -6,7 +6,8 @@
       <dt data-property-name="{{htmlId @key}}">
         {{!Single property, default type is "object"}}
         <span class="json-property-name">{{@key}}:</span>
-        {{>json-schema/datatype discriminator=(equal @key ../discriminator)}}
+        {{>json-schema/datatype}}
+        {{!>json-schema/datatype discriminator=(equal @key ../discriminator)}}
         {{#ifcontains ../required @key}}
           <span class="json-property-required"></span>
         {{/ifcontains}}

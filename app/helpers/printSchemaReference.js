@@ -1,6 +1,7 @@
-var Handlebars = require("handlebars");
-var common = require("../lib/common");
-// var entities = require("entities");
+var Handlebars = require('handlebars');
+var common = require('../lib/common');
+var _ = require('lodash');
+// var entities = require('entities');
 
 module.exports = function(reference, options) {
   if (!reference) {
@@ -10,6 +11,7 @@ module.exports = function(reference, options) {
   var model = common.resolveSchemaReference(reference, options.data.root);
   if (typeof model === 'object' && typeof model.properties === 'object')
     model = model.properties;
+  model = _.cloneDeep(model);
   Object.keys(model).forEach(function(propName) {
     var prop = model[propName];
     if (prop.type) {

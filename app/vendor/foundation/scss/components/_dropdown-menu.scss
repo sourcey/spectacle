@@ -31,101 +31,114 @@ $dropdownmenu-border: 1px solid $medium-gray !default;
 // @type Length
 $dropdownmenu-border-width: nth($dropdownmenu-border, 1);
 
-@mixin foundation-dropdown-menu {
-  .dropdown.menu {
-    a {
-      @include disable-mouse-outline;
-    }
-    .is-dropdown-submenu-parent {
-      position: relative;
+@mixin left-right-arrows {
+  > a::after {
+    #{$global-right}: 14px;
+    margin-top: -3px;
+  }
 
-      a::after {
-        float: $global-right;
-        margin-top: 3px;
-        margin-#{$global-left}: 10px;
+  &.opens-left > a::after {
+    @include css-triangle(5px, $dropdownmenu-arrow-color, left);
+  }
+
+  &.opens-right > a::after {
+    @include css-triangle(5px, $dropdownmenu-arrow-color, right);
+  }
+}
+
+@mixin dropdown-menu-direction($dir: horizontal) {
+  @if $dir == horizontal {
+    > li.opens-left {
+      > .is-dropdown-submenu {
+        left: auto;
+        right: 0;
+        top: 100%;
+      }
+    }
+
+    > li.opens-right {
+      > .is-dropdown-submenu {
+        right: auto;
+        left: 0;
+        top: 100%;
+      }
+    }
+
+    @if $dropdownmenu-arrows {
+      > li.is-dropdown-submenu-parent > a {
+        padding-#{$global-right}: 1.5rem;
+        position: relative;
+      }
+
+      > li.is-dropdown-submenu-parent > a::after {
+        @include css-triangle(5px, $dropdownmenu-arrow-color, down);
+        #{$global-right}: 5px;
+        margin-top: -2px;
+      }
+    }
+  }
+  @else if $dir == vertical {
+    > li {
+      .is-dropdown-submenu {
+        top: 0;
+      }
+
+      &.opens-left {
+        > .is-dropdown-submenu {
+          left: auto;
+          right: 100%;
+        }
+      }
+
+      &.opens-right {
+        > .is-dropdown-submenu {
+          right: auto;
+          left: 100%;
+        }
       }
 
       @if $dropdownmenu-arrows {
-        &.is-down-arrow a {
-          padding-#{$global-right}: 1.5rem;
-          position: relative;
-        }
-
-        &.is-down-arrow > a::after {
-          @include css-triangle(5px, $dropdownmenu-arrow-color, down);
-          position: absolute;
-          top: rem-calc(2px) + rem-calc(get-side($menu-item-padding, top));
-          #{$global-right}: 5px;
-        }
-
-        &.is-left-arrow > a::after {
-          @include css-triangle(5px, $dropdownmenu-arrow-color, left);
-          float: left;
-          margin-left: 0;
-          margin-right: 10px;
-        }
-
-        &.is-right-arrow > a::after {
-          @include css-triangle(5px, $dropdownmenu-arrow-color, right);
-        }
+        @include left-right-arrows;
       }
+    }
+  }
+  @else {
+    @warn 'The direction used for dropdown-menu-direction() must be horizontal or vertical.';
+  }
+}
 
-      &.is-left-arrow.opens-inner .submenu {
-        right: 0;
-        left: auto;
-      }
+@mixin foundation-dropdown-menu {
+  .dropdown.menu {
+    @include dropdown-menu-direction(horizontal);
 
-      &.is-right-arrow.opens-inner .submenu {
-        left: 0;
-        right: auto;
-      }
-      
-      &.opens-inner .submenu {
-        top: 100%;
-      }
+    a {
+      @include disable-mouse-outline;
     }
 
     .no-js & ul {
       display: none;
     }
 
-    .submenu {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 100%;
-      min-width: $dropdownmenu-min-width;
-      z-index: 1;
-      background: $dropdownmenu-background;
-      border: $dropdownmenu-border;
-
-      @if (type-of($dropdownmenu-border-width) == 'number') {
-        margin-top: (-$dropdownmenu-border-width);
-      }
-
-      > li {
-        width: 100%;
-      }
-
-      &.first-sub {
-        top: 100%;
-        left: 0;
-        right: auto;
-      }
-
-      &:not(.js-dropdown-nohover) > .is-dropdown-submenu-parent:hover > &,
-      &.js-dropdown-active {
-        display: block;
-      }
+    &.vertical {
+      @include dropdown-menu-direction(vertical);
     }
 
-    .is-dropdown-submenu-parent.opens-left .submenu {
-      left: auto;
-      right: 100%;
+    @each $size in $breakpoint-classes {
+      @if $size != $-zf-zero-breakpoint {
+        @include breakpoint($size) {
+          &.#{$size}-horizontal {
+            @include dropdown-menu-direction(horizontal);
+          }
+
+          &.#{$size}-vertical {
+            @include dropdown-menu-direction(vertical);
+          }
+        }
+      }
     }
 
     &.align-right {
-      .submenu.first-sub {
+      .is-dropdown-submenu.first-sub {
         top: 100%;
         left: auto;
         right: 0;
@@ -139,10 +152,70 @@ $dropdownmenu-border-width: nth($dropdownmenu-border, 1);
     &.align-right {
       float: right;
     }
+  }
 
-    > li .submenu {
-      top: 0;
+  .is-dropdown-submenu-parent {
+    position: relative;
+
+    a::after {
+      position: absolute;
+      top: 50%;
+      #{$global-right}: 5px;
+      margin-top: -2px;
+    }
+
+    &.opens-inner > .is-dropdown-submenu {
+
+      top: 100%;
+      @if $global-text-direction == 'rtl' {
+        right: auto;
+      } @else {
+        left: auto;
+      }
+    }
+
+    &.opens-left > .is-dropdown-submenu {
+      left: auto;
+      right: 100%;
+    }
+
+    &.opens-right > .is-dropdown-submenu {
+      right: auto;
       left: 100%;
+    }
+  }
+
+  .is-dropdown-submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    #{$global-left}: 100%;
+    min-width: $dropdownmenu-min-width;
+    z-index: 1;
+    background: $dropdownmenu-background;
+    border: $dropdownmenu-border;
+
+    .is-dropdown-submenu-parent {
+      @if $dropdownmenu-arrows {
+        @include left-right-arrows;
+      }
+    }
+
+    @if (type-of($dropdownmenu-border-width) == 'number') {
+      .is-dropdown-submenu {
+        margin-top: (-$dropdownmenu-border-width);
+      }
+    }
+
+    > li {
+      width: 100%;
+    }
+
+    // [TODO] Cut back specificity
+    // scss-lint:disable SelectorDepth
+    //&:not(.js-dropdown-nohover) > .is-dropdown-submenu-parent:hover > &, // why is this line needed? Opening is handled by JS and this causes some ugly flickering when the sub is re-positioned automatically...
+    &.js-dropdown-active {
+      display: block;
     }
   }
 }

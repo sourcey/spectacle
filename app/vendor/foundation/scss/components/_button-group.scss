@@ -29,37 +29,67 @@ $buttongroup-expand-max: 6 !default;
 ) {
   @include clearfix;
   margin-bottom: $buttongroup-margin;
-  font-size: map-get($button-sizes, default);
+
+  @if $global-flexbox {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  @else {
+    font-size: 0;
+  }
 
   #{$child-selector} {
-    float: #{$global-left};
     margin: 0;
-    font-size: inherit;
+    margin-#{$global-right}: $buttongroup-spacing;
+    margin-bottom: $buttongroup-spacing;
+    font-size: map-get($button-sizes, default);
 
-    &:not(:last-child) {
-      border-#{$global-right}: $buttongroup-spacing solid $body-background;
+    @if $global-flexbox {
+      flex: 0 0 auto;
+    }
+
+    &:last-child {
+      margin-#{$global-right}: 0;
     }
   }
 }
 
 /// Creates a full-width button group, making each button equal width.
-/// @param {Keyword|Number} $count [auto] - Number of buttons inside the button group. Set to `auto` to generate CSS that will account for a variable number of buttons.
 /// @param {String} $selector [$buttongroup-child-selector] - Selector for the buttons inside a button group.
 @mixin button-group-expand(
-  $selector: $buttongroup-child-selector
+  $selector: $buttongroup-child-selector,
+  $count: null
 ) {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
+  @if not $global-flexbox {
+    margin-#{$global-right}: -$buttongroup-spacing;
 
-  &::before,
-  &::after {
-    display: none;
+    &::before,
+    &::after {
+      display: none;
+    }
   }
 
+  // scss-lint:disable ZeroUnit
   #{$selector} {
-    display: table-cell;
-    float: none;
+    @if $global-flexbox {
+      flex: 1 1 0px;
+    }
+    @else {
+      @for $i from 2 through $buttongroup-expand-max {
+        &:first-child:nth-last-child(#{$i}) {
+          &, &:first-child:nth-last-child(#{$i}) ~ #{$selector} {
+            display: inline-block;
+            width: calc(#{percentage(1 / $i)} - #{$buttongroup-spacing});
+            margin-#{$global-right}: $buttongroup-spacing;
+
+            &:last-child {
+              margin-#{$global-right}: $buttongroup-spacing * -$buttongroup-expand-max;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -68,11 +98,20 @@ $buttongroup-expand-max: 6 !default;
 @mixin button-group-stack(
   $selector: $buttongroup-child-selector
 ) {
-  #{$selector} {
-    width: 100%;
+  @if $global-flexbox {
+    flex-wrap: wrap;
+  }
 
-    &:not(:last-child) {
-      border-#{$global-right}: $buttongroup-spacing solid;
+  #{$selector} {
+    @if $global-flexbox {
+      flex: 0 0 100%;
+    }
+    @else {
+      width: 100%;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 }
@@ -82,12 +121,15 @@ $buttongroup-expand-max: 6 !default;
 @mixin button-group-unstack(
   $selector: $buttongroup-child-selector
 ) {
+  // scss-lint:disable ZeroUnit
   #{$selector} {
-    width: auto;
-
-    &:not(:last-child) {
-      border-#{$global-right}: $buttongroup-spacing solid $body-background;
+    @if $global-flexbox {
+      flex: 1 1 0px;
     }
+    @else {
+      width: auto;
+    }
+    margin-bottom: 0;
   }
 }
 
@@ -96,13 +138,17 @@ $buttongroup-expand-max: 6 !default;
     @include button-group;
 
     // Sizes
-    &.tiny     { font-size: map-get($button-sizes, tiny); }
-    &.small    { font-size: map-get($button-sizes, small); }
-    &.large    { font-size: map-get($button-sizes, large); }
+    @each $size, $value in map-remove($button-sizes, default) {
+      &.#{$size} #{$buttongroup-child-selector} {
+        font-size: $value;
+      }
+    }
+
+    // Even-width Group
     &.expanded { @include button-group-expand; }
 
     // Colors
-    @each $name, $color in $foundation-colors {
+    @each $name, $color in $foundation-palette {
       @if $button-fill != hollow {
         &.#{$name} #{$buttongroup-child-selector} {
           @include button-style($color, auto, auto);
@@ -117,13 +163,32 @@ $buttongroup-expand-max: 6 !default;
     }
 
     &.stacked,
-    &.stacked-for-small {
+    &.stacked-for-small,
+    &.stacked-for-medium {
       @include button-group-stack;
     }
 
     &.stacked-for-small {
       @include breakpoint(medium) {
         @include button-group-unstack;
+      }
+    }
+
+    &.stacked-for-medium {
+      @include breakpoint(large) {
+        @include button-group-unstack;
+      }
+    }
+
+    // scss-lint:disable MergeableSelector
+    &.stacked-for-small.expanded {
+      @include breakpoint(small only) {
+        display: block;
+
+        #{$buttongroup-child-selector} {
+          display: block;
+          margin-#{$global-right}: 0;
+        }
       }
     }
   }

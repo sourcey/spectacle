@@ -8,7 +8,11 @@ module.exports = function (value) {
 };
 
 function dataType(value) {
+  // console.log('dataType', value)
   if (!value) return null;
+  if (typeof value === 'string') {
+    throw 'invalid value'
+  }
   if (value['anyOf'] || value['allOf'] || value['oneOf']) {
     return '';
   }

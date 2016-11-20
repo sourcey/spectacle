@@ -1,5 +1,5 @@
-var Handlebars = require("handlebars");
-var common = require("../lib/common");
+var Handlebars = require('handlebars');
+var common = require('../lib/common');
 
 /**
  * Render a markdown formatted text as HTML.

@@ -1,4 +1,4 @@
-var common = require("../lib/common");
+var common = require('../lib/common');
 
 /**
  * Resolve a (local) json schema $ref and return the referenced object.

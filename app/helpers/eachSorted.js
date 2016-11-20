@@ -1,4 +1,4 @@
-var Handlebars = require("handlebars");
+var Handlebars = require('handlebars');
 
 /**
  * This block-helper can be used to iterate objects sorted by key. It behaves like the built-in

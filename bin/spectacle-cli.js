@@ -47,7 +47,7 @@ program.specFile = program.args[0] || 'test/fixtures/cheese.json';
 //
 //= Load the specification and set variables
 
-var specData = require(path.resolve(cwd + '/' + program.specFile)),
+var specData = require(path.resolve(program.specFile)),
     templateData = require(path.resolve(program.appDir + '/lib/preprocessor'))(program, specData),
     config = require(path.resolve(program.configFile))(grunt, program, templateData);
 
@@ -58,13 +58,13 @@ grunt.initConfig(_.merge({ pkg: package }, config));
 
 grunt.loadNpmTasks('grunt-contrib-concat');
 grunt.loadNpmTasks('grunt-contrib-uglify');
-grunt.loadNpmTasks('grunt-contrib-compass');
 grunt.loadNpmTasks('grunt-contrib-cssmin');
 grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-contrib-clean');
 grunt.loadNpmTasks('grunt-contrib-copy');
 grunt.loadNpmTasks('grunt-contrib-connect');
 grunt.loadNpmTasks('grunt-compile-handlebars');
+grunt.loadNpmTasks('grunt-sass');
 
 grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {
     var html = fs.readFileSync(program.cacheDir + '/' + program.targetFile, 'utf8');
@@ -90,10 +90,10 @@ grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags
     fs.writeFileSync(program.targetDir + '/' + program.targetFile, html);
 });
 
-grunt.registerTask('stylesheets', ['compass:scss', 'concat:css', 'cssmin']);
+grunt.registerTask('stylesheets', ['sass:scss', 'concat:css', 'cssmin']);
 grunt.registerTask('javascripts', ['concat:js', 'uglify']);
 grunt.registerTask('templates', ['clean:html', 'compile-handlebars', 'predentation']);
-grunt.registerTask('foundation', ['compass:foundation_scss', 'concat:foundation_css']); // 'concat:foundation_js'
+grunt.registerTask('foundation', ['sass:foundation_scss', 'concat:foundation_css']); // 'concat:foundation_js'
 grunt.registerTask('default', ['stylesheets', 'javascripts', 'foundation', 'templates']);
 grunt.registerTask('server', ['connect']);
 grunt.registerTask('develop', ['server', 'watch']);

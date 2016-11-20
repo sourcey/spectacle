@@ -1,6 +1,5 @@
-var Handlebars = require("handlebars");
-var common = require("../lib/common");
-// var entities = require("entities");
+var Handlebars = require('handlebars');
+var common = require('../lib/common');
 
 module.exports = function(value, options) {
   var html = common.printSchema(value);

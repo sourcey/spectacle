@@ -4,7 +4,7 @@ module.exports = function(grunt, options, spec) {
   return {
 
       // Compile SCSS source files into the cache directory
-      compass: {
+      sass: {
           scss: {
               options: {
                   specify: options.appDir + '/stylesheets/spectacle.scss',
@@ -91,7 +91,7 @@ module.exports = function(grunt, options, spec) {
       'compile-handlebars': {
           compile: {
               files: [{
-                  src: options.appDir + '/views/' + (options.embeddable ? 'minimal.hbs' : 'main.hbs'),
+                  src: options.appDir + '/views/' + (options.embeddable ? 'embedded.hbs' : 'main.hbs'),
                   dest: options.cacheDir + '/' + options.targetFile
               }],
               templateData: spec,

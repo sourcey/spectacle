@@ -65,5 +65,5 @@ module.exports = function(options, specData) {
     // If there are multiple tags, we show the tag-based summary
     copy.showTagSummary = copy.tags.length > 1
   }
-  return copy
+  return copy;
 }

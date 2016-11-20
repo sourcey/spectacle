@@ -1,6 +1,6 @@
-var cheerio = require("cheerio");
-var entities = require("entities");
-var marked = require("marked");
+var cheerio = require('cheerio');
+var entities = require('entities');
+var marked = require('marked');
 var highlight = require('highlight.js');
 
 var common = {
@@ -41,7 +41,7 @@ var common = {
       if (!value) {
           return '';
       }
-      var schemaString = require("json-stable-stringify")(value, { space: 2 });
+      var schemaString = require('json-stable-stringify')(value, { space: 2 });
 
       // Add an extra CRLR before the code so the postprocessor can determine
       // the correct line indent for the <pre> tag.
