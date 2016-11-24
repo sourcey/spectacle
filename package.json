@@ -1,10 +1,10 @@
 {
   "name": "spectacle-docs",
-  "version": "0.4.2",
+  "version": "0.5.1",
   "description": "Generate beautiful static API documentation from OpenAPI/Swagger 2.0 specifications",
   "preferGlobal": true,
   "bin": {
-    "spectacle": "bin/spectacle-cli.js"
+    "spectacle": "bin/spectacle.js"
   },
   "scripts": {
     "build": "spectacle test/fixtures/petstore.json",
