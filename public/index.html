@@ -16,6 +16,9 @@
         <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
           <span aria-hidden="true">×</span>
         </button>
+          <div id="logo">
+            <img src="/images/cheese.png" title="Cheese Store" />
+          </div>
         <nav id="nav" role="navigation">
           <h5>API Reference</h5>
           <a href="#introduction">Introduction</a>
@@ -363,56 +366,14 @@
                           <section>
                             <h5>Request Example</h5>
                               <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">category</span>&quot;: {
-      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
+  &quot;<span class="hljs-attr">category</span>&quot;: {
+    &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
   },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
-  }
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
 }
 </code></pre>
                             </div>
@@ -453,56 +414,14 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">category</span>&quot;: {
-      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
+  &quot;<span class="hljs-attr">category</span>&quot;: {
+    &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
   },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
-  }
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
 }
 </code></pre>
                               </div>
@@ -586,56 +505,14 @@
                           <section>
                             <h5>Request Example</h5>
                               <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">category</span>&quot;: {
-      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
+  &quot;<span class="hljs-attr">category</span>&quot;: {
+    &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
   },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
-  }
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
 }
 </code></pre>
                             </div>
@@ -803,58 +680,18 @@
                         </div>
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
-                                <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
+                                <div class="hljs"><pre><code class="lang-json">[
+  {
     &quot;<span class="hljs-attr">category</span>&quot;: {
       &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
     },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
-  },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
+    &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+    &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
   }
-}
+]
 </code></pre>
                               </div>
                             </section>
@@ -1001,56 +838,14 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">category</span>&quot;: {
-      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
+  &quot;<span class="hljs-attr">category</span>&quot;: {
+    &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
   },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
-  }
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1058,19 +853,9 @@
                                   <section>
                               <h5>Response Example <span>(400 Bad Request)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">code</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">message</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">type</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1078,19 +863,9 @@
                                   <section>
                               <h5>Response Example <span>(404 Not Found)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">code</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">message</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">type</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1381,19 +1156,9 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(400 Bad Request)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">code</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">message</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">type</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1401,19 +1166,9 @@
                                   <section>
                               <h5>Response Example <span>(404 Not Found)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">code</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">message</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">type</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1549,77 +1304,27 @@
                         </div>
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
-                                <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
+                                <div class="hljs"><pre><code class="lang-json">[
+  {
     &quot;<span class="hljs-attr">category</span>&quot;: {
       &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
     },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
-  },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
+    &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+    &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
   }
-}
+]
 </code></pre>
                               </div>
                             </section>
                                   <section>
                               <h5>Response Example <span>(400 Bad Request)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">code</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">message</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">type</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>
+  &quot;<span class="hljs-attr">code</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">message</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -1771,56 +1476,14 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">category</span>&quot;: {
-      &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">name</span>&quot;: {
-      &quot;<span class="hljs-attr">example</span>&quot;: <span class="hljs-string">&quot;doggie&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">photoUrls</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;photoUrl&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;cheese status in the store&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;available&quot;</span>,
-        <span class="hljs-string">&quot;pending&quot;</span>,
-        <span class="hljs-string">&quot;sold&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">tags</span>&quot;: {
-      &quot;<span class="hljs-attr">items</span>&quot;: {
-        &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Tag">&quot;#/definitions/Tag&quot;</a></span>
-      },
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
-      &quot;<span class="hljs-attr">xml</span>&quot;: {
-        &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;tag&quot;</span>,
-        &quot;<span class="hljs-attr">wrapped</span>&quot;: <span class="hljs-literal">true</span>
-      }
-    }
+  &quot;<span class="hljs-attr">category</span>&quot;: {
+    &quot;<span class="hljs-attr">$ref</span>&quot;: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
   },
-  &quot;<span class="hljs-attr">required</span>&quot;: [
-    <span class="hljs-string">&quot;name&quot;</span>,
-    <span class="hljs-string">&quot;photoUrls&quot;</span>
-  ],
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Cheese&quot;</span>
-  }
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">photoUrls</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">tags</span>&quot;: <span class="hljs-string">&quot;array&quot;</span>
 }
 </code></pre>
                               </div>
@@ -2015,41 +1678,12 @@
                           <section>
                             <h5>Request Example</h5>
                               <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">cheeseId</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">complete</span>&quot;: {
-      &quot;<span class="hljs-attr">default</span>&quot;: <span class="hljs-literal">false</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">quantity</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">shipDate</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;date-time&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Order Status&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;placed&quot;</span>,
-        <span class="hljs-string">&quot;approved&quot;</span>,
-        <span class="hljs-string">&quot;delivered&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Order&quot;</span>
-  }
+  &quot;<span class="hljs-attr">cheeseId</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">complete</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">quantity</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">shipDate</span>&quot;: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                             </div>
@@ -2090,41 +1724,12 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">cheeseId</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">complete</span>&quot;: {
-      &quot;<span class="hljs-attr">default</span>&quot;: <span class="hljs-literal">false</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">quantity</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">shipDate</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;date-time&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Order Status&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;placed&quot;</span>,
-        <span class="hljs-string">&quot;approved&quot;</span>,
-        <span class="hljs-string">&quot;delivered&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Order&quot;</span>
-  }
+  &quot;<span class="hljs-attr">cheeseId</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">complete</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">quantity</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">shipDate</span>&quot;: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -2239,41 +1844,12 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">cheeseId</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">complete</span>&quot;: {
-      &quot;<span class="hljs-attr">default</span>&quot;: <span class="hljs-literal">false</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">quantity</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">shipDate</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;date-time&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">status</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Order Status&quot;</span>,
-      &quot;<span class="hljs-attr">enum</span>&quot;: [
-        <span class="hljs-string">&quot;placed&quot;</span>,
-        <span class="hljs-string">&quot;approved&quot;</span>,
-        <span class="hljs-string">&quot;delivered&quot;</span>
-      ],
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Order&quot;</span>
-  }
+  &quot;<span class="hljs-attr">cheeseId</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">complete</span>&quot;: <span class="hljs-string">&quot;boolean&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">quantity</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">shipDate</span>&quot;: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
+  &quot;<span class="hljs-attr">status</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -2442,39 +2018,14 @@
                           <section>
                             <h5>Request Example</h5>
                               <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">customerStatus</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Customer Status&quot;</span>,
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">email</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">firstName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">lastName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">password</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">phone</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">username</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Customer&quot;</span>
-  }
+  &quot;<span class="hljs-attr">customerStatus</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">email</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">firstName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">lastName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">password</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">phone</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">username</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                             </div>
@@ -2561,41 +2112,18 @@
                       <div class="doc-examples">
                           <section>
                             <h5>Request Example</h5>
-                              <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">customerStatus</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Customer Status&quot;</span>,
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">email</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">firstName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">lastName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">password</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">phone</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">username</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Customer&quot;</span>
+                              <div class="hljs"><pre><code class="lang-json">[
+  {
+    &quot;<span class="hljs-attr">customerStatus</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+    &quot;<span class="hljs-attr">email</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">firstName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+    &quot;<span class="hljs-attr">lastName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">password</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">phone</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+    &quot;<span class="hljs-attr">username</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
   }
-}
+]
 </code></pre>
                             </div>
                           </section>
@@ -2913,39 +2441,14 @@
                         <div class="doc-examples">        <section>
                               <h5>Response Example <span>(200 OK)</span></h5>
                                 <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">customerStatus</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Customer Status&quot;</span>,
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">email</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">firstName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">lastName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">password</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">phone</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">username</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Customer&quot;</span>
-  }
+  &quot;<span class="hljs-attr">customerStatus</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">email</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">firstName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">lastName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">password</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">phone</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">username</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                               </div>
@@ -3037,39 +2540,14 @@
                           <section>
                             <h5>Request Example</h5>
                               <div class="hljs"><pre><code class="lang-json">{
-  &quot;<span class="hljs-attr">properties</span>&quot;: {
-    &quot;<span class="hljs-attr">customerStatus</span>&quot;: {
-      &quot;<span class="hljs-attr">description</span>&quot;: <span class="hljs-string">&quot;Customer Status&quot;</span>,
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int32&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">email</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">firstName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">id</span>&quot;: {
-      &quot;<span class="hljs-attr">format</span>&quot;: <span class="hljs-string">&quot;int64&quot;</span>,
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;integer&quot;</span>
-    },
-    &quot;<span class="hljs-attr">lastName</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">password</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">phone</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    },
-    &quot;<span class="hljs-attr">username</span>&quot;: {
-      &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  },
-  &quot;<span class="hljs-attr">type</span>&quot;: <span class="hljs-string">&quot;object&quot;</span>,
-  &quot;<span class="hljs-attr">xml</span>&quot;: {
-    &quot;<span class="hljs-attr">name</span>&quot;: <span class="hljs-string">&quot;Customer&quot;</span>
-  }
+  &quot;<span class="hljs-attr">customerStatus</span>&quot;: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
+  &quot;<span class="hljs-attr">email</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">firstName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">id</span>&quot;: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
+  &quot;<span class="hljs-attr">lastName</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">password</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">phone</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>,
+  &quot;<span class="hljs-attr">username</span>&quot;: <span class="hljs-string">&quot;string&quot;</span>
 }
 </code></pre>
                             </div>
