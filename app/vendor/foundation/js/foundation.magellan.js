@@ -1,13 +1,10 @@
-'use strict';
-
-!function($) {
-
 /**
  * Magellan module.
  * @module foundation.magellan
  */
+!function(Foundation, $) {
+  'use strict';
 
-class Magellan {
   /**
    * Creates a new instance of Magellan.
    * @class
@@ -15,7 +12,7 @@ class Magellan {
    * @param {Object} element - jQuery object to add the trigger to.
    * @param {Object} options - Overrides to the default plugin settings.
    */
-  constructor(element, options) {
+  function Magellan(element, options) {
     this.$element = element;
     this.options  = $.extend({}, Magellan.defaults, this.$element.data(), options);
 
@@ -25,12 +22,54 @@ class Magellan {
   }
 
   /**
+   * Default settings for plugin
+   */
+  Magellan.defaults = {
+    /**
+     * Amount of time, in ms, the animated scrolling should take between locations.
+     * @option
+     * @example 500
+     */
+    animationDuration: 500,
+    /**
+     * Animation style to use when scrolling between locations.
+     * @option
+     * @example 'ease-in-out'
+     */
+    animationEasing: 'linear',
+    /**
+     * Number of pixels to use as a marker for location changes.
+     * @option
+     * @example 50
+     */
+    threshold: 50,
+    /**
+     * Class applied to the active locations link on the magellan container.
+     * @option
+     * @example 'active'
+     */
+    activeClass: 'active',
+    /**
+     * Allows the script to manipulate the url of the current page, and if supported, alter the history.
+     * @option
+     * @example true
+     */
+    deepLinking: false,
+    /**
+     * Number of pixels to offset the scroll of the page on item click if using a sticky nav bar.
+     * @option
+     * @example 25
+     */
+    barOffset: 0
+  };
+
+  /**
    * Initializes the Magellan plugin and calls functions to get equalizer functioning on load.
    * @private
    */
-  _init() {
-    var id = this.$element[0].id || Foundation.GetYoDigits(6, 'magellan');
-    var _this = this;
+  Magellan.prototype._init = function() {
+    var id = this.$element[0].id || Foundation.GetYoDigits(6, 'magellan'),
+        _this = this;
     this.$targets = $('[data-magellan-target]');
     this.$links = this.$element.find('a');
     this.$element.attr({
@@ -42,14 +81,13 @@ class Magellan {
     this.scrollPos = parseInt(window.pageYOffset, 10);
 
     this._events();
-  }
-
+  };
   /**
    * Calculates an array of pixel values that are the demarcation lines between locations on the page.
    * Can be invoked if new elements are added or the size of a location changes.
    * @function
    */
-  calcPoints() {
+  Magellan.prototype.calcPoints = function(){
     var _this = this,
         body = document.body,
         html = document.documentElement;
@@ -64,25 +102,20 @@ class Magellan {
       $tar.targetPoint = pt;
       _this.points.push(pt);
     });
-  }
-
+  };
   /**
    * Initializes events for Magellan.
    * @private
    */
-  _events() {
+  Magellan.prototype._events = function() {
     var _this = this,
         $body = $('html, body'),
         opts = {
           duration: _this.options.animationDuration,
           easing:   _this.options.animationEasing
         };
+
     $(window).one('load', function(){
-      if(_this.options.deepLinking){
-        if(location.hash){
-          _this.scrollToLoc(location.hash);
-        }
-      }
       _this.calcPoints();
       _this._updateActive();
     });
@@ -92,40 +125,32 @@ class Magellan {
       'scrollme.zf.trigger': this._updateActive.bind(this)
     }).on('click.zf.magellan', 'a[href^="#"]', function(e) {
         e.preventDefault();
-        var arrival   = this.getAttribute('href');
-        _this.scrollToLoc(arrival);
-    });
-  }
+        var arrival   = this.getAttribute('href'),
+            scrollPos = $(arrival).offset().top - _this.options.threshold / 2 - _this.options.barOffset;
 
-  /**
-   * Function to scroll to a given location on the page.
-   * @param {String} loc - a properly formatted jQuery id selector. Example: '#foo'
-   * @function
-   */
-  scrollToLoc(loc) {
-    // Do nothing if target does not exist to prevent errors
-    if (!$(loc).length) {return false;}
-    var scrollPos = Math.round($(loc).offset().top - this.options.threshold / 2 - this.options.barOffset);
-
-    $('html, body').stop(true).animate({ scrollTop: scrollPos }, this.options.animationDuration, this.options.animationEasing);
-  }
-
+        // requestAnimationFrame is disabled for this plugin currently
+        // Foundation.Move(_this.options.animationDuration, $body, function(){
+          $body.stop(true).animate({
+            scrollTop: scrollPos
+          }, opts);
+        });
+      // });
+  };
   /**
    * Calls necessary functions to update Magellan upon DOM change
    * @function
    */
-  reflow() {
+  Magellan.prototype.reflow = function(){
     this.calcPoints();
     this._updateActive();
-  }
-
+  };
   /**
    * Updates the visibility of an active location link, and updates the url hash for the page, if deepLinking enabled.
    * @private
    * @function
    * @fires Magellan#update
    */
-  _updateActive(/*evt, elem, scrollPos*/) {
+  Magellan.prototype._updateActive = function(/*evt, elem, scrollPos*/){
     var winPos = /*scrollPos ||*/ parseInt(window.pageYOffset, 10),
         curIdx;
 
@@ -135,13 +160,13 @@ class Magellan {
       var isDown = this.scrollPos < winPos,
           _this = this,
           curVisible = this.points.filter(function(p, i){
-            return isDown ? p - _this.options.barOffset <= winPos : p - _this.options.barOffset - _this.options.threshold <= winPos;
+            return isDown ? p <= winPos : p - _this.options.threshold <= winPos;//&& winPos >= _this.points[i -1] - _this.options.threshold;
           });
       curIdx = curVisible.length ? curVisible.length - 1 : 0;
     }
 
     this.$active.removeClass(this.options.activeClass);
-    this.$active = this.$links.filter('[href="#' + this.$targets.eq(curIdx).data('magellan-target') + '"]').addClass(this.options.activeClass);
+    this.$active = this.$links.eq(curIdx).addClass(this.options.activeClass);
 
     if(this.options.deepLinking){
       var hash = this.$active[0].getAttribute('href');
@@ -158,15 +183,14 @@ class Magellan {
      * @event Magellan#update
      */
     this.$element.trigger('update.zf.magellan', [this.$active]);
-  }
-
+  };
   /**
    * Destroys an instance of Magellan and resets the url of the window.
    * @function
    */
-  destroy() {
+  Magellan.prototype.destroy = function(){
     this.$element.off('.zf.trigger .zf.magellan')
-        .find(`.${this.options.activeClass}`).removeClass(this.options.activeClass);
+        .find('.' + this.options.activeClass).removeClass(this.options.activeClass);
 
     if(this.options.deepLinking){
       var hash = this.$active[0].getAttribute('href');
@@ -174,52 +198,15 @@ class Magellan {
     }
 
     Foundation.unregisterPlugin(this);
-  }
-}
+  };
+  Foundation.plugin(Magellan, 'Magellan');
 
-/**
- * Default settings for plugin
- */
-Magellan.defaults = {
-  /**
-   * Amount of time, in ms, the animated scrolling should take between locations.
-   * @option
-   * @example 500
-   */
-  animationDuration: 500,
-  /**
-   * Animation style to use when scrolling between locations.
-   * @option
-   * @example 'ease-in-out'
-   */
-  animationEasing: 'linear',
-  /**
-   * Number of pixels to use as a marker for location changes.
-   * @option
-   * @example 50
-   */
-  threshold: 50,
-  /**
-   * Class applied to the active locations link on the magellan container.
-   * @option
-   * @example 'active'
-   */
-  activeClass: 'active',
-  /**
-   * Allows the script to manipulate the url of the current page, and if supported, alter the history.
-   * @option
-   * @example true
-   */
-  deepLinking: false,
-  /**
-   * Number of pixels to offset the scroll of the page on item click if using a sticky nav bar.
-   * @option
-   * @example 25
-   */
-  barOffset: 0
-}
+  // Exports for AMD/Browserify
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = Magellan;
+  if (typeof define === 'function')
+    define(['foundation'], function() {
+      return Magellan;
+    });
 
-// Window exports
-Foundation.plugin(Magellan, 'Magellan');
-
-}(jQuery);
+}(Foundation, jQuery);

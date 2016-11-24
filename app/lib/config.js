@@ -5,6 +5,26 @@ module.exports = function(grunt, options, spec) {
 
       // Compile SCSS source files into the cache directory
       sass: {
+          options: {
+              includePaths: [
+                  options.appDir + '/vendor',
+                  options.appDir + '/vendor/foundation/scss'
+              ]
+          },
+          scss: {
+              files: {
+                  [path.resolve(options.cacheDir, 'stylesheets/spectacle.css')]: path.resolve(options.appDir, 'stylesheets/spectacle.scss')
+              }
+          },
+          foundation_scss: {
+              files: {
+                  [path.resolve(options.cacheDir, 'stylesheets/foundation.css')]: path.resolve(options.appDir, 'stylesheets/foundation.scss')
+              }
+          },
+      },
+
+      /*
+      sass: {
           scss: {
               options: {
                   specify: options.appDir + '/stylesheets/spectacle.scss',
@@ -30,6 +50,7 @@ module.exports = function(grunt, options, spec) {
               }
           },
       },
+      */
 
       concat: {
 

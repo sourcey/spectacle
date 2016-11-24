@@ -10,10 +10,6 @@
 /// @type Color
 $input-color: $black !default;
 
-/// Font color of placeholder text within text inputs.
-/// @type Color
-$input-placeholder-color: $medium-gray !default;
-
 /// Font family of text inputs.
 /// @type Font
 $input-font-family: inherit !default;
@@ -52,7 +48,7 @@ $input-shadow-focus: 0 0 5px $medium-gray !default;
 
 /// Cursor to use when hovering over a disabled text input.
 /// @type Cursor
-$input-cursor-disabled: not-allowed !default;
+$input-cursor-disabled: default !default;
 
 /// Properties to transition on text inputs.
 /// @type Transition
@@ -65,10 +61,6 @@ $input-number-spinners: true !default;
 /// Radius for text inputs.
 /// @type Border
 $input-radius: $global-radius !default;
-
-/// Border radius for buttons, defaulted to global-radius.
-/// @type Number
-$button-radius: $global-radius !default;
 
 @mixin form-element {
   $height: ($input-font-size + ($form-spacing * 1.5) - rem-calc(1));
@@ -123,14 +115,9 @@ $button-radius: $global-radius !default;
     }
   }
 
+  // Disabled/readonly state
   input,
   textarea {
-    // Placeholder text
-    &::placeholder {
-      color: $input-placeholder-color;
-    }
-
-    // Disabled/readonly state
     &:disabled,
     &[readonly] {
       background-color: $input-background-disabled;
@@ -141,7 +128,7 @@ $button-radius: $global-radius !default;
   // Reset styles on button-like inputs
   [type='submit'],
   [type='button'] {
-    border-radius: $button-radius;
+    border-radius: $global-radius;
     -webkit-appearance: none;
     -moz-appearance: none;
   }
@@ -157,8 +144,8 @@ $button-radius: $global-radius !default;
     @if not $input-number-spinners {
       -moz-appearance: textfield;
 
-      &::-webkit-inner-spin-button,
-      &::-webkit-outer-spin-button {
+      [type='number']::-webkit-inner-spin-button,
+      [type='number']::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }

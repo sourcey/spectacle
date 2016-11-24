@@ -2,10 +2,14 @@
 // foundation.zurb.com
 // Licensed under MIT Open Source
 
+// Utilities
 @import 'unit';
 @import 'value';
 @import 'color';
 @import 'selector';
-@import 'flex';
+
+// Libraries
 @import 'breakpoint';
+
+// Mixins
 @import 'mixins';

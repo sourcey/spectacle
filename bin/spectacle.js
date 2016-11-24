@@ -21,7 +21,7 @@ program.version(package.version)
     .option('-e, --embeddable', 'omit the HTML <body/> and generate the documentation content only (default: false)')
     .option('-d, --development-mode', 'start HTTP server with the file watcher and live reload (default: false)')
     .option('-s, --start-server', 'start the HTTP server without any development features')
-    .option('-p, --port <dir>', 'the port number for the HTTP server to listen on (default: 4400)', Number, 4400)  
+    .option('-p, --port <dir>', 'the port number for the HTTP server to listen on (default: 4400)', Number, 4400)
     .option('-t, --target-dir <dir>', 'the target build directory (default: public)', String, path.resolve(cwd, 'public'))
     .option('-f, --target-file <file>', 'the target build HTML file (default: index.html)', String, 'index.html')
     .option('-a, --app-dir <dir>', 'the application source directory (default: app)', String, path.resolve(root, 'app'))
@@ -38,6 +38,12 @@ if (program.args.length < 1) { // && program.rawArgs.length < 1
 // Set some necessary defaults
 program.cacheDir = os.tmpdir() + '/.spectacle';
 program.specFile = program.args[0]; // || path.resolve(root, 'test/fixtures/cheese.json');
+
+// Replace some absolute paths
+if (program.specFile && program.specFile.indexOf('test/fixtures') === 0)
+    program.specFile = path.resolve(root, program.specFile);
+if (program.logoFile && program.logoFile.indexOf('test/fixtures') === 0)
+    program.logoFile = path.resolve(root, program.logoFile);
 
 // Run the main app with parsed options
 spectacle(program);

@@ -1,15 +1,12 @@
-'use strict';
-
-!function($) {
-
 /**
  * Toggler module.
  * @module foundation.toggler
  * @requires foundation.util.motion
- * @requires foundation.util.triggers
  */
 
-class Toggler {
+!function(Foundation, $) {
+  'use strict';
+
   /**
    * Creates a new instance of Toggler.
    * @class
@@ -17,7 +14,7 @@ class Toggler {
    * @param {Object} element - jQuery object to add the trigger to.
    * @param {Object} options - Overrides to the default plugin settings.
    */
-  constructor(element, options) {
+  function Toggler(element, options) {
     this.$element = element;
     this.options = $.extend({}, Toggler.defaults, element.data(), options);
     this.className = '';
@@ -28,12 +25,21 @@ class Toggler {
     Foundation.registerPlugin(this, 'Toggler');
   }
 
+  Toggler.defaults = {
+    /**
+     * Tells the plugin if the element should animated when toggled.
+     * @option
+     * @example false
+     */
+    animate: false
+  };
+
   /**
    * Initializes the Toggler plugin by parsing the toggle class from data-toggler, or animation classes from data-animate.
    * @function
    * @private
    */
-  _init() {
+  Toggler.prototype._init = function() {
     var input;
     // Parse animation classes if they were set
     if (this.options.animate) {
@@ -51,20 +57,20 @@ class Toggler {
 
     // Add ARIA attributes to triggers
     var id = this.$element[0].id;
-    $(`[data-open="${id}"], [data-close="${id}"], [data-toggle="${id}"]`)
+    $('[data-open="'+id+'"], [data-close="'+id+'"], [data-toggle="'+id+'"]')
       .attr('aria-controls', id);
     // If the target is hidden, add aria-hidden
     this.$element.attr('aria-expanded', this.$element.is(':hidden') ? false : true);
-  }
+  };
 
   /**
    * Initializes events for the toggle trigger.
    * @function
    * @private
    */
-  _events() {
+  Toggler.prototype._events = function() {
     this.$element.off('toggle.zf.trigger').on('toggle.zf.trigger', this.toggle.bind(this));
-  }
+  };
 
   /**
    * Toggles the target class on the target element. An event is fired from the original trigger depending on if the resultant state was "on" or "off".
@@ -72,11 +78,11 @@ class Toggler {
    * @fires Toggler#on
    * @fires Toggler#off
    */
-  toggle() {
+  Toggler.prototype.toggle = function() {
     this[ this.options.animate ? '_toggleAnimate' : '_toggleClass']();
-  }
+  };
 
-  _toggleClass() {
+  Toggler.prototype._toggleClass = function() {
     this.$element.toggleClass(this.className);
 
     var isOn = this.$element.hasClass(this.className);
@@ -96,49 +102,46 @@ class Toggler {
     }
 
     this._updateARIA(isOn);
-  }
+  };
 
-  _toggleAnimate() {
+  Toggler.prototype._toggleAnimate = function() {
     var _this = this;
 
     if (this.$element.is(':hidden')) {
       Foundation.Motion.animateIn(this.$element, this.animationIn, function() {
-        _this._updateARIA(true);
         this.trigger('on.zf.toggler');
+        _this._updateARIA(true);
       });
     }
     else {
       Foundation.Motion.animateOut(this.$element, this.animationOut, function() {
-        _this._updateARIA(false);
         this.trigger('off.zf.toggler');
+        _this._updateARIA(false);
       });
     }
-  }
+  };
 
-  _updateARIA(isOn) {
+  Toggler.prototype._updateARIA = function(isOn) {
     this.$element.attr('aria-expanded', isOn ? true : false);
-  }
+  };
 
   /**
    * Destroys the instance of Toggler on the element.
    * @function
    */
-  destroy() {
+  Toggler.prototype.destroy= function() {
     this.$element.off('.zf.toggler');
     Foundation.unregisterPlugin(this);
-  }
-}
+  };
 
-Toggler.defaults = {
-  /**
-   * Tells the plugin if the element should animated when toggled.
-   * @option
-   * @example false
-   */
-  animate: false
-};
+  Foundation.plugin(Toggler, 'Toggler');
 
-// Window exports
-Foundation.plugin(Toggler, 'Toggler');
+  // Exports for AMD/Browserify
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = Toggler;
+  if (typeof define === 'function')
+    define(['foundation'], function() {
+      return Toggler;
+    });
 
-}(jQuery);
+}(Foundation, jQuery);

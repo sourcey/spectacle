@@ -9,8 +9,8 @@ var fs = require('fs'),
     grunt = require('grunt'),
     package = require('./package'),
     _ = require('lodash');
-    
-    
+
+
 /**
  * Run Spectacle and configured tasks
  **/
@@ -28,9 +28,13 @@ module.exports = function (options) {
 
     grunt.initConfig(_.merge({ pkg: package }, config));
 
-    var cwd = process.cwd(); // change for loadNpmTasks
-    process.chdir(__dirname);
-    
+    var cwd = process.cwd(); // change CWD for loadNpmTasks global install
+    var exists = grunt.file.exists(path.join(path.resolve('node_modules'),
+                                             'grunt-contrib-concat',
+                                             'package.json'));
+    if (!exists)
+        process.chdir(__dirname);
+
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -40,7 +44,7 @@ module.exports = function (options) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-compile-handlebars');
     grunt.loadNpmTasks('grunt-sass');
-    
+
     process.chdir(cwd);
 
     grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {

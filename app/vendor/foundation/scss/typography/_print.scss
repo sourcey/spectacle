@@ -2,10 +2,9 @@
 // foundation.zurb.com
 // Licensed under MIT Open Source
 
-/// If `true`, all elements will have transparent backgrounds when printed, to save on ink.
-/// @type Boolean
-/// @group global
-$print-transparent-backgrounds: true !default;
+////
+/// @group typography
+////
 
 // scss-lint:disable all
 
@@ -14,10 +13,7 @@ $print-transparent-backgrounds: true !default;
 
   @media print {
     * {
-      @if $print-transparent-backgrounds {
-        background: transparent !important;
-      }
-
+      background: transparent !important;
       color: black !important; // Black prints faster: h5bp.com/s
       box-shadow: none !important;
       text-shadow: none !important;
@@ -49,7 +45,7 @@ $print-transparent-backgrounds: true !default;
     // Prevent page breaks in the middle of a blockquote or preformatted text block
     pre,
     blockquote {
-      border: 1px solid $dark-gray;
+      border: 1px solid #999;
       page-break-inside: avoid;
     }
 
