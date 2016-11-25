@@ -98,7 +98,7 @@ module.exports = function (options) {
     }
     else {
         if (!options.disableCss) {
-            grunt.task.run(['stylesheets', 'foundation']);
+            grunt.task.run(['foundation', 'stylesheets']);
         }
         if (!options.disableJs) {
             grunt.task.run('javascripts');
