@@ -9,11 +9,11 @@ The goal of Spectacle is help you "save time and look good" by using a well writ
 * **Be a better developer**: Your entire API system will be more stable and robust when built around your spec as a single source of truth.
 * **Documentation is just the beginning**: Generate your API system from your spec, including; tests, client implementations, and server code. See also [Optimizing Your Workflow](#optimizing-your-workflow)
 
+![Demo Screenshot](screenshot.jpg)
+
 ## Live Demo
 
 See a demo of Spectacle in action here: [http://cheesestore.github.io](http://cheesestore.github.io)
-
-![Demo Screenshot](screenshot.jpg)
 
 ## Features
 
@@ -40,7 +40,7 @@ spectacle -d your_swagger_api.json
 # spectacle -d -l test/fixtures/cheese.png test/fixtures/cheese.json
 ```
 
-Your generated documentation will be located in the `/public` directory. You can either copy the generated HTML to your web server, or view your docs by pointing your browser to [http://localhost:4400/](http://localhost:4400/).
+Your generated documentation will be located in the `public` directory by default. You can either copy the generated HTML to your web server, or view your docs by pointing your browser to [http://localhost:4400/](http://localhost:4400/).
 
 ## Configuration Options
 
@@ -49,7 +49,7 @@ The basic CLI options are detailed below:
 ```bash
 $ spectacle -h
 
-  Usage: spectacle [options] <specfile>
+  Usage: spectacle spactacle [options] <specfile>
 
   Options:
 
@@ -61,11 +61,11 @@ $ spectacle -h
     -d, --development-mode    start HTTP server with the file watcher and live reload (default: false)
     -s, --start-server        start the HTTP server without any development features
     -p, --port <dir>          the port number for the HTTP server to listen on (default: 4400)
-    -t, --target-dir <dir>    the target build directory (default: ./public)
+    -t, --target-dir <dir>    the target build directory (default: public)
     -f, --target-file <file>  the target build HTML file (default: index.html)
-    -a, --app-dir <dir>       the application source directory (default: ./app)
+    -a, --app-dir <dir>       the application source directory (default: app)
     -l, --logo-file <file>    specify a custom logo file (default: null)
-    -c, --config-file <file>  specify a custom configuration file (default: ./app/lib/config.js)
+    -c, --config-file <file>  specify a custom configuration file (default: app/lib/config.js)
 ```
 
 Most options are self explanatory, but the following options warrant some further explanation:
