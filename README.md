@@ -11,6 +11,8 @@ The goal of Spectacle is help you "save time and look good" by using a well writ
 
 ## Live Demo
 
+![Demo Screenshot](screenshot.jpg)
+
 See a demo of Spectacle in action here: [http://cheesestore.github.io](http://cheesestore.github.io)
 
 ## Features

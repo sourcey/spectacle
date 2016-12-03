@@ -85,7 +85,7 @@ $breakpoint-classes: (small medium large);
 // 3. The Grid
 // -----------
 
-$grid-row-width: $global-width;
+$grid-row-width: initial; //$global-width;
 $grid-column-count: 12;
 $grid-column-responsive-gutter: (
   small: 20px,

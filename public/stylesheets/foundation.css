@@ -419,7 +419,7 @@ button {
   line-height: 1; }
 
 .row {
-  max-width: 78.9473684211rem;
+  max-width: initial;
   margin-left: auto;
   margin-right: auto; }
   .row::before, .row::after {
