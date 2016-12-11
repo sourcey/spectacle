@@ -17,11 +17,16 @@ var fs = require('fs'),
 module.exports = function (options) {
 
     //
-    //= Load the specification and set variables
+    //= Load the specification and init configuration
 
-    var specData = require(path.resolve(options.specFile)),
-        templateData = require(path.resolve(options.appDir + '/lib/preprocessor'))(options, specData),
-        config = require(path.resolve(options.configFile))(grunt, options, templateData);
+    function loadData() {
+        var specPath = path.resolve(options.specFile);
+        delete require.cache[specPath];
+        return require(path.resolve(options.appDir + '/lib/preprocessor'))(
+                                    options, require(specPath));
+    }
+
+    var config = require(path.resolve(options.configFile))(grunt, options, loadData());
 
     //
     //= Setup Grunt to do the heavy lifting
@@ -79,6 +84,12 @@ module.exports = function (options) {
     grunt.registerTask('server', ['connect']);
     grunt.registerTask('develop', ['server', 'watch']);
 
+    // Reload template data when watch files change
+    grunt.event.on('watch', function(action, filepath) {
+        // if (filepath == config.specFile)
+        grunt.config.set('compile-handlebars.compile.templateData', loadData());
+    });
+
     // Report, etc when all tasks have completed.
     grunt.task.options({
         error: function(e) {
@@ -89,6 +100,7 @@ module.exports = function (options) {
             console.log('All tasks complete');
         }
     });
+
 
     //
     //= Run the shiz

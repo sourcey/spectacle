@@ -23,34 +23,32 @@ module.exports = function(grunt, options, spec) {
           },
       },
 
-      /*
-      sass: {
-          scss: {
-              options: {
-                  specify: options.appDir + '/stylesheets/spectacle.scss',
-                  sassDir: path.resolve(options.appDir + '/stylesheets'),
-                  cssDir: options.cacheDir + '/stylesheets',
-                  environment: 'development',
-                  importPath: [
-                      options.appDir + '/vendor',
-                      options.appDir + '/vendor/foundation/scss'
-                  ]
-              }
-          },
-          foundation_scss: {
-              options: {
-                  specify: path.resolve(options.appDir + '/stylesheets/foundation.scss'),
-                  sassDir: path.resolve(options.appDir + '/stylesheets'),
-                  cssDir: options.cacheDir + '/stylesheets',
-                  environment: 'development',
-                  importPath: [
-                      options.appDir + '/vendor',
-                      options.appDir + '/vendor/foundation/scss'
-                  ]
-              }
-          },
-      },
-      */
+      // sass: {
+      //     scss: {
+      //         options: {
+      //             specify: options.appDir + '/stylesheets/spectacle.scss',
+      //             sassDir: path.resolve(options.appDir + '/stylesheets'),
+      //             cssDir: options.cacheDir + '/stylesheets',
+      //             environment: 'development',
+      //             importPath: [
+      //                 options.appDir + '/vendor',
+      //                 options.appDir + '/vendor/foundation/scss'
+      //             ]
+      //         }
+      //     },
+      //     foundation_scss: {
+      //         options: {
+      //             specify: path.resolve(options.appDir + '/stylesheets/foundation.scss'),
+      //             sassDir: path.resolve(options.appDir + '/stylesheets'),
+      //             cssDir: options.cacheDir + '/stylesheets',
+      //             environment: 'development',
+      //             importPath: [
+      //                 options.appDir + '/vendor',
+      //                 options.appDir + '/vendor/foundation/scss'
+      //             ]
+      //         }
+      //     },
+      // },
 
       concat: {
 
@@ -157,9 +155,6 @@ module.exports = function(grunt, options, spec) {
               // livereload: true,
               spawn: false
           },
-          // options: {
-          //     livereload: true
-          // },
           js: {
               files: [options.appDir + '/javascripts/**/*.js'],
               tasks: ['javascripts']
