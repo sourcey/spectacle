@@ -23,12 +23,12 @@
   <h2 class="operation-title">
     {{! Fill the title with the summary or path }}
     {{#if summary}}
-      <div class="operation-summary">{{md summary stripParagraph="true"}}</div>
+      <span class="operation-summary">{{md summary stripParagraph="true"}}</span>
     {{else}}
-      <div class="operation-name">
+      <span class="operation-name">
         <span class="operation-name">{{toUpperCase method}}</span>
         <span class="operation-path">{{path}}</span>
-      </div>
+      </span>
     {{/if}}
   </h2>
 
