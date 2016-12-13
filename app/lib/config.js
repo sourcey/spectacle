@@ -23,33 +23,7 @@ module.exports = function(grunt, options, spec) {
           },
       },
 
-      // sass: {
-      //     scss: {
-      //         options: {
-      //             specify: options.appDir + '/stylesheets/spectacle.scss',
-      //             sassDir: path.resolve(options.appDir + '/stylesheets'),
-      //             cssDir: options.cacheDir + '/stylesheets',
-      //             environment: 'development',
-      //             importPath: [
-      //                 options.appDir + '/vendor',
-      //                 options.appDir + '/vendor/foundation/scss'
-      //             ]
-      //         }
-      //     },
-      //     foundation_scss: {
-      //         options: {
-      //             specify: path.resolve(options.appDir + '/stylesheets/foundation.scss'),
-      //             sassDir: path.resolve(options.appDir + '/stylesheets'),
-      //             cssDir: options.cacheDir + '/stylesheets',
-      //             environment: 'development',
-      //             importPath: [
-      //                 options.appDir + '/vendor',
-      //                 options.appDir + '/vendor/foundation/scss'
-      //             ]
-      //         }
-      //     },
-      // },
-
+      // Concentrate JS files into a single source
       concat: {
 
           // Concentrate source JS files from the directory into the traget directory
@@ -117,6 +91,22 @@ module.exports = function(grunt, options, spec) {
               helpers: options.appDir + '/helpers/*.js',
               partials: options.appDir + '/views/partials/**/*.hbs'
           },
+      },
+
+      // Prettify generated HTML output
+      prettify: {
+          options: {
+              // indent: 4,
+              // indent_char: ' ',
+              // wrap_line_length: 500,
+              // brace_style: 'end-expand',
+              preserve_newlines: false,
+              unformatted: ['code', 'pre']
+          },
+          index: {
+            src: options.cacheDir + '/' + options.targetFile,
+            dest: options.targetDir + '/' + options.targetFile // copy to destination
+          }
       },
 
       // Cleanup cache and traget files

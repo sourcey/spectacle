@@ -5,8 +5,8 @@
   @api public
 --}}
 
-{{#if description}}
-  {{md description}}
+{{#if .}}
+  {{md .}}
 {{else}}
   <p class="no-description">(no description)</p>
 {{/if}}

@@ -18,7 +18,7 @@
           </h3>
           <section class="swagger-security-definition-properties">
             {{#each this}}
-              {{#ifeq @key 'type'}}
+              {{#ifin @key "['type', 'scopes']"}}
               {{else}}
                 <div class="prop-row security-definition-property">
                   <div class="prop-name">
@@ -28,25 +28,9 @@
                     {{this}}
                   </div>
                 </div>
-              {{/ifeq}}
+              {{/ifin}}
             {{/each}}
           </section>
-
-          <!-- <h3 class="security-definition-title">
-            <span class="security-name">{{@key}}</span>
-            <strong><span class="swagger-security-definition-{{type}}"></span></strong>
-          </h3>
-          <section class="swagger-security-definition-properties">
-            {{#each this}}
-              {{#ifeq @key 'type'}}
-              {{else}}
-                <div class="security-definition-property">
-                  <strong class="security-definition-property-name">{{@key}}:</strong>
-                  <span class="security-definition-property-type">{{this}}</span>
-                <div>
-              {{/ifeq}}
-            {{/each}}
-          </section> -->
         </div>
       </div>
     </div>
