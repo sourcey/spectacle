@@ -2,6 +2,8 @@
 
 > The gentleman at REST
 
+[![CircleCI](https://circleci.com/gh/sourcey/spectacle.svg?style=svg)](https://circleci.com/gh/sourcey/spectacle)
+
 Spectacle generates beautiful static HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
 
 The goal of Spectacle is help you "save time and look good" by providing an extensible platform for auto generating your REST API docs. The default layout is a three column single page, similar to those
