@@ -18,11 +18,11 @@ See a demo of Spectacle in action here: [http://cheesestore.github.io](http://ch
 ## Features
 
 * **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification.
-* **Highly configurable**: Spectacle is built with easily configurable Handlebars templates and SCSS styles so you can add your own flavour without going bald. See [Custom Builds](#custom-builds)
+* **Highly configurable**: Easily configurable Handlebars templates and SCSS styles so you can add your own design and flavour without going bald. See [Custom Builds](#custom-builds)
 * **Markdown support**: Render markdown written in any of your API descriptions.
-* **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
-* **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
-* **Live preview developer mode**: Development mode starts a local HTTP server with a file watcher with live reload so you can preview live changes in your browser as you update your spec.
+* **Clean responsive design**: Responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
+* **Embed into your existing website**: An embedded option so that generate partial docs without a HTML `<body>` for convenient integration into your existing website.
+* **Live preview developer mode**: Development mode that starts a local HTTP server with a file watcher and live reload so you can preview live changes in your browser as you update your spec.
 
 ## Usage
 
