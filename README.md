@@ -2,12 +2,8 @@
 
 Spectacle generates beautiful static HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
 
-The goal of Spectacle is help you "save time and look good" by using a well written spec to automatically generate your API docs. Using an API spec to generate your docs has a number of great advantages:
-
-* **Maintain a single source**: Save time by removing the need to maintain a separate API spec and API documentation.
-* **No more out-of-date documentation**: Your documentation will always be up-to-date with your API spec.
-* **Be a better developer**: Your entire API system will be more stable and robust when built around your spec as a single source of truth.
-* **Documentation is just the beginning**: Generate your API system from your spec, including; tests, client implementations, and server code. See also [Optimizing Your Workflow](#optimizing-your-workflow)
+The goal of Spectacle is help you "save time and look good" by providing an extensible platform for generating your REST API docs. The default layout is a three column single page, similar to those
+employed by [Stripe](https://stripe.com/docs/api) and [Intercom](https://developers.intercom.com/reference).
 
 ![Demo Screenshot](screenshot.jpg)
 
@@ -17,13 +13,14 @@ See a demo of Spectacle in action here: [http://cheesestore.github.io](http://ch
 
 ## Features
 
-* **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification - the new standard for documenting REST APIs.
+* **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification.
+* **Highly configurable**: Spectacle is built with easily configurable Handlebars templates and SCSS styles so you can add your own flavour without going bald. See [Custom Builds](#custom-builds)
+* **Markdown support**: Render markdown written in any of your API descriptions.
 * **Clean responsive design**: Spectacle features a responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
 * **Embed into your existing website**: Spectacle features an embedded option that lets you generate docs without a HTML `<body>` layout for convenient integration into your existing website.
-* **Live preview developer mode**: Spectacle comes with a development mode that starts a local HTTP server with a file watcher and live reload so you can preview changes to your live documentation in your browser as you write your spec.
-* **Configurable templates and styles**: Spectacle is built with easily configurable Handlebars templates and SCSS styles so you can add your own flavor. See [Custom Builds](#custom-builds)
+* **Live preview developer mode**: Development mode starts a local HTTP server with a file watcher with live reload so you can preview live changes in your browser as you update your spec.
 
-## Getting Started
+## Usage
 
 Simply install Spectacle from `npm` like so:
 
@@ -90,14 +87,20 @@ Alternatively, you can just copy the contents of `app` from the main repo which 
 
 ## Optimizing Your Workflow
 
-If you're a developer you are always looking for ways to optimize your workflow. The great thing about the Swagger spec is that it enables you to use your API spec as a source for automating and generating all parts of your API system, such as:
+Using an API spec to generate your docs has a number of great advantages, such as:
+
+* **Maintain a single source**: Save time by removing the need to maintain a separate API spec and API documentation.
+* **No more out-of-date documentation**: Your documentation will always be up-to-date with your API spec.
+* **Be a better developer**: Your entire API system will be more stable and robust when built around your spec as a single source of truth.
+
+As developer we're always looking for ways to improve and optimize our workflow, and documentation is just the beginning. With a well written Swagger you can automate and generate many parts of your API system, such as:
 
 * **Inline Code Generators**: Generate your Swagger JSON or YAML from your source code comments.
 * **Automate Testing**: Automate testing for all your API endpoints.
 * **Code Generation**: Automatically generate client and server code from your spec.
 * **Generate Documentation**: Really?
 
-For a list of open source libraries in many languages check here: http://swagger.io/open-source-integrations/
+For a list of open source Swagger based libraries in many languages check here: http://swagger.io/open-source-integrations/
 
 ## More Information
 
