@@ -5,11 +5,11 @@ Spectacle generates beautiful static HTML5 documentation from [OpenAPI](https://
 The goal of Spectacle is help you "save time and look good" by providing an extensible platform for generating your REST API docs. The default layout is a three column single page, similar to those
 employed by [Stripe](https://stripe.com/docs/api) and [Intercom](https://developers.intercom.com/reference).
 
-![Demo Screenshot](screenshot.jpg)
-
-## Live Demo
-
 See a demo of Spectacle in action here: [http://cheesestore.github.io](http://cheesestore.github.io)
+
+---
+
+![Demo Screenshot](screenshot.jpg)
 
 ## Features
 
