@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "spectacle -l test/fixtures/cheese.png test/fixtures/cheese.json",
-    "test": "spectacle -l test/fixtures/cheese.png test/fixtures/cheese.json",
+    "test": "node bin/spectacle -l test/fixtures/cheese.png test/fixtures/cheese.json",
     "develop": "spectacle -d",
     "server": "spectacle -s"
   },
