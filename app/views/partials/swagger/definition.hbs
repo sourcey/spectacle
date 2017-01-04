@@ -15,6 +15,27 @@
       <h2 class="panel-title">{{title}}</h2>
     {{/if}}
   {{/if}}
+
+
+    <div class="doc-row">
+      <div class="doc-copy">
+        {{! The _request_body variable is filled with the parameter `body` by the preprocessor. }}
+        {{#if _show_requst_body_section}}
+          {{>swagger/request-body consumes=consumes body=_request_body}}
+        {{/if}}
+
+        {{>swagger/parameters parameters=parameters}}
+      </div>
+
+      {{! Print examples without whitespace }}
+      <div class="doc-examples">{{#if _show_requst_body_section}}
+          <section>
+            <h5>Request Example</h5>
+            {{>swagger/print-schema _request_body.schema}}
+          </section>
+        {{/if}}</div>
+    </div>
+
   <div class="doc-row">
     <div class="doc-copy">
       {{#if $ref}}
@@ -23,5 +44,15 @@
         {{>json-schema/body}}
       {{/if}}
     </div>
+
+    {{! Print examples without whitespace }}
+    {{#if example}}
+      <div class="doc-examples">
+        <section>
+          <h5>Example</h5>
+          {{>swagger/print-schema example}}
+        </section>
+      </div>
+    {{/if}}
   </div>
 </div>

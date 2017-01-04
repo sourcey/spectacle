@@ -1502,8 +1502,8 @@ kbd {
       border: 1px solid #777;
       color: #777; }
       .button.hollow.secondary:hover, .button.hollow.secondary:focus {
-        border-color: #3c3c3c;
-        color: #3c3c3c; }
+        border-color: #3c3b3b;
+        color: #3c3b3b; }
     .button.hollow.success {
       border: 1px solid #3adb76;
       color: #3adb76; }

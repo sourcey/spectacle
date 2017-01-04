@@ -8,11 +8,13 @@
     {{md description}}
   </section>
 {{/if}}
+{{!--
 {{#if example}}
   <section class="json-schema-example">
-    {{json example}}
+    {{printSchema example}}
   </section>
 {{/if}}
+--}}
 {{#if type}}
   {{! Render differently depending on type}}
   {{#ifeq type 'object'}}

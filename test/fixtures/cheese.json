@@ -880,6 +880,14 @@
                     "default": false
                 }
             },
+            "example": {
+                "cheeseId": "1",
+                "complete": "true",
+                "id": "1",
+                "quantity": "66",
+                "shipDate": "2016/10/04 00:09:21 +0000",
+                "status": "available"
+            },
             "xml": {
                 "name": "Order"
             }
