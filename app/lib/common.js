@@ -91,7 +91,8 @@ highlight.configure({
 });
 
 marked.setOptions({
-    highlight: common.highlight
+    highlight: common.highlight,
+    langPrefix: 'hljs '
 });
 
 module.exports = common;
