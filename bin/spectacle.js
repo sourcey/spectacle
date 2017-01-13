@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
+    tmp = require('tmp'),
     fs = require('fs'),
     os = require('os'),
     path = require('path'),
     package = require('../package'),
     spectacle = require('../index.js');
+
+// Ensures temporary files are cleaned up on program close, even if errors are encountered.
+tmp.setGracefulCleanup();
 
 var cwd = process.cwd(),
     root = path.resolve(__dirname, '..');
@@ -35,8 +39,8 @@ if (program.args.length < 1) { // && program.rawArgs.length < 1
     program.help();
 }
 
-// Set some necessary defaults
-program.cacheDir = os.tmpdir() + '/.spectacle';
+// Create a new temporary directory, and set some necessary defaults
+program.cacheDir = tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' });
 program.specFile = program.args[0]; // || path.resolve(root, 'test/fixtures/cheese.json');
 
 // Replace some absolute paths
