@@ -40,7 +40,7 @@ if (program.args.length < 1) { // && program.rawArgs.length < 1
 }
 
 // Create a new temporary directory, and set some necessary defaults
-program.cacheDir = tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' });
+program.cacheDir = tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' }).name;
 program.specFile = program.args[0]; // || path.resolve(root, 'test/fixtures/cheese.json');
 
 // Replace some absolute paths
