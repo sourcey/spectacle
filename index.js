@@ -6,32 +6,65 @@
 
 var fs = require('fs'),
     path = require('path'),
+    Promise = require('bluebird'),
+    tmp = require('tmp'),
     grunt = require('grunt'),
     package = require('./package'),
     _ = require('lodash');
 
 
+// Ensures temporary files are cleaned up on program close, even if errors are encountered.
+tmp.setGracefulCleanup();
+
+var defaults = {
+    silent: false,
+    port: 4400,
+    targetDir: path.resolve(process.cwd(), 'public'),
+    targetFile: 'index.html',
+    appDir: path.resolve(__dirname, 'app'),
+    configFile: path.resolve(__dirname, 'app/lib/config.js'),
+    cacheDir: tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' }).name
+};
+function resolveOptions(options) {
+    var opts = _.extend({}, defaults, options);
+
+    // Replace some absolute paths
+    if (opts.specFile && opts.specFile.indexOf('test/fixtures') === 0)
+        opts.specFile = path.resolve(__dirname, opts.specFile);
+    if (opts.logoFile && opts.logoFile.indexOf('test/fixtures') === 0)
+        opts.logoFile = path.resolve(__dirname, opts.logoFile);
+
+    return opts;
+}
+
 /**
  * Run Spectacle and configured tasks
  **/
 module.exports = function (options) {
+    var opts = resolveOptions(options);
 
     //
     //= Load the specification and init configuration
 
     function loadData() {
-        var specPath = path.resolve(options.specFile);
+        var specPath = path.resolve(opts.specFile);
         delete require.cache[specPath];
-        return require(path.resolve(options.appDir + '/lib/preprocessor'))(
+        return require(path.resolve(opts.appDir + '/lib/preprocessor'))(
                                     options, require(specPath));
     }
 
-    var config = require(path.resolve(options.configFile))(grunt, options, loadData());
+    var config = require(path.resolve(opts.configFile))(grunt, opts, loadData());
 
     //
     //= Setup Grunt to do the heavy lifting
 
     grunt.initConfig(_.merge({ pkg: package }, config));
+    if(opts.silent) {
+        grunt.log.writeln = function() {}
+        grunt.log.write = function() {}
+        grunt.log.header = function() {}
+        grunt.log.ok = function() {}
+    }
 
     var cwd = process.cwd(); // change CWD for loadNpmTasks global install
     var exists = grunt.file.exists(path.join(path.resolve('node_modules'),
@@ -54,7 +87,7 @@ module.exports = function (options) {
     process.chdir(cwd);
 
     grunt.registerTask('predentation', 'Remove indentation from generated <pre> tags.', function() {
-        var html = fs.readFileSync(options.cacheDir + '/' + options.targetFile, 'utf8');
+        var html = fs.readFileSync(opts.cacheDir + '/' + opts.targetFile, 'utf8');
         html = html.replace(/<pre.*?><code.*?>([\s\S]*?)<\/code><\/pre>/gmi, function(x, y) {
             var lines = x.split('\n'), level = null;
             if (lines) {
@@ -74,7 +107,7 @@ module.exports = function (options) {
             }
             return lines.join('\n');
         });
-        fs.writeFileSync(options.cacheDir + '/' + options.targetFile, html);
+        fs.writeFileSync(opts.cacheDir + '/' + opts.targetFile, html);
     });
 
     grunt.registerTask('stylesheets', ['sass:scss', 'concat:css', 'cssmin']);
@@ -92,38 +125,48 @@ module.exports = function (options) {
     });
 
     // Report, etc when all tasks have completed.
-    grunt.task.options({
-        error: function(e) {
-            console.warn('Task error:', e);
-            // TODO: fail here or push on?
-        },
-        done: function() {
-            console.log('All tasks complete');
-        }
+    var donePromise = new Promise(function(resolve, reject) {
+      grunt.task.options({
+          error: function(e) {
+              if(!opts.silent) {
+                  console.warn('Task error:', e);
+              }
+              // TODO: fail here or push on?
+              reject(e);
+          },
+          done: function() {
+              if(!opts.silent) {
+                  console.log('All tasks complete');
+              }
+              resolve();
+          }
+      });
     });
 
 
     //
     //= Run the shiz
 
-    if (options.startServer) {
+    if (opts.startServer) {
         grunt.task.run('server');
     }
     else {
-        if (!options.disableCss) {
+        if (!opts.disableCss) {
             grunt.task.run(['foundation', 'stylesheets']);
         }
-        if (!options.disableJs) {
+        if (!opts.disableJs) {
             grunt.task.run('javascripts');
         }
-        if (options.logoFile) {
+        if (opts.logoFile) {
             grunt.task.run('copy:logo');
         }
         grunt.task.run('templates');
-        if (options.developmentMode) {
+        if (opts.developmentMode) {
             grunt.task.run('develop');
         }
     }
 
     grunt.task.start();
+
+    return donePromise;
 };
