@@ -1,6 +1,7 @@
 var cheerio = require('cheerio');
 var marked = require('marked');
 var highlight = require('highlight.js');
+var _ = require('lodash');
 
 var common = {
   highlight: function(code, name) {
@@ -21,7 +22,7 @@ var common = {
    * @returns {string} the markdown rendered as HTML.
    */
   markdown: function(value, stripParagraph) {
-     if (!value) {
+    if (!value) {
          return value;
      }
      var html = marked(value);
@@ -36,28 +37,57 @@ var common = {
      return html;
   },
 
-  printSchema: function(value) {
-      if (!value) {
-          return '';
+  formatSchema: function(value) {
+    var cloned;
+    if (typeof value === 'object' && typeof value.properties === 'object') {
+      if (value.example) {
+        // Use the supplied example
+        value = value.example;
+        cloned = _.cloneDeep(value);
+      } else {
+        // Create json object of keys : type info string
+        value = value.properties;
+        cloned = _.cloneDeep(value);
+        Object.keys(cloned).forEach(function(propName) {
+          var prop = cloned[propName];
+          if (prop.type) {
+            cloned[propName] = prop.type;
+            if (prop.format) {
+              cloned[propName] += ('(' + prop.format + ')');
+            }
+          }
+        })
       }
-      var schemaString = require('json-stable-stringify')(value, { space: 2 });
+    }
+    return cloned;
+  },
 
-      // Add an extra CRLR before the code so the postprocessor can determine
-      // the correct line indent for the <pre> tag.
-      var $ = cheerio.load(marked("```json\r\n" + schemaString + "\n```"));
-      var definitions = $('span:not(:has(span)):contains("#/definitions/")');
-      definitions.each(function(index, item) {
-          var ref = $(item).html();
-          var refLink = ref.replace(/&quot;/g, "").replace('#/definitions/', '#definition-')
-          // TODO: This should be done in a template
-          $(item).html("<a href=" + refLink + ">" + ref + "</a>");
-      });
+  printSchema: function(value) {
+    if (!value) {
+      return '';
+    }
+    var schemaString = require('json-stable-stringify')(value, { space: 2 });
 
-      // return '<pre><code class="hljs lang-json">' +
-      //   this.highlight(schemaString, 'json') +
-      //   '</code></pre>';
+    // Add an extra CRLR before the code so the postprocessor can determine
+    // the correct line indent for the <pre> tag.
+    var $ = cheerio.load(marked("```json\r\n" + schemaString + "\n```"));
+    var definitions = $('span:not(:has(span)):contains("#/definitions/")');
+    definitions.each(function(index, item) {
+      var ref = $(item).html();
+      var refLink = ref.replace(/&quot;/g, "").replace('#/definitions/', '#definition-')
+      // TODO: This should be done in a template
+      $(item).html("<a href=" + refLink + ">" + ref + "</a>");
+    });
 
-      return $.html();
+    // Remove trailing whitespace before code tag
+    // var re = /([\n\r\s]+)(<\/code>)/g;
+    // str = $.html().replace(re, '$2');
+
+    // return '<pre><code class="hljs lang-json">' +
+    //   this.highlight(schemaString, 'json') +
+    //   '</code></pre>';
+
+    return $.html();
   },
 
   resolveSchemaReference: function(reference, json) {
@@ -87,12 +117,12 @@ var common = {
 }
 
 highlight.configure({
-    // "useBR": true
+  // "useBR": true
 });
 
 marked.setOptions({
-    highlight: common.highlight,
-    langPrefix: 'hljs '
+  highlight: common.highlight,
+  //langPrefix: 'hljs '
 });
 
 module.exports = common;

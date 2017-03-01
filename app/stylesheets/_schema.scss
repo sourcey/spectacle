@@ -40,6 +40,10 @@
 
 .swagger-request-body {
   @include named-section($msg-swagger-section-request-body);
+
+  .json-schema-properties:before {
+    display: none;
+  }
 }
 
 .swagger-responses {
@@ -163,6 +167,10 @@ table.table {
   dl {
     margin: 0;
   }
+}
+
+.json-schema-description + .json-schema-properties {
+    margin-top: 1.5rem;
 }
 
 .json-schema-ref-array {

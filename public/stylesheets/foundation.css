@@ -1874,32 +1874,24 @@ select {
 table {
   margin-bottom: 1rem;
   border-radius: 0; }
-  thead,
-  tbody,
-  tfoot {
+  thead, tbody, tfoot {
     border: 1px solid #f1f1f1;
     background-color: #fefefe; }
   caption {
     font-weight: bold;
     padding: 0.5263157895rem 0.6578947368rem 0.6578947368rem; }
-  thead,
-  tfoot {
+  thead, tfoot {
     background: #f8f8f8;
     color: #3a3c33; }
-    thead tr,
-    tfoot tr {
+    thead tr, tfoot tr {
       background: transparent; }
-    thead th,
-    thead td,
-    tfoot th,
-    tfoot td {
+    thead th, thead td, tfoot th, tfoot td {
       padding: 0.5263157895rem 0.6578947368rem 0.6578947368rem;
       font-weight: bold;
       text-align: left; }
   tbody tr:nth-child(even) {
     background-color: #f1f1f1; }
-  tbody th,
-  tbody td {
+  tbody th, tbody td {
     padding: 0.5263157895rem 0.6578947368rem 0.6578947368rem; }
 
 @media screen and (max-width: 63.9375em) {

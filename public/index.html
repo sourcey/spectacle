@@ -6,7 +6,7 @@
     <title>Cheese Store | API Reference</title>
     <link rel="stylesheet" href="stylesheets/foundation.min.css" />
     <link rel="stylesheet" href="stylesheets/spectacle.min.css" />
-    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <!-- <script src="javascripts/foundation.js"></script> -->
     <script src="javascripts/spectacle.min.js"></script>
   </head>
@@ -16,8 +16,6 @@
         <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
           <span aria-hidden="true">×</span>
         </button>
-        <div id="logo">
-          <img src="images/cheese.png" title="Cheese Store" /> </div>
         <nav id="nav" role="navigation">
           <h5>API Reference</h5>
           <a href="#introduction">Introduction</a>
@@ -1362,14 +1360,7 @@
                   <h5>Response Example
                     <span>(200 OK)</span>
                   </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;additionalProperties&quot;</span>: {
-    <span class="hljs-attr">&quot;format&quot;</span>: <span class="hljs-string">&quot;int32&quot;</span>,
-    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;integer&quot;</span>
-  },
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>
-}
-</code></pre> </div>
+                  <div class="hljs"></div>
                 </section>
               </div>
             </div>
@@ -1446,12 +1437,12 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;boolean&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1490,12 +1481,12 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;boolean&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1598,12 +1589,12 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;boolean&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;string(date-time)&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1804,20 +1795,16 @@
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-request-body">
-                  <div class="prop-row">
-                    <div class="prop-name">
-                      <div class="swagger-request-model">
-                        <span class="json-schema-ref-array">
-                          <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="prop-value columns small-6">
-                      <!-- <div class="swagger-request-description"> -->
-                      <p>List of created customer objects</p>
-                      <!-- </div> -->
-                    </div>
-                  </div>
+                  <p>List of created customer objects</p>
+                  <section class="json-schema-array-items">
+                    <span class="json-property-type">
+                      <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
+                      </span>
+                    </span>
+                    <span class="json-property-range" title="Value limits"></span>
+                    <div class="json-inner-schema"> </div>
+                  </section>
                 </section>
               </div>
               <div class="doc-examples">
@@ -1957,10 +1944,7 @@
                   <h5>Response Example
                     <span>(200 OK)</span>
                   </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
+                  <div class="hljs"></div>
                 </section>
               </div>
             </div>
@@ -2318,10 +2302,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2350,10 +2338,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2415,10 +2407,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2481,10 +2477,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2518,10 +2518,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2573,15 +2577,7 @@
               <div class="doc-examples">
                 <section>
                   <h5>Example</h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
-</code></pre> </div>
+                  <div class="hljs"></div>
                 </section>
               </div>
             </div>
@@ -2594,10 +2590,14 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
+            <!-- <div class="doc-row">
+                  <div class="doc-copy">
+              
+                    
+                  </div>
+              
+                  <div class="doc-examples"></div>
+                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">

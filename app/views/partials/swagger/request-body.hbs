@@ -18,18 +18,27 @@
   --}}
   {{#if body}}
     {{#with body}}
-      <div class="prop-row">
-        <div class="prop-name">
-          <div class="swagger-request-model">
-            {{>json-schema/reference schema}}
+      {{#if schema.$ref}}
+        <div class="prop-row">
+          <div class="prop-name">
+            <div class="swagger-request-model">
+              {{>json-schema/reference schema}}
+            </div>
+          </div>
+          <div class="prop-value columns small-6">
+            <!-- <div class="swagger-request-description"> -->
+              {{md description}}
+            <!-- </div> -->
           </div>
         </div>
-        <div class="prop-value columns small-6">
-          <!-- <div class="swagger-request-description"> -->
-            {{md description}}
-          <!-- </div> -->
-        </div>
-      </div>
+      {{else if schema.type}}
+        {{#if description}}
+          {{md description}}
+        {{else if schema.description}}
+          {{md schema.description}}
+        {{/if}}
+        {{>json-schema/body schema}}
+      {{/if}}
     {{/with}}
   {{/if}}
 </section>
