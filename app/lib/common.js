@@ -51,9 +51,14 @@ var common = {
         Object.keys(cloned).forEach(function(propName) {
           var prop = cloned[propName];
           if (prop.type) {
-            cloned[propName] = prop.type;
-            if (prop.format) {
-              cloned[propName] += ('(' + prop.format + ')');
+            if (prop.example) {
+              cloned[propName] = prop.example;
+            }
+            else {
+              cloned[propName] = prop.type;
+              if (prop.format) {
+                cloned[propName] += ('(' + prop.format + ')');
+              }
             }
           }
         })

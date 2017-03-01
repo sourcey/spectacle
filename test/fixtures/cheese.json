@@ -988,7 +988,7 @@
                 },
                 "name": {
                     "type": "string",
-                    "example": "doggie"
+                    "example": "Gorgonzola"
                 },
                 "photoUrls": {
                     "type": "array",
