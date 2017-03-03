@@ -1,7 +1,10 @@
+var fs = require('fs');
+var path = require('path');
 var cheerio = require('cheerio');
 var marked = require('marked');
 var highlight = require('highlight.js');
 var _ = require('lodash');
+var request = require('sync-request');
 
 var common = {
   highlight: function(code, name) {
@@ -97,16 +100,30 @@ var common = {
 
   resolveSchemaReference: function(reference, json) {
     reference = reference.trim();
-    if (reference.lastIndexOf('#', 0) < 0) {
-      console.warn('Remote references not supported yet. Reference must start with "#" (but was ' + reference + ')')
-      return {};
-    }
     var components = reference.split('#');
     var url = components[0];
     var hash = components[1];
+    if(!hash) {
+      hash = '';
+    }
     var hashParts = hash.split('/');
-    // TODO : Download remote json from url if url not empty
-    var current = json; //options.data.root
+    var current = null;
+    if(url && url !== "") {
+      if(url.indexOf("://") < 0) {
+        url = path.resolve(json.filePath, url);
+        options = json.spectacleOptions;
+        current = require(path.resolve(options.appDir + '/lib/preprocessor'))(options, require(url));
+      }
+      else {
+        //TODO: cache results for performance
+        current = JSON.parse(request('GET', url));
+      }
+      current.filePath = url;
+      current.spectacleOptions = json.spectacleOptions;
+    }
+    else {
+      current = json;
+    }
     hashParts.forEach(function(hashPart) {
       // Traverse schema from root along the path
       if (hashPart.trim().length > 0) {
