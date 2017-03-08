@@ -49,11 +49,8 @@ module.exports = function (options) {
     function loadData() {
         var specPath = path.resolve(opts.specFile);
         delete require.cache[specPath];
-        var data = require(path.resolve(opts.appDir + '/lib/preprocessor'))(
+        return require(path.resolve(opts.appDir + '/lib/preprocessor'))(
                                     options, require(specPath));
-        data.filePath = path.dirname(specPath);
-        data.spectacleOptions = options;
-        return data;
     }
 
     var config = require(path.resolve(opts.configFile))(grunt, opts, loadData());
