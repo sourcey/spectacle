@@ -65,5 +65,20 @@ module.exports = function(options, specData) {
     // If there are multiple tags, we show the tag-based summary
     copy.showTagSummary = copy.tags.length > 1
   }
+
+  // Resolve references to external files.
+  function resolveReferences(obj) {
+    for (var k in obj) {
+      var val = obj[k];
+      if (typeof val === "object" && val !== null) {
+        resolveReferences(val);
+      }
+      else {
+        // #TODO: resolve references
+      }
+    }
+  }
+  resolveReferences(copy);
+
   return copy;
 }
