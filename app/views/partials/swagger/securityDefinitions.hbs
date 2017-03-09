@@ -25,7 +25,11 @@
                     <div class="prop-title security-definition-property-name">{{@key}}</div>
                   </div>
                   <div class="prop-value security-definition-property-type">
-                    {{this}}
+                    {{#ifeq @key 'description'}}
+                        {{md this}}
+                    {{else}}
+                        {{this}}
+                    {{/ifeq}}
                   </div>
                 </div>
               {{/ifin}}
