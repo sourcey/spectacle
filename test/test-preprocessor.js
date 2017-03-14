@@ -3,7 +3,7 @@ var should = chai.should();
 
 var preprocessor = require("../app/lib/preprocessor");
 
-var minimal = require("./minimal");
+var minimal = require("./minimal").minimal;
 
 describe("preprocessor", function() {
 

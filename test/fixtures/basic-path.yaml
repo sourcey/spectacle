@@ -1,0 +1,26 @@
+get:
+  description: Get a basic response.
+  responses:
+    "200":
+      description: The basic response.
+    "500":
+      description: An error occured.
+post:
+  description: Send some data.
+  produces:
+    - application/json
+    - text/html
+  parameters:
+    - name: type
+      in: query
+      type: string
+      description: The type of response (JSON/HTML) requested.
+    - name: id
+      in: formData
+      type: string
+      description: The data to store.
+  responses:
+    "200":
+      description: The basic response.
+    "409":
+      description: An ID conflict occured.
