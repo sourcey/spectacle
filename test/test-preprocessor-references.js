@@ -77,26 +77,19 @@ describe("preprocessor referencing", function() {
         processed.paths["/"].get.responses["200"].should.have.property("schema");
       });
 
-      it.skip("should remove '$ref'", function() {
-        response.schema.should.not.have.key("$ref");
-      });
-
-      it.skip("should include the reference path", function() {
-        response.schema.should.have.property("x-external", "./fixtures/User.yaml");
-      });
-
-      it.skip("should include the schema", function() {
-        var schema = response.schema;
-        schema.should.have.property("type", "object");
-        schema.should.have.property("properties");
-        schema.properties.should.have.property("name");
-        schema.properties.name.should.deep.equal({ type: "string" });
+      it.skip("should update '$ref'", function() {
+        response.schema.should.have.key("$ref", "#/definitions/.%2Ffixtures%2FUser.yaml");
       });
 
       it.skip("should include the definition globally", function() {
         processed.definitions.should.be.an.object;
         processed.definitions.should.have.property("./fixtures/User.yaml");
-        processed.definitions["./fixtures/User.yaml"].should.deep.equal(response.schema);
+        var schema = processed.definitions["./fixtures/User.yaml"];
+        schema.should.have.property("x-external", "./fixtures/User.yaml");
+        schema.should.have.property("type", "object");
+        schema.should.have.property("properties");
+        schema.properties.should.have.property("name");
+        schema.properties.name.should.deep.equal({ type: "string" });
       });
 
     });
