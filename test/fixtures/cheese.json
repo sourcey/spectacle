@@ -73,7 +73,7 @@
                     "200": {
                         "description": "Successful operation",
                         "schema": {
-                            "$ref": "#/definitions/Cheese"
+                            "$ref": "#/definitions/Cheese1"
                         }
                     },
                     "405": {
