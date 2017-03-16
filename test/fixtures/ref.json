@@ -1,0 +1,6 @@
+{
+  "$ref": "document.json#foo",
+  "document": {
+    "$ref": "document.json"
+  }
+}

@@ -49,9 +49,12 @@
     "grunt-sass": "^2.0.0",
     "handlebars": "^4.0.5",
     "highlight.js": "^9.1.0",
+    "js-yaml": "^3.8.2",
+    "json-refs": "^2.1.6",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.2.1",
     "marked": "^0.3.5",
+    "request-sync": "^1.0.0",
     "tmp": "0.0.31",
     "trace": "^1.1.0"
   },
