@@ -37,8 +37,24 @@ function join(paths) {
   }, args[0]);
 }
 
+/**
+ * `path.relative` that works with either file paths or URLs.
+ * @param {string} from the origin path
+ * @param {string} to the destination path
+ * @return {string} A relative path from the origin to the destination.
+*/
+function relative(from, to) {
+  var localToRemote = !absoluteURL(from) && absoluteURL(to);
+  var differentDomains = absoluteURL(from) && absoluteURL(to) && urlBasename(from) !== urlBasename(to);
+  if(localToRemote || differentDomains) {
+    return to;
+  }
+  return path.relative(from, to);
+}
+
 module.exports = {
   absoluteURL: absoluteURL,
   urlBasename: urlBasename,
   join: join,
+  relative: relative,
 }

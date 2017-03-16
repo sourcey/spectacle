@@ -60,6 +60,7 @@ describe("urls.js", function() {
   });
 
   describe("join()", function() {
+
     [
       {from: ["/home/", "foo"], to: "/home/foo"},
       {from: ["/home/", "foo/"], to: "/home/foo/"},
@@ -75,6 +76,44 @@ describe("urls.js", function() {
         urls.join.bind(urls, data.from)().should.equal(data.to);
       });
     });
+
+  });
+
+  describe("relative()", function() {
+
+    var situations = {
+      "Joining Local Paths": [
+        {from: "/home/foo/bar/", to: "/home/baz/foobar/", out: "../../baz/foobar"},
+        {from: "foo/bar/", to: "baz/foobar/", out: "../../baz/foobar"},
+        {from: "file.json", to: "baz/foobar/", out: "../baz/foobar"},
+      ],
+      "Joining URLs": [
+        {from: "http://example.com/foo/bar/", to: "http://example.com/baz/foobar/", out: "../../baz/foobar"},
+        {from: "http://example.com/foo/", to: "http://example.com/bar/", out: "../bar"},
+      ],
+      "File System to URL": [
+        {from: "/home/", to: "http://example.com", out: "http://example.com"},
+        {from: "./", to: "http://example.com", out: "http://example.com"},
+        {from: "./file.json", to: "http://example.com", out: "http://example.com"},
+        {from: "file.json", to: "sftp://example.com", out: "sftp://example.com"},
+      ],
+      "Given Different URLs": [
+        {from: "http://example.com/", to: "http://one.example.com/", out: "http://one.example.com/"},
+      ],
+    };
+
+    for(var situation in situations) {
+      var tests = situations[situation];
+      describe(situation, (function(situation, tests) {
+        return function() {
+          tests.forEach(function(details) {
+            it("relative(\""+details.from+"\", \""+details.to+"\") should produce "+details.out, function() {
+              urls.relative(details.from, details.to).should.equal(details.out);
+            });
+          });
+        };
+      })(situation, tests));
+    }
 
   });
 
