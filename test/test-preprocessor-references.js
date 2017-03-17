@@ -26,26 +26,28 @@ describe("preprocessor referencing", function() {
             },
           },
         });
-        processed = preprocessor({}, spec);
+        processed = preprocessor({
+          specFile: __dirname + "/spec.json",
+        }, spec);
       });
 
       it("should include the path section", function() {
-        processed.paths.should.have.key("/");
+        processed.paths.should.have.property("/");
         processed.paths["/"].should.be.an.object;
       });
 
-      it.skip("should include the imported paths", function() {
-        processed.paths["/"].should.have.key("get");
-        processed.paths["/"].should.have.key("post");
+      it("should include the imported paths", function() {
+        processed.paths["/"].should.have.property("get");
+        processed.paths["/"].should.have.property("post");
       });
 
-      it.skip("should include the reference path ('/' path)", function() {
-        processed.paths["/"].should.have.property("x-external", "./fixtures/basic-path.yaml");
+      it("should include the reference path ('/' path)", function() {
+        processed.paths["/"].should.have.property("x-external", "fixtures/basic-path.yaml");
       });
 
       it.skip("should include the reference path ('get', 'post')", function() {
-        processed.paths["/"].get.should.have.property("x-external", "./fixtures/basic-path.yaml#get");
-        processed.paths["/"].post.should.have.property("x-external", "./fixtures/basic-path.yaml#post");
+        processed.paths["/"].get.should.have.property("x-external", "fixtures/basic-path.yaml#get");
+        processed.paths["/"].post.should.have.property("x-external", "fixtures/basic-path.yaml#post");
       });
 
     });
@@ -61,11 +63,13 @@ describe("preprocessor referencing", function() {
           responses: { "200": {
             description: "Current user",
             schema: {
-              "$ref": "fixtures/User.yaml"
+              "$ref": "fixtures/User.yml"
             }
           }
         }}}}});
-        processed = preprocessor({}, spec);
+        processed = preprocessor({
+          specFile: __dirname + "/spec.json",
+        }, spec);
         response = processed.paths["/"].get.responses["200"];
       });
 
@@ -78,10 +82,11 @@ describe("preprocessor referencing", function() {
       });
 
       it.skip("should update '$ref'", function() {
-        response.schema.should.have.key("$ref", "#/definitions/.%2Ffixtures%2FUser.yaml");
+        response.schema.should.have.property("$ref", "#/definitions/.%2Ffixtures%2FUser.yaml");
       });
 
       it.skip("should include the definition globally", function() {
+        processed.should.have.property("definitions");
         processed.definitions.should.be.an.object;
         processed.definitions.should.have.property("./fixtures/User.yaml");
         var schema = processed.definitions["./fixtures/User.yaml"];

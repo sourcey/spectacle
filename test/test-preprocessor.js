@@ -12,7 +12,9 @@ describe("preprocessor", function() {
 
   beforeEach(function() {
     spec = Object.assign({}, minimal);
-    processed = preprocessor({}, spec);
+    processed = preprocessor({
+      specFile: __dirname + "/spec.json"
+    }, spec);
   });
 
   describe("with minimal spec", function() {

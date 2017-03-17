@@ -17,7 +17,8 @@ var TreeWalkError = require("./errors").TreeWalkError;
  * @return {boolean} `true` if the reference points to the current file.
 */
 function localReference(ref) {
-  return typeof ref.trim === "function" && ref.trim().indexOf("#") === 0;
+  return (typeof ref.trim === "function" && ref.trim().indexOf("#") === 0) ||
+         (typeof ref.indexOf === "function" && ref.indexOf("#") === 0);
 }
 
 /**
@@ -76,7 +77,9 @@ function replaceReference(cwd, top, obj, context) {
   var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref);
   var referenced = module.exports.fetchReference(ref);
   referenced["x-external"] = external;
-  module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
+  if(typeof referenced === "object") {
+    module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
+  }
   //TODO use other merge mechanisms besides `Object.assign(obj, ...)` depending on the path.
   Object.assign(obj, referenced);
   delete obj.$ref;
@@ -97,7 +100,12 @@ function replaceReference(cwd, top, obj, context) {
 */
 function replaceRefs(cwd, top, obj, context) {
 
-  if(typeof obj !== "object") { return; }
+  if(typeof cwd !== "string" || cwd.length < 1) {
+    throw new Error("replaceRefs must be given a 'cwd'.  Given '"+cwd+"'");
+  }
+  if(typeof obj !== "object") {
+    console.warn("[WARN] replaceRefs() must be given an object for 'obj'.  Given "+typeof obj+" ("+obj+")");
+    return; }
 
   if(obj.$ref) {
     throw new TreeWalkError("Walked too deep in the tree looking for references.  Can't resolve reference " +
@@ -111,11 +119,18 @@ function replaceRefs(cwd, top, obj, context) {
     if(val.$ref) {
 
       if(localReference(val.$ref)) {
-        if(cwd === top["x-spec-path"]) { continue; }
-        throw new Error("Can't deal with internal references in external files yet.");
+        if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
+        throw new Error(
+          "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.");
       }
 
-      module.exports.replaceReference(cwd, top, val, context);
+      try {
+        module.exports.replaceReference(cwd, top, val, context);
+      }
+      catch (e) {
+        console.error("Couldn't replace reference to '"+val.$ref+"' from '"+cwd+"'.  Reference path: #/"+context);
+        throw e;
+      }
 
       continue;
     }
