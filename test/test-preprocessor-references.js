@@ -81,20 +81,21 @@ describe("preprocessor referencing", function() {
         processed.paths["/"].get.responses["200"].should.have.property("schema");
       });
 
-      it.skip("should update '$ref'", function() {
-        response.schema.should.have.property("$ref", "#/definitions/.%2Ffixtures%2FUser.yaml");
+      it("should update '$ref'", function() {
+        response.schema.should.have.property("$ref", "#/definitions/fixtures%2FUser.yml");
       });
 
-      it.skip("should include the definition globally", function() {
+      it("should include the definition globally", function() {
         processed.should.have.property("definitions");
         processed.definitions.should.be.an.object;
-        processed.definitions.should.have.property("./fixtures/User.yaml");
-        var schema = processed.definitions["./fixtures/User.yaml"];
-        schema.should.have.property("x-external", "./fixtures/User.yaml");
+        processed.definitions.should.have.property("fixtures/User.yml");
+        var schema = processed.definitions["fixtures/User.yml"];
+        schema.should.have.property("x-external", "fixtures/User.yml");
         schema.should.have.property("type", "object");
         schema.should.have.property("properties");
         schema.properties.should.have.property("name");
-        schema.properties.name.should.deep.equal({ type: "string" });
+        schema.properties.name.should.have.property("type", "string");
+        schema.properties.name.should.have.property("description");
       });
 
     });

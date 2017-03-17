@@ -216,8 +216,21 @@ describe("resolve-references.js", function() {
         top.info.document.should.have.property("foo", 1);
       });
 
-      it.skip("inserts definitions in the global object", function() {
-        should.fail();
+      it("inserts definitions in the global object", function() {
+        top = Object.create(minimal);
+        top["x-spec-path"] = cwd + "/test.json";
+        top.paths = { "/": { get: {
+          description: "Returns the current user.",
+          responses: { "200": {
+            description: "Current user",
+            schema: {
+              "$ref": "fixtures/User.yml"
+            }
+          }
+        }}}};
+        res.replaceReference(cwd, top, top.paths["/"].get.responses["200"].schema, "paths///get/responses/200/schema/");
+        top.should.have.property("definitions");
+        top.definitions.should.have.property("fixtures/User.yml");
       });
 
     });
@@ -250,8 +263,21 @@ describe("resolve-references.js", function() {
         top.info.document.should.have.property("foo", 1);
       });
 
-      it.skip("inserts definitions into the global object", function() {
-        should.fail();
+      it("inserts definitions into the global object", function() {
+        top = Object.create(minimal);
+        top["x-spec-path"] = cwd + "/test.json";
+        top.paths = { "/": { get: {
+          description: "Returns the current user.",
+          responses: { "200": {
+            description: "Current user",
+            schema: {
+              "$ref": "fixtures/User.yml"
+            }
+          }
+        }}}};
+        res.replaceRefs(cwd, top, top, "");
+        top.should.have.property("definitions");
+        top.definitions.should.have.property("fixtures/User.yml");
       });
 
     });

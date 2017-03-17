@@ -3,6 +3,7 @@ var path = require("path");
 var yaml = require("js-yaml");
 var request = require("request-sync");
 var pathUtils = require("./urls");
+var contexts = require("./reference-contexts");
 var jsonSearch = require("./json-reference").jsonSearch;
 var LocalRefError = require("./errors").LocalRefError;
 var TreeWalkError = require("./errors").TreeWalkError;
@@ -80,9 +81,15 @@ function replaceReference(cwd, top, obj, context) {
   if(typeof referenced === "object") {
     module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
   }
-  //TODO use other merge mechanisms besides `Object.assign(obj, ...)` depending on the path.
-  Object.assign(obj, referenced);
-  delete obj.$ref;
+  if(contexts.definition(context)) {
+    if(!top.definitions) { top.definitions = {}; }
+    if(!top.definitions[external]) { top.definitions[external] = referenced; }
+    Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") });
+  }
+  else {
+    Object.assign(obj, referenced);
+    delete obj.$ref;
+  }
 }
 
 /**
@@ -125,7 +132,7 @@ function replaceRefs(cwd, top, obj, context) {
       }
 
       try {
-        module.exports.replaceReference(cwd, top, val, context);
+        module.exports.replaceReference(cwd, top, val, context + k + "/");
       }
       catch (e) {
         console.error("Couldn't replace reference to '"+val.$ref+"' from '"+cwd+"'.  Reference path: #/"+context);
