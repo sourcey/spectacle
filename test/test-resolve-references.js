@@ -8,6 +8,9 @@ function quoted(str) {
   return '"' + str + '"';
 }
 
+var networkDescribe = process.env.OFFLINE ? describe.skip : describe;
+var networkIt = process.env.OFFLINE ? it.skip : it;
+
 /**
  * Using a simple Gist (served via RawGit) for many of the remote spec tests.
  * The Gist can be cloned to another account if large changes to the existing documents are needed,
@@ -76,7 +79,7 @@ describe("resolve-references.js", function() {
 
     });
 
-    describe("Fetches Remote Documents", function() {
+    networkDescribe("Fetches Remote Documents", function() {
 
       function remote(type, url) {
         it("can fetch "+type, function() {
@@ -174,7 +177,7 @@ describe("resolve-references.js", function() {
         top.info.should.have.property("x-external", "fixtures/document.json");
       });
 
-      it("should insert contents from a remote file", function() {
+      networkIt("should insert contents from a remote file", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"document.json"};
@@ -185,7 +188,7 @@ describe("resolve-references.js", function() {
         top.info.should.have.property("x-external", rawgit+"document.json");
       });
 
-      it("should insert contents from a remote YAML file", function() {
+      networkIt("should insert contents from a remote YAML file", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"document.yml"};
@@ -205,7 +208,7 @@ describe("resolve-references.js", function() {
         top.info.should.have.property("foo", 1);
       });
 
-      it("should resolve deep references", function() {
+      networkIt("should resolve deep references", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"deep-reference.json"};
@@ -252,7 +255,7 @@ describe("resolve-references.js", function() {
       var top = null;
       var cwd = __dirname;
 
-      it("resolves deep references", function() {
+      networkIt("resolves deep references", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"deep-reference.json"};
