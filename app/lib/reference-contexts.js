@@ -7,6 +7,8 @@
 
 /**
  * Recognizes 'schema' elements in 'responses' to be definitions.
+ * @param {String} ref the JSON reference
+ * @return {Boolean} `true` if the current path is to a response schema.
 */
 function responseSchemaDefinition(ref) {
   var parts = ref.split("/");
@@ -15,6 +17,8 @@ function responseSchemaDefinition(ref) {
 
 /**
  * Recognizes different types of definitions that could be moved to the global 'definitions'.
+ * @param {String} ref the JSON reference
+ * @return {Boolean} `true` if the current path is an OpenAPI `definition`.
 */
 function definition(ref) {
   return responseSchemaDefinition(ref);
