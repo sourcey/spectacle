@@ -14,6 +14,11 @@ var TreeWalkError = require("./errors").TreeWalkError;
 */
 
 /**
+ * Stores a parsed copy of referenced files to improve preformance.
+*/
+var _cache = {};
+
+/**
  * Determines if a reference is relative to the current file.
  * @param {string} ref The file path or URL referenced.
  * @return {boolean} `true` if the reference points to the current file.
@@ -29,7 +34,7 @@ function localReference(ref) {
  * @return {object} The section requested.
  * @throws {LocalRefError} if 'ref' points to a local definition (starts with `#`)
  * @todo Improve YAML detection
- * @todo Cache file/HTTP reads for preformance.
+ * @todo Improve cache preformance by ensuring paths are normalized, etc.
  * @todo If fetched reference itself references another file (as the entire output), return that one instead.
  * @todo Test failure
 */
@@ -44,17 +49,23 @@ function fetchReference(ref) {
 
   var src = null;
 
-  if(pathUtils.absoluteURL(file)) {
-    src = request(file).body;
+  if(_cache[file]) {
+    src = _cache[file];
   }
   else {
-    src = fs.readFileSync(file, "utf8");
-  }
-  if(file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
-    src = yaml.safeLoad(src);
-  }
-  else {
-    src = JSON.parse(src);
+    if(pathUtils.absoluteURL(file)) {
+      src = request(file).body;
+    }
+    else {
+      src = fs.readFileSync(file, "utf8");
+    }
+    if(file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
+      src = yaml.safeLoad(src);
+    }
+    else {
+      src = JSON.parse(src);
+    }
+    _cache[file] = src;
   }
 
   if(path.length > 0) {
@@ -149,6 +160,7 @@ function replaceRefs(cwd, top, obj, context) {
 }
 
 module.exports = {
+  _cache: _cache,
   localReference: localReference,
   fetchReference: fetchReference,
   replaceReference: replaceReference,
