@@ -4,6 +4,7 @@ var yaml = require("js-yaml");
 var request = require("request-sync");
 var pathUtils = require("./urls");
 var contexts = require("./reference-contexts");
+var resolveLocal = require("./json-reference").resolveLocal;
 var jsonSearch = require("./json-reference").jsonSearch;
 var LocalRefError = require("./errors").LocalRefError;
 var TreeWalkError = require("./errors").TreeWalkError;
@@ -77,6 +78,7 @@ function replaceReference(cwd, top, obj, context) {
   var ref = pathUtils.join(cwd, obj.$ref);
   var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref);
   var referenced = module.exports.fetchReference(ref);
+  resolveLocal(referenced, referenced, "#/");
   referenced["x-external"] = external;
   if(typeof referenced === "object") {
     module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
@@ -101,7 +103,6 @@ function replaceReference(cwd, top, obj, context) {
  * @param {object} obj The Swagger tree to evaluate.
  * @param {string} context The current reference path, e.g. `"#/paths/%2F/"`
  * @throws {TreeWalkError} if `obj` itself is a reference.
- * @todo handle remote relative references, etc.
  * @todo Test failure
  * @todo Test edge cases (remote relative ref, etc.)
 */

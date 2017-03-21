@@ -208,6 +208,10 @@ describe("resolve-references.js", function() {
         top.info.should.have.property("foo", 1);
       });
 
+      it.skip("should resolve local references in referenced files", function() {
+        should.fail();
+      });
+
       networkIt("should resolve deep references", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
