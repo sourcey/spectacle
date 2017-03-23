@@ -108,6 +108,23 @@ As developer we're always looking for ways to improve and optimize our workflow,
 
 For a list of open source Swagger based libraries in many languages check here: http://swagger.io/open-source-integrations/
 
+## Development
+
+### Testing
+
+Testing is powered by [Mocha](https://mochajs.org/)/[Chai](http://chaijs.com/), and automated testing is run via [CircleCI](https://circleci.com/).
+
+At this stage, unit tests have not been written for all parts of the codebase.  However, new code should be tested, and unit tests for the existing code will be added in the future.
+
+Run `npm test` on the repository to start the automated tests.
+Some parts of testing can be configured using environment variables.
+
+- `OFFLINE=true`
+  Some tests use HTTP connections to test giving Spectacle remote API specifications.
+  Use `OFFLINE=true` to skip tests that require an internet connection.
+
+Include environment variables before calling `npm test`.  For example, `OFFLINE` mode can be enabled via `OFFLINE=true npm test`.
+
 ## More Information
 
 More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
