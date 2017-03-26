@@ -35,7 +35,6 @@ function localReference(ref) {
  * @throws {LocalRefError} if 'ref' points to a local definition (starts with `#`)
  * @todo Improve YAML detection
  * @todo Improve cache preformance by ensuring paths are normalized, etc.
- * @todo If fetched reference itself references another file (as the entire output), return that one instead.
  * @todo Test failure
 */
 function fetchReference(ref) {
@@ -45,7 +44,7 @@ function fetchReference(ref) {
   }
 
   var file = ref.split("#", 1)[0];
-  var path = ref.substr(file.length + 1);
+  var refPath = ref.substr(file.length + 1);
 
   var src = null;
 
@@ -68,12 +67,15 @@ function fetchReference(ref) {
     _cache[file] = src;
   }
 
-  if(path.length > 0) {
-    return jsonSearch(path, src);
+  if(refPath.length > 0) {
+    src = jsonSearch(refPath, src);
   }
-  else {
-    return src;
+
+  if(src.$ref && typeof src.$ref === "string" && !localReference(src.$ref)) {
+    src = fetchReference(pathUtils.join(path.dirname(ref), src.$ref));
   }
+
+  return src;
 }
 
 /**

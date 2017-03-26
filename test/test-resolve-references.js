@@ -69,14 +69,6 @@ describe("resolve-references.js", function() {
         out.should.equal(1);
       });
 
-      it("should leave references untouched", function() {
-        var out = res.fetchReference(__dirname+"/fixtures/ref.json");
-        out.should.be.an.object;
-        out.should.have.property("$ref", "document.json#foo");
-        out.should.have.property("document");
-        out.document.should.have.property("$ref", "document.json");
-      });
-
     });
 
     networkDescribe("Fetches Remote Documents", function() {
@@ -199,7 +191,7 @@ describe("resolve-references.js", function() {
         top.info.should.have.property("x-external", rawgit+"document.yml");
       });
 
-      it.skip("should resolve nested references", function() {
+      networkIt("should resolve nested references", function() {
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"reference.json"};
