@@ -147,7 +147,8 @@ function replaceRefs(cwd, top, obj, context) {
         module.exports.replaceReference(cwd, top, val, context + k + "/");
       }
       catch (e) {
-        console.error("Couldn't replace reference to '"+val.$ref+"' from '"+cwd+"'.  Reference path: #/"+context);
+        console.error("replaceRefs(): Couldn't replace reference '"+val.$ref+"' from '"+
+          cwd+"'.  Reference path: #/"+context);
         throw e;
       }
 

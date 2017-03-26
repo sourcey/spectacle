@@ -33,7 +33,7 @@ function jsonSearch(ref, obj) {
 */
 function resolveLocal(doc, obj, ref) {
   if(typeof obj !== "object") {
-    throw new TypeError("resolveLocal() must be given an object.  Given "+typeof obj);
+    throw new TypeError("resolveLocal() must be given an object.  Given "+typeof obj+" ("+obj+")");
   }
   for(var k in obj) {
     var val = obj[k];
