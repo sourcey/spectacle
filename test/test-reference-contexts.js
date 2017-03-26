@@ -50,6 +50,20 @@ describe("reference-contexts.js", function() {
 
   });
 
+  describe("propertyArrayDefinition()", function() {
+
+    success("propertyArrayDefinition", [
+      "definitions/Pet/properties/tags/items/",
+    ]);
+
+    failure("propertyArrayDefinition", [
+      "definitions/Pet/",
+      "definitions/Pet/properties/",
+      "definitions/Pet/properties/tags/items/$ref/",
+    ]);
+
+  });
+
   describe("definition()", function() {
 
     success("definition", [

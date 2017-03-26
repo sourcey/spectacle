@@ -4,7 +4,6 @@
  * inserted into the global definitions, instead of being included multiple times in the document.
 */
 
-
 /**
  * Recognizes 'schema' elements in 'responses' to be definitions.
  * @param {String} ref the JSON reference
@@ -12,7 +11,18 @@
 */
 function responseSchemaDefinition(ref) {
   var parts = ref.split("/");
-  return parts.indexOf("schema") === parts.length - 2 && parts.indexOf("responses") === parts.length - 4;
+  return parts.length > 4 && parts.indexOf("schema") === parts.length - 2 &&
+    parts.indexOf("responses") === parts.length - 4;
+}
+
+/**
+ * Recognize items in property arrays.
+ * @param {String} ref the JSON reference.
+ * @return {Boolean} `true` if the current path is to an array inside a property.
+*/
+function propertyArrayDefinition(ref) {
+  var parts = ref.split("/");
+  return parts.length > 2 && parts.lastIndexOf("items") === parts.length - 2;
 }
 
 /**
@@ -21,10 +31,11 @@ function responseSchemaDefinition(ref) {
  * @return {Boolean} `true` if the current path is an OpenAPI `definition`.
 */
 function definition(ref) {
-  return responseSchemaDefinition(ref);
+  return responseSchemaDefinition(ref) || propertyArrayDefinition(ref);
 }
 
 module.exports = {
   responseSchemaDefinition: responseSchemaDefinition,
+  propertyArrayDefinition: propertyArrayDefinition,
   definition: definition,
 };
