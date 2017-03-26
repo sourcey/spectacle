@@ -942,21 +942,6 @@
                 "name": "Customer"
             }
         },
-        "Tag": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "name": {
-                    "type": "string"
-                }
-            },
-            "xml": {
-                "name": "Tag"
-            }
-        },
         "Error": {
             "type": "object",
             "properties": {
@@ -1007,7 +992,7 @@
                         "wrapped": true
                     },
                     "items": {
-                        "$ref": "#/definitions/Tag"
+                        "$ref": "tag.yml#/Tag/"
                     }
                 },
                 "status": {
