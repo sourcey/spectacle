@@ -89,9 +89,9 @@ function replaceReference(cwd, top, obj, context) {
   var ref = pathUtils.join(cwd, obj.$ref);
   var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref);
   var referenced = module.exports.fetchReference(ref);
-  resolveLocal(referenced, referenced, "#/");
-  referenced["x-external"] = external;
   if(typeof referenced === "object") {
+    resolveLocal(referenced, referenced, "#/");
+    referenced["x-external"] = external;
     module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
   }
   if(contexts.definition(context)) {
