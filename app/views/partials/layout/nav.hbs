@@ -34,7 +34,7 @@
     {{/eachSorted}}
   {{else}}
     <h5>Paths</h5>
-    {{#eachSorted paths}}
+    {{#each paths}}
       <!-- <section>
         <a href="#path-{{htmlId @key}}">{{@key}}</a>
         <ul> -->
@@ -51,16 +51,16 @@
           {{/each}}
         <!-- </ul>
       </section> -->
-      {{#eachSorted .}}
-          {{!swagger/operation . operation=. method=@key path=../path}}
-      {{/eachSorted}}
-    {{/eachSorted}}
+      {{#each .}}
+        {{!swagger/operation . operation=. method=@key path=../path}}
+      {{/each}}
+    {{/each}}
   {{/if}}
 
   <h5>Schema Definitions</h5>
-  {{#eachSorted definitions}}
+  {{#each definitions}}
     <a href="#definition-{{htmlId @key}}">
       {{@key}}
     </a>
-  {{/eachSorted}}
+  {{/each}}
 </nav>

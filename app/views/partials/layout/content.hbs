@@ -2,19 +2,17 @@
   This partial renders the documentation content
   @api public
 --}}
+
 <article>
   {{>swagger/introduction}}
   {{>swagger/securityDefinitions}}
+
   {{#if showTagSummary}}
     {{>swagger/tags}}
   {{else}}
     {{>swagger/paths}}
   {{/if}}
-  {{!printSchema .}}
 
-  {{!swagger/paths paths=paths}}
-  {{!swagger/parameterDefinitions parameters=parameters}}
-  {{!swagger/responseDefinitions responses=responses}}
   {{>swagger/definitions definitions=definitions}}
 
   {{! Powered by link }}

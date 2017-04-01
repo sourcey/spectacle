@@ -14,9 +14,9 @@
  * @param {object} `v2` the second value
  */
 module.exports = function(v1, v2, options) {
-    // http://stackoverflow.com/questions/8853396/logical-operator-in-a-handlebars-js-if-conditional
-    if (v1 === v2) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
+  // http://stackoverflow.com/questions/8853396/logical-operator-in-a-handlebars-js-if-conditional
+  if (v1 === v2) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
 };

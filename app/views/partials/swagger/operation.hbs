@@ -66,11 +66,11 @@
 
     {{! Print examples without whitespace }}
     <div class="doc-examples">{{#if _show_requst_body_section}}
-        <section>
-          <h5>Request Example</h5>
-          {{>swagger/print-example _request_body}}
-        </section>
-      {{/if}}</div>
+      <section>
+        <h5>Request Example</h5>
+        {{>swagger/print-example _request_body}}
+      </section>
+    {{/if}}</div>
   </div>
 
   {{>swagger/responses}}

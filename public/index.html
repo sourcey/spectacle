@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cheese Store | API Reference</title>
+    <title>Sprockets and springs API | API Reference</title>
     <link rel="stylesheet" href="stylesheets/foundation.min.css" />
     <link rel="stylesheet" href="stylesheets/spectacle.min.css" />
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -16,93 +16,35 @@
         <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
           <span aria-hidden="true">×</span>
         </button>
-        <div id="logo">
-          <img src="images/cheese.png" title="Cheese Store" /> </div>
         <nav id="nav" role="navigation">
           <h5>API Reference</h5>
           <a href="#introduction">Introduction</a>
-          <!-- <h5>Security</h5> -->
-          <a href="#authentication">Authentication</a>
-          <h5>Operations</h5>
-          <section>
-            <a href="#tag-Cheese">Cheese</a>
-            <ul>
-              <li>
-                <a href="#operation--cheeses-post"> Add a new cheese to the store </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses-put"> Update an existing cheese </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses-findByTags-get"> Finds cheeses by tags </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses--cheeseId--get"> Find cheese by ID </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses--cheeseId--post"> Update a cheese </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses--cheeseId--delete"> Deletes a cheese </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses-findByStatus-get"> Finds cheeses by status </a>
-              </li>
-              <li>
-                <a href="#operation--cheeses--cheeseId--uploadImage-post"> Upload a cheese image </a>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <a href="#tag-Store">Store</a>
-            <ul>
-              <li>
-                <a href="#operation--store-inventory-get"> Return cheese inventories by status </a>
-              </li>
-              <li>
-                <a href="#operation--store-order-post"> Place a cheese order </a>
-              </li>
-              <li>
-                <a href="#operation--store-order--orderId--get"> Find purchase order by ID </a>
-              </li>
-              <li>
-                <a href="#operation--store-order--orderId--delete"> Delete purchase order by ID </a>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <a href="#tag-Customer">Customer</a>
-            <ul>
-              <li>
-                <a href="#operation--customer-post"> Create customer account </a>
-              </li>
-              <li>
-                <a href="#operation--customer-createMultiple-post"> Create multiple customers </a>
-              </li>
-              <li>
-                <a href="#operation--customer-login-post"> Customer login </a>
-              </li>
-              <li>
-                <a href="#operation--customer-logout-get"> Customer logout </a>
-              </li>
-              <li>
-                <a href="#operation--customer--username--get"> Get customer by username </a>
-              </li>
-              <li>
-                <a href="#operation--customer--username--put"> Update customer </a>
-              </li>
-              <li>
-                <a href="#operation--customer--username--delete"> Delete customer </a>
-              </li>
-            </ul>
-          </section>
+          <h5>Paths</h5>
+          <!-- <section>
+                <a href="#path--sprockets">/sprockets</a>
+                <ul> -->
+          <!-- <li> -->
+          <a href="#operation--sprockets-get"> Get list of sprockets </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--sprockets-post"> Create a new sprocket </a>
+          <!-- </li> -->
+          <!-- </ul>
+              </section> -->
+          <!-- <section>
+                <a href="#path--sprockets--id-">/sprockets/{id}</a>
+                <ul> -->
+          <!-- <li> -->
+          <a href="#operation--sprockets--id--get"> Get a specific sprocket </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--sprockets--id--post"> Update sprocket </a>
+          <!-- </li> -->
+          <!-- </ul>
+              </section> -->
           <h5>Schema Definitions</h5>
-          <a href="#definition-Category"> Category </a>
-          <a href="#definition-Cheese"> Cheese </a>
-          <a href="#definition-Customer"> Customer </a>
-          <a href="#definition-Error"> Error </a>
-          <a href="#definition-Order"> Order </a>
-          <a href="#definition-Tag"> Tag </a>
+          <a href="#definition-Sprocket"> Sprocket </a>
+          <a href="#definition-NewSprocket"> NewSprocket </a>
         </nav>
       </div>
       <div id="docs" class="row collapse expanded drawer" data-drawer>
@@ -112,34 +54,27 @@
         <div class="example-box doc-content"></div>
         <article>
           <div id="introduction" data-traverse-target="introduction">
-            <h1 class="doc-title">Cheese Store
+            <h1 class="doc-title">Sprockets and springs API
               <span>API Reference</span>
             </h1>
             <div class="doc-row">
               <div class="doc-copy">
-                <p>Welcome to the sample Cheese Store API reference. This is a live example of how you can use
-                  <a href="http://sourcey.com/spectacle">Spectacle</a> in conjunction with
-                  <a href="http://swagger.io">Swagger</a> to generate beautiful static documentation for your own APIs.</p>
-                <p>The Cheese Store API is organized around the
-                  <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a> mothodology, and it uses resource-oriented URLs, and common HTTP response codes to indicate API errors. All requests are authenticated using an <code>api-key</code> which can be obtained from your developer dashboard. And now, more cheese...</p>
-                <p>Hard cheese gouda say cheese. Ricotta cauliflower cheese cheesecake bocconcini edam bocconcini fromage feta. Who moved my cheese bocconcini cheese and wine cottage cheese cheese on toast who moved my cheese caerphilly stinking bishop. Bocconcini cheesy feet the big cheese macaroni cheese cheesy feet mascarpone.</p>
+                <p>Covering all your needs for sprockets and springs.</p>
               </div>
               <div class="doc-examples">
                 <section>
-                  <h5>API Endpoint</h5>
-                  <div class="hljs"> <pre><code>https://cheesy.sourcey.com/v1</code></pre> </div>
-                  <h5>Terms of Service:
-                    <a href="http://cheesy.sourcey.com/terms">http://cheesy.sourcey.com/terms</a>
-                  </h5>
                   <h5>Contact:
-                    <a href="mailto:cheesy@sourcey.com">cheesy@sourcey.com</a>
+                    <a href="mailto:post@sprocketsprings.biz">post@sprocketsprings.biz</a>
                   </h5>
                   <!--
+                    <h5>Request Content-Types:
+                      <span>application/json</span>
+                    </h5>
           
+                    <h5>Response Content-Types:
+                      <span>application/json</span>
+                    </h5>
                   -->
-                  <h5>Schemes:
-                    <span>http, https</span>
-                  </h5>
                   <h5>Version:
                     <span>1.0.0</span>
                   </h5>
@@ -147,1184 +82,24 @@
               </div>
             </div>
           </div>
-          <!-- <h1 id="security" data-traverse-target="security">Security</h1> -->
-          <h1 id="authentication" data-traverse-target="authentication">Authentication</h1>
-          <div id="security-definition-cheesy_auth" class="panel">
-            <div class="doc-row">
-              <div class="doc-copy">
-                <h3 class="security-definition-title">
-                  <span class="security-name">cheesy_auth</span>
-                  <span class="swagger-security-definition-oauth2"></span>
-                </h3>
-                <section class="swagger-security-definition-properties">
-                  <div class="prop-row security-definition-property">
-                    <div class="prop-name">
-                      <div class="prop-title security-definition-property-name">authorizationUrl</div>
-                    </div>
-                    <div class="prop-value security-definition-property-type"> http://cheesy.sourcey.com/api/oauth/dialog </div>
-                  </div>
-                  <div class="prop-row security-definition-property">
-                    <div class="prop-name">
-                      <div class="prop-title security-definition-property-name">flow</div>
-                    </div>
-                    <div class="prop-value security-definition-property-type"> implicit </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="security-definition-api_key" class="panel">
-            <div class="doc-row">
-              <div class="doc-copy">
-                <h3 class="security-definition-title">
-                  <span class="security-name">api_key</span>
-                  <span class="swagger-security-definition-apiKey"></span>
-                </h3>
-                <section class="swagger-security-definition-properties">
-                  <div class="prop-row security-definition-property">
-                    <div class="prop-name">
-                      <div class="prop-title security-definition-property-name">name</div>
-                    </div>
-                    <div class="prop-value security-definition-property-type"> api_key </div>
-                  </div>
-                  <div class="prop-row security-definition-property">
-                    <div class="prop-name">
-                      <div class="prop-title security-definition-property-name">in</div>
-                    </div>
-                    <div class="prop-value security-definition-property-type"> header </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <h1 id="tag-Cheese" class="swagger-summary-tag" data-traverse-target="tag-Cheese">Cheese</h1>
-          <div class="tag-description doc-row">
-            <div class="doc-copy">
-              <p>Cheese methods provide access to information and operations relating to the cheese available in the store.</p>
-            </div>
-          </div>
-          <div id="operation--cheeses-post" class="operation panel" data-traverse-target="operation--cheeses-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
+          <h1>Paths</h1>
+          <span id="path--sprockets"></span>
+          <div id="operation--sprockets-get" class="operation panel" data-traverse-target="operation--sprockets-get">
             <h2 class="operation-title">
-              <span class="operation-summary">Add a new cheese to the store</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">POST</span>
-                  <span class="operation-path">/cheeses</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-body">
-                  <div class="prop-row">
-                    <div class="prop-name">
-                      <div class="swagger-request-model">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="prop-value columns small-6">
-                      <!-- <div class="swagger-request-description"> -->
-                      <p>Cheese object to be added to the store</p>
-                      <!-- </div> -->
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Request Example</h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-  },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Cheese1">Cheese1</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid input</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"></div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses-put" class="operation panel" data-traverse-target="operation--cheeses-put">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Update an existing cheese</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">PUT</span>
-                  <span class="operation-path">/cheeses</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-body">
-                  <div class="prop-row">
-                    <div class="prop-name">
-                      <div class="swagger-request-model">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="prop-value columns small-6">
-                      <!-- <div class="swagger-request-description"> -->
-                      <p>Cheese object that needs to be updated</p>
-                      <!-- </div> -->
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Request Example</h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-  },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Cheese not found</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Validation exception</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses-findByTags-get" class="operation panel" data-traverse-target="operation--cheeses-findByTags-get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Finds cheeses by tags</span>
+              <span class="operation-summary">Get list of sprockets</span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-path">
                   <span class="operation-method">GET</span>
-                  <span class="operation-path">/cheeses/findByTags</span>
+                  <span class="operation-path">/sprockets</span>
                 </section>
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">tags</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>Tags to filter by</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">format</div>
-                    <div class="prop-value">multiple parameters (<code>tags=aaa&amp;tags=bbb</code>)</div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="json-schema-ref-array">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid tag value</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">[
-  {
-    <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-  }
-]
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses--cheeseId--get" class="operation panel" data-traverse-target="operation--cheeses--cheeseId--get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Find cheese by ID</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">GET</span>
-                  <span class="operation-path">/cheeses/{cheeseId}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Return a specific cheese by it&#39;s ID.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">cheeseId</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>ID of cheese to return</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Cheese not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-  },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-}
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
-                    <span>(400 Bad Request)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
-                    <span>(404 Not Found)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-api_key">api_key</a>
-                        </td>
-                        <td> </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses--cheeseId--post" class="operation panel" data-traverse-target="operation--cheeses--cheeseId--post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Update a cheese</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">POST</span>
-                  <span class="operation-path">/cheeses/{cheeseId}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Updates a cheese in the Store with form data.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">cheeseId</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>ID of the cheese to be updated</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">name</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Updated name of the cheese</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">status</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Updated status of the cheese</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid input</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses--cheeseId--delete" class="operation panel" data-traverse-target="operation--cheeses--cheeseId--delete">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Deletes a cheese</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">DELETE</span>
-                  <span class="operation-path">/cheeses/{cheeseId}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">api_key</div>
-                    </div>
-                    <div class="prop-value">
-                      <p class="no-description">(no description)</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">header</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">cheeseId</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>Cheese ID to delete</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Cheese not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(400 Bad Request)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
-                    <span>(404 Not Found)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses-findByStatus-get" class="operation panel" data-traverse-target="operation--cheeses-findByStatus-get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Finds cheeses by status</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">GET</span>
-                  <span class="operation-path">/cheeses/findByStatus</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Multiple status values can be provided with comma separated strings.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">status</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>Status values that need to be considered for filter</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">format</div>
-                    <div class="prop-value">multiple parameters (<code>status=aaa&amp;status=bbb</code>)</div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="json-schema-ref-array">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid status value</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">[
-  {
-    <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-    },
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-  }
-]
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
-                    <span>(400 Bad Request)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--cheeses--cheeseId--uploadImage-post" class="operation panel" data-traverse-target="operation--cheeses--cheeseId--uploadImage-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Cheese">Cheese</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Upload a cheese image</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">POST</span>
-                  <span class="operation-path">/cheeses/{cheeseId}/uploadImage</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">cheeseId</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>ID of cheese to update</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">additionalMetadata</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Additional data to pass to server</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">file</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Image file to upload</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">file</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
-  },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-cheesy_auth">cheesy_auth</a>
-                        </td>
-                        <td> write:cheeses , read:cheeses </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-              </div>
-            </div>
-          </div>
-          <h1 id="tag-Store" class="swagger-summary-tag" data-traverse-target="tag-Store">Store</h1>
-          <div class="tag-description doc-row">
-            <div class="doc-copy">
-              <p>Store methods provide access to cheese store orders.</p>
-            </div>
-          </div>
-          <div id="operation--store-inventory-get" class="operation panel" data-traverse-target="operation--store-inventory-get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Store">Store</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Return cheese inventories by status</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">GET</span>
-                  <span class="operation-path">/store/inventory</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Returns a map of status codes to quantities.</p>
+                  <p>This method returns all your sprockets. No exceptions, even Tiny Timmy is returned.</p>
                 </section>
               </div>
             </div>
@@ -1338,11 +113,15 @@
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">200 OK</div>
-                      <div class="prop-ref"></div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Sprocket">Sprocket</a>
+                        </span>
+                      </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Successful operation</p>
+                      <p>A list of sprockets</p>
                     </div>
                   </div>
                 </section>
@@ -1352,57 +131,39 @@
                   <h5>Response Example
                     <span>(200 OK)</span>
                   </h5>
-                  <div class="hljs"></div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-security">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="swagger-request-security-schema"></th>
-                        <th class="swagger-request-security-scopes"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <a href="#security-definition-api_key">api_key</a>
-                        </td>
-                        <td> </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="hljs"><pre><code class="lang-json">[
+  {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+    <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+      <span class="hljs-string">&quot;string&quot;</span>
+    ],
+    <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+    <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+    <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
+  }
+]
+</code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="operation--store-order-post" class="operation panel" data-traverse-target="operation--store-order-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Store">Store</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
+          <div id="operation--sprockets-post" class="operation panel" data-traverse-target="operation--sprockets-post">
             <h2 class="operation-title">
-              <span class="operation-summary">Place a cheese order</span>
+              <span class="operation-summary">Create a new sprocket</span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-path">
                   <span class="operation-method">POST</span>
-                  <span class="operation-path">/store/order</span>
+                  <span class="operation-path">/sprockets</span>
                 </section>
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>Place an order to purchase cheese from the store.</p>
+                  <p>Use this method to create a new sprocket. Make sure it is a good sprocket. Remember what that bad one did to Uncle Jim.</p>
                 </section>
               </div>
             </div>
@@ -1413,13 +174,13 @@
                     <div class="prop-name">
                       <div class="swagger-request-model">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Order">Order</a>
+                          <a class="json-schema-ref" href="#/definitions/NewSprocket">NewSprocket</a>
                         </span>
                       </div>
                     </div>
                     <div class="prop-value columns small-6">
                       <!-- <div class="swagger-request-description"> -->
-                      <p>Order to place for purchasing the cheese.</p>
+                      <p>The sprocket definition</p>
                       <!-- </div> -->
                     </div>
                   </div>
@@ -1429,12 +190,13 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1448,21 +210,13 @@
                       <div class="prop-title">200 OK</div>
                       <div class="prop-ref">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Order">Order</a>
+                          <a class="json-schema-ref" href="#/definitions/Sprocket">Sprocket</a>
                         </span>
                       </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid Order</p>
+                      <p>The new sprocket</p>
                     </div>
                   </div>
                 </section>
@@ -1473,42 +227,37 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
 }
 </code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="operation--store-order--orderId--get" class="operation panel" data-traverse-target="operation--store-order--orderId--get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Store">Store</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
+          <span id="path--sprockets--id-"></span>
+          <div id="operation--sprockets--id--get" class="operation panel" data-traverse-target="operation--sprockets--id--get">
             <h2 class="operation-title">
-              <span class="operation-summary">Find purchase order by ID</span>
+              <span class="operation-summary">Get a specific sprocket</span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-path">
                   <span class="operation-method">GET</span>
-                  <span class="operation-path">/store/order/{orderId}</span>
+                  <span class="operation-path">/sprockets/{id}</span>
                 </section>
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions</p>
+                  <p>Use this method when you need just that one special sprocket in your life. You will get one, and only one.</p>
                 </section>
               </div>
             </div>
@@ -1517,19 +266,18 @@
                 <section class="swagger-request-params">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">orderId</div>
+                      <div class="prop-title">id</div>
                       <span class="json-property-required"></span>
                     </div>
                     <div class="prop-value">
-                      <p>ID of cheese that needs to be fetched</p>
+                      <p>numerical id of sprocket</p>
                     </div>
                   </div>
                   <div class="prop-row prop-inner">
                     <div class="prop-name param-label">type</div>
                     <div class="prop-value">
                       <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits">, { x ∈ ℤ | 1 ≤ x ≤ 10 }</span>
+                      <span class="json-property-range" title="Value limits"></span>
                     </div>
                   </div>
                   <div class="prop-row prop-inner">
@@ -1548,29 +296,13 @@
                       <div class="prop-title">200 OK</div>
                       <div class="prop-ref">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Order">Order</a>
+                          <a class="json-schema-ref" href="#/definitions/Sprocket">Sprocket</a>
                         </span>
                       </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Order not found</p>
+                      <p>Details of the sprocket</p>
                     </div>
                   </div>
                 </section>
@@ -1581,127 +313,36 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
 }
 </code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="operation--store-order--orderId--delete" class="operation panel" data-traverse-target="operation--store-order--orderId--delete">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Store">Store</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
+          <div id="operation--sprockets--id--post" class="operation panel" data-traverse-target="operation--sprockets--id--post">
             <h2 class="operation-title">
-              <span class="operation-summary">Delete purchase order by ID</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">DELETE</span>
-                  <span class="operation-path">/store/order/{orderId}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">orderId</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>ID of the order that needs to be deleted</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits">, { x ∈ ℤ | x ≥ 1 }</span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Order not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <h1 id="tag-Customer" class="swagger-summary-tag" data-traverse-target="tag-Customer">Customer</h1>
-          <div class="tag-description doc-row">
-            <div class="doc-copy">
-              <p>Customer methods contain operations relating to customer accounts.</p>
-            </div>
-          </div>
-          <div id="operation--customer-post" class="operation panel" data-traverse-target="operation--customer-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Create customer account</span>
+              <span class="operation-summary">Update sprocket</span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-path">
                   <span class="operation-method">POST</span>
-                  <span class="operation-path">/customer</span>
+                  <span class="operation-path">/sprockets/{id}</span>
                 </section>
               </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>This can only be done by the logged in customer.</p>
+                  <p>This is the method to use when you down on your luck and created a sprocket with the wrong specification.</p>
                 </section>
               </div>
             </div>
@@ -1712,15 +353,37 @@
                     <div class="prop-name">
                       <div class="swagger-request-model">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
+                          <a class="json-schema-ref" href="#/definitions/Sprocket">Sprocket</a>
                         </span>
                       </div>
                     </div>
                     <div class="prop-value columns small-6">
                       <!-- <div class="swagger-request-description"> -->
-                      <p>Created customer object</p>
+                      <p>Correct definition of sprocket</p>
                       <!-- </div> -->
                     </div>
+                  </div>
+                </section>
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">id</div>
+                      <span class="json-property-required"></span>
+                    </div>
+                    <div class="prop-value">
+                      <p>numerical id of sprocket</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name param-label">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name param-label">in</div>
+                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -1728,14 +391,14 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1746,821 +409,130 @@
                 <section class="swagger-responses">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">default </div>
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Sprocket">Sprocket</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Successful operation</p>
+                      <p>The newly updated sprocket definition</p>
                     </div>
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
           </div>
-          <div id="operation--customer-createMultiple-post" class="operation panel" data-traverse-target="operation--customer-createMultiple-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Create multiple customers</span>
+          <h1>Schema Definitions</h1>
+          <div id="definition-Sprocket" class="definition panel" data-traverse-target="definition-Sprocket">
+            <h2 class="panel-title">
+              <a name="/definitions/Sprocket"></a>Sprocket:
+              <span class="json-property-type">
+                <span class="json-property-type"></span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">POST</span>
-                  <span class="operation-path">/customer/createMultiple</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Create a list of customers from the given input array.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-body">
-                  <p>List of created customer objects</p>
-                  <section class="json-schema-array-items">
-                    <span class="json-property-type">
+                <section class="json-schema-allOf">
+                  <section class="json-schema-allOf-inherited">
+                    <ul>
                       <span class="">
-                        <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
+                        <a class="json-schema-ref" href="#/definitions/NewSprocket">NewSprocket</a>
                       </span>
-                    </span>
-                    <span class="json-property-range" title="Value limits"></span>
-                    <div class="json-inner-schema"> </div>
+                    </ul>
+                  </section>
+                  <section class="json-schema-allOf-additional">
+                    <section class="json-schema-properties">
+                      <dl>
+                        <dt data-property-name="id">
+                          <span class="json-property-name">id:</span>
+                          <span class="json-property-type">integer</span>
+                          <span class="json-property-format">(int32)</span>
+                          <span class="json-property-range" title="Value limits"></span>
+                          <span class="json-property-required"></span>
+                        </dt>
+                      </dl>
+                    </section>
                   </section>
                 </section>
               </div>
               <div class="doc-examples">
                 <section>
-                  <h5>Request Example</h5>
-                  <div class="hljs"><pre><code class="lang-json">[
-  {
-    <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-    <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-    <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-  }
-]
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">default </div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <div id="operation--customer-login-post" class="operation panel" data-traverse-target="operation--customer-login-post">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Customer login</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">POST</span>
-                  <span class="operation-path">/customer/login</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Log a customer into the system and create a new user session.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">username</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>The username for login</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">password</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>The password for login in clear text</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref"></div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid username/password supplied</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
-                  <div class="hljs"></div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="operation--customer-logout-get" class="operation panel" data-traverse-target="operation--customer-logout-get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Customer logout</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">GET</span>
-                  <span class="operation-path">/customer/logout</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Log the currently the authenticated customer out of the system and end the user session.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy"> </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">default </div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <div id="operation--customer--username--get" class="operation panel" data-traverse-target="operation--customer--username--get">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Get customer by username</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">GET</span>
-                  <span class="operation-path">/customer/{username}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Get customer by their customer username.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">username</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>The username of the customer to be fetched.</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">200 OK</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Successful operation</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid username supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Customer not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Response Example
-                    <span>(200 OK)</span>
-                  </h5>
+                  <h5>Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">201</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
 }
 </code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="operation--customer--username--put" class="operation panel" data-traverse-target="operation--customer--username--put">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Update customer</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">PUT</span>
-                  <span class="operation-path">/customer/{username}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>This can only be done by the logged in customer.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-body">
-                  <div class="prop-row">
-                    <div class="prop-name">
-                      <div class="swagger-request-model">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Customer">Customer</a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="prop-value columns small-6">
-                      <!-- <div class="swagger-request-description"> -->
-                      <p>Customer object to be updated.</p>
-                      <!-- </div> -->
-                    </div>
-                  </div>
-                </section>
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">username</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>Username of the customer to update.</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples">
-                <section>
-                  <h5>Request Example</h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid customer supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Customer not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <div id="operation--customer--username--delete" class="operation panel" data-traverse-target="operation--customer--username--delete">
-            <!-- <section class="operation-tags row"> -->
-            <!-- <div class="doc-copy"> -->
-            <div class="operation-tags">
-              <a class="label" href="#tag-Customer">Customer</a>
-              <!---->
-            </div>
-            <!-- </div> -->
-            <!-- </section> -->
-            <h2 class="operation-title">
-              <span class="operation-summary">Delete customer</span>
-            </h2>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-path">
-                  <span class="operation-method">DELETE</span>
-                  <span class="operation-path">/customer/{username}</span>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-operation-description">
-                  <p>Datate a customer by their username.</p>
-                </section>
-              </div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-request-params">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">username</div>
-                      <span class="json-property-required"></span>
-                    </div>
-                    <div class="prop-value">
-                      <p>Username of the customer to delete.</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="swagger-responses">
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid username supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
-                      <div class="prop-title">404 Not Found</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Customer not found</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <!-- <h1>Schema definitions</h1> -->
-          <h1>Models</h1>
-          <div id="definition-Category" class="panel panel-definition" data-traverse-target="definition-Category">
+          <div id="definition-NewSprocket" class="definition panel" data-traverse-target="definition-NewSprocket">
             <h2 class="panel-title">
-              <a name="/definitions/Category"></a>Category:
+              <a name="/definitions/NewSprocket"></a>NewSprocket:
               <span class="json-property-type">
                 <span class="json-property-type">object</span>
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
                   <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="name">
-                      <span class="json-property-name">name:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Cheese" class="panel panel-definition" data-traverse-target="definition-Cheese">
-            <h2 class="panel-title">
-              <a name="/definitions/Cheese"></a>Cheese:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="category">
-                      <span class="json-property-name">category:</span>
-                      <span class="json-property-type">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Category">Category</a>
-                        </span>
-                      </span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
                     <dt data-property-name="name">
                       <span class="json-property-name">name:</span>
                       <span class="json-property-type">string</span>
                       <span class="json-property-range" title="Value limits"></span>
                       <span class="json-property-required"></span>
                     </dt>
-                    <dt data-property-name="photoUrls">
-                      <span class="json-property-name">photoUrls:</span>
+                    <dt data-property-name="arrayz">
+                      <span class="json-property-name">arrayz:</span>
                       <span class="json-property-type">string[]</span>
                       <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="radius">
+                      <span class="json-property-name">radius:</span>
+                      <span class="json-property-type">float</span>
+                      <span class="json-property-range" title="Value limits"></span>
                       <span class="json-property-required"></span>
                     </dt>
-                    <dt data-property-name="tags">
-                      <span class="json-property-name">tags:</span>
-                      <span class="json-property-type">object[]</span>
+                    <dt data-property-name="teeth">
+                      <span class="json-property-name">teeth:</span>
+                      <span class="json-property-type">int</span>
                       <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
                     </dt>
-                    <dt data-property-name="status">
-                      <span class="json-property-name">status:</span>
+                    <dt data-property-name="description">
+                      <span class="json-property-name">description:</span>
                       <span class="json-property-type">string</span>
-                      <span class="json-property-enum" title="Possible values">, x &isin; {
-                        <span class="json-property-enum-item">available</span> ,
-                        <span class="json-property-enum-item">pending</span> ,
-                        <span class="json-property-enum-item">sold</span> } </span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dd>
-                      <p>cheese status in the store</p>
-                    </dd>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Customer" class="panel panel-definition" data-traverse-target="definition-Customer">
-            <h2 class="panel-title">
-              <a name="/definitions/Customer"></a>Customer:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="username">
-                      <span class="json-property-name">username:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="firstName">
-                      <span class="json-property-name">firstName:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="lastName">
-                      <span class="json-property-name">lastName:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="email">
-                      <span class="json-property-name">email:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="password">
-                      <span class="json-property-name">password:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="phone">
-                      <span class="json-property-name">phone:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="customerStatus">
-                      <span class="json-property-name">customerStatus:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int32)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dd>
-                      <p>Customer Status</p>
-                    </dd>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Error" class="panel panel-definition" data-traverse-target="definition-Error">
-            <h2 class="panel-title">
-              <a name="/definitions/Error"></a>Error:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="code">
-                      <span class="json-property-name">code:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int32)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="type">
-                      <span class="json-property-name">type:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="message">
-                      <span class="json-property-name">message:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Order" class="panel panel-definition" data-traverse-target="definition-Order">
-            <h2 class="panel-title">
-              <a name="/definitions/Order"></a>Order:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="cheeseId">
-                      <span class="json-property-name">cheeseId:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="quantity">
-                      <span class="json-property-name">quantity:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int32)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="shipDate">
-                      <span class="json-property-name">shipDate:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-format">(date-time)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="status">
-                      <span class="json-property-name">status:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-enum" title="Possible values">, x &isin; {
-                        <span class="json-property-enum-item">placed</span> ,
-                        <span class="json-property-enum-item">approved</span> ,
-                        <span class="json-property-enum-item">delivered</span> } </span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dd>
-                      <p>Order Status</p>
-                    </dd>
-                    <dt data-property-name="complete">
-                      <span class="json-property-name">complete:</span>
-                      <span class="json-property-type">boolean</span>
                       <span class="json-property-range" title="Value limits"></span>
                     </dt>
                   </dl>
@@ -2569,43 +541,16 @@
               <div class="doc-examples">
                 <section>
                   <h5>Example</h5>
-                  <div class="hljs"></div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Tag" class="panel panel-definition" data-traverse-target="definition-Tag">
-            <h2 class="panel-title">
-              <a name="/definitions/Tag"></a>Tag:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="name">
-                      <span class="json-property-name">name:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                  </dl>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;My magical sprocket&quot;</span>,
+  <span class="hljs-attr">&quot;arrayz&quot;</span>: [
+    <span class="hljs-string">&quot;string&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;radius&quot;</span>: <span class="hljs-number">12</span>,
+  <span class="hljs-attr">&quot;teeth&quot;</span>: <span class="hljs-number">22</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;My dearest little sprocket. How I cherish it.&quot;</span>
+}
+</code></pre> </div>
                 </section>
               </div>
             </div>

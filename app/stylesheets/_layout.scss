@@ -408,7 +408,18 @@ article {
       word-break: break-all;
     }
   }
+
+
+  //
+  // Definition panel
+
+  .definition {
+    .doc-examples h5 {
+      margin-top: -1rem;
+    }
+  }
 }
+
 
 //
 // Code highlighting

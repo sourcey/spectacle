@@ -1117,6 +1117,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         right: 50%; } }
     #spectacle article .operation .operation-path {
       word-break: break-all; }
+    #spectacle article .definition .doc-examples h5 {
+      margin-top: -1rem; }
   #spectacle .hljs {
     padding: 0 !important;
     margin-bottom: 1.5rem; }

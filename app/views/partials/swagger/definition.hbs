@@ -1,9 +1,9 @@
 {{!
-    Renders a json.schema inside a bootstrap-panel.
+    Renders a json.schema inside a panel.
     @public
     @readonly
 }}
-<div id="definition-{{htmlId @key}}" class="panel panel-definition"
+<div id="definition-{{htmlId @key}}" class="definition panel"
   data-traverse-target="definition-{{htmlId @key}}">
   {{#if title}}
     {{#if anchor}}
@@ -16,25 +16,6 @@
     {{/if}}
   {{/if}}
 
-  <!-- <div class="doc-row">
-    <div class="doc-copy">
-      {{! The _request_body variable is filled with the parameter `body` by the preprocessor. }}
-      {{#if _show_requst_body_section}}
-        {{>swagger/request-body consumes=consumes body=_request_body}}
-      {{/if}}
-
-      {{>swagger/parameters parameters=parameters}}
-    </div>
-
-    {{! Print examples without whitespace }}
-    <div class="doc-examples">{{#if _show_requst_body_section}}
-      <section>
-        <h5>Request Example</h5>
-        {{>swagger/print-schema _request_body.schema}}
-      </section>
-    {{/if}}</div>
-  </div> -->
-
   <div class="doc-row">
     <div class="doc-copy">
       {{#if $ref}}
@@ -45,13 +26,11 @@
     </div>
 
     {{! Print examples without whitespace }}
-    {{#if example}}
-      <div class="doc-examples">
-        <section>
-          <h5>Example</h5>
-          {{>swagger/print-schema example}}
-        </section>
-      </div>
-    {{/if}}
+    <div class="doc-examples">
+      <section>
+        <h5>Example</h5>
+        {{>swagger/print-example .}}
+      </section>
+    </div>
   </div>
 </div>

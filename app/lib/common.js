@@ -37,82 +37,99 @@ var common = {
      return html;
   },
 
-  formatSchema: function(value) {
-    var cloned;
-    if (typeof value === 'object' && typeof value.properties === 'object') {
-      if (value.example) {
-        // Use the supplied example
-        value = value.example;
-        cloned = _.cloneDeep(value);
-      } else {
-        // Create json object of keys : type info string
-        value = value.properties;
-        cloned = _.cloneDeep(value);
-        Object.keys(cloned).forEach(function(propName) {
-          var prop = cloned[propName];
-          if (prop.type) {
-            if (prop.example) {
-              cloned[propName] = prop.example;
-            }
-            else {
-              cloned[propName] = prop.type;
-              if (prop.format) {
-                cloned[propName] += ('(' + prop.format + ')');
-              }
-            }
-          }
-        })
-      }
-    }
-    return cloned;
-  },
+  // formatSchema: function(value) {
+  //   var cloned;
+  //   if (typeof value === 'object' && typeof value.properties === 'object') {
+  //     if (value.example) {
+  //       // Use the supplied example
+  //       value = value.example;
+  //       cloned = _.cloneDeep(value);
+  //     } else {
+  //       // Create json object of keys : type info string
+  //       value = value.properties;
+  //       cloned = _.cloneDeep(value);
+  //       Object.keys(cloned).forEach(function(propName) {
+  //         var prop = cloned[propName];
+  //         if (prop.type) {
+  //           if (prop.example) {
+  //             cloned[propName] = prop.example;
+  //           }
+  //           else {
+  //             cloned[propName] = prop.type;
+  //             if (prop.format) {
+  //               cloned[propName] += ('(' + prop.format + ')');
+  //             }
+  //           }
+  //         }
+  //       })
+  //     }
+  //   }
+  //   return cloned;
+  // },
 
   formatExample: function(value, root) {
-	if (value.example) {
-	  return value.example;
-	}
-	else if (value.schema && value.schema.$ref)  {
-	  return this.formatExampleProp(value.schema, root);
-	}
-	else if (value.schema && value.schema.items) {
-	  return this.formatExampleProp(value.schema.items.$ref, root);
-	}
+    if (!value) {
+      return;
+    }
+
+  	if (value.example) {
+  	  return value.example;
+  	}
+  	else if (value.schema && (value.schema.$ref || value.schema.items ))  {
+  	  return this.formatExampleProp(value.schema, root);
+  	}
+    else if (value.type)  {
+      return this.formatExampleProp(value, root);
+    }
+
+    console.warn('Cannot format object ', value)
   },
 
   formatExampleProp: function(ref, root) {
-	var obj = {};
-	var that = this;
+    if (!ref) {
+      return;
+    }
+  	
+    if (ref.$ref) {
+  	  ref = this.resolveSchemaReference(ref.$ref, root);
+  	  return this.formatExampleProp(ref, root);
+  	}
+  	else if (ref.type == 'object') {
+      var obj = {};
+      var that = this;
 
-	if (ref.$ref) {
-	  ref = this.resolveSchemaReference(ref.$ref, root);
-	  return this.formatExampleProp(ref, root);
-	}
-	else if (ref.type == 'object') {
-	  Object.keys(ref.properties).forEach(function(k) {
-		obj[k] = that.formatExampleProp(ref.properties[k], root);
-	  });
-	}
-	else if (ref.type == 'array' && ref.items) {
-	  obj = [
-		this.formatExampleProp(ref.items, root),
-		this.formatExampleProp(ref.items, root),
-	  ];
-	}
-	else if (ref.example) {
-	  return ref.example;
-	}
-	else {
-	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '');
-	}
+      if (ref.properties) {
+        Object.keys(ref.properties).forEach(function(k) {
+          obj[k] = that.formatExampleProp(ref.properties[k], root);
+        });
+      }
+      else if (ref.allOf) {
+        ref.allOf.forEach(function(parent) {
+          obj = Object.assign(that.formatExampleProp(parent, root), obj);
+        });
+      }
 
-	return obj;
+      return obj;
+  	}
+  	else if (ref.type == 'array' && ref.items) {
+  	  return [ this.formatExampleProp(ref.items, root) ];
+  	}
+  	else if (ref.example) {
+  	  return ref.example;
+  	}
+  	else {
+  	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '');
+  	}
+
+    console.warn('Cannot format property ', ref)
   },
 
   printSchema: function(value) {
     if (!value) {
       return '';
     }
-    var schemaString = require('json-stable-stringify')(value, { space: 2 });
+
+    var schemaString = JSON.stringify(value, null, 2);
 
     // Add an extra CRLR before the code so the postprocessor can determine
     // the correct line indent for the <pre> tag.
@@ -167,8 +184,8 @@ highlight.configure({
 });
 
 marked.setOptions({
-  highlight: common.highlight,
-  //langPrefix: 'hljs '
+  highlight: common.highlight
+  // langPrefix: 'hljs'
 });
 
 module.exports = common;
