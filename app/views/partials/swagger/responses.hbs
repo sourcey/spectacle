@@ -37,18 +37,15 @@
         {{/each}}
       </section>
     </div>
-    
+
     {{! Print examples without whitespace. }}
-    <div class="doc-examples">{{#each responses}}{{#if example}}
+    <div class="doc-examples">
+      {{#each responses}}
         <section>
           <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
-          {{>swagger/print-schema example}}
+          {{>swagger/print-example .}}
         </section>
-      {{else if schema}}
-        <section>
-          <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
-          {{>swagger/print-schema schema}}
-        </section>
-      {{/if}}{{/each}}</div>
+      {{/each}}
+    </div>
   </div>
 {{/if}}

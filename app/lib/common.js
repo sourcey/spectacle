@@ -67,6 +67,47 @@ var common = {
     return cloned;
   },
 
+  formatExample: function(value, root) {
+	if (value.example) {
+	  return value.example;
+	}
+	else if (value.schema && value.schema.$ref)  {
+	  return this.formatExampleProp(value.schema, root);
+	}
+	else if (value.schema && value.schema.items) {
+	  return this.formatExampleProp(value.schema.items.$ref, root);
+	}
+  },
+
+  formatExampleProp: function(ref, root) {
+	var obj = {};
+	var that = this;
+
+	if (ref.$ref) {
+	  ref = this.resolveSchemaReference(ref.$ref, root);
+	  return this.formatExampleProp(ref, root);
+	}
+	else if (ref.type == 'object') {
+	  Object.keys(ref.properties).forEach(function(k) {
+		obj[k] = that.formatExampleProp(ref.properties[k], root);
+	  });
+	}
+	else if (ref.type == 'array' && ref.items) {
+	  obj = [
+		this.formatExampleProp(ref.items, root),
+		this.formatExampleProp(ref.items, root),
+	  ];
+	}
+	else if (ref.example) {
+	  return ref.example;
+	}
+	else {
+	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '');
+	}
+
+	return obj;
+  },
+
   printSchema: function(value) {
     if (!value) {
       return '';
