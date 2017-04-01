@@ -4,7 +4,6 @@
   @param {object<Operation>} pathItems a swagger [path-item-object](http://swagger.io/specification/#pathItemObject)
   @api public
 --}}
-
 <span id="path-{{htmlId path}}"></span>
 {{#each pathItems}}
   {{>swagger/operation . operation=. method=@key path=../path}}
