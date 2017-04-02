@@ -94,7 +94,10 @@ var common = {
 
     var that = this;
   	
-    if (ref.$ref) {
+    if (ref.example) {
+      return ref.example;
+    }
+    else if (ref.$ref) {
   	  ref = this.resolveSchemaReference(ref.$ref, root);
   	  return this.formatExampleProp(ref, root);
   	}
@@ -114,9 +117,6 @@ var common = {
     }
   	else if (ref.items && ref.type == 'array') {
   	  return [ this.formatExampleProp(ref.items, root) ];
-  	}
-  	else if (ref.example) {
-  	  return ref.example;
   	}
     else if (ref.type) {
   	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '');

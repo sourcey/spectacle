@@ -41,10 +41,12 @@
     {{! Print examples without whitespace. }}
     <div class="doc-examples">
       {{#each responses}}
+        {{#if schema}}
         <section>
           <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
           {{>swagger/print-example .}}
         </section>
+        {{/if}}
       {{/each}}
     </div>
   </div>
