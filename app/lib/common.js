@@ -69,59 +69,60 @@ var common = {
 
   formatExample: function(value, root) {
     if (!value) {
+      // throw 'Cannot format NULL object ' + value;
       return;
     }
 
   	if (value.example) {
   	  return value.example;
   	}
-  	else if (value.schema && (value.schema.$ref || value.schema.items ))  {
-  	  return this.formatExampleProp(value.schema, root);
-  	}
-    else if (value.type)  {
+    else if (value.schema) {
+      return this.formatExampleProp(value.schema, root);
+    }
+    else if (value.type || value.allOf)  {
       return this.formatExampleProp(value, root);
     }
 
-    console.warn('Cannot format object ', value)
+    console.error('Cannot format object ', value);
   },
 
   formatExampleProp: function(ref, root) {
     if (!ref) {
+      // throw 'Cannot format NULL property ' + ref;
       return;
     }
+
+    var that = this;
   	
     if (ref.$ref) {
   	  ref = this.resolveSchemaReference(ref.$ref, root);
   	  return this.formatExampleProp(ref, root);
   	}
-  	else if (ref.type == 'object') {
+    else if (ref.properties && ref.type == 'object') {
       var obj = {};
-      var that = this;
-
-      if (ref.properties) {
-        Object.keys(ref.properties).forEach(function(k) {
-          obj[k] = that.formatExampleProp(ref.properties[k], root);
-        });
-      }
-      else if (ref.allOf) {
-        ref.allOf.forEach(function(parent) {
-          obj = Object.assign(that.formatExampleProp(parent, root), obj);
-        });
-      }
-
+      Object.keys(ref.properties).forEach(function(k) {
+        obj[k] = that.formatExampleProp(ref.properties[k], root);
+      });
       return obj;
-  	}
-  	else if (ref.type == 'array' && ref.items) {
+    }
+    else if (ref.allOf) {
+      var obj = {};
+      ref.allOf.forEach(function(parent) {
+        obj = Object.assign(that.formatExampleProp(parent, root), obj);
+      });
+      return obj;
+    }
+  	else if (ref.items && ref.type == 'array') {
   	  return [ this.formatExampleProp(ref.items, root) ];
   	}
   	else if (ref.example) {
   	  return ref.example;
   	}
-  	else {
+    else if (ref.type) {
   	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '');
   	}
 
-    console.warn('Cannot format property ', ref)
+    console.error('Cannot format property ', ref);
   },
 
   printSchema: function(value) {
@@ -185,7 +186,7 @@ highlight.configure({
 
 marked.setOptions({
   highlight: common.highlight
-  // langPrefix: 'hljs'
+  // langPrefix: 'hljs '
 });
 
 module.exports = common;

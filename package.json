@@ -1,6 +1,6 @@
 {
   "name": "spectacle-docs",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Generate beautiful static API documentation from OpenAPI/Swagger 2.0 specifications",
   "preferGlobal": true,
   "bin": {
@@ -24,7 +24,7 @@
     "builder",
     "generator"
   ],
-  "author": "Kam Low <auscaster@gmail.com> (http://sourcey.com)",
+  "author": "Kam Low <auscaster@gmail.com> (https://sourcey.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sourcey/spectacle/issues"
