@@ -76,4 +76,20 @@ describe("reference-contexts.js", function() {
 
   });
 
+  describe("path()", function() {
+
+    success("path", [
+      "paths/index.html",
+      "paths/{part}",
+      "paths/{a}-{b}-{c}",
+    ]);
+
+    failure("path", [
+      "paths/",
+      "paths",
+      "paths/index.html/responses/",
+    ]);
+
+  });
+
 });

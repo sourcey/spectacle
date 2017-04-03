@@ -34,8 +34,19 @@ function definition(ref) {
   return responseSchemaDefinition(ref) || propertyArrayDefinition(ref);
 }
 
+/**
+ * Recognize URL paths.
+ * @param {String} ref the JSON reference.
+ * @return {Boolean} `true` if the current path is an OpenAPI `path`.
+*/
+function path(ref) {
+  var parts = ref.split("/");
+  return parts.length === 2 && parts.lastIndexOf("paths") === parts.length - 2 && parts[1].length > 0;
+}
+
 module.exports = {
   responseSchemaDefinition: responseSchemaDefinition,
   propertyArrayDefinition: propertyArrayDefinition,
   definition: definition,
+  path: path,
 };
