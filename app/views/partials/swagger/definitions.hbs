@@ -5,10 +5,9 @@
 --}}
 
 {{#if definitions}}
-  <!-- <h1>Schema definitions</h1> -->
-  <h1>Models</h1> 
+  <h1>Schema Definitions</h1>
 
-  {{#eachSorted definitions}}
+  {{#each definitions}}
     {{>swagger/definition title=@key anchor="/definitions" }}
-  {{/eachSorted}}
+  {{/each}}
 {{/if}}

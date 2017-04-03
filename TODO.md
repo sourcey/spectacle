@@ -1,3 +1,3 @@
-Enable custom OpenAPI spec extensions for rendering examples
-Copy spec to target directory and link
-Implement company logo
+Improve range and enum output
+Render remote references  
+  - https://github.com/sourcey/spectacle/pull/41

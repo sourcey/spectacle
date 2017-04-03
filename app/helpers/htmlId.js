@@ -4,5 +4,5 @@
  * is not addressed by this helper.
  */
 module.exports = function(value) {
-    return value.replace(/[^A-Za-z0-9-_:.]/g, "-");
+  return value.replace(/[^A-Za-z0-9-_:.]/g, "-");
 };

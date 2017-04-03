@@ -57,7 +57,7 @@
             <a href="#tag-Store">Store</a>
             <ul>
               <li>
-                <a href="#operation--store-inventory-get"> Return cheese inventories by status </a>
+                <a href="#operation--store-inventory-get"> Return cheese inventories by available status </a>
               </li>
               <li>
                 <a href="#operation--store-order-post"> Place a cheese order </a>
@@ -97,11 +97,13 @@
             </ul>
           </section>
           <h5>Schema Definitions</h5>
+          <a href="#definition-Order"> Order </a>
           <a href="#definition-Category"> Category </a>
-          <a href="#definition-Cheese"> Cheese </a>
           <a href="#definition-Customer"> Customer </a>
           <a href="#definition-Error"> Error </a>
-          <a href="#definition-Order"> Order </a>
+          <a href="#definition-ValidationError"> ValidationError </a>
+          <a href="#definition-NotFoundError"> NotFoundError </a>
+          <a href="#definition-Cheese"> Cheese </a>
           <a href="#definition-tag.yml--Tag"> tag.yml#/Tag </a>
         </nav>
       </div>
@@ -246,14 +248,19 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
   },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -278,7 +285,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
+                      <div class="prop-title">422 Unprocessable Entity</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/ValidationError">ValidationError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Invalid input</p>
@@ -292,14 +305,30 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
   },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(422 Unprocessable Entity)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -371,14 +400,19 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
   },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -389,15 +423,13 @@
                 <section class="swagger-responses">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Cheese not found</p>
@@ -405,7 +437,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
+                      <div class="prop-title">422 Unprocessable Entity</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/ValidationError">ValidationError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Validation exception</p>
@@ -413,7 +451,30 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(422 Unprocessable Entity)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
@@ -515,7 +576,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
+                      <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Invalid tag value</p>
@@ -530,16 +597,32 @@
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">[
   {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
     <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
     },
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
     <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+    ],
+    <span class="hljs-attr">&quot;tags&quot;</span>: [
+      <span class="hljs-literal">null</span>
+    ],
+    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
   }
 ]
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
 </code></pre> </div>
                 </section>
               </div>
@@ -641,24 +724,10 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
                       <div class="prop-ref">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
                         </span>
                       </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
@@ -675,25 +744,19 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
   },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
-}
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
-                    <span>(400 Bad Request)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -702,9 +765,9 @@
                     <span>(404 Not Found)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -831,15 +894,33 @@
                 <section class="swagger-responses">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">405 Method Not Allowed</div>
+                      <div class="prop-title">422 Unprocessable Entity</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/ValidationError">ValidationError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Invalid input</p>
+                      <p>Cannot update cheese</p>
                     </div>
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(422 Unprocessable Entity)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
             <div class="doc-row">
               <div class="doc-copy">
@@ -936,24 +1017,10 @@
                 <section class="swagger-responses">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                      <div class="prop-ref">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
-                        </span>
-                      </div>
-                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
                       <div class="prop-ref">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
                         </span>
                       </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
@@ -967,23 +1034,12 @@
               <div class="doc-examples">
                 <section>
                   <h5>Response Example
-                    <span>(400 Bad Request)</span>
-                  </h5>
-                  <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
-</code></pre> </div>
-                </section>
-                <section>
-                  <h5>Response Example
                     <span>(404 Not Found)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1089,10 +1145,10 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
+                      <div class="prop-title">404 Not Found</div>
                       <div class="prop-ref">
                         <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
                         </span>
                       </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
@@ -1110,26 +1166,31 @@
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">[
   {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
     <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
     },
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
     <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+    ],
+    <span class="hljs-attr">&quot;tags&quot;</span>: [
+      <span class="hljs-literal">null</span>
+    ],
+    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
   }
 ]
 </code></pre> </div>
                 </section>
                 <section>
                   <h5>Response Example
-                    <span>(400 Bad Request)</span>
+                    <span>(404 Not Found)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1269,14 +1330,19 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Category">&quot;#/definitions/Category&quot;</a></span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
   },
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;tags&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1321,7 +1387,7 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Return cheese inventories by status</span>
+              <span class="operation-summary">Return cheese inventories by available status</span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1334,7 +1400,7 @@
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>Returns a map of status codes to quantities.</p>
+                  <p>Returns a list of available cheeses.</p>
                 </section>
               </div>
             </div>
@@ -1348,7 +1414,11 @@
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">200 OK</div>
-                      <div class="prop-ref"></div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
+                        </span>
+                      </div>
                       <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
@@ -1362,7 +1432,24 @@
                   <h5>Response Example
                     <span>(200 OK)</span>
                   </h5>
-                  <div class="hljs"></div>
+                  <div class="hljs"><pre><code class="lang-json">[
+  {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;category&quot;</span>: {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
+    },
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
+    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+    ],
+    <span class="hljs-attr">&quot;tags&quot;</span>: [
+      <span class="hljs-literal">null</span>
+    ],
+    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+  }
+]
+</code></pre> </div>
                 </section>
               </div>
             </div>
@@ -1443,7 +1530,7 @@
   <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
   <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
   <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
 </code></pre> </div>
@@ -1469,10 +1556,16 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
+                      <div class="prop-title">422 Unprocessable Entity</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/ValidationError">ValidationError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
-                      <p>Invalid Order</p>
+                      <p>Invalid order</p>
                     </div>
                   </div>
                 </section>
@@ -1487,8 +1580,19 @@
   <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
   <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
   <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(422 Unprocessable Entity)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1518,7 +1622,7 @@
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions</p>
+                  <p>For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generate exceptions.</p>
                 </section>
               </div>
             </div>
@@ -1569,15 +1673,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Order not found</p>
@@ -1595,8 +1697,19 @@
   <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
   <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
   <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;2016/10/04 00:09:21 +0000&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1626,7 +1739,7 @@
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="swagger-operation-description">
-                  <p>For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors</p>
+                  <p>For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors.</p>
                 </section>
               </div>
             </div>
@@ -1663,15 +1776,13 @@
                 <section class="swagger-responses">
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid ID supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Order not found</p>
@@ -1679,7 +1790,19 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
           </div>
           <h1 id="tag-Customer" class="swagger-summary-tag" data-traverse-target="tag-Customer">Customer</h1>
@@ -1738,14 +1861,14 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
+  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
+  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
+  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
+  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
+  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
+  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -1764,7 +1887,7 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples"> </div>
             </div>
           </div>
           <div id="operation--customer-createMultiple-post" class="operation panel" data-traverse-target="operation--customer-createMultiple-post">
@@ -1814,14 +1937,14 @@
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">[
   {
-    <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-    <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-    <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-    <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
+    <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
+    <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
+    <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
+    <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
+    <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
+    <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
   }
 ]
 </code></pre> </div>
@@ -1841,7 +1964,7 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples"> </div>
             </div>
           </div>
           <div id="operation--customer-login-post" class="operation panel" data-traverse-target="operation--customer-login-post">
@@ -1933,7 +2056,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
+                      <div class="prop-title">422 Unprocessable Entity</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/ValidationError">ValidationError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Invalid username/password supplied</p>
@@ -1946,7 +2075,19 @@
                   <h5>Response Example
                     <span>(200 OK)</span>
                   </h5>
-                  <div class="hljs"></div>
+                  <div class="hljs"><pre><code class="lang-json"><span class="hljs-string">&quot;string&quot;</span>
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(422 Unprocessable Entity)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
+}
+</code></pre> </div>
                 </section>
               </div>
             </div>
@@ -1995,7 +2136,7 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples"> </div>
             </div>
           </div>
           <div id="operation--customer--username--get" class="operation panel" data-traverse-target="operation--customer--username--get">
@@ -2071,15 +2212,13 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
-                      <div class="prop-title">400 Bad Request</div>
-                    </div>
-                    <div class="prop-value">
-                      <p>Invalid username supplied</p>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-group">
-                    <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Customer not found</p>
@@ -2093,14 +2232,25 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
+  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
+  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
+  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
+  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
+  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
+  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -2179,14 +2329,14 @@
                 <section>
                   <h5>Request Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;integer(int32)&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer(int64)&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
+  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
+  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
+  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
+  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
+  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
+  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -2206,6 +2356,12 @@
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Customer not found</p>
@@ -2213,7 +2369,19 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
           </div>
           <div id="operation--customer--username--delete" class="operation panel" data-traverse-target="operation--customer--username--delete">
@@ -2284,6 +2452,12 @@
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/NotFoundError">NotFoundError</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
                     </div>
                     <div class="prop-value">
                       <p>Customer not found</p>
@@ -2291,228 +2465,23 @@
                   </div>
                 </section>
               </div>
-              <div class="doc-examples"></div>
-            </div>
-          </div>
-          <!-- <h1>Schema definitions</h1> -->
-          <h1>Models</h1>
-          <div id="definition-Category" class="panel panel-definition" data-traverse-target="definition-Category">
-            <h2 class="panel-title">
-              <a name="/definitions/Category"></a>Category:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="name">
-                      <span class="json-property-name">name:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                  </dl>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
+</code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="definition-Cheese" class="panel panel-definition" data-traverse-target="definition-Cheese">
-            <h2 class="panel-title">
-              <a name="/definitions/Cheese"></a>Cheese:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="category">
-                      <span class="json-property-name">category:</span>
-                      <span class="json-property-type">
-                        <span class="">
-                          <a class="json-schema-ref" href="#/definitions/Category">Category</a>
-                        </span>
-                      </span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="name">
-                      <span class="json-property-name">name:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                      <span class="json-property-required"></span>
-                    </dt>
-                    <dt data-property-name="photoUrls">
-                      <span class="json-property-name">photoUrls:</span>
-                      <span class="json-property-type">string[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                      <span class="json-property-required"></span>
-                    </dt>
-                    <dt data-property-name="tags">
-                      <span class="json-property-name">tags:</span>
-                      <span class="json-property-type">object[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="status">
-                      <span class="json-property-name">status:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-enum" title="Possible values">, x &isin; {
-                        <span class="json-property-enum-item">available</span> ,
-                        <span class="json-property-enum-item">pending</span> ,
-                        <span class="json-property-enum-item">sold</span> } </span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dd>
-                      <p>cheese status in the store</p>
-                    </dd>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Customer" class="panel panel-definition" data-traverse-target="definition-Customer">
-            <h2 class="panel-title">
-              <a name="/definitions/Customer"></a>Customer:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="id">
-                      <span class="json-property-name">id:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="username">
-                      <span class="json-property-name">username:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="firstName">
-                      <span class="json-property-name">firstName:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="lastName">
-                      <span class="json-property-name">lastName:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="email">
-                      <span class="json-property-name">email:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="password">
-                      <span class="json-property-name">password:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="phone">
-                      <span class="json-property-name">phone:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="customerStatus">
-                      <span class="json-property-name">customerStatus:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int32)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dd>
-                      <p>Customer Status</p>
-                    </dd>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Error" class="panel panel-definition" data-traverse-target="definition-Error">
-            <h2 class="panel-title">
-              <a name="/definitions/Error"></a>Error:
-              <span class="json-property-type">
-                <span class="json-property-type">object</span>
-                <span class="json-property-range" title="Value limits"></span>
-              </span>
-            </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
-            <div class="doc-row">
-              <div class="doc-copy">
-                <section class="json-schema-properties">
-                  <dl>
-                    <dt data-property-name="code">
-                      <span class="json-property-name">code:</span>
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int32)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="type">
-                      <span class="json-property-name">type:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                    <dt data-property-name="message">
-                      <span class="json-property-name">message:</span>
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </dt>
-                  </dl>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div id="definition-Order" class="panel panel-definition" data-traverse-target="definition-Order">
+          <h1>Schema Definitions</h1>
+          <div id="definition-Order" class="definition panel" data-traverse-target="definition-Order">
             <h2 class="panel-title">
               <a name="/definitions/Order"></a>Order:
               <span class="json-property-type">
@@ -2520,14 +2489,6 @@
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2579,27 +2540,27 @@
               <div class="doc-examples">
                 <section>
                   <h5>Example</h5>
-                  <div class="hljs"></div>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
+  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+}
+</code></pre> </div>
                 </section>
               </div>
             </div>
           </div>
-          <div id="definition-tag.yml--Tag" class="panel panel-definition" data-traverse-target="definition-tag.yml--Tag">
+          <div id="definition-Category" class="definition panel" data-traverse-target="definition-Category">
             <h2 class="panel-title">
-              <a name="/definitions/tag.yml#/Tag"></a>tag.yml#/Tag:
+              <a name="/definitions/Category"></a>Category:
               <span class="json-property-type">
                 <span class="json-property-type">object</span>
                 <span class="json-property-range" title="Value limits"></span>
               </span>
             </h2>
-            <!-- <div class="doc-row">
-                  <div class="doc-copy">
-              
-                    
-                  </div>
-              
-                  <div class="doc-examples"></div>
-                </div> -->
             <div class="doc-row">
               <div class="doc-copy">
                 <section class="json-schema-properties">
@@ -2618,11 +2579,361 @@
                   </dl>
                 </section>
               </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Customer" class="definition panel" data-traverse-target="definition-Customer">
+            <h2 class="panel-title">
+              <a name="/definitions/Customer"></a>Customer:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="id">
+                      <span class="json-property-name">id:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int64)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="username">
+                      <span class="json-property-name">username:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="firstName">
+                      <span class="json-property-name">firstName:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Customer first name</p>
+                    </dd>
+                    <dt data-property-name="lastName">
+                      <span class="json-property-name">lastName:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Customer last name</p>
+                    </dd>
+                    <dt data-property-name="email">
+                      <span class="json-property-name">email:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="password">
+                      <span class="json-property-name">password:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="phone">
+                      <span class="json-property-name">phone:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="customerStatus">
+                      <span class="json-property-name">customerStatus:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">, x &isin; {
+                        <span class="json-property-enum-item">skinny</span> ,
+                        <span class="json-property-enum-item">average</span> ,
+                        <span class="json-property-enum-item">fat</span> ,
+                        <span class="json-property-enum-item">obese</span> } </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Customer status (the heavier the better)</p>
+                    </dd>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
+  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
+  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
+  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
+  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
+  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
+  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Error" class="definition panel" data-traverse-target="definition-Error">
+            <h2 class="panel-title">
+              <a name="/definitions/Error"></a>Error:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="code">
+                      <span class="json-property-name">code:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int32)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="type">
+                      <span class="json-property-name">type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="message">
+                      <span class="json-property-name">message:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer (int32)&quot;</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;No cheese found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;No cheese for you!&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-ValidationError" class="definition panel" data-traverse-target="definition-ValidationError">
+            <h2 class="panel-title">
+              <a name="/definitions/ValidationError"></a>ValidationError:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="code">
+                      <span class="json-property-name">code:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int32)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="type">
+                      <span class="json-property-name">type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="message">
+                      <span class="json-property-name">message:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-NotFoundError" class="definition panel" data-traverse-target="definition-NotFoundError">
+            <h2 class="panel-title">
+              <a name="/definitions/NotFoundError"></a>NotFoundError:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="code">
+                      <span class="json-property-name">code:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int32)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="type">
+                      <span class="json-property-name">type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="message">
+                      <span class="json-property-name">message:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Cheese" class="definition panel" data-traverse-target="definition-Cheese">
+            <h2 class="panel-title">
+              <a name="/definitions/Cheese"></a>Cheese:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="id">
+                      <span class="json-property-name">id:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int64)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="category">
+                      <span class="json-property-name">category:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Category">Category</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="name">
+                      <span class="json-property-name">name:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="photoUrls">
+                      <span class="json-property-name">photoUrls:</span>
+                      <span class="json-property-type">string[]</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="tags">
+                      <span class="json-property-name">tags:</span>
+                      <span class="json-property-type">object[]</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="status">
+                      <span class="json-property-name">status:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">, x &isin; {
+                        <span class="json-property-enum-item">available</span> ,
+                        <span class="json-property-enum-item">pending</span> ,
+                        <span class="json-property-enum-item">sold</span> } </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Cheese status in the store</p>
+                    </dd>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">&quot;category&quot;</span>: {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
+  },
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
+  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
+    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
+  ],
+  <span class="hljs-attr">&quot;tags&quot;</span>: [
+    <span class="hljs-literal">null</span>
+  ],
+  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-tag.yml--Tag" class="definition panel" data-traverse-target="definition-tag.yml--Tag">
+            <h2 class="panel-title">
+              <a name="/definitions/tag.yml#/Tag"></a>tag.yml#/Tag:
+              <span class="json-property-type">
+                <span class="json-property-type">object</span>
+                <span class="json-property-range" title="Value limits"></span>
+              </span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="id">
+                      <span class="json-property-name">id:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int64)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="name">
+                      <span class="json-property-name">name:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+}
+</code></pre> </div>
+                </section>
+              </div>
             </div>
           </div>
           <div class="doc-row no-margin">
             <div class="doc-copy doc-separator">
-              <a class="powered-by" href="http://sourcey.com/spectacle">Documentation by
+              <a class="powered-by" href="https://sourcey.com/spectacle">Documentation by
                 <span>Spectacle</span>
               </a>
             </div>

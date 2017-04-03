@@ -6,5 +6,5 @@
  * @api public
  */
 module.exports = function(value, options) {
-    return value ? value.toUpperCase() : '';
+  return value ? value.toUpperCase() : '';
 };
