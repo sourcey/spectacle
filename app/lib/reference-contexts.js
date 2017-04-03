@@ -41,7 +41,7 @@ function definition(ref) {
 */
 function path(ref) {
   var parts = ref.split("/");
-  return parts.length === 2 && parts.lastIndexOf("paths") === parts.length - 2 && parts[1].length > 0;
+  return parts.length === 3 && parts.lastIndexOf("paths") === parts.length - 3 && parts[1].length > 0;
 }
 
 module.exports = {

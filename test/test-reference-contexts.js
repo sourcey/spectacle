@@ -79,12 +79,13 @@ describe("reference-contexts.js", function() {
   describe("path()", function() {
 
     success("path", [
-      "paths/index.html",
-      "paths/{part}",
-      "paths/{a}-{b}-{c}",
+      "paths/index.html/",
+      "paths/{part}/",
+      "paths/{a}-{b}-{c}/",
     ]);
 
     failure("path", [
+      "paths/index.html",
       "paths/",
       "paths",
       "paths/index.html/responses/",

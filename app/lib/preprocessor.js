@@ -77,3 +77,5 @@ module.exports = function(options, specData) {
 
   return copy;
 }
+
+module.exports.httpMethods = httpMethods;

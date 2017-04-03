@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var yaml = require("js-yaml");
 var request = require("request-sync");
+var _ = require("lodash");
 var pathUtils = require("./urls");
 var contexts = require("./reference-contexts");
 var resolveLocal = require("./json-reference").resolveLocal;
@@ -17,6 +18,11 @@ var TreeWalkError = require("./errors").TreeWalkError;
  * Stores a parsed copy of referenced files to improve preformance.
 */
 var _cache = {};
+
+/**
+ * The list of avalible HTTP methods.
+*/
+var httpMethods = require("./preprocessor").httpMethods;
 
 /**
  * Determines if a reference is relative to the current file.
@@ -100,6 +106,29 @@ function replaceReference(cwd, top, obj, context) {
     if(!top.definitions) { top.definitions = {}; }
     if(!top.definitions[external]) { top.definitions[external] = referenced; }
     Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") });
+  }
+  else if(contexts.path(context)) {
+    Object.keys(referenced).forEach(function(method) {
+      if(httpMethods.indexOf(method) < 0) {
+        delete path[method];
+        return;
+      }
+      var operation = referenced[method];
+      operation.method = method;
+      var operationTags = operation.tags || ["default"];
+      operationTags.forEach(function(tag) {
+        top.tags = top.tags || [];
+        var tagDef = _.find(top.tags, {name: tag});
+        if(!tagDef) {
+          tagDef = {name: tag, operations: []};
+          top.tags.push(tagDef);
+        }
+        tagDef.operations = tagDef.operations || [];
+        tagDef.operations.push(operation);
+      });
+    });
+    Object.assign(obj, referenced);
+    delete obj.$ref;
   }
   else {
     Object.assign(obj, referenced);

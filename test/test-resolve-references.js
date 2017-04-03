@@ -205,6 +205,7 @@ describe("resolve-references.js", function() {
       });
 
       networkIt("should resolve deep references", function() {
+        this.timeout(4000);
         top = Object.create(minimal);
         top["x-spec-path"] = cwd + "/test.json";
         top.info = {"$ref": rawgit+"deep-reference.json"};
@@ -230,6 +231,23 @@ describe("resolve-references.js", function() {
         res.replaceReference(cwd, top, top.paths["/"].get.responses["200"].schema, "paths///get/responses/200/schema/");
         top.should.have.property("definitions");
         top.definitions.should.have.property("fixtures/User.yml");
+      });
+
+      it("adds tags when given a remote path", function() {
+        top = Object.create(minimal);
+        top.paths = {
+          "/": { "$ref": "fixtures/basic-path.yaml" },
+        };
+        res.replaceReference(cwd, top, top.paths["/"], "paths/%2F/");
+        top.should.have.property("tags");
+        top.tags.should.be.an.array;
+        top.tags.length.should.equal(1);
+        var tag = top.tags[0];
+        tag.should.have.property("name", "default");
+        tag.should.have.property("operations");
+        tag.operations.should.be.an.array;
+        tag.operations.should.include(top.paths["/"].get);
+        tag.operations.should.include(top.paths["/"].post);
       });
 
     });
