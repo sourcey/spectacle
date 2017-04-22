@@ -45,6 +45,12 @@ spectacle -d your_swagger_api.json
 
 Your generated documentation will be located in the `public` directory by default. You can either copy the generated HTML to your web server, or view your docs by pointing your browser to [http://localhost:4400/](http://localhost:4400/).
 
+### Docker
+
+A basic Docker script is included that allows Spectacle to be run from the inside, not outside. It's useful, for instance, in a Gitlab CI pipeline. Thanks @alexeiaguiar.
+
+How to use it: `docker run -it sourcey/spectacle /bin/sh`
+
 ## Configuration Options
 
 The basic CLI options are detailed below:
