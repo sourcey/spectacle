@@ -970,23 +970,6 @@
                 "name": "Customer"
             }
         },
-        "Tag": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 1
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Manchego"
-                }
-            },
-            "xml": {
-                "name": "Tag"
-            }
-        },
         "Error": {
             "type": "object",
             "properties": {
@@ -1068,8 +1051,8 @@
                     "items": {
                         "type": "string"
                     },
-                    "example": [ 
-                        "https://wannabechef.com/gorgonzola.jpg" 
+                    "example": [
+                        "https://wannabechef.com/gorgonzola.jpg"
                     ]
                 },
                 "tags": {
@@ -1079,7 +1062,7 @@
                         "wrapped": true
                     },
                     "items": {
-                        "$ref": "#/definitions/Tag"
+                        "$ref": "tag.yml#/Tag/"
                     }
                 },
                 "status": {

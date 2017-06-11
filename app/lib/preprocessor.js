@@ -1,12 +1,18 @@
 var path = require('path'),
   _ = require('lodash');
 
-var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
+var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', '$ref'];
 
 // Preprocessor for the Swagger JSON so that some of the logic can be taken
 // out of the template.
 
 module.exports = function(options, specData) {
+  if(!options.specFile) {
+    console.warn("[WARNING] preprocessor must be given 'options.specFile'.  Defaulting to 'cwd'.");
+    options.specFile = process.cwd();
+  }
+  specData["x-spec-path"] = options.specFile;
+
   var copy = _.cloneDeep(specData);
   var tagsByName = _.keyBy(copy.tags, 'name');
 
@@ -65,5 +71,11 @@ module.exports = function(options, specData) {
     // If there are multiple tags, we show the tag-based summary
     copy.showTagSummary = copy.tags.length > 1
   }
+
+  var replaceRefs = require("./resolve-references").replaceRefs;
+  replaceRefs(path.dirname(copy["x-spec-path"]), copy, copy, "");
+
   return copy;
 }
+
+module.exports.httpMethods = httpMethods;

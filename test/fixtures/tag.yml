@@ -1,0 +1,11 @@
+# Extracted from cheese.json#/definitions/Tag
+Tag:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    name:
+      type: string
+  xml:
+    name: Tag
