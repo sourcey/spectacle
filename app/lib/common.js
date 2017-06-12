@@ -95,7 +95,7 @@ var common = {
     var showReadOnly = options.showReadOnly !== false
     var that = this;
   	
-    if (ref.example) {
+    if (ref.example !== undefined) {
       return ref.example;
     }
     else if (ref.$ref) {
