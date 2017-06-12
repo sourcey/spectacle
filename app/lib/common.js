@@ -94,7 +94,7 @@ var common = {
 
     var that = this;
   	
-    if (ref.example) {
+    if (ref.example !== undefined) {
       return ref.example;
     }
     else if (ref.$ref) {
