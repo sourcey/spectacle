@@ -28,15 +28,15 @@ var common = {
      }
      return html;
   },
-  
+
   highlight: function(code, lang) {
       var highlighted;
       if (lang) {
           try {
-              code = highlight.highlight(lang, code).value;
+              highlighted = highlight.highlight(lang, code).value;
           } catch (e) {}
       }
-      if (!highlighted) {  {
+      if (!highlighted) {
           highlighted = highlight.highlightAuto(code).value;
       }
 
@@ -45,7 +45,7 @@ var common = {
               ? ' class="hljs ' + this.options.langPrefix + lang + '"'
               : ' class="hljs"')
           + '>'
-          + highlighted
+          + highlighted //code //
           + '\n</code></pre>\n';
   },
 
@@ -91,7 +91,7 @@ var common = {
     else if (value.schema) {
       return this.formatExampleProp(value.schema, root, options)
     }
-    else if (value.type || value.allOf)  {
+    else if (value.type || value.properties || value.allOf)  {
       return this.formatExampleProp(value, root, options)
     }
 
@@ -100,7 +100,7 @@ var common = {
 
   formatExampleProp: function(ref, root, options) {
     if (!ref) {
-      // throw 'Cannot format NULL property ' + ref;
+      console.error('Cannot format NULL property')
       return;
     }
 
@@ -114,7 +114,7 @@ var common = {
   	  ref = this.resolveSchemaReference(ref.$ref, root)
   	  return this.formatExampleProp(ref, root, options)
   	}
-    else if (ref.properties && ref.type == 'object') {
+    else if (ref.properties) { // && ref.type == 'object'
       var obj = {};
       Object.keys(ref.properties).forEach(function(k) {
         if (showReadOnly || ref.properties[k].readOnly !== true) {
@@ -126,7 +126,17 @@ var common = {
     else if (ref.allOf) {
       var obj = {};
       ref.allOf.forEach(function(parent) {
-        obj = Object.assign(that.formatExampleProp(parent, root, options), obj)
+          // try {
+            // console.log('ALL OF')
+            var prop = that.formatExampleProp(parent, root, options)
+            if (prop)
+              // console.log('ALL OF PROP', prop)
+              obj = Object.assign(prop, obj)
+            // obj = Object.assign(obj, prop)
+              // console.log('ALL OF OBJ', obj)
+          // } catch (e) {
+          //
+          // }
       })
       return obj;
     }
@@ -201,17 +211,13 @@ highlight.configure({
 })
 
 // Create a custom renderer for highlight.js compatability
-var renderer = new marked.Renderer();
+var renderer = new marked.Renderer()
 renderer.code = common.highlight
-
-// function(code, lang, escaped) {
-// };
 
 // Configure marked.js
 marked.setOptions({
   // highlight: common.highlight,
-  renderer: renderer,
-  // langPrefix: 'hljs '
+  renderer: renderer
 })
 
 module.exports = common;

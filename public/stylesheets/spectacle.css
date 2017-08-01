@@ -1103,12 +1103,9 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
           padding-top: 1.5rem;
           padding-bottom: 0.5rem; } }
       #spectacle article .doc-examples code {
-        border-radius: 5px;
-        box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+        display: block;
         margin-bottom: 1.5rem;
-        white-space: pre-wrap;
-        word-break: normal;
-        word-spacing: normal;
+        padding: 1.5rem;
         font-family: Consolas,"Liberation Mono",Courier,monospace;
         font-weight: inherit;
         color: inherit;
@@ -1116,7 +1113,11 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         border: none;
         border-top: 1px solid #000;
         border-bottom: 1px solid #404040;
-        padding: 1.5rem; }
+        border-radius: 5px;
+        box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+        word-spacing: normal;
+        white-space: pre-wrap;
+        word-break: normal; }
     #spectacle article .powered-by {
       font-size: 90%;
       color: #cacaca; }

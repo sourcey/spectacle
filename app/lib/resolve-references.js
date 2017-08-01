@@ -158,7 +158,7 @@ function replaceRefs(cwd, top, obj, context) {
     return; }
 
   if(obj.$ref) {
-    throw new TreeWalkError("Walked too deep in the tree looking for references.  Can't resolve reference " +
+    throw new TreeWalkError("Walked too deep in the tree looking for references. Can't resolve reference " +
       obj.$ref + " in "+cwd+".")
   }
 

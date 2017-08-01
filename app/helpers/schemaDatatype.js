@@ -4,7 +4,7 @@
  * @returns {String} a string like <code>string[]</code> or <code>object[][]</code>
  */
 module.exports = function (value) {
-  return dataType(value);
+  return dataType(value)
 };
 
 function dataType(value) {

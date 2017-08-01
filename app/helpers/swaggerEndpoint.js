@@ -9,7 +9,7 @@ module.exports = function(options) {
       }
       endpoint = scheme;
       return true;
-    });
+    })
   }
   endpoint += '://';
   endpoint += data.host;

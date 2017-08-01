@@ -1,5 +1,5 @@
-var Handlebars = require('handlebars');
-var common = require('../lib/common');
+var Handlebars = require('handlebars')
+var common = require('../lib/common')
 
 /**
  * Render a markdown formatted text as HTML.
@@ -10,6 +10,6 @@ var common = require('../lib/common');
  *      markdown, rendered as HTML.
  */
 module.exports = function(value, options) {
-  var html = common.markdown(value, options.hash ? options.hash.stripParagraph : false);
-  return new Handlebars.SafeString(html);
+  var html = common.markdown(value, options.hash ? options.hash.stripParagraph : false)
+  return new Handlebars.SafeString(html)
 };

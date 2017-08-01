@@ -1,4 +1,4 @@
-var util = require('util');
+var util = require('util')
 
 /**
  *
@@ -29,12 +29,12 @@ module.exports = function(range, options) {
     return util.format(", { x %s | x %s %d }",
         numberSet,
         range.minimumExclusive ? ">" : "\u2265",
-        range.minimum);
+        range.minimum)
   } else if (hasMaximum && !hasMinimum) {
     return util.format(", { x %s | x %s %d }",
         numberSet,
         range.maximumExclusive ? "<" : "\u2264",
-        range.maximum);
+        range.maximum)
   } else {
     // if (hasMaxmium && hasMinimum)
     return util.format(", { x %s | %d %s x %s %d }",
@@ -42,6 +42,6 @@ module.exports = function(range, options) {
         range.minimum,
         range.minimumExclusive ? "<" : "\u2264",
         range.maximumExclusive ? "<" : "\u2264",
-        range.maximum);
+        range.maximum)
   }
 };

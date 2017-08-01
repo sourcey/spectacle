@@ -428,7 +428,7 @@ paths:
 
         And here is a random inline code block:
 
-        ```
+        ```json
         {
           "greeting": Wassup()
         }

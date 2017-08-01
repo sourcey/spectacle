@@ -373,20 +373,10 @@ article {
       }
     }
 
-    // pre {
     code {
-
-      border-radius: 5px;
-      box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
-      // margin: 0;
+      display: block;
       margin-bottom: 1.5rem;
-
-      white-space: pre-wrap;
-      word-break: normal;
-      word-spacing: normal;
-    // }
-    //
-    // code {
+      padding: 1.5rem;
       font-family: Consolas,"Liberation Mono",Courier,monospace;
       font-weight: inherit;
       color: inherit;
@@ -394,7 +384,11 @@ article {
       border: none;
       border-top: 1px solid #000;
       border-bottom: 1px solid #404040;
-      padding: 1.5rem;
+      border-radius: 5px;
+      box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+      word-spacing: normal;
+      white-space: pre-wrap;
+      word-break: normal;
     }
   }
 
@@ -453,6 +447,5 @@ article {
     padding: 1.5rem;
     margin-bottom: 1rem;
     border: none;
-    // padding: 1.5rem 2rem;
   }
 }
