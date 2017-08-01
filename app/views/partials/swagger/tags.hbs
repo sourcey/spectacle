@@ -1,5 +1,5 @@
 {{! Operations sorted by tags }}
-{{#eachSorted tags}}
+{{#each tags}}
     <h1 id="tag-{{htmlId name}}" class="swagger-summary-tag" data-traverse-target="tag-{{htmlId name}}">{{name}}</h1>
     {{#if description}}
       <div class="tag-description doc-row">
@@ -11,4 +11,4 @@
     {{#each operations}}
       {{>swagger/operation . operation=. method=method path=path}}
     {{/each}}
-{{/eachSorted}}
+{{/each}}

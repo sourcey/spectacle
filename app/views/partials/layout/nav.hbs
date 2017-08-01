@@ -14,7 +14,7 @@
 
   {{#if showTagSummary}}
     <h5>Operations</h5>
-    {{#eachSorted tags}}
+    {{#each tags}}
       <section>
         <a href="#tag-{{htmlId name}}">{{name}}</a>
         <ul>
@@ -31,7 +31,7 @@
           {{/each}}
         </ul>
       </section>
-    {{/eachSorted}}
+    {{/each}}
   {{else}}
     <h5>Paths</h5>
     {{#each paths}}
