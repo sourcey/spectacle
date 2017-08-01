@@ -40,6 +40,12 @@
 
     {{! Print examples without whitespace. }}
     <div class="doc-examples">
+      {{#if produces}}
+        <h5>Response Content-Types:
+          <span>{{#each produces}}{{.}}{{#unless @last}}, {{/unless}}{{/each}}</span>
+        </h5>
+      {{/if}}
+
       {{#each responses}}
         {{#if schema}}
         <section>
