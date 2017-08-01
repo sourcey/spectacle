@@ -10,7 +10,7 @@
  * @return {Boolean} `true` if the current path is to a response schema.
 */
 function responseSchemaDefinition(ref) {
-  var parts = ref.split("/");
+  var parts = ref.split("/")
   return parts.length > 4 && parts.indexOf("schema") === parts.length - 2 &&
     parts.indexOf("responses") === parts.length - 4;
 }
@@ -21,7 +21,7 @@ function responseSchemaDefinition(ref) {
  * @return {Boolean} `true` if the current path is to an array inside a property.
 */
 function propertyArrayDefinition(ref) {
-  var parts = ref.split("/");
+  var parts = ref.split("/")
   return parts.length > 2 && parts.lastIndexOf("items") === parts.length - 2;
 }
 
@@ -31,7 +31,7 @@ function propertyArrayDefinition(ref) {
  * @return {Boolean} `true` if the current path is an OpenAPI `definition`.
 */
 function definition(ref) {
-  return responseSchemaDefinition(ref) || propertyArrayDefinition(ref);
+  return responseSchemaDefinition(ref) || propertyArrayDefinition(ref)
 }
 
 /**
@@ -40,7 +40,7 @@ function definition(ref) {
  * @return {Boolean} `true` if the current path is an OpenAPI `path`.
 */
 function path(ref) {
-  var parts = ref.split("/");
+  var parts = ref.split("/")
   return parts.length === 3 && parts.lastIndexOf("paths") === parts.length - 3 && parts[1].length > 0;
 }
 

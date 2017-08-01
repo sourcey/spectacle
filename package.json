@@ -7,8 +7,8 @@
     "spectacle": "bin/spectacle.js"
   },
   "scripts": {
-    "build": "spectacle -l test/fixtures/cheese.png test/fixtures/cheese.json",
-    "test": "mocha && node bin/spectacle -l test/fixtures/cheese.png test/fixtures/cheese.json",
+    "build": "spectacle -l test/fixtures/cheese.png test/fixtures/cheese.yml",
+    "test": "mocha && node bin/spectacle -l test/fixtures/cheese.png test/fixtures/cheese.yml",
     "develop": "spectacle -d",
     "start": "spectacle -s"
   },

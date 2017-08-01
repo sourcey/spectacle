@@ -1102,6 +1102,21 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
           margin-top: 1.5rem;
           padding-top: 1.5rem;
           padding-bottom: 0.5rem; } }
+      #spectacle article .doc-examples code {
+        border-radius: 5px;
+        box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+        margin-bottom: 1.5rem;
+        white-space: pre-wrap;
+        word-break: normal;
+        word-spacing: normal;
+        font-family: Consolas,"Liberation Mono",Courier,monospace;
+        font-weight: inherit;
+        color: inherit;
+        background-color: transparent;
+        border: none;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #404040;
+        padding: 1.5rem; }
     #spectacle article .powered-by {
       font-size: 90%;
       color: #cacaca; }
@@ -1119,27 +1134,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       word-break: break-all; }
     #spectacle article .definition .doc-examples h5 {
       margin-top: -1rem; }
-  #spectacle .hljs {
-    padding: 0 !important;
-    margin-bottom: 1.5rem; }
-    #spectacle .hljs pre {
+    #spectacle article .hljs {
       line-height: 1.25;
-      padding: 1.5rem 2rem;
-      border-radius: 5px;
-      box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
-      margin: 0;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #404040;
-      white-space: pre-wrap;
-      word-break: normal;
-      word-spacing: normal; }
-    #spectacle .hljs code {
-      font-family: Consolas,"Liberation Mono",Courier,monospace;
-      font-weight: inherit;
-      color: inherit;
-      background-color: transparent;
-      border: none;
-      padding: 0; }
+      overflow-x: auto;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: none; }
   #spectacle .drawer-layout .drawer {
     box-shadow: 0 0 10px rgba(35, 36, 31, 0.5);
     transition: transform 0.5s ease;

@@ -1,4 +1,4 @@
-var path = require("path");
+var path = require("path")
 
 /**
  * Utilities for managing both URL and file paths.
@@ -10,7 +10,7 @@ var path = require("path");
  * @return {boolean} `true` if the string is a URL.
 */
 function absoluteURL(str) {
-  return /^.*\:\/\/[^\/]+\/?/.test(str);
+  return /^.*\:\/\/[^\/]+\/?/.test(str)
 }
 
 /**
@@ -28,13 +28,13 @@ function urlBasename(url) {
  * @return {string} the joined path.
 */
 function join(paths) {
-  args = [].concat.apply([], arguments);
+  args = [].concat.apply([], arguments)
   return args.slice(1).reduce(function(url, val) {
     if(absoluteURL(url) || absoluteURL(val)) {
-      return require("url").resolve(url, val);
+      return require("url").resolve(url, val)
     }
-    return path.join(url, val);
-  }, args[0]);
+    return path.join(url, val)
+  }, args[0])
 }
 
 /**
@@ -44,12 +44,12 @@ function join(paths) {
  * @return {string} A relative path from the origin to the destination.
 */
 function relative(from, to) {
-  var localToRemote = !absoluteURL(from) && absoluteURL(to);
-  var differentDomains = absoluteURL(from) && absoluteURL(to) && urlBasename(from) !== urlBasename(to);
+  var localToRemote = !absoluteURL(from) && absoluteURL(to)
+  var differentDomains = absoluteURL(from) && absoluteURL(to) && urlBasename(from) !== urlBasename(to)
   if(localToRemote || differentDomains) {
     return to;
   }
-  return path.relative(from, to);
+  return path.relative(from, to)
 }
 
 module.exports = {

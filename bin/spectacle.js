@@ -4,8 +4,6 @@ var program = require('commander'),
     package = require('../package'),
     spectacle = require('../index.js');
 
-
-
 //
 //= Process CLI input
 

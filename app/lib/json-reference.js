@@ -1,4 +1,4 @@
-var path = require("path");
+var path = require("path")
 
 /**
  * Applies a single JSON reference lookup to an object.  Does not resolve references in the returned document.
@@ -17,9 +17,9 @@ function jsonSearch(ref, obj) {
       current = current[section];
     }
     else {
-      throw new ReferenceError("Couldn't evaluate JSON reference '"+ref+"': Couldn't find key "+section);
+      throw new ReferenceError("Couldn't evaluate JSON reference '"+ref+"': Couldn't find key "+section)
     }
-  });
+  })
   return current;
 }
 
@@ -33,7 +33,7 @@ function jsonSearch(ref, obj) {
 */
 function resolveLocal(doc, obj, ref) {
   if(typeof obj !== "object") {
-    throw new TypeError("resolveLocal() must be given an object.  Given "+typeof obj+" ("+obj+")");
+    throw new TypeError("resolveLocal() must be given an object.  Given "+typeof obj+" ("+obj+")")
   }
   for(var k in obj) {
     var val = obj[k];
@@ -41,15 +41,15 @@ function resolveLocal(doc, obj, ref) {
     if(val.$ref) {
       var $ref = val.$ref;
       if($ref.indexOf("./") === 0 || $ref.indexOf("../") === 0) {
-        $ref = path.join(ref, k, $ref);
+        $ref = path.join(ref, k, $ref)
       }
       if($ref.indexOf("#/") === 0) {
-        Object.assign(val, jsonSearch($ref, doc));
+        Object.assign(val, jsonSearch($ref, doc))
         delete val.$ref;
       }
     }
     else {
-      resolveLocal(doc, val, path.join(ref, k));
+      resolveLocal(doc, val, path.join(ref, k))
     }
   }
 }

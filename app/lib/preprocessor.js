@@ -1,5 +1,5 @@
 var path = require('path'),
-  _ = require('lodash');
+  _ = require('lodash')
 
 var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', '$ref'];
 
@@ -8,18 +8,18 @@ var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', '
 
 module.exports = function(options, specData) {
   if(!options.specFile) {
-    console.warn("[WARNING] preprocessor must be given 'options.specFile'.  Defaulting to 'cwd'.");
-    options.specFile = process.cwd();
+    console.warn("[WARNING] preprocessor must be given 'options.specFile'.  Defaulting to 'cwd'.")
+    options.specFile = process.cwd()
   }
   specData["x-spec-path"] = options.specFile;
 
-  var copy = _.cloneDeep(specData);
-  var tagsByName = _.keyBy(copy.tags, 'name');
+  var copy = _.cloneDeep(specData)
+  var tagsByName = _.keyBy(copy.tags, 'name')
 
   copy.tags = copy.tags || [];
 
   if (options.logoFile) {
-    copy.logo = path.basename(options.logoFile);
+    copy.logo = path.basename(options.logoFile)
   }
 
   // The "body"-parameter in each operation is stored in a
@@ -73,7 +73,7 @@ module.exports = function(options, specData) {
   }
 
   var replaceRefs = require("./resolve-references").replaceRefs;
-  replaceRefs(path.dirname(copy["x-spec-path"]), copy, copy, "");
+  replaceRefs(path.dirname(copy["x-spec-path"]), copy, copy, "")
 
   return copy;
 }

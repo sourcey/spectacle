@@ -1,10 +1,10 @@
-var fs = require("fs");
-var path = require("path");
-var yaml = require("js-yaml");
-var request = require("request-sync");
-var _ = require("lodash");
-var pathUtils = require("./urls");
-var contexts = require("./reference-contexts");
+var fs = require("fs")
+var path = require("path")
+var yaml = require("js-yaml")
+var request = require("request-sync")
+var _ = require("lodash")
+var pathUtils = require("./urls")
+var contexts = require("./reference-contexts")
 var resolveLocal = require("./json-reference").resolveLocal;
 var jsonSearch = require("./json-reference").jsonSearch;
 var LocalRefError = require("./errors").LocalRefError;
@@ -31,7 +31,7 @@ var httpMethods = require("./preprocessor").httpMethods;
 */
 function localReference(ref) {
   return (typeof ref.trim === "function" && ref.trim().indexOf("#") === 0) ||
-         (typeof ref.indexOf === "function" && ref.indexOf("#") === 0);
+         (typeof ref.indexOf === "function" && ref.indexOf("#") === 0)
 }
 
 /**
@@ -46,11 +46,11 @@ function localReference(ref) {
 function fetchReference(ref) {
 
   if(localReference(ref)) {
-    throw new LocalRefError("fetchReference('"+ref+"') given a reference to the current file.");
+    throw new LocalRefError("fetchReference('"+ref+"') given a reference to the current file.")
   }
 
   var file = ref.split("#", 1)[0];
-  var refPath = ref.substr(file.length + 1);
+  var refPath = ref.substr(file.length + 1)
 
   var src = null;
 
@@ -62,23 +62,23 @@ function fetchReference(ref) {
       src = request(file).body;
     }
     else {
-      src = fs.readFileSync(file, "utf8");
+      src = fs.readFileSync(file, "utf8")
     }
     if(file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
-      src = yaml.safeLoad(src);
+      src = yaml.safeLoad(src)
     }
     else {
-      src = JSON.parse(src);
+      src = JSON.parse(src)
     }
     _cache[file] = src;
   }
 
   if(refPath.length > 0) {
-    src = jsonSearch(refPath, src);
+    src = jsonSearch(refPath, src)
   }
 
   if(src.$ref && typeof src.$ref === "string" && !localReference(src.$ref)) {
-    src = fetchReference(pathUtils.join(path.dirname(ref), src.$ref));
+    src = fetchReference(pathUtils.join(path.dirname(ref), src.$ref))
   }
 
   return src;
@@ -94,18 +94,18 @@ function fetchReference(ref) {
  * @todo test failure
 */
 function replaceReference(cwd, top, obj, context) {
-  var ref = pathUtils.join(cwd, obj.$ref);
-  var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref);
-  var referenced = module.exports.fetchReference(ref);
+  var ref = pathUtils.join(cwd, obj.$ref)
+  var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref)
+  var referenced = module.exports.fetchReference(ref)
   if(typeof referenced === "object") {
-    resolveLocal(referenced, referenced, "#/");
+    resolveLocal(referenced, referenced, "#/")
     referenced["x-external"] = external;
-    module.exports.replaceRefs(path.dirname(ref), top, referenced, context);
+    module.exports.replaceRefs(path.dirname(ref), top, referenced, context)
   }
   if(contexts.definition(context)) {
     if(!top.definitions) { top.definitions = {}; }
     if(!top.definitions[external]) { top.definitions[external] = referenced; }
-    Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") });
+    Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") })
   }
   else if(contexts.path(context)) {
     Object.keys(referenced).forEach(function(method) {
@@ -118,20 +118,20 @@ function replaceReference(cwd, top, obj, context) {
       var operationTags = operation.tags || ["default"];
       operationTags.forEach(function(tag) {
         top.tags = top.tags || [];
-        var tagDef = _.find(top.tags, {name: tag});
+        var tagDef = _.find(top.tags, {name: tag})
         if(!tagDef) {
           tagDef = {name: tag, operations: []};
-          top.tags.push(tagDef);
+          top.tags.push(tagDef)
         }
         tagDef.operations = tagDef.operations || [];
-        tagDef.operations.push(operation);
-      });
-    });
-    Object.assign(obj, referenced);
+        tagDef.operations.push(operation)
+      })
+    })
+    Object.assign(obj, referenced)
     delete obj.$ref;
   }
   else {
-    Object.assign(obj, referenced);
+    Object.assign(obj, referenced)
     delete obj.$ref;
   }
 }
@@ -151,15 +151,15 @@ function replaceReference(cwd, top, obj, context) {
 function replaceRefs(cwd, top, obj, context) {
 
   if(typeof cwd !== "string" || cwd.length < 1) {
-    throw new Error("replaceRefs must be given a 'cwd'.  Given '"+cwd+"'");
+    throw new Error("replaceRefs must be given a 'cwd'.  Given '"+cwd+"'")
   }
   if(typeof obj !== "object") {
-    console.warn("[WARN] replaceRefs() must be given an object for 'obj'.  Given "+typeof obj+" ("+obj+")");
+    console.warn("[WARN] replaceRefs() must be given an object for 'obj'.  Given "+typeof obj+" ("+obj+")")
     return; }
 
   if(obj.$ref) {
     throw new TreeWalkError("Walked too deep in the tree looking for references.  Can't resolve reference " +
-      obj.$ref + " in "+cwd+".");
+      obj.$ref + " in "+cwd+".")
   }
 
   for(var k in obj) {
@@ -171,22 +171,22 @@ function replaceRefs(cwd, top, obj, context) {
       if(localReference(val.$ref)) {
         if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
         throw new Error(
-          "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.");
+          "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.")
       }
 
       try {
-        module.exports.replaceReference(cwd, top, val, context + k + "/");
+        module.exports.replaceReference(cwd, top, val, context + k + "/")
       }
       catch (e) {
         console.error("replaceRefs(): Couldn't replace reference '"+val.$ref+"' from '"+
-          cwd+"'.  Reference path: #/"+context);
+          cwd+"'.  Reference path: #/"+context)
         throw e;
       }
 
       continue;
     }
 
-    replaceRefs(cwd, top, val, context + k + "/");
+    replaceRefs(cwd, top, val, context + k + "/")
   }
 
 }

@@ -4,7 +4,7 @@ exports.LocalRefError = LocalRefError = function LocalRefError(message) {
   this.stack = (new Error()).stack;
 }
 
-LocalRefError.prototype = Object.create(Error.prototype);
+LocalRefError.prototype = Object.create(Error.prototype)
 LocalRefError.prototype.constructor = LocalRefError;
 
 /**
@@ -16,5 +16,5 @@ exports.TreeWalkError = TreeWalkError = function TreeWalkError(message) {
   this.stack = (new Error()).stack;
 }
 
-TreeWalkError.prototype = Object.create(Error.prototype);
+TreeWalkError.prototype = Object.create(Error.prototype)
 TreeWalkError.prototype.constructor = TreeWalkError;
