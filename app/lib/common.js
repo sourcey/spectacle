@@ -29,6 +29,24 @@ var common = {
      return html;
   },
 
+  // render heading element with data-traverse-target attribute
+  heading : function (text, level, raw) {
+    return '<h'
+      + level
+      + ' id="'
+      + this.options.headerPrefix
+      + raw.toLowerCase().replace(/[^\w]+/g, '-')
+      + '"'
+      + ' data-traverse-target="'
+      + this.options.headerPrefix
+      + raw.toLowerCase().replace(/[^\w]+/g, '-')
+      + '">'
+      + text
+      + '</h'
+      + level
+      + '>\n';
+  },
+
   highlight: function(code, lang) {
       var highlighted;
       if (lang) {
@@ -213,6 +231,9 @@ highlight.configure({
 // Create a custom renderer for highlight.js compatability
 var renderer = new marked.Renderer()
 renderer.code = common.highlight
+
+// change the default implementation of the heading renderer
+renderer.heading = common.heading
 
 // Configure marked.js
 marked.setOptions({
