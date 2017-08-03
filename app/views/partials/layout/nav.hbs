@@ -7,6 +7,12 @@
   <h5>API Reference</h5>
   <a href="#introduction">Introduction</a>
 
+    <ul>
+    {{#each introSections}}
+        <li><a href="#{{id}}">{{name}}</a></li>
+    {{/each}}
+    </ul>
+
   {{#if securityDefinitions}}
     <!-- <h5>Security</h5> -->
     <a href="#authentication">Authentication</a>

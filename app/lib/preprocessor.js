@@ -1,5 +1,6 @@
 var path = require('path'),
   _ = require('lodash')
+var marked = require('marked')
 
 var httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', '$ref'];
 
@@ -21,6 +22,23 @@ module.exports = function(options, specData) {
   if (options.logoFile) {
     copy.logo = path.basename(options.logoFile)
   }
+
+  // parse description and extract headings
+  var lexer = new marked.Lexer(options);
+  var tokens = lexer.lex(copy.info.description);
+  
+  var headings = tokens.filter(function(token){
+    return token.type == 'heading';
+  })
+  
+  // map heading tokens to introSections structure
+  var introSections = headings.map(function(token){
+    var section = new Object();
+    section.name = token.text;
+    section.id = token.text.toLowerCase().replace(/\s+/g, '-');
+    return section;
+  })
+  copy.introSections = introSections;
 
   // The "body"-parameter in each operation is stored in a
   // separate field "_request_body".
