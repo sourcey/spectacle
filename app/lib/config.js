@@ -7,9 +7,11 @@ module.exports = function(grunt, options, spec) {
       sass: {
           options: {
               includePaths: [
-                  options.appDir + '/vendor',
-                  options.appDir + '/vendor/foundation/scss'
+                  // options.appDir + '/vendor',
+                  // options.appDir + '/vendor/foundation/scss'
+                  path.resolve(options.appDir, '../node_modules/foundation-sites/scss') //
               ]
+              // /home/kam/sourcey/spectacle-docs/node_modules/foundation-sites/scss
           },
           scss: {
               files: {
@@ -18,7 +20,7 @@ module.exports = function(grunt, options, spec) {
           },
           foundation_scss: {
               files: {
-                  [path.resolve(options.cacheDir, 'stylesheets/foundation.css')]: path.resolve(options.appDir, 'stylesheets/foundation.scss')
+                  [path.resolve(options.cacheDir, 'stylesheets/foundation.css')]: path.resolve(options.appDir, 'stylesheets/foundation-includes.scss')
               }
           },
       },

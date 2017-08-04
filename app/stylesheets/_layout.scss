@@ -21,6 +21,7 @@ button:focus {
   @include small-label($secondary-color);
 }
 
+
 //
 // Topbar layout
 
@@ -89,9 +90,7 @@ button:focus {
     text-overflow: ellipsis;
 
     &.active {
-      // color: $accent-color; //$primary-color;
       color: $primary-color;
-      // font-weight: bold;
     }
   }
 
@@ -124,7 +123,6 @@ button:focus {
 
 .doc-content {
   @extend .large-6;
-  // @include grid-column(6, $column-padding);
   padding-left: $column-padding !important;
   padding-right: $column-padding !important;
 }
@@ -263,16 +261,13 @@ article {
   }
 
   //
-  // Definition panel
+  // Panels
 
   .panel {
     position: relative;
 
     > h2, > h3 {
       @extend .doc-content;
-      // width:50%;
-      // padding-left: $column-padding;
-      // padding-right: $column-padding;
     }
   }
 
@@ -319,6 +314,24 @@ article {
 
       .prop-name {
         color: $dark-gray;
+      }
+
+      .prop-value {
+        > span {
+          display: block;
+
+          &:before {
+            color: $dark-gray;
+          }
+          &:after {
+            color: $dark-gray;
+          }
+
+          &.json-property-type, &.json-property-format {
+            display: inline-block;
+
+          }
+        }
       }
     }
   }
@@ -392,13 +405,6 @@ article {
     }
   }
 
-  // .doc-row {
-  //   &.content-types {
-  //     position: absolute;
-  //     width: 100%;
-  //   }
-  // }
-
   //
   // Powered by link
 
@@ -421,6 +427,13 @@ article {
       top: 0;
       text-align: right;
       right: 0;
+
+      .label {
+        cursor: pointer;
+        &:hover {
+          color: $light-gray;
+        }
+      }
     }
 
     @include breakpoint(large) {
@@ -441,6 +454,26 @@ article {
   .definition {
     .doc-examples h5 {
       margin-top: -1rem;
+    }
+
+    .doc-copy > section {
+      margin-bottom: 1rem;
+
+      > .json-property-type {
+        display: none;
+      }
+    }
+
+    dl dt {
+      font-weight: normal;
+    }
+
+    dl dd {
+      font-weight: lighter;
+    }
+
+    .json-property-name {
+      font-weight: bold;
     }
   }
 

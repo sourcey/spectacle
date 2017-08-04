@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /**
  * Foundation for Sites by ZURB
- * Version 6.1.1
+ * Version 6.4.1
  * foundation.zurb.com
  * Licensed under MIT Open Source
  */
@@ -51,12 +51,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .swagger-global:before {
     display: inline-block;
     padding: 0.33333rem 0.5rem;
+    border-radius: 0;
     font-size: 0.8rem;
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    border-radius: 0;
-    background: #ec5840;
+    background: #cc4b37;
     color: #fefefe;
     font-size: 0.75rem;
     border-radius: 4px;
@@ -148,19 +148,23 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     color: #f68b1f;
     text-transform: uppercase;
     font-size: 0.9rem; }
-  #spectacle .json-schema-properties dd {
-    color: #7a7a7a; }
-  #spectacle .json-schema-properties dd:not(:last-child) {
-    padding-bottom: 0.75rem; }
   #spectacle .json-schema-properties dl {
     margin: 0; }
+  #spectacle .json-schema-properties dt {
+    margin-bottom: .25rem; }
+    #spectacle .json-schema-properties dt.has-description {
+      margin-bottom: 0; }
+  #spectacle .json-schema-properties dd {
+    color: #8a8a8a; }
+  #spectacle .json-schema-properties dd:not(:last-child) {
+    padding-bottom: 0.5rem; }
   #spectacle .json-schema-description + .json-schema-properties {
     margin-top: 1.5rem; }
   #spectacle .json-schema-ref-array:before {
-    color: #7a7a7a;
+    color: #8a8a8a;
     content: "Array<"; }
   #spectacle .json-schema-ref-array:after {
-    color: #7a7a7a;
+    color: #8a8a8a;
     content: ">"; }
   #spectacle .json-schema-example:before {
     content: "Example";
@@ -206,12 +210,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .json-property-discriminator:before {
     display: inline-block;
     padding: 0.33333rem 0.5rem;
+    border-radius: 0;
     font-size: 0.8rem;
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    border-radius: 0;
-    background: #ec5840;
+    background: #cc4b37;
     color: #fefefe;
     font-size: 0.75rem;
     border-radius: 4px;
@@ -220,12 +224,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .json-property-required:before {
     display: inline-block;
     padding: 0.33333rem 0.5rem;
+    border-radius: 0;
     font-size: 0.8rem;
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    border-radius: 0;
-    background: #ec5840;
+    background: #cc4b37;
     color: #fefefe;
     font-size: 0.75rem;
     border-radius: 4px;
@@ -234,37 +238,32 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .json-property-read-only:before {
     display: inline-block;
     padding: 0.33333rem 0.5rem;
+    border-radius: 0;
     font-size: 0.8rem;
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    border-radius: 0;
-    background: #ec5840;
+    background: #cc4b37;
     color: #fefefe;
     font-size: 0.75rem;
     border-radius: 4px;
     padding: 3px 6px;
     content: "read only"; }
-  #spectacle .json-property-type {
-    font-style: italic;
-    font-weight: 100; }
   #spectacle .json-property-format {
-    font-size: smaller; }
-  #spectacle .json-property-enum {
-    font-weight: lighter;
-    font-size: small; }
-  #spectacle .json-property-default-value {
-    font-weight: lighter;
-    font-size: small; }
-    #spectacle .json-property-default-value:before {
-      content: '(default: "'; }
-    #spectacle .json-property-default-value:after {
-      content: '")'; }
+    font-style: italic; }
+  #spectacle .json-property-enum:before {
+    content: 'enum: ['; }
+  #spectacle .json-property-enum:after {
+    content: ']'; }
+  #spectacle .json-property-default-value:before {
+    content: 'default: '; }
+  #spectacle .json-property-range:empty {
+    display: none !important; }
+  #spectacle .json-property-range:before {
+    content: 'range: '; }
   #spectacle .json-property-enum-item {
     font-weight: lighter;
     font-size: small; }
-    #spectacle .json-property-enum-item:before, #spectacle .json-property-enum-item:after {
-      content: "\""; }
   #spectacle .json-schema-reference {
     font-size: 90%; }
   #spectacle .no-padding {
@@ -276,12 +275,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .default-label {
     display: inline-block;
     padding: 0.33333rem 0.5rem;
+    border-radius: 0;
     font-size: 0.8rem;
     line-height: 1;
     white-space: nowrap;
     cursor: default;
-    border-radius: 0;
-    background: #777;
+    background: #767676;
     color: #fefefe;
     font-size: 0.75rem;
     border-radius: 4px;
@@ -294,49 +293,66 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle #logo img {
       max-height: 75px; }
   #spectacle .row, #spectacle article .prop-row, #spectacle article .doc-row {
-    max-width: initial;
-    margin-left: auto;
-    margin-right: auto; }
+    max-width: 78.9473684211rem;
+    margin-right: auto;
+    margin-left: auto; }
     #spectacle .row::before, #spectacle article .prop-row::before, #spectacle article .doc-row::before, #spectacle .row::after, #spectacle article .prop-row::after, #spectacle article .doc-row::after {
+      display: table;
       content: ' ';
-      display: table; }
+      flex-basis: 0;
+      order: 1; }
     #spectacle .row::after, #spectacle article .prop-row::after, #spectacle article .doc-row::after {
       clear: both; }
     #spectacle .row.collapse > .column, #spectacle article .prop-row > .column, #spectacle article .doc-row > .column, #spectacle .row.collapse > .columns, #spectacle article .prop-row > .columns, #spectacle article .doc-row > .columns, #spectacle article .prop-row .row.collapse > .prop-name, #spectacle article .prop-row > .prop-name, #spectacle article .prop-row .doc-row > .prop-name, #spectacle article .prop-row .row.collapse > .prop-value, #spectacle article .prop-row > .prop-value, #spectacle article .prop-row .doc-row > .prop-value, #spectacle article .row.collapse > .doc-copy, #spectacle article .prop-row > .doc-copy, #spectacle article .doc-row > .doc-copy, #spectacle article .row.collapse > .doc-examples, #spectacle article .prop-row > .doc-examples, #spectacle article .doc-row > .doc-examples {
-      padding-left: 0;
-      padding-right: 0; }
-    #spectacle .row #spectacle .row, #spectacle article .prop-row #spectacle .row, #spectacle article .doc-row #spectacle .row, #spectacle .row #spectacle article .prop-row, #spectacle article .row #spectacle .prop-row, #spectacle article .prop-row #spectacle .prop-row, #spectacle article .doc-row #spectacle .prop-row, #spectacle .row #spectacle article .doc-row, #spectacle article .row #spectacle .doc-row, #spectacle article .prop-row #spectacle .doc-row, #spectacle article .doc-row #spectacle .doc-row {
-      margin-left: -0.6578947368rem;
-      margin-right: -0.6578947368rem; }
-      @media screen and (min-width: 40em) {
-        #spectacle .row #spectacle .row, #spectacle article .prop-row #spectacle .row, #spectacle article .doc-row #spectacle .row, #spectacle .row #spectacle article .prop-row, #spectacle article .row #spectacle .prop-row, #spectacle article .prop-row #spectacle .prop-row, #spectacle article .doc-row #spectacle .prop-row, #spectacle .row #spectacle article .doc-row, #spectacle article .row #spectacle .doc-row, #spectacle article .prop-row #spectacle .doc-row, #spectacle article .doc-row #spectacle .doc-row {
-          margin-left: -0.9868421053rem;
-          margin-right: -0.9868421053rem; } }
-      #spectacle .row #spectacle .row.collapse, #spectacle article .prop-row #spectacle .row.collapse, #spectacle article .doc-row #spectacle .row.collapse, #spectacle .row #spectacle article .prop-row, #spectacle article .row #spectacle .prop-row, #spectacle article .prop-row #spectacle .prop-row, #spectacle article .doc-row #spectacle .prop-row, #spectacle .row #spectacle article .doc-row, #spectacle article .row #spectacle .doc-row, #spectacle article .prop-row #spectacle .doc-row, #spectacle article .doc-row #spectacle .doc-row {
-        margin-left: 0;
-        margin-right: 0; }
+      padding-right: 0;
+      padding-left: 0; }
+    #spectacle .row .row, #spectacle article .prop-row .row, #spectacle article .doc-row .row, #spectacle .row article .prop-row, #spectacle article .row .prop-row, #spectacle article .prop-row .prop-row, #spectacle article .doc-row .prop-row, #spectacle .row article .doc-row, #spectacle article .row .doc-row, #spectacle article .prop-row .doc-row, #spectacle article .doc-row .doc-row {
+      margin-right: -0.6578947368rem;
+      margin-left: -0.6578947368rem; }
+      @media print, screen and (min-width: 40em) {
+        #spectacle .row .row, #spectacle article .prop-row .row, #spectacle article .doc-row .row, #spectacle .row article .prop-row, #spectacle article .row .prop-row, #spectacle article .prop-row .prop-row, #spectacle article .doc-row .prop-row, #spectacle .row article .doc-row, #spectacle article .row .doc-row, #spectacle article .prop-row .doc-row, #spectacle article .doc-row .doc-row {
+          margin-right: -0.9868421053rem;
+          margin-left: -0.9868421053rem; } }
+      @media print, screen and (min-width: 64em) {
+        #spectacle .row .row, #spectacle article .prop-row .row, #spectacle article .doc-row .row, #spectacle .row article .prop-row, #spectacle article .row .prop-row, #spectacle article .prop-row .prop-row, #spectacle article .doc-row .prop-row, #spectacle .row article .doc-row, #spectacle article .row .doc-row, #spectacle article .prop-row .doc-row, #spectacle article .doc-row .doc-row {
+          margin-right: -0.9868421053rem;
+          margin-left: -0.9868421053rem; } }
+      #spectacle .row .row.collapse, #spectacle article .prop-row .row.collapse, #spectacle article .doc-row .row.collapse, #spectacle .row article .prop-row, #spectacle article .row .prop-row, #spectacle article .prop-row .prop-row, #spectacle article .doc-row .prop-row, #spectacle .row article .doc-row, #spectacle article .row .doc-row, #spectacle article .prop-row .doc-row, #spectacle article .doc-row .doc-row {
+        margin-right: 0;
+        margin-left: 0; }
     #spectacle .row.expanded, #spectacle article .expanded.prop-row, #spectacle article .expanded.doc-row {
       max-width: none; }
+      #spectacle .row.expanded .row, #spectacle article .expanded.prop-row .row, #spectacle article .expanded.doc-row .row, #spectacle .row.expanded article .prop-row, #spectacle article .row.expanded .prop-row, #spectacle article .expanded.prop-row .prop-row, #spectacle article .expanded.doc-row .prop-row, #spectacle .row.expanded article .doc-row, #spectacle article .row.expanded .doc-row, #spectacle article .expanded.prop-row .doc-row, #spectacle article .expanded.doc-row .doc-row {
+        margin-right: auto;
+        margin-left: auto; }
+    #spectacle .row:not(.expanded) .row, #spectacle article .prop-row:not(.expanded) .row, #spectacle article .doc-row:not(.expanded) .row, #spectacle .row:not(.expanded) article .prop-row, #spectacle article .row:not(.expanded) .prop-row, #spectacle article .prop-row:not(.expanded) .prop-row, #spectacle article .doc-row:not(.expanded) .prop-row, #spectacle .row:not(.expanded) article .doc-row, #spectacle article .row:not(.expanded) .doc-row, #spectacle article .prop-row:not(.expanded) .doc-row, #spectacle article .doc-row:not(.expanded) .doc-row {
+      max-width: none; }
+    #spectacle .row.gutter-small > .column, #spectacle article .gutter-small.prop-row > .column, #spectacle article .gutter-small.doc-row > .column, #spectacle .row.gutter-small > .columns, #spectacle article .gutter-small.prop-row > .columns, #spectacle article .gutter-small.doc-row > .columns, #spectacle article .prop-row .row.gutter-small > .prop-name, #spectacle article .gutter-small.prop-row > .prop-name, #spectacle article .prop-row .gutter-small.doc-row > .prop-name, #spectacle article .prop-row .row.gutter-small > .prop-value, #spectacle article .gutter-small.prop-row > .prop-value, #spectacle article .prop-row .gutter-small.doc-row > .prop-value, #spectacle article .row.gutter-small > .doc-copy, #spectacle article .gutter-small.prop-row > .doc-copy, #spectacle article .gutter-small.doc-row > .doc-copy, #spectacle article .row.gutter-small > .doc-examples, #spectacle article .gutter-small.prop-row > .doc-examples, #spectacle article .gutter-small.doc-row > .doc-examples {
+      padding-right: 0.6578947368rem;
+      padding-left: 0.6578947368rem; }
+    #spectacle .row.gutter-medium > .column, #spectacle article .gutter-medium.prop-row > .column, #spectacle article .gutter-medium.doc-row > .column, #spectacle .row.gutter-medium > .columns, #spectacle article .gutter-medium.prop-row > .columns, #spectacle article .gutter-medium.doc-row > .columns, #spectacle article .prop-row .row.gutter-medium > .prop-name, #spectacle article .gutter-medium.prop-row > .prop-name, #spectacle article .prop-row .gutter-medium.doc-row > .prop-name, #spectacle article .prop-row .row.gutter-medium > .prop-value, #spectacle article .gutter-medium.prop-row > .prop-value, #spectacle article .prop-row .gutter-medium.doc-row > .prop-value, #spectacle article .row.gutter-medium > .doc-copy, #spectacle article .gutter-medium.prop-row > .doc-copy, #spectacle article .gutter-medium.doc-row > .doc-copy, #spectacle article .row.gutter-medium > .doc-examples, #spectacle article .gutter-medium.prop-row > .doc-examples, #spectacle article .gutter-medium.doc-row > .doc-examples {
+      padding-right: 0.9868421053rem;
+      padding-left: 0.9868421053rem; }
   #spectacle .column, #spectacle .columns, #spectacle article .prop-row .prop-name, #spectacle article .prop-row .prop-value, #spectacle article .doc-copy, #spectacle article .doc-examples {
-    padding-left: 0.6578947368rem;
-    padding-right: 0.6578947368rem;
     width: 100%;
-    float: left; }
-    @media screen and (min-width: 40em) {
+    float: left;
+    padding-right: 0.6578947368rem;
+    padding-left: 0.6578947368rem; }
+    @media print, screen and (min-width: 40em) {
       #spectacle .column, #spectacle .columns, #spectacle article .prop-row .prop-name, #spectacle article .prop-row .prop-value, #spectacle article .doc-copy, #spectacle article .doc-examples {
-        padding-left: 0.9868421053rem;
-        padding-right: 0.9868421053rem; } }
+        padding-right: 0.9868421053rem;
+        padding-left: 0.9868421053rem; } }
     #spectacle .column:last-child:not(:first-child), #spectacle .columns:last-child:not(:first-child), #spectacle article .prop-row .prop-name:last-child:not(:first-child), #spectacle article .prop-row .prop-value:last-child:not(:first-child), #spectacle article .doc-copy:last-child:not(:first-child), #spectacle article .doc-examples:last-child:not(:first-child) {
       float: right; }
     #spectacle .column.end:last-child:last-child, #spectacle .end.columns:last-child:last-child, #spectacle article .prop-row .end.prop-name:last-child:last-child, #spectacle article .prop-row .end.prop-value:last-child:last-child, #spectacle article .end.doc-copy:last-child:last-child, #spectacle article .end.doc-examples:last-child:last-child {
       float: left; }
   #spectacle .column.row.row, #spectacle .row.row.columns, #spectacle article .columns.prop-row, #spectacle article .prop-row .prop-row.prop-name, #spectacle article .prop-row .prop-row.prop-value, #spectacle article .prop-row.doc-copy, #spectacle article .prop-row.doc-examples, #spectacle article .prop-row .row.row.prop-name, #spectacle article .prop-row .prop-name.doc-row, #spectacle article .prop-row .row.row.prop-value, #spectacle article .prop-row .prop-value.doc-row, #spectacle article .columns.doc-row, #spectacle article .doc-row.doc-copy, #spectacle article .doc-row.doc-examples, #spectacle article .row.row.doc-copy, #spectacle article .row.row.doc-examples, #spectacle article .column.prop-row, #spectacle article .column.doc-row {
     float: none; }
-    .row #spectacle .column.row.row, #spectacle article .prop-row #spectacle .column.row.row, #spectacle article .doc-row #spectacle .column.row.row, .row #spectacle .row.row.columns, #spectacle article .prop-row #spectacle .row.row.columns, #spectacle article .doc-row #spectacle .row.row.columns, .row #spectacle article .columns.prop-row, #spectacle article .prop-row #spectacle .columns.prop-row, #spectacle article .doc-row #spectacle .columns.prop-row, .row #spectacle article .prop-row .prop-row.prop-name, #spectacle article .prop-row #spectacle .prop-row.prop-name, #spectacle article .doc-row #spectacle .prop-row .prop-row.prop-name, .row #spectacle article .prop-row .prop-row.prop-value, #spectacle article .prop-row #spectacle .prop-row.prop-value, #spectacle article .doc-row #spectacle .prop-row .prop-row.prop-value, .row #spectacle article .prop-row.doc-copy, #spectacle article .prop-row #spectacle .prop-row.doc-copy, #spectacle article .doc-row #spectacle .prop-row.doc-copy, .row #spectacle article .prop-row.doc-examples, #spectacle article .prop-row #spectacle .prop-row.doc-examples, #spectacle article .doc-row #spectacle .prop-row.doc-examples, .row #spectacle article .prop-row .row.row.prop-name, #spectacle article .prop-row #spectacle .row.row.prop-name, #spectacle article .doc-row #spectacle .prop-row .row.row.prop-name, .row #spectacle article .prop-row .prop-name.doc-row, #spectacle article .prop-row #spectacle .prop-name.doc-row, #spectacle article .doc-row #spectacle .prop-row .prop-name.doc-row, .row #spectacle article .prop-row .row.row.prop-value, #spectacle article .prop-row #spectacle .row.row.prop-value, #spectacle article .doc-row #spectacle .prop-row .row.row.prop-value, .row #spectacle article .prop-row .prop-value.doc-row, #spectacle article .prop-row #spectacle .prop-value.doc-row, #spectacle article .doc-row #spectacle .prop-row .prop-value.doc-row, .row #spectacle article .columns.doc-row, #spectacle article .prop-row #spectacle .columns.doc-row, #spectacle article .doc-row #spectacle .columns.doc-row, .row #spectacle article .doc-row.doc-copy, #spectacle article .prop-row #spectacle .doc-row.doc-copy, #spectacle article .doc-row #spectacle .doc-row.doc-copy, .row #spectacle article .doc-row.doc-examples, #spectacle article .prop-row #spectacle .doc-row.doc-examples, #spectacle article .doc-row #spectacle .doc-row.doc-examples, .row #spectacle article .row.row.doc-copy, #spectacle article .prop-row #spectacle .row.row.doc-copy, #spectacle article .doc-row #spectacle .row.row.doc-copy, .row #spectacle article .row.row.doc-examples, #spectacle article .prop-row #spectacle .row.row.doc-examples, #spectacle article .doc-row #spectacle .row.row.doc-examples, .row #spectacle article .column.prop-row, #spectacle article .prop-row #spectacle .column.prop-row, #spectacle article .doc-row #spectacle .column.prop-row, .row #spectacle article .column.doc-row, #spectacle article .prop-row #spectacle .column.doc-row, #spectacle article .doc-row #spectacle .column.doc-row {
-      padding-left: 0;
-      padding-right: 0;
-      margin-left: 0;
-      margin-right: 0; }
+  #spectacle .row .column.row.row, #spectacle article .prop-row .column.row.row, #spectacle article .doc-row .column.row.row, #spectacle .row .row.row.columns, #spectacle article .prop-row .row.row.columns, #spectacle article .doc-row .row.row.columns, #spectacle .row article .columns.prop-row, #spectacle article .row .columns.prop-row, #spectacle article .prop-row .columns.prop-row, #spectacle article .doc-row .columns.prop-row, #spectacle .row article .prop-row .prop-row.prop-name, #spectacle article .prop-row .row .prop-row.prop-name, #spectacle article .prop-row .prop-row.prop-name, #spectacle .row article .prop-row .prop-row.prop-value, #spectacle article .prop-row .row .prop-row.prop-value, #spectacle article .prop-row .prop-row.prop-value, #spectacle .row article .prop-row.doc-copy, #spectacle article .row .prop-row.doc-copy, #spectacle article .prop-row .prop-row.doc-copy, #spectacle article .doc-row .prop-row.doc-copy, #spectacle .row article .prop-row.doc-examples, #spectacle article .row .prop-row.doc-examples, #spectacle article .prop-row .prop-row.doc-examples, #spectacle article .doc-row .prop-row.doc-examples, #spectacle article .prop-row .row.row.prop-name, #spectacle .row article .prop-row .prop-name.doc-row, #spectacle article .prop-row .row .prop-name.doc-row, #spectacle article .prop-row .prop-name.doc-row, #spectacle article .prop-row .row.row.prop-value, #spectacle .row article .prop-row .prop-value.doc-row, #spectacle article .prop-row .row .prop-value.doc-row, #spectacle article .prop-row .prop-value.doc-row, #spectacle .row article .columns.doc-row, #spectacle article .row .columns.doc-row, #spectacle article .prop-row .columns.doc-row, #spectacle article .doc-row .columns.doc-row, #spectacle .row article .doc-row.doc-copy, #spectacle article .row .doc-row.doc-copy, #spectacle article .prop-row .doc-row.doc-copy, #spectacle article .doc-row .doc-row.doc-copy, #spectacle .row article .doc-row.doc-examples, #spectacle article .row .doc-row.doc-examples, #spectacle article .prop-row .doc-row.doc-examples, #spectacle article .doc-row .doc-row.doc-examples, #spectacle .row article .row.row.doc-copy, #spectacle article .row .row.row.doc-copy, #spectacle article .prop-row .row.row.doc-copy, #spectacle article .doc-row .row.row.doc-copy, #spectacle .row article .row.row.doc-examples, #spectacle article .row .row.row.doc-examples, #spectacle article .prop-row .row.row.doc-examples, #spectacle article .doc-row .row.row.doc-examples, #spectacle .row article .column.prop-row, #spectacle article .row .column.prop-row, #spectacle article .prop-row .column.prop-row, #spectacle article .doc-row .column.prop-row, #spectacle .row article .column.doc-row, #spectacle article .row .column.doc-row, #spectacle article .prop-row .column.doc-row, #spectacle article .doc-row .column.doc-row {
+    margin-right: 0;
+    margin-left: 0;
+    padding-right: 0;
+    padding-left: 0; }
   #spectacle .small-1 {
     width: 8.3333333333%; }
   #spectacle .small-push-1 {
@@ -452,8 +468,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle .small-offset-11 {
     margin-left: 91.6666666667%; }
   #spectacle .small-up-1 > .column, #spectacle .small-up-1 > .columns, #spectacle article .prop-row .small-up-1 > .prop-name, #spectacle article .prop-row .small-up-1 > .prop-value, #spectacle article .small-up-1 > .doc-copy, #spectacle article .small-up-1 > .doc-examples {
-    width: 100%;
-    float: left; }
+    float: left;
+    width: 100%; }
     #spectacle .small-up-1 > .column:nth-of-type(1n), #spectacle .small-up-1 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-1 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-1 > .prop-value:nth-of-type(1n), #spectacle article .small-up-1 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-1 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-1 > .column:nth-of-type(1n+1), #spectacle .small-up-1 > .columns:nth-of-type(1n+1), #spectacle article .prop-row .small-up-1 > .prop-name:nth-of-type(1n+1), #spectacle article .prop-row .small-up-1 > .prop-value:nth-of-type(1n+1), #spectacle article .small-up-1 > .doc-copy:nth-of-type(1n+1), #spectacle article .small-up-1 > .doc-examples:nth-of-type(1n+1) {
@@ -461,8 +477,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-1 > .column:last-child, #spectacle .small-up-1 > .columns:last-child, #spectacle article .prop-row .small-up-1 > .prop-name:last-child, #spectacle article .prop-row .small-up-1 > .prop-value:last-child, #spectacle article .small-up-1 > .doc-copy:last-child, #spectacle article .small-up-1 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-2 > .column, #spectacle .small-up-2 > .columns, #spectacle article .prop-row .small-up-2 > .prop-name, #spectacle article .prop-row .small-up-2 > .prop-value, #spectacle article .small-up-2 > .doc-copy, #spectacle article .small-up-2 > .doc-examples {
-    width: 50%;
-    float: left; }
+    float: left;
+    width: 50%; }
     #spectacle .small-up-2 > .column:nth-of-type(1n), #spectacle .small-up-2 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-2 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-2 > .prop-value:nth-of-type(1n), #spectacle article .small-up-2 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-2 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-2 > .column:nth-of-type(2n+1), #spectacle .small-up-2 > .columns:nth-of-type(2n+1), #spectacle article .prop-row .small-up-2 > .prop-name:nth-of-type(2n+1), #spectacle article .prop-row .small-up-2 > .prop-value:nth-of-type(2n+1), #spectacle article .small-up-2 > .doc-copy:nth-of-type(2n+1), #spectacle article .small-up-2 > .doc-examples:nth-of-type(2n+1) {
@@ -470,8 +486,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-2 > .column:last-child, #spectacle .small-up-2 > .columns:last-child, #spectacle article .prop-row .small-up-2 > .prop-name:last-child, #spectacle article .prop-row .small-up-2 > .prop-value:last-child, #spectacle article .small-up-2 > .doc-copy:last-child, #spectacle article .small-up-2 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-3 > .column, #spectacle .small-up-3 > .columns, #spectacle article .prop-row .small-up-3 > .prop-name, #spectacle article .prop-row .small-up-3 > .prop-value, #spectacle article .small-up-3 > .doc-copy, #spectacle article .small-up-3 > .doc-examples {
-    width: 33.3333333333%;
-    float: left; }
+    float: left;
+    width: 33.3333333333%; }
     #spectacle .small-up-3 > .column:nth-of-type(1n), #spectacle .small-up-3 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-3 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-3 > .prop-value:nth-of-type(1n), #spectacle article .small-up-3 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-3 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-3 > .column:nth-of-type(3n+1), #spectacle .small-up-3 > .columns:nth-of-type(3n+1), #spectacle article .prop-row .small-up-3 > .prop-name:nth-of-type(3n+1), #spectacle article .prop-row .small-up-3 > .prop-value:nth-of-type(3n+1), #spectacle article .small-up-3 > .doc-copy:nth-of-type(3n+1), #spectacle article .small-up-3 > .doc-examples:nth-of-type(3n+1) {
@@ -479,8 +495,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-3 > .column:last-child, #spectacle .small-up-3 > .columns:last-child, #spectacle article .prop-row .small-up-3 > .prop-name:last-child, #spectacle article .prop-row .small-up-3 > .prop-value:last-child, #spectacle article .small-up-3 > .doc-copy:last-child, #spectacle article .small-up-3 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-4 > .column, #spectacle .small-up-4 > .columns, #spectacle article .prop-row .small-up-4 > .prop-name, #spectacle article .prop-row .small-up-4 > .prop-value, #spectacle article .small-up-4 > .doc-copy, #spectacle article .small-up-4 > .doc-examples {
-    width: 25%;
-    float: left; }
+    float: left;
+    width: 25%; }
     #spectacle .small-up-4 > .column:nth-of-type(1n), #spectacle .small-up-4 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-4 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-4 > .prop-value:nth-of-type(1n), #spectacle article .small-up-4 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-4 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-4 > .column:nth-of-type(4n+1), #spectacle .small-up-4 > .columns:nth-of-type(4n+1), #spectacle article .prop-row .small-up-4 > .prop-name:nth-of-type(4n+1), #spectacle article .prop-row .small-up-4 > .prop-value:nth-of-type(4n+1), #spectacle article .small-up-4 > .doc-copy:nth-of-type(4n+1), #spectacle article .small-up-4 > .doc-examples:nth-of-type(4n+1) {
@@ -488,8 +504,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-4 > .column:last-child, #spectacle .small-up-4 > .columns:last-child, #spectacle article .prop-row .small-up-4 > .prop-name:last-child, #spectacle article .prop-row .small-up-4 > .prop-value:last-child, #spectacle article .small-up-4 > .doc-copy:last-child, #spectacle article .small-up-4 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-5 > .column, #spectacle .small-up-5 > .columns, #spectacle article .prop-row .small-up-5 > .prop-name, #spectacle article .prop-row .small-up-5 > .prop-value, #spectacle article .small-up-5 > .doc-copy, #spectacle article .small-up-5 > .doc-examples {
-    width: 20%;
-    float: left; }
+    float: left;
+    width: 20%; }
     #spectacle .small-up-5 > .column:nth-of-type(1n), #spectacle .small-up-5 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-5 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-5 > .prop-value:nth-of-type(1n), #spectacle article .small-up-5 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-5 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-5 > .column:nth-of-type(5n+1), #spectacle .small-up-5 > .columns:nth-of-type(5n+1), #spectacle article .prop-row .small-up-5 > .prop-name:nth-of-type(5n+1), #spectacle article .prop-row .small-up-5 > .prop-value:nth-of-type(5n+1), #spectacle article .small-up-5 > .doc-copy:nth-of-type(5n+1), #spectacle article .small-up-5 > .doc-examples:nth-of-type(5n+1) {
@@ -497,8 +513,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-5 > .column:last-child, #spectacle .small-up-5 > .columns:last-child, #spectacle article .prop-row .small-up-5 > .prop-name:last-child, #spectacle article .prop-row .small-up-5 > .prop-value:last-child, #spectacle article .small-up-5 > .doc-copy:last-child, #spectacle article .small-up-5 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-6 > .column, #spectacle .small-up-6 > .columns, #spectacle article .prop-row .small-up-6 > .prop-name, #spectacle article .prop-row .small-up-6 > .prop-value, #spectacle article .small-up-6 > .doc-copy, #spectacle article .small-up-6 > .doc-examples {
-    width: 16.6666666667%;
-    float: left; }
+    float: left;
+    width: 16.6666666667%; }
     #spectacle .small-up-6 > .column:nth-of-type(1n), #spectacle .small-up-6 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-6 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-6 > .prop-value:nth-of-type(1n), #spectacle article .small-up-6 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-6 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-6 > .column:nth-of-type(6n+1), #spectacle .small-up-6 > .columns:nth-of-type(6n+1), #spectacle article .prop-row .small-up-6 > .prop-name:nth-of-type(6n+1), #spectacle article .prop-row .small-up-6 > .prop-value:nth-of-type(6n+1), #spectacle article .small-up-6 > .doc-copy:nth-of-type(6n+1), #spectacle article .small-up-6 > .doc-examples:nth-of-type(6n+1) {
@@ -506,8 +522,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-6 > .column:last-child, #spectacle .small-up-6 > .columns:last-child, #spectacle article .prop-row .small-up-6 > .prop-name:last-child, #spectacle article .prop-row .small-up-6 > .prop-value:last-child, #spectacle article .small-up-6 > .doc-copy:last-child, #spectacle article .small-up-6 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-7 > .column, #spectacle .small-up-7 > .columns, #spectacle article .prop-row .small-up-7 > .prop-name, #spectacle article .prop-row .small-up-7 > .prop-value, #spectacle article .small-up-7 > .doc-copy, #spectacle article .small-up-7 > .doc-examples {
-    width: 14.2857142857%;
-    float: left; }
+    float: left;
+    width: 14.2857142857%; }
     #spectacle .small-up-7 > .column:nth-of-type(1n), #spectacle .small-up-7 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-7 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-7 > .prop-value:nth-of-type(1n), #spectacle article .small-up-7 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-7 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-7 > .column:nth-of-type(7n+1), #spectacle .small-up-7 > .columns:nth-of-type(7n+1), #spectacle article .prop-row .small-up-7 > .prop-name:nth-of-type(7n+1), #spectacle article .prop-row .small-up-7 > .prop-value:nth-of-type(7n+1), #spectacle article .small-up-7 > .doc-copy:nth-of-type(7n+1), #spectacle article .small-up-7 > .doc-examples:nth-of-type(7n+1) {
@@ -515,8 +531,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-7 > .column:last-child, #spectacle .small-up-7 > .columns:last-child, #spectacle article .prop-row .small-up-7 > .prop-name:last-child, #spectacle article .prop-row .small-up-7 > .prop-value:last-child, #spectacle article .small-up-7 > .doc-copy:last-child, #spectacle article .small-up-7 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-up-8 > .column, #spectacle .small-up-8 > .columns, #spectacle article .prop-row .small-up-8 > .prop-name, #spectacle article .prop-row .small-up-8 > .prop-value, #spectacle article .small-up-8 > .doc-copy, #spectacle article .small-up-8 > .doc-examples {
-    width: 12.5%;
-    float: left; }
+    float: left;
+    width: 12.5%; }
     #spectacle .small-up-8 > .column:nth-of-type(1n), #spectacle .small-up-8 > .columns:nth-of-type(1n), #spectacle article .prop-row .small-up-8 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .small-up-8 > .prop-value:nth-of-type(1n), #spectacle article .small-up-8 > .doc-copy:nth-of-type(1n), #spectacle article .small-up-8 > .doc-examples:nth-of-type(1n) {
       clear: none; }
     #spectacle .small-up-8 > .column:nth-of-type(8n+1), #spectacle .small-up-8 > .columns:nth-of-type(8n+1), #spectacle article .prop-row .small-up-8 > .prop-name:nth-of-type(8n+1), #spectacle article .prop-row .small-up-8 > .prop-value:nth-of-type(8n+1), #spectacle article .small-up-8 > .doc-copy:nth-of-type(8n+1), #spectacle article .small-up-8 > .doc-examples:nth-of-type(8n+1) {
@@ -524,22 +540,31 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .small-up-8 > .column:last-child, #spectacle .small-up-8 > .columns:last-child, #spectacle article .prop-row .small-up-8 > .prop-name:last-child, #spectacle article .prop-row .small-up-8 > .prop-value:last-child, #spectacle article .small-up-8 > .doc-copy:last-child, #spectacle article .small-up-8 > .doc-examples:last-child {
       float: left; }
   #spectacle .small-collapse > .column, #spectacle .small-collapse > .columns, #spectacle article .prop-row .small-collapse > .prop-name, #spectacle article .prop-row .small-collapse > .prop-value, #spectacle article .small-collapse > .doc-copy, #spectacle article .small-collapse > .doc-examples {
-    padding-left: 0;
-    padding-right: 0; }
+    padding-right: 0;
+    padding-left: 0; }
+  #spectacle .small-collapse .row, #spectacle .small-collapse article .prop-row, #spectacle article .small-collapse .prop-row, #spectacle .small-collapse article .doc-row, #spectacle article .small-collapse .doc-row {
+    margin-right: 0;
+    margin-left: 0; }
+  #spectacle .expanded.row .small-collapse.row, #spectacle article .expanded.prop-row .small-collapse.row, #spectacle article .expanded.doc-row .small-collapse.row, #spectacle .expanded.row article .small-collapse.prop-row, #spectacle article .expanded.row .small-collapse.prop-row, #spectacle article .expanded.prop-row .small-collapse.prop-row, #spectacle article .expanded.doc-row .small-collapse.prop-row, #spectacle .expanded.row article .small-collapse.doc-row, #spectacle article .expanded.row .small-collapse.doc-row, #spectacle article .expanded.prop-row .small-collapse.doc-row, #spectacle article .expanded.doc-row .small-collapse.doc-row {
+    margin-right: 0;
+    margin-left: 0; }
   #spectacle .small-uncollapse > .column, #spectacle .small-uncollapse > .columns, #spectacle article .prop-row .small-uncollapse > .prop-name, #spectacle article .prop-row .small-uncollapse > .prop-value, #spectacle article .small-uncollapse > .doc-copy, #spectacle article .small-uncollapse > .doc-examples {
-    padding-left: 0.6578947368rem;
-    padding-right: 0.6578947368rem; }
+    padding-right: 0.6578947368rem;
+    padding-left: 0.6578947368rem; }
   #spectacle .small-centered {
-    float: none;
-    margin-left: auto;
-    margin-right: auto; }
+    margin-right: auto;
+    margin-left: auto; }
+    #spectacle .small-centered, #spectacle .small-centered:last-child:not(:first-child) {
+      float: none;
+      clear: both; }
   #spectacle .small-uncentered,
   #spectacle .small-push-0,
   #spectacle .small-pull-0 {
     position: static;
-    margin-left: 0;
-    margin-right: 0; }
-  @media screen and (min-width: 40em) {
+    float: left;
+    margin-right: 0;
+    margin-left: 0; }
+  @media print, screen and (min-width: 40em) {
     #spectacle .medium-1 {
       width: 8.3333333333%; }
     #spectacle .medium-push-1 {
@@ -655,8 +680,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .medium-offset-11 {
       margin-left: 91.6666666667%; }
     #spectacle .medium-up-1 > .column, #spectacle .medium-up-1 > .columns, #spectacle article .prop-row .medium-up-1 > .prop-name, #spectacle article .prop-row .medium-up-1 > .prop-value, #spectacle article .medium-up-1 > .doc-copy, #spectacle article .medium-up-1 > .doc-examples {
-      width: 100%;
-      float: left; }
+      float: left;
+      width: 100%; }
       #spectacle .medium-up-1 > .column:nth-of-type(1n), #spectacle .medium-up-1 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-1 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-1 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-1 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-1 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-1 > .column:nth-of-type(1n+1), #spectacle .medium-up-1 > .columns:nth-of-type(1n+1), #spectacle article .prop-row .medium-up-1 > .prop-name:nth-of-type(1n+1), #spectacle article .prop-row .medium-up-1 > .prop-value:nth-of-type(1n+1), #spectacle article .medium-up-1 > .doc-copy:nth-of-type(1n+1), #spectacle article .medium-up-1 > .doc-examples:nth-of-type(1n+1) {
@@ -664,8 +689,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-1 > .column:last-child, #spectacle .medium-up-1 > .columns:last-child, #spectacle article .prop-row .medium-up-1 > .prop-name:last-child, #spectacle article .prop-row .medium-up-1 > .prop-value:last-child, #spectacle article .medium-up-1 > .doc-copy:last-child, #spectacle article .medium-up-1 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-2 > .column, #spectacle .medium-up-2 > .columns, #spectacle article .prop-row .medium-up-2 > .prop-name, #spectacle article .prop-row .medium-up-2 > .prop-value, #spectacle article .medium-up-2 > .doc-copy, #spectacle article .medium-up-2 > .doc-examples {
-      width: 50%;
-      float: left; }
+      float: left;
+      width: 50%; }
       #spectacle .medium-up-2 > .column:nth-of-type(1n), #spectacle .medium-up-2 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-2 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-2 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-2 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-2 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-2 > .column:nth-of-type(2n+1), #spectacle .medium-up-2 > .columns:nth-of-type(2n+1), #spectacle article .prop-row .medium-up-2 > .prop-name:nth-of-type(2n+1), #spectacle article .prop-row .medium-up-2 > .prop-value:nth-of-type(2n+1), #spectacle article .medium-up-2 > .doc-copy:nth-of-type(2n+1), #spectacle article .medium-up-2 > .doc-examples:nth-of-type(2n+1) {
@@ -673,8 +698,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-2 > .column:last-child, #spectacle .medium-up-2 > .columns:last-child, #spectacle article .prop-row .medium-up-2 > .prop-name:last-child, #spectacle article .prop-row .medium-up-2 > .prop-value:last-child, #spectacle article .medium-up-2 > .doc-copy:last-child, #spectacle article .medium-up-2 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-3 > .column, #spectacle .medium-up-3 > .columns, #spectacle article .prop-row .medium-up-3 > .prop-name, #spectacle article .prop-row .medium-up-3 > .prop-value, #spectacle article .medium-up-3 > .doc-copy, #spectacle article .medium-up-3 > .doc-examples {
-      width: 33.3333333333%;
-      float: left; }
+      float: left;
+      width: 33.3333333333%; }
       #spectacle .medium-up-3 > .column:nth-of-type(1n), #spectacle .medium-up-3 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-3 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-3 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-3 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-3 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-3 > .column:nth-of-type(3n+1), #spectacle .medium-up-3 > .columns:nth-of-type(3n+1), #spectacle article .prop-row .medium-up-3 > .prop-name:nth-of-type(3n+1), #spectacle article .prop-row .medium-up-3 > .prop-value:nth-of-type(3n+1), #spectacle article .medium-up-3 > .doc-copy:nth-of-type(3n+1), #spectacle article .medium-up-3 > .doc-examples:nth-of-type(3n+1) {
@@ -682,8 +707,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-3 > .column:last-child, #spectacle .medium-up-3 > .columns:last-child, #spectacle article .prop-row .medium-up-3 > .prop-name:last-child, #spectacle article .prop-row .medium-up-3 > .prop-value:last-child, #spectacle article .medium-up-3 > .doc-copy:last-child, #spectacle article .medium-up-3 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-4 > .column, #spectacle .medium-up-4 > .columns, #spectacle article .prop-row .medium-up-4 > .prop-name, #spectacle article .prop-row .medium-up-4 > .prop-value, #spectacle article .medium-up-4 > .doc-copy, #spectacle article .medium-up-4 > .doc-examples {
-      width: 25%;
-      float: left; }
+      float: left;
+      width: 25%; }
       #spectacle .medium-up-4 > .column:nth-of-type(1n), #spectacle .medium-up-4 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-4 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-4 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-4 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-4 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-4 > .column:nth-of-type(4n+1), #spectacle .medium-up-4 > .columns:nth-of-type(4n+1), #spectacle article .prop-row .medium-up-4 > .prop-name:nth-of-type(4n+1), #spectacle article .prop-row .medium-up-4 > .prop-value:nth-of-type(4n+1), #spectacle article .medium-up-4 > .doc-copy:nth-of-type(4n+1), #spectacle article .medium-up-4 > .doc-examples:nth-of-type(4n+1) {
@@ -691,8 +716,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-4 > .column:last-child, #spectacle .medium-up-4 > .columns:last-child, #spectacle article .prop-row .medium-up-4 > .prop-name:last-child, #spectacle article .prop-row .medium-up-4 > .prop-value:last-child, #spectacle article .medium-up-4 > .doc-copy:last-child, #spectacle article .medium-up-4 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-5 > .column, #spectacle .medium-up-5 > .columns, #spectacle article .prop-row .medium-up-5 > .prop-name, #spectacle article .prop-row .medium-up-5 > .prop-value, #spectacle article .medium-up-5 > .doc-copy, #spectacle article .medium-up-5 > .doc-examples {
-      width: 20%;
-      float: left; }
+      float: left;
+      width: 20%; }
       #spectacle .medium-up-5 > .column:nth-of-type(1n), #spectacle .medium-up-5 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-5 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-5 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-5 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-5 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-5 > .column:nth-of-type(5n+1), #spectacle .medium-up-5 > .columns:nth-of-type(5n+1), #spectacle article .prop-row .medium-up-5 > .prop-name:nth-of-type(5n+1), #spectacle article .prop-row .medium-up-5 > .prop-value:nth-of-type(5n+1), #spectacle article .medium-up-5 > .doc-copy:nth-of-type(5n+1), #spectacle article .medium-up-5 > .doc-examples:nth-of-type(5n+1) {
@@ -700,8 +725,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-5 > .column:last-child, #spectacle .medium-up-5 > .columns:last-child, #spectacle article .prop-row .medium-up-5 > .prop-name:last-child, #spectacle article .prop-row .medium-up-5 > .prop-value:last-child, #spectacle article .medium-up-5 > .doc-copy:last-child, #spectacle article .medium-up-5 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-6 > .column, #spectacle .medium-up-6 > .columns, #spectacle article .prop-row .medium-up-6 > .prop-name, #spectacle article .prop-row .medium-up-6 > .prop-value, #spectacle article .medium-up-6 > .doc-copy, #spectacle article .medium-up-6 > .doc-examples {
-      width: 16.6666666667%;
-      float: left; }
+      float: left;
+      width: 16.6666666667%; }
       #spectacle .medium-up-6 > .column:nth-of-type(1n), #spectacle .medium-up-6 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-6 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-6 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-6 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-6 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-6 > .column:nth-of-type(6n+1), #spectacle .medium-up-6 > .columns:nth-of-type(6n+1), #spectacle article .prop-row .medium-up-6 > .prop-name:nth-of-type(6n+1), #spectacle article .prop-row .medium-up-6 > .prop-value:nth-of-type(6n+1), #spectacle article .medium-up-6 > .doc-copy:nth-of-type(6n+1), #spectacle article .medium-up-6 > .doc-examples:nth-of-type(6n+1) {
@@ -709,8 +734,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-6 > .column:last-child, #spectacle .medium-up-6 > .columns:last-child, #spectacle article .prop-row .medium-up-6 > .prop-name:last-child, #spectacle article .prop-row .medium-up-6 > .prop-value:last-child, #spectacle article .medium-up-6 > .doc-copy:last-child, #spectacle article .medium-up-6 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-7 > .column, #spectacle .medium-up-7 > .columns, #spectacle article .prop-row .medium-up-7 > .prop-name, #spectacle article .prop-row .medium-up-7 > .prop-value, #spectacle article .medium-up-7 > .doc-copy, #spectacle article .medium-up-7 > .doc-examples {
-      width: 14.2857142857%;
-      float: left; }
+      float: left;
+      width: 14.2857142857%; }
       #spectacle .medium-up-7 > .column:nth-of-type(1n), #spectacle .medium-up-7 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-7 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-7 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-7 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-7 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-7 > .column:nth-of-type(7n+1), #spectacle .medium-up-7 > .columns:nth-of-type(7n+1), #spectacle article .prop-row .medium-up-7 > .prop-name:nth-of-type(7n+1), #spectacle article .prop-row .medium-up-7 > .prop-value:nth-of-type(7n+1), #spectacle article .medium-up-7 > .doc-copy:nth-of-type(7n+1), #spectacle article .medium-up-7 > .doc-examples:nth-of-type(7n+1) {
@@ -718,8 +743,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-7 > .column:last-child, #spectacle .medium-up-7 > .columns:last-child, #spectacle article .prop-row .medium-up-7 > .prop-name:last-child, #spectacle article .prop-row .medium-up-7 > .prop-value:last-child, #spectacle article .medium-up-7 > .doc-copy:last-child, #spectacle article .medium-up-7 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-up-8 > .column, #spectacle .medium-up-8 > .columns, #spectacle article .prop-row .medium-up-8 > .prop-name, #spectacle article .prop-row .medium-up-8 > .prop-value, #spectacle article .medium-up-8 > .doc-copy, #spectacle article .medium-up-8 > .doc-examples {
-      width: 12.5%;
-      float: left; }
+      float: left;
+      width: 12.5%; }
       #spectacle .medium-up-8 > .column:nth-of-type(1n), #spectacle .medium-up-8 > .columns:nth-of-type(1n), #spectacle article .prop-row .medium-up-8 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .medium-up-8 > .prop-value:nth-of-type(1n), #spectacle article .medium-up-8 > .doc-copy:nth-of-type(1n), #spectacle article .medium-up-8 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .medium-up-8 > .column:nth-of-type(8n+1), #spectacle .medium-up-8 > .columns:nth-of-type(8n+1), #spectacle article .prop-row .medium-up-8 > .prop-name:nth-of-type(8n+1), #spectacle article .prop-row .medium-up-8 > .prop-value:nth-of-type(8n+1), #spectacle article .medium-up-8 > .doc-copy:nth-of-type(8n+1), #spectacle article .medium-up-8 > .doc-examples:nth-of-type(8n+1) {
@@ -727,22 +752,31 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .medium-up-8 > .column:last-child, #spectacle .medium-up-8 > .columns:last-child, #spectacle article .prop-row .medium-up-8 > .prop-name:last-child, #spectacle article .prop-row .medium-up-8 > .prop-value:last-child, #spectacle article .medium-up-8 > .doc-copy:last-child, #spectacle article .medium-up-8 > .doc-examples:last-child {
         float: left; }
     #spectacle .medium-collapse > .column, #spectacle .medium-collapse > .columns, #spectacle article .prop-row .medium-collapse > .prop-name, #spectacle article .prop-row .medium-collapse > .prop-value, #spectacle article .medium-collapse > .doc-copy, #spectacle article .medium-collapse > .doc-examples {
-      padding-left: 0;
-      padding-right: 0; }
+      padding-right: 0;
+      padding-left: 0; }
+    #spectacle .medium-collapse .row, #spectacle .medium-collapse article .prop-row, #spectacle article .medium-collapse .prop-row, #spectacle .medium-collapse article .doc-row, #spectacle article .medium-collapse .doc-row {
+      margin-right: 0;
+      margin-left: 0; }
+    #spectacle .expanded.row .medium-collapse.row, #spectacle article .expanded.prop-row .medium-collapse.row, #spectacle article .expanded.doc-row .medium-collapse.row, #spectacle .expanded.row article .medium-collapse.prop-row, #spectacle article .expanded.row .medium-collapse.prop-row, #spectacle article .expanded.prop-row .medium-collapse.prop-row, #spectacle article .expanded.doc-row .medium-collapse.prop-row, #spectacle .expanded.row article .medium-collapse.doc-row, #spectacle article .expanded.row .medium-collapse.doc-row, #spectacle article .expanded.prop-row .medium-collapse.doc-row, #spectacle article .expanded.doc-row .medium-collapse.doc-row {
+      margin-right: 0;
+      margin-left: 0; }
     #spectacle .medium-uncollapse > .column, #spectacle .medium-uncollapse > .columns, #spectacle article .prop-row .medium-uncollapse > .prop-name, #spectacle article .prop-row .medium-uncollapse > .prop-value, #spectacle article .medium-uncollapse > .doc-copy, #spectacle article .medium-uncollapse > .doc-examples {
-      padding-left: 0.9868421053rem;
-      padding-right: 0.9868421053rem; }
+      padding-right: 0.9868421053rem;
+      padding-left: 0.9868421053rem; }
     #spectacle .medium-centered {
-      float: none;
-      margin-left: auto;
-      margin-right: auto; }
+      margin-right: auto;
+      margin-left: auto; }
+      #spectacle .medium-centered, #spectacle .medium-centered:last-child:not(:first-child) {
+        float: none;
+        clear: both; }
     #spectacle .medium-uncentered,
     #spectacle .medium-push-0,
     #spectacle .medium-pull-0 {
       position: static;
-      margin-left: 0;
-      margin-right: 0; } }
-  @media screen and (min-width: 64em) {
+      float: left;
+      margin-right: 0;
+      margin-left: 0; } }
+  @media print, screen and (min-width: 64em) {
     #spectacle .large-1 {
       width: 8.3333333333%; }
     #spectacle .large-push-1 {
@@ -858,8 +892,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle .large-offset-11 {
       margin-left: 91.6666666667%; }
     #spectacle .large-up-1 > .column, #spectacle .large-up-1 > .columns, #spectacle article .prop-row .large-up-1 > .prop-name, #spectacle article .prop-row .large-up-1 > .prop-value, #spectacle article .large-up-1 > .doc-copy, #spectacle article .large-up-1 > .doc-examples {
-      width: 100%;
-      float: left; }
+      float: left;
+      width: 100%; }
       #spectacle .large-up-1 > .column:nth-of-type(1n), #spectacle .large-up-1 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-1 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-1 > .prop-value:nth-of-type(1n), #spectacle article .large-up-1 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-1 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-1 > .column:nth-of-type(1n+1), #spectacle .large-up-1 > .columns:nth-of-type(1n+1), #spectacle article .prop-row .large-up-1 > .prop-name:nth-of-type(1n+1), #spectacle article .prop-row .large-up-1 > .prop-value:nth-of-type(1n+1), #spectacle article .large-up-1 > .doc-copy:nth-of-type(1n+1), #spectacle article .large-up-1 > .doc-examples:nth-of-type(1n+1) {
@@ -867,8 +901,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-1 > .column:last-child, #spectacle .large-up-1 > .columns:last-child, #spectacle article .prop-row .large-up-1 > .prop-name:last-child, #spectacle article .prop-row .large-up-1 > .prop-value:last-child, #spectacle article .large-up-1 > .doc-copy:last-child, #spectacle article .large-up-1 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-2 > .column, #spectacle .large-up-2 > .columns, #spectacle article .prop-row .large-up-2 > .prop-name, #spectacle article .prop-row .large-up-2 > .prop-value, #spectacle article .large-up-2 > .doc-copy, #spectacle article .large-up-2 > .doc-examples {
-      width: 50%;
-      float: left; }
+      float: left;
+      width: 50%; }
       #spectacle .large-up-2 > .column:nth-of-type(1n), #spectacle .large-up-2 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-2 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-2 > .prop-value:nth-of-type(1n), #spectacle article .large-up-2 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-2 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-2 > .column:nth-of-type(2n+1), #spectacle .large-up-2 > .columns:nth-of-type(2n+1), #spectacle article .prop-row .large-up-2 > .prop-name:nth-of-type(2n+1), #spectacle article .prop-row .large-up-2 > .prop-value:nth-of-type(2n+1), #spectacle article .large-up-2 > .doc-copy:nth-of-type(2n+1), #spectacle article .large-up-2 > .doc-examples:nth-of-type(2n+1) {
@@ -876,8 +910,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-2 > .column:last-child, #spectacle .large-up-2 > .columns:last-child, #spectacle article .prop-row .large-up-2 > .prop-name:last-child, #spectacle article .prop-row .large-up-2 > .prop-value:last-child, #spectacle article .large-up-2 > .doc-copy:last-child, #spectacle article .large-up-2 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-3 > .column, #spectacle .large-up-3 > .columns, #spectacle article .prop-row .large-up-3 > .prop-name, #spectacle article .prop-row .large-up-3 > .prop-value, #spectacle article .large-up-3 > .doc-copy, #spectacle article .large-up-3 > .doc-examples {
-      width: 33.3333333333%;
-      float: left; }
+      float: left;
+      width: 33.3333333333%; }
       #spectacle .large-up-3 > .column:nth-of-type(1n), #spectacle .large-up-3 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-3 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-3 > .prop-value:nth-of-type(1n), #spectacle article .large-up-3 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-3 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-3 > .column:nth-of-type(3n+1), #spectacle .large-up-3 > .columns:nth-of-type(3n+1), #spectacle article .prop-row .large-up-3 > .prop-name:nth-of-type(3n+1), #spectacle article .prop-row .large-up-3 > .prop-value:nth-of-type(3n+1), #spectacle article .large-up-3 > .doc-copy:nth-of-type(3n+1), #spectacle article .large-up-3 > .doc-examples:nth-of-type(3n+1) {
@@ -885,8 +919,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-3 > .column:last-child, #spectacle .large-up-3 > .columns:last-child, #spectacle article .prop-row .large-up-3 > .prop-name:last-child, #spectacle article .prop-row .large-up-3 > .prop-value:last-child, #spectacle article .large-up-3 > .doc-copy:last-child, #spectacle article .large-up-3 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-4 > .column, #spectacle .large-up-4 > .columns, #spectacle article .prop-row .large-up-4 > .prop-name, #spectacle article .prop-row .large-up-4 > .prop-value, #spectacle article .large-up-4 > .doc-copy, #spectacle article .large-up-4 > .doc-examples {
-      width: 25%;
-      float: left; }
+      float: left;
+      width: 25%; }
       #spectacle .large-up-4 > .column:nth-of-type(1n), #spectacle .large-up-4 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-4 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-4 > .prop-value:nth-of-type(1n), #spectacle article .large-up-4 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-4 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-4 > .column:nth-of-type(4n+1), #spectacle .large-up-4 > .columns:nth-of-type(4n+1), #spectacle article .prop-row .large-up-4 > .prop-name:nth-of-type(4n+1), #spectacle article .prop-row .large-up-4 > .prop-value:nth-of-type(4n+1), #spectacle article .large-up-4 > .doc-copy:nth-of-type(4n+1), #spectacle article .large-up-4 > .doc-examples:nth-of-type(4n+1) {
@@ -894,8 +928,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-4 > .column:last-child, #spectacle .large-up-4 > .columns:last-child, #spectacle article .prop-row .large-up-4 > .prop-name:last-child, #spectacle article .prop-row .large-up-4 > .prop-value:last-child, #spectacle article .large-up-4 > .doc-copy:last-child, #spectacle article .large-up-4 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-5 > .column, #spectacle .large-up-5 > .columns, #spectacle article .prop-row .large-up-5 > .prop-name, #spectacle article .prop-row .large-up-5 > .prop-value, #spectacle article .large-up-5 > .doc-copy, #spectacle article .large-up-5 > .doc-examples {
-      width: 20%;
-      float: left; }
+      float: left;
+      width: 20%; }
       #spectacle .large-up-5 > .column:nth-of-type(1n), #spectacle .large-up-5 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-5 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-5 > .prop-value:nth-of-type(1n), #spectacle article .large-up-5 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-5 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-5 > .column:nth-of-type(5n+1), #spectacle .large-up-5 > .columns:nth-of-type(5n+1), #spectacle article .prop-row .large-up-5 > .prop-name:nth-of-type(5n+1), #spectacle article .prop-row .large-up-5 > .prop-value:nth-of-type(5n+1), #spectacle article .large-up-5 > .doc-copy:nth-of-type(5n+1), #spectacle article .large-up-5 > .doc-examples:nth-of-type(5n+1) {
@@ -903,8 +937,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-5 > .column:last-child, #spectacle .large-up-5 > .columns:last-child, #spectacle article .prop-row .large-up-5 > .prop-name:last-child, #spectacle article .prop-row .large-up-5 > .prop-value:last-child, #spectacle article .large-up-5 > .doc-copy:last-child, #spectacle article .large-up-5 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-6 > .column, #spectacle .large-up-6 > .columns, #spectacle article .prop-row .large-up-6 > .prop-name, #spectacle article .prop-row .large-up-6 > .prop-value, #spectacle article .large-up-6 > .doc-copy, #spectacle article .large-up-6 > .doc-examples {
-      width: 16.6666666667%;
-      float: left; }
+      float: left;
+      width: 16.6666666667%; }
       #spectacle .large-up-6 > .column:nth-of-type(1n), #spectacle .large-up-6 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-6 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-6 > .prop-value:nth-of-type(1n), #spectacle article .large-up-6 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-6 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-6 > .column:nth-of-type(6n+1), #spectacle .large-up-6 > .columns:nth-of-type(6n+1), #spectacle article .prop-row .large-up-6 > .prop-name:nth-of-type(6n+1), #spectacle article .prop-row .large-up-6 > .prop-value:nth-of-type(6n+1), #spectacle article .large-up-6 > .doc-copy:nth-of-type(6n+1), #spectacle article .large-up-6 > .doc-examples:nth-of-type(6n+1) {
@@ -912,8 +946,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-6 > .column:last-child, #spectacle .large-up-6 > .columns:last-child, #spectacle article .prop-row .large-up-6 > .prop-name:last-child, #spectacle article .prop-row .large-up-6 > .prop-value:last-child, #spectacle article .large-up-6 > .doc-copy:last-child, #spectacle article .large-up-6 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-7 > .column, #spectacle .large-up-7 > .columns, #spectacle article .prop-row .large-up-7 > .prop-name, #spectacle article .prop-row .large-up-7 > .prop-value, #spectacle article .large-up-7 > .doc-copy, #spectacle article .large-up-7 > .doc-examples {
-      width: 14.2857142857%;
-      float: left; }
+      float: left;
+      width: 14.2857142857%; }
       #spectacle .large-up-7 > .column:nth-of-type(1n), #spectacle .large-up-7 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-7 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-7 > .prop-value:nth-of-type(1n), #spectacle article .large-up-7 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-7 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-7 > .column:nth-of-type(7n+1), #spectacle .large-up-7 > .columns:nth-of-type(7n+1), #spectacle article .prop-row .large-up-7 > .prop-name:nth-of-type(7n+1), #spectacle article .prop-row .large-up-7 > .prop-value:nth-of-type(7n+1), #spectacle article .large-up-7 > .doc-copy:nth-of-type(7n+1), #spectacle article .large-up-7 > .doc-examples:nth-of-type(7n+1) {
@@ -921,8 +955,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-7 > .column:last-child, #spectacle .large-up-7 > .columns:last-child, #spectacle article .prop-row .large-up-7 > .prop-name:last-child, #spectacle article .prop-row .large-up-7 > .prop-value:last-child, #spectacle article .large-up-7 > .doc-copy:last-child, #spectacle article .large-up-7 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-up-8 > .column, #spectacle .large-up-8 > .columns, #spectacle article .prop-row .large-up-8 > .prop-name, #spectacle article .prop-row .large-up-8 > .prop-value, #spectacle article .large-up-8 > .doc-copy, #spectacle article .large-up-8 > .doc-examples {
-      width: 12.5%;
-      float: left; }
+      float: left;
+      width: 12.5%; }
       #spectacle .large-up-8 > .column:nth-of-type(1n), #spectacle .large-up-8 > .columns:nth-of-type(1n), #spectacle article .prop-row .large-up-8 > .prop-name:nth-of-type(1n), #spectacle article .prop-row .large-up-8 > .prop-value:nth-of-type(1n), #spectacle article .large-up-8 > .doc-copy:nth-of-type(1n), #spectacle article .large-up-8 > .doc-examples:nth-of-type(1n) {
         clear: none; }
       #spectacle .large-up-8 > .column:nth-of-type(8n+1), #spectacle .large-up-8 > .columns:nth-of-type(8n+1), #spectacle article .prop-row .large-up-8 > .prop-name:nth-of-type(8n+1), #spectacle article .prop-row .large-up-8 > .prop-value:nth-of-type(8n+1), #spectacle article .large-up-8 > .doc-copy:nth-of-type(8n+1), #spectacle article .large-up-8 > .doc-examples:nth-of-type(8n+1) {
@@ -930,21 +964,39 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle .large-up-8 > .column:last-child, #spectacle .large-up-8 > .columns:last-child, #spectacle article .prop-row .large-up-8 > .prop-name:last-child, #spectacle article .prop-row .large-up-8 > .prop-value:last-child, #spectacle article .large-up-8 > .doc-copy:last-child, #spectacle article .large-up-8 > .doc-examples:last-child {
         float: left; }
     #spectacle .large-collapse > .column, #spectacle .large-collapse > .columns, #spectacle article .prop-row .large-collapse > .prop-name, #spectacle article .prop-row .large-collapse > .prop-value, #spectacle article .large-collapse > .doc-copy, #spectacle article .large-collapse > .doc-examples {
-      padding-left: 0;
-      padding-right: 0; }
+      padding-right: 0;
+      padding-left: 0; }
+    #spectacle .large-collapse .row, #spectacle .large-collapse article .prop-row, #spectacle article .large-collapse .prop-row, #spectacle .large-collapse article .doc-row, #spectacle article .large-collapse .doc-row {
+      margin-right: 0;
+      margin-left: 0; }
+    #spectacle .expanded.row .large-collapse.row, #spectacle article .expanded.prop-row .large-collapse.row, #spectacle article .expanded.doc-row .large-collapse.row, #spectacle .expanded.row article .large-collapse.prop-row, #spectacle article .expanded.row .large-collapse.prop-row, #spectacle article .expanded.prop-row .large-collapse.prop-row, #spectacle article .expanded.doc-row .large-collapse.prop-row, #spectacle .expanded.row article .large-collapse.doc-row, #spectacle article .expanded.row .large-collapse.doc-row, #spectacle article .expanded.prop-row .large-collapse.doc-row, #spectacle article .expanded.doc-row .large-collapse.doc-row {
+      margin-right: 0;
+      margin-left: 0; }
     #spectacle .large-uncollapse > .column, #spectacle .large-uncollapse > .columns, #spectacle article .prop-row .large-uncollapse > .prop-name, #spectacle article .prop-row .large-uncollapse > .prop-value, #spectacle article .large-uncollapse > .doc-copy, #spectacle article .large-uncollapse > .doc-examples {
-      padding-left: 0.9868421053rem;
-      padding-right: 0.9868421053rem; }
+      padding-right: 0.9868421053rem;
+      padding-left: 0.9868421053rem; }
     #spectacle .large-centered {
-      float: none;
-      margin-left: auto;
-      margin-right: auto; }
+      margin-right: auto;
+      margin-left: auto; }
+      #spectacle .large-centered, #spectacle .large-centered:last-child:not(:first-child) {
+        float: none;
+        clear: both; }
     #spectacle .large-uncentered,
     #spectacle .large-push-0,
     #spectacle .large-pull-0 {
       position: static;
-      margin-left: 0;
-      margin-right: 0; } }
+      float: left;
+      margin-right: 0;
+      margin-left: 0; } }
+  #spectacle .column-block {
+    margin-bottom: 1.3157894737rem; }
+    #spectacle .column-block > :last-child {
+      margin-bottom: 0; }
+    @media print, screen and (min-width: 40em) {
+      #spectacle .column-block {
+        margin-bottom: 1.9736842105rem; }
+        #spectacle .column-block > :last-child {
+          margin-bottom: 0; } }
   #spectacle #sidebar {
     padding-top: 1.5rem;
     padding-left: 1.5rem;
@@ -973,7 +1025,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       -o-text-overflow: ellipsis;
       text-overflow: ellipsis; }
       #spectacle #sidebar a.active {
-        color: #2199e8; }
+        color: #1779ba; }
     #spectacle #sidebar ul {
       list-style-type: none;
       padding: 0;
@@ -998,7 +1050,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     position: relative; }
     #spectacle #docs .example-box {
       display: none; }
-    @media screen and (min-width: 64em) {
+    @media print, screen and (min-width: 64em) {
       #spectacle #docs .example-box {
         display: block;
         background-color: #23241f;
@@ -1009,7 +1061,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   #spectacle article {
     position: relative; }
     #spectacle article .no-description {
-      color: #7a7a7a; }
+      color: #8a8a8a; }
     #spectacle article dt {
       color: #23241f; }
     #spectacle article table.table {
@@ -1081,9 +1133,17 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       #spectacle article .prop-row.prop-inner {
         padding-top: 0.5em;
         padding-bottom: 0.5em;
-        font-size: 90%; }
+        font-size: 80%; }
         #spectacle article .prop-row.prop-inner .prop-name {
-          color: #7a7a7a; }
+          color: #8a8a8a; }
+        #spectacle article .prop-row.prop-inner .prop-value > span {
+          display: block; }
+          #spectacle article .prop-row.prop-inner .prop-value > span:before {
+            color: #8a8a8a; }
+          #spectacle article .prop-row.prop-inner .prop-value > span:after {
+            color: #8a8a8a; }
+          #spectacle article .prop-row.prop-inner .prop-value > span.json-property-type, #spectacle article .prop-row.prop-inner .prop-value > span.json-property-format {
+            display: inline-block; }
     #spectacle article .doc-row {
       margin: 2rem 0 20px; }
     #spectacle article .doc-examples {
@@ -1119,7 +1179,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         white-space: pre-wrap;
         word-break: normal; }
     #spectacle article .powered-by {
-      font-size: 90%;
+      font-size: 80%;
       color: #cacaca; }
       #spectacle article .powered-by span {
         color: #f68b1f; }
@@ -1128,13 +1188,27 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       top: 0;
       text-align: right;
       right: 0; }
-    @media screen and (min-width: 64em) {
+      #spectacle article .operation .operation-tags .label {
+        cursor: pointer; }
+        #spectacle article .operation .operation-tags .label:hover {
+          color: #e6e6e6; }
+    @media print, screen and (min-width: 64em) {
       #spectacle article .operation .operation-tags {
         right: 50%; } }
     #spectacle article .operation .operation-path {
       word-break: break-all; }
     #spectacle article .definition .doc-examples h5 {
       margin-top: -1rem; }
+    #spectacle article .definition .doc-copy > section {
+      margin-bottom: 1rem; }
+      #spectacle article .definition .doc-copy > section > .json-property-type {
+        display: none; }
+    #spectacle article .definition dl dt {
+      font-weight: normal; }
+    #spectacle article .definition dl dd {
+      font-weight: lighter; }
+    #spectacle article .definition .json-property-name {
+      font-weight: bold; }
     #spectacle article .hljs {
       line-height: 1.25;
       overflow-x: auto;
@@ -1156,7 +1230,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       right: 0;
       bottom: 0;
       background-color: rgba(254, 254, 254, 0.25); }
-    @media screen and (min-width: 64em) {
+    @media print, screen and (min-width: 64em) {
       #spectacle .drawer-layout .drawer.slide-left {
         transform: none;
         margin-left: -250px; }
@@ -1165,7 +1239,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         margin-left: 250px; }
       #spectacle .drawer-layout .drawer .drawer-overlay {
         display: none; } }
-  @media screen and (min-width: 64em) {
+  @media print, screen and (min-width: 64em) {
     #spectacle .drawer-layout.drawer-slide-left-large .drawer {
       margin-left: -250px; }
     #spectacle .drawer-layout.drawer-slide-left-large .floating-menu-icon {
@@ -1189,19 +1263,19 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
       position: relative;
       display: inline-block;
       vertical-align: middle;
-      cursor: pointer;
       width: 20px;
-      height: 16px; }
+      height: 16px;
+      cursor: pointer; }
       #spectacle .drawer-layout .floating-menu-icon .hamburger::after {
-        content: '';
         position: absolute;
+        top: 0;
+        left: 0;
         display: block;
         width: 100%;
         height: 2px;
         background: #fefefe;
-        top: 0;
-        left: 0;
-        box-shadow: 0 7px 0 #fefefe, 0 14px 0 #fefefe; }
+        box-shadow: 0 7px 0 #fefefe, 0 14px 0 #fefefe;
+        content: ''; }
       #spectacle .drawer-layout .floating-menu-icon .hamburger:hover::after {
         background: #cacaca;
         box-shadow: 0 7px 0 #cacaca, 0 14px 0 #cacaca; }

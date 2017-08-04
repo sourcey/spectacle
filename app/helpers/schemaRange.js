@@ -18,30 +18,47 @@ module.exports = function(range, options) {
     return "";
   }
 
-  var numberSet = "";
-  if (range.type === "integer") {
-    numberSet = "\u2208 \u2124" // ELEMENT OF - DOUBLE-STRUCK CAPITAL Z
-  } else if (range.type === "number") {
-    numberSet = "\u2208 \u211D" // ELEMENT OF - DOUBLE-STRUCK CAPITAL R
-  }
-
   if (hasMinimum && !hasMaximum) {
-    return util.format(", { x %s | x %s %d }",
-        numberSet,
+    return util.format("x %s %d",
         range.minimumExclusive ? ">" : "\u2265",
         range.minimum)
   } else if (hasMaximum && !hasMinimum) {
-    return util.format(", { x %s | x %s %d }",
-        numberSet,
+    return util.format("x %s %d",
         range.maximumExclusive ? "<" : "\u2264",
         range.maximum)
   } else {
     // if (hasMaxmium && hasMinimum)
-    return util.format(", { x %s | %d %s x %s %d }",
-        numberSet,
-        range.minimum,
+    return util.format("x %s %d | x %s %d",
         range.minimumExclusive ? "<" : "\u2264",
+        range.minimum,
         range.maximumExclusive ? "<" : "\u2264",
         range.maximum)
   }
+
+  // var numberSet = "";
+  // if (range.type === "integer") {
+  //   numberSet = "\u2208 \u2124" // ELEMENT OF - DOUBLE-STRUCK CAPITAL Z
+  // } else if (range.type === "number") {
+  //   numberSet = "\u2208 \u211D" // ELEMENT OF - DOUBLE-STRUCK CAPITAL R
+  // }
+  //
+  // if (hasMinimum && !hasMaximum) {
+  //   return util.format(", { x %s | x %s %d }",
+  //       numberSet,
+  //       range.minimumExclusive ? ">" : "\u2265",
+  //       range.minimum)
+  // } else if (hasMaximum && !hasMinimum) {
+  //   return util.format(", { x %s | x %s %d }",
+  //       numberSet,
+  //       range.maximumExclusive ? "<" : "\u2264",
+  //       range.maximum)
+  // } else {
+  //   // if (hasMaxmium && hasMinimum)
+  //   return util.format(", { x %s | %d %s x %s %d }",
+  //       numberSet,
+  //       range.minimum,
+  //       range.minimumExclusive ? "<" : "\u2264",
+  //       range.maximumExclusive ? "<" : "\u2264",
+  //       range.maximum)
+  // }
 };

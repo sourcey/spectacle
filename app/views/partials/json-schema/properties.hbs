@@ -3,7 +3,7 @@
 <section class="json-schema-properties">
   <dl>
     {{#each properties}}
-      <dt data-property-name="{{htmlId @key}}">
+      <dt data-property-name="{{htmlId @key}}"{{#if description}} class="has-description"{{/if}}>
         {{!Single property, default type is "object"}}
         <span class="json-property-name">{{@key}}:</span>
         {{>json-schema/datatype}}

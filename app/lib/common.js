@@ -104,6 +104,18 @@ var common = {
       return;
     }
 
+    // NOTE: Large schemas with circular references have been known to exceed
+    // maximum stack size, so bail out here before that happens.
+    // A better fix is required.
+    // /usr/local/bin/node bin/spectacle -d test/fixtures/billing.yaml
+    if (!options.depth)
+      options.depth = 0;
+    options.depth++;
+    if (options.depth > 100) {
+      // console.log('max depth', ref)
+      return;
+    }
+
     var showReadOnly = options.showReadOnly !== false
     var that = this;
 
@@ -111,8 +123,9 @@ var common = {
       return ref.example;
     }
     else if (ref.$ref) {
-  	  ref = this.resolveSchemaReference(ref.$ref, root)
-  	  return this.formatExampleProp(ref, root, options)
+  	  var remoteRef = this.resolveSchemaReference(ref.$ref, root)
+      if (remoteRef)
+  	    return this.formatExampleProp(remoteRef, root, options)
   	}
     else if (ref.properties) { // && ref.type == 'object'
       var obj = {};
@@ -126,17 +139,12 @@ var common = {
     else if (ref.allOf) {
       var obj = {};
       ref.allOf.forEach(function(parent) {
-          // try {
-            // console.log('ALL OF')
-            var prop = that.formatExampleProp(parent, root, options)
-            if (prop)
-              // console.log('ALL OF PROP', prop)
-              obj = Object.assign(prop, obj)
-            // obj = Object.assign(obj, prop)
-              // console.log('ALL OF OBJ', obj)
-          // } catch (e) {
-          //
-          // }
+        var prop = that.formatExampleProp(parent, root, options)
+        if (!prop || typeof prop == 'string') {
+          // console.log('skipping property', prop, parent)
+          return
+        }
+        obj = Object.assign(prop, obj)
       })
       return obj;
     }
@@ -191,6 +199,8 @@ var common = {
     var hashParts = hash.split('/')
     // TODO : Download remote json from url if url not empty
     var current = json; //options.data.root
+    // return current;
+      // console.log('aaaaaaaaaaaaaaaaaa', hashParts)
     hashParts.forEach(function(hashPart) {
       // Traverse schema from root along the path
       if (hashPart.trim().length > 0) {

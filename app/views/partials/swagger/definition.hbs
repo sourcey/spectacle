@@ -9,7 +9,8 @@
     {{#if anchor}}
       <h2 class="panel-title">
         <a name="/definitions/{{title}}"></a>{{title}}:
-        <span class="json-property-type">{{>json-schema/datatype}}</span>
+        {{type}}
+        <!-- <span class="json-property-type">{{>json-schema/datatype}}</span> -->
       </h2>
     {{else}}
       <h2 class="panel-title">{{title}}</h2>
@@ -21,16 +22,22 @@
       {{#if $ref}}
         {{>json-schema/reference .}}
       {{else}}
-        {{>json-schema/body}}
+        {{#if enum}}
+          {{~>json-schema/datatype}}
+        {{else}}
+          {{>json-schema/body}}
+        {{/if}}
       {{/if}}
     </div>
 
     {{! Print examples without whitespace }}
-    <div class="doc-examples">
-      <section>
-        <h5>Example</h5>
-        {{>swagger/print-example .}}
-      </section>
-    </div>
+    {{#ifneq type 'string'}}
+      <div class="doc-examples">
+        <section>
+          <h5>Example</h5>
+          {{>swagger/print-example .}}
+        </section>
+      </div>
+    {{/ifneq}}
   </div>
 </div>

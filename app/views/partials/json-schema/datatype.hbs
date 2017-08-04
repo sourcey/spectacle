@@ -19,36 +19,30 @@
 
 {{!-- Enum values --}}
 {{~#if enum}}
-  <span class="json-property-enum" title="Possible values">, x &isin; {
+  <span class="json-property-enum" title="Possible values">
     {{#each enum}}
       {{! Render enums in the descriminator as links to the appropriate definitions}}
-      {{#if ../discriminator}}
+      {{~#if ../discriminator}}
         <span class="json-property-enum-item"><a href="#definition-{{.}}">{{.}}</a></span>
-      {{else if $ref}}
+      {{~else if $ref}}
           {{~>json-schema/reference .}}
-      {{else}}
-        <span class="json-property-enum-item">{{.}}</span>
-      {{/if}}
-      {{#ifeq ../default .}}
-        (default)
-      {{/ifeq}}
-      {{#unless @last}},{{/unless}}
+      {{~else}}
+        <span class="json-property-enum-item{{#ifeq ../default .}} json-property-enum-default-value{{/ifeq}}">{{.}}</span>
+      {{~/if}}{{#unless @last}},{{/unless}}
     {{/each}}
-    }
   </span>
 {{~/if}}
 
-{{!-- min- and max-values --}}
+{{!-- Min and Max values --}}
 <span class="json-property-range" title="Value limits">
   {{~schemaRange . ~}}
 </span>
 
-{{!-- Default values (for non-enum types) --}}
-{{~#unless enum}}
-  {{~#if default}}
-    <span class="json-property-default-value">{{~default}}</span>
-  {{/if}}
-{{~/unless}}
+{{!-- Default values --}}
+{{~#if default}}
+  <span class="json-property-default-value" title="Default value">{{~default}}</span>
+{{/if}}
+
 {{#if minLength}}
   <span class="json-property-range" title="String length limits">
     {{#if maxLength}}

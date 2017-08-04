@@ -19,7 +19,7 @@
   @include label();
   // @extend .label.#{$style};
   background: $color;
-  color: foreground($color);
+  color: color-pick-contrast($color);
   font-size: 0.75rem;
   border-radius: 4px;
   padding: 3px 6px;

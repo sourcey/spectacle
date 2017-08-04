@@ -157,15 +157,21 @@ table.table {
 .json-schema-properties {
   @include named-section($msg-json-section-properties);
 
+  dl {
+    margin: 0;
+  }
+  dt {
+    margin-bottom: .25rem;
+
+    &.has-description {
+      margin-bottom: 0;
+    }
+  }
   dd {
     color: $dark-gray;
   }
   dd:not(:last-child) {
-    padding-bottom: 0.75rem;
-  }
-
-  dl {
-    margin: 0;
+    padding-bottom: 0.5rem;
   }
 }
 
@@ -237,37 +243,70 @@ table.table {
 
 
 .json-property-type {
-  font-style: italic;
-  font-weight: 100;
+  // font-style: italic;
+  // font-weight: 100;
 }
 
 .json-property-format {
-  font-size: smaller;
+  // font-size: smaller;
+  font-style: italic;
 }
 
 .json-property-enum {
-  font-weight: lighter;
-  font-size: small;
+  // display: block;
+  // font-weight: lighter;
+  // font-size: small;
+
+  &:before {
+    content: 'enum: [';
+    // color: $dark-gray;
+  }
+  &:after {
+    content: ']';
+    // color: $dark-gray;
+  }
 }
 
 .json-property-default-value {
-  font-weight: lighter;
-  font-size: small;
+  // display: block;
+  // font-weight: lighter;
+  // font-size: small;
+  // &:before {
+  //   content: '(default: "';
+  // }
+  // &:after {
+  //   content: '")';
+  // }
+
+  // font-weight: lighter;
+  // font-size: small;
   &:before {
-    content: '(default: "';
-  }
-  &:after {
-    content: '")';
+    content: 'default: ';
+    // color: $dark-gray;
   }
 }
 
-.json-property-enum-item {
-  &:before, &:after {
-    content: "\""
+.json-property-range {
+  // display: block;
+  &:empty {
+    display: none !important;
   }
+  &:before {
+    content: 'range: ';
+    // color: $dark-gray;
+  }
+}
+// .sitspagedesc:empty
+// {
+// display:none;
+// }
+
+.json-property-enum-item {
+  // &:before, &:after {
+  //   content: "\""
+  // }
   font-weight: lighter;
   font-size: small;
-
 }
 
 .json-schema-reference {
