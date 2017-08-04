@@ -8,7 +8,7 @@ var program = require('commander'),
 //= Process CLI input
 
 program.version(package.version)
-    .usage('spactacle [options] <specfile>')
+    .usage('[options] <specfile>')
     .description(package.description)
     .option('-C, --disable-css', 'omit CSS generation (default: false)')
     .option('-J, --disable-js', 'omit JavaScript generation (default: false)')
