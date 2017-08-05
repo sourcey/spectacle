@@ -34,38 +34,60 @@ $breadcrumbs-item-margin: 0.75rem !default;
 /// @type Boolean
 $breadcrumbs-item-uppercase: true !default;
 
-/// If `true`, adds a slash between breadcrumb links.
+/// If `true`, adds a seperator between breadcrumb links.
 /// @type Boolean
-$breadcrumbs-item-slash: true !default;
+$breadcrumbs-item-separator: true !default;
+
+// If it exists $breadcrumbs-item-slash is used to build $breadcrumbs-item-separator. See the documentation.
+@if variable-exists(breadcrumbs-item-slash) {
+  $breadcrumbs-item-separator: $breadcrumbs-item-slash;
+}
+
+/// Used character for the breadcrumb separator.
+/// @type Content
+$breadcrumbs-item-separator-item: '/' !default;
+
+/// Used character for the breadcrumb separator in rtl mode.
+/// @type Content
+$breadcrumbs-item-separator-item-rtl: '\\' !default;
+
+/// Color of breadcrumb item.
+/// @type Color
+$breadcrumbs-item-separator-color: $medium-gray !default;
+
+// If it exists $breadcrumbs-item-slash-color is used to build $breadcrumbs-item-separator-color. See the documentation.
+@if variable-exists(breadcrumbs-item-slash-color) {
+  $breadcrumbs-item-separator-color: $breadcrumbs-item-slash-color;
+}
 
 /// Adds styles for a breadcrumbs container, along with the styles for the `<li>` and `<a>` elements inside of it.
 @mixin breadcrumbs-container {
   @include clearfix;
-  list-style: none;
   margin: $breadcrumbs-margin;
+  list-style: none;
 
   // Item wrapper
   li {
     float: #{$global-left};
-    color: $breadcrumbs-item-color-current;
+
     font-size: $breadcrumbs-item-font-size;
+    color: $breadcrumbs-item-color-current;
     cursor: default;
 
     @if $breadcrumbs-item-uppercase {
       text-transform: uppercase;
     }
 
-    @if $breadcrumbs-item-slash {
+    @if $breadcrumbs-item-separator {
       // Need to escape the backslash
-      $slash: if($global-text-direction == 'ltr', '/', '\\');
+      $separator: if($global-text-direction == 'ltr', $breadcrumbs-item-separator-item, $breadcrumbs-item-separator-item-rtl);
 
       &:not(:last-child)::after {
-        color: $medium-gray;
-        content: $slash;
-        margin: 0 $breadcrumbs-item-margin;
         position: relative;
-        top: 1px;
+        margin: 0 $breadcrumbs-item-margin;
         opacity: 1;
+        content: $separator;
+        color: $breadcrumbs-item-separator-color;
       }
     }
     @else {
@@ -89,6 +111,7 @@ $breadcrumbs-item-slash: true !default;
 
     .disabled {
       color: $breadcrumbs-item-color-disabled;
+      cursor: not-allowed;
     }
   }
 }

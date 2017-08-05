@@ -23,27 +23,27 @@ $fieldset-margin: rem-calc(18 0) !default;
 $legend-padding: rem-calc(0 3) !default;
 
 @mixin fieldset {
-  border: $fieldset-border;
-  padding: $fieldset-padding;
   margin: $fieldset-margin;
+  padding: $fieldset-padding;
+  border: $fieldset-border;
 
   legend {
     // Covers up the fieldset's border to create artificial padding
-    background: $body-background;
-    padding: $legend-padding;
     margin: 0;
     margin-#{$global-left}: rem-calc(-3);
+    padding: $legend-padding;
   }
 }
 
 @mixin foundation-form-fieldset {
   fieldset {
-    border: 0;
-    padding: 0;
     margin: 0;
+    padding: 0;
+    border: 0;
   }
 
   legend {
+    max-width: 100%;
     margin-bottom: $form-spacing * 0.5;
   }
 

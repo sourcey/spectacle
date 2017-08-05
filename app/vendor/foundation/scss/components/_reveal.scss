@@ -18,10 +18,6 @@ $reveal-width: 600px !default;
 /// @type Number
 $reveal-max-width: $global-width !default;
 
-/// Offset from the top of the window when a modal is added.
-/// @type Number
-$reveal-offset: rem-calc(100) !default;
-
 /// Default padding inside a modal.
 /// @type Number
 $reveal-padding: $global-padding !default;
@@ -42,38 +38,53 @@ $reveal-zindex: 1005 !default;
 /// @type Color
 $reveal-overlay-background: rgba($black, 0.45) !default;
 
+
+// Placeholder selector for medium-and-up modals
+// Prevents duplicate CSS when defining multiple Reveal sizes
+@include breakpoint(medium) {
+  %reveal-centered {
+    right: auto;
+    left: auto;
+    margin: 0 auto;
+  }
+}
+
+
 /// Adds styles for a modal overlay.
 /// @param {Color} $background [$reveal-overlay-background] - Background color of the overlay.
-@mixin reveal-overlay {
-  display: none;
+@mixin reveal-overlay($background: $reveal-overlay-background) {
   position: fixed;
   top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
   z-index: $reveal-zindex;
-  background-color: $reveal-overlay-background;
+
+  display: none;
+  background-color: $background;
   overflow-y: scroll;
 }
 
 /// Adds base styles for a modal.
 @mixin reveal-modal-base {
   @include disable-mouse-outline;
-  display: none;
   z-index: $reveal-zindex + 1;
+  // Workaround android browser z-index bug
+  backface-visibility: hidden;
+
+  display: none;
   padding: $reveal-padding;
+
   border: $reveal-border;
-  margin: 100px auto 0;
-  background-color: $reveal-background;
   border-radius: $reveal-radius;
+  background-color: $reveal-background;
 
   @include breakpoint(medium) {
     min-height: 0;
   }
 
   // Make sure rows don't have a min-width on them
-  .column,
-  .columns {
+  .column {
     min-width: 0;
   }
 
@@ -93,27 +104,39 @@ $reveal-overlay-background: rgba($black, 0.45) !default;
   @include breakpoint(medium) {
     @extend %reveal-centered;
     width: $width;
-    max-width: $reveal-max-width;
+    max-width: $max-width;
   }
 }
 
 /// Creates a full-screen modal, which stretches the full width and height of the window.
 @mixin reveal-modal-fullscreen {
-  // scss-lint:disable DuplicateProperty
   top: 0;
   left: 0;
+
   width: 100%;
-  height: 100%;
-  height: 100vh;
-  min-height: 100vh;
   max-width: none;
+  height: 100%;
+  height: 100vh; // sass-lint:disable-line no-duplicate-properties
+  min-height: 100vh;
   margin-left: 0;
+
   border: 0;
+  border-radius: 0;
 }
 
 @mixin foundation-reveal {
-  body.is-reveal-open {
+  // [TODO] Is this necessary?
+  body.is-reveal-open { // sass-lint:disable-line no-qualifying-elements
     overflow: hidden;
+  }
+
+  // html gets this class only in iOS
+  html.is-reveal-open,
+  html.is-reveal-open body {
+    min-height: 100%;
+    overflow: hidden;
+    position: fixed;
+    user-select: none;
   }
 
   // Overlay
@@ -125,22 +148,15 @@ $reveal-overlay-background: rgba($black, 0.45) !default;
   .reveal {
     @include reveal-modal-base;
     @include reveal-modal-width($reveal-width);
-    position: absolute;
+    position: relative;
+    top: 100px;
+    margin-right: auto;
+    margin-left: auto;
     overflow-y: auto;
 
     // Remove padding
     &.collapse {
       padding: 0;
-    }
-
-    // Placeholder selector for medium-and-up modals
-    // Prevents duplicate CSS when defining multiple Reveal sizes
-    @include breakpoint(medium) {
-      %reveal-centered {
-        left: auto;
-        right: auto;
-        margin: 0 auto;
-      }
     }
 
     // Sizing classes
@@ -151,6 +167,14 @@ $reveal-overlay-background: rgba($black, 0.45) !default;
     // Full-screen mode
     &.full {
       @include reveal-modal-fullscreen;
+    }
+
+    @include breakpoint($-zf-zero-breakpoint only) {
+      @include reveal-modal-fullscreen;
+    }
+
+    &.without-overlay {
+      position: fixed;
     }
   }
 }

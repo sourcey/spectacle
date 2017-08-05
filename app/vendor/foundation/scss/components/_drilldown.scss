@@ -14,62 +14,129 @@ $drilldown-transition: transform 0.15s linear !default;
 /// @type Boolean
 $drilldown-arrows: true !default;
 
+/// Sets drilldown menu item padding.
+/// @type Number
+$drilldown-padding: $global-menu-padding !default;
+
+/// Sets drilldown menu nested margin
+/// @type Number
+$drilldown-nested-margin: 0 !default;
+
+/// Background color for drilldown top level items.
+/// @type Color
+$drilldown-background: $white !default;
+
+/// Sets drilldown menu item padding in the submenu.
+/// @type Number
+$drilldown-submenu-padding: $drilldown-padding !default;
+
+/// Background color for drilldown submenus.
+/// @type Color
+$drilldown-submenu-background: $white !default;
+
 /// Sets drilldown arrow color if arrow is used.
 /// @type Color
 $drilldown-arrow-color: $primary-color !default;
 
-/// Background color for drilldown submenus.
-/// @type Color
-$drilldown-background: $white !default;
+/// Sets drilldown arrow size if arrow is used.
+/// @type Length
+$drilldown-arrow-size: 6px !default;
+
+@mixin zf-drilldown-left-right-arrows {
+  .is-drilldown-submenu-parent > a {
+    position: relative;
+    &::after {
+      position: absolute;
+      top: 50%;
+      margin-top: -1 * $drilldown-arrow-size;
+      #{$global-right}: 1rem;
+      @include css-triangle($drilldown-arrow-size, $drilldown-arrow-color, $global-right);
+    }
+  }
+
+  &.align-left .is-drilldown-submenu-parent > a::after {
+    left: auto;
+    right: 1rem;
+    @include css-triangle($dropdownmenu-arrow-size, $dropdownmenu-arrow-color, right);
+  }
+
+  &.align-right .is-drilldown-submenu-parent > a::after {
+    right: auto;
+    left: 1rem;
+    @include css-triangle($dropdownmenu-arrow-size, $dropdownmenu-arrow-color, left);
+  }
+
+}
 
 @mixin foundation-drilldown-menu {
   // Applied to the Menu container
   .is-drilldown {
     position: relative;
     overflow: hidden;
-  }
 
-  // Applied to nested <ul>s
-  .is-drilldown-submenu {
-    position: absolute;
-    top: 0;
-    #{$global-left}: 100%;
-    z-index: -1;
-    height: 100%;
-    width: 100%;
-    background: $drilldown-background;
-    transition: $drilldown-transition;
-
-    &.is-active {
-      z-index: 1;
+    li {
       display: block;
-      transform: translateX(if($global-text-direction == ltr, -100%, 100%));
     }
 
-    &.is-closing {
-      transform: translateX(if($global-text-direction == ltr, 100%, -100%));
+    &.animate-height {
+      transition: height 0.5s;
     }
   }
 
-  @if $drilldown-arrows {
-    .is-drilldown-submenu-parent > a {
-      position: relative;
+  // The top level <ul>
+  .drilldown {
+    a {
+      padding: $drilldown-padding;
+      background: $drilldown-background;
+    }
 
-      &::after {
-        @include css-triangle(6px, $drilldown-arrow-color, $global-right);
-        position: absolute;
-        top: 50%;
-        margin-top: -6px;
-        #{$global-right}: 1rem;
+    // Applied to submenu <ul>s
+    .is-drilldown-submenu {
+      position: absolute;
+      top: 0;
+      #{$global-left}: 100%;
+      z-index: -1;
+
+      width: 100%;
+      background: $drilldown-submenu-background;
+      transition: $drilldown-transition;
+
+      &.is-active {
+        z-index: 1;
+        display: block;
+        transform: translateX(if($global-text-direction == ltr, -100%, 100%));
+      }
+
+      &.is-closing {
+        transform: translateX(if($global-text-direction == ltr, 100%, -100%));
+      }
+
+      // Submenu item padding
+      a {
+        padding: $drilldown-submenu-padding;
       }
     }
 
-    .js-drilldown-back::before {
-      @include css-triangle(6px, $drilldown-arrow-color, $global-left);
-      float: $global-left;
-      margin-#{$global-right}: 0.75rem; // Creates space between the arrow and the text
-      margin-#{$global-left}: 0.6rem; // Lines the tip of the arrow with the items below
-      margin-top: 14px; // Aligns the arrow with the text
+    .nested.is-drilldown-submenu {
+      @include menu-nested($drilldown-nested-margin);
+    }
+
+    .drilldown-submenu-cover-previous {
+      min-height: 100%;
+    }
+
+    @if $drilldown-arrows {
+      @include zf-drilldown-left-right-arrows;
+
+      .js-drilldown-back > a::before {
+        @include css-triangle($drilldown-arrow-size, $drilldown-arrow-color, $global-left);
+        border-#{$global-left}-width: 0;
+        display: inline-block;
+        vertical-align: middle;
+        margin-#{$global-right}: 0.75rem; // Creates space between the arrow and the text
+
+        border-#{$global-left}-width: 0;
+      }
     }
   }
 }

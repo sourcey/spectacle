@@ -1,7 +1,10 @@
-!function($) {
 "use strict";
 
-var FOUNDATION_VERSION = '6.1.1';
+import $ from 'jquery';
+import { GetYoDigits } from './foundation.util.core';
+import { MediaQuery } from './foundation.util.mediaQuery';
+
+var FOUNDATION_VERSION = '6.4.1';
 
 // Global Foundation object
 // This is attached to the window, or used as a module for AMD/Browserify
@@ -17,17 +20,7 @@ var Foundation = {
    * Stores generated unique ids for plugin instances
    */
   _uuids: [],
-  /**
-   * Stores currently active plugins.
-   */
-  _activePlugins: {},
 
-  /**
-   * Returns a boolean for RTL support
-   */
-  rtl: function(){
-    return $('html').attr('dir') === 'rtl';
-  },
   /**
    * Defines a Foundation plugin, adding it to the `Foundation` namespace and the list of plugins to initialize when reflowing.
    * @param {Object} plugin - The constructor of the plugin.
@@ -45,23 +38,24 @@ var Foundation = {
   },
   /**
    * @function
-   * Creates a pointer to an instance of a Plugin within the Foundation._activePlugins object.
-   * Sets the `[data-pluginName="uniqueIdHere"]`, allowing easy access to any plugin's internal methods.
-   * Also fires the initialization event for each plugin, consolidating repeditive code.
+   * Populates the _uuids array with pointers to each individual plugin instance.
+   * Adds the `zfPlugin` data-attribute to programmatically created plugins to allow use of $(selector).foundation(method) calls.
+   * Also fires the initialization event for each plugin, consolidating repetitive code.
    * @param {Object} plugin - an instance of a plugin, usually `this` in context.
+   * @param {String} name - the name of the plugin, passed as a camelCased string.
    * @fires Plugin#init
    */
   registerPlugin: function(plugin, name){
     var pluginName = name ? hyphenate(name) : functionName(plugin.constructor).toLowerCase();
-    plugin.uuid = this.GetYoDigits(6, pluginName);
+    plugin.uuid = GetYoDigits(6, pluginName);
 
-    if(!plugin.$element.attr('data-' + pluginName)){ plugin.$element.attr('data-' + pluginName, plugin.uuid); }
+    if(!plugin.$element.attr(`data-${pluginName}`)){ plugin.$element.attr(`data-${pluginName}`, plugin.uuid); }
     if(!plugin.$element.data('zfPlugin')){ plugin.$element.data('zfPlugin', plugin); }
           /**
            * Fires when the plugin has initialized.
            * @event Plugin#init
            */
-    plugin.$element.trigger('init.zf.' + pluginName);
+    plugin.$element.trigger(`init.zf.${pluginName}`);
 
     this._uuids.push(plugin.uuid);
 
@@ -69,8 +63,9 @@ var Foundation = {
   },
   /**
    * @function
-   * Removes the pointer for an instance of a Plugin from the Foundation._activePlugins obj.
-   * Also fires the destroyed event for the plugin, consolidating repeditive code.
+   * Removes the plugins uuid from the _uuids array.
+   * Removes the zfPlugin data attribute, as well as the data-plugin-name attribute.
+   * Also fires the destroyed event for the plugin, consolidating repetitive code.
    * @param {Object} plugin - an instance of a plugin, usually `this` in context.
    * @fires Plugin#destroyed
    */
@@ -78,12 +73,12 @@ var Foundation = {
     var pluginName = hyphenate(functionName(plugin.$element.data('zfPlugin').constructor));
 
     this._uuids.splice(this._uuids.indexOf(plugin.uuid), 1);
-    plugin.$element.removeAttr('data-' + pluginName).removeData('zfPlugin')
+    plugin.$element.removeAttr(`data-${pluginName}`).removeData('zfPlugin')
           /**
            * Fires when the plugin has been destroyed.
            * @event Plugin#destroyed
            */
-          .trigger('destroyed.zf.' + pluginName);
+          .trigger(`destroyed.zf.${pluginName}`);
     for(var prop in plugin){
       plugin[prop] = null;//clean up script to prep for garbage collection.
     }
@@ -109,10 +104,12 @@ var Foundation = {
          fns = {
            'object': function(plgs){
              plgs.forEach(function(p){
+               p = hyphenate(p);
                $('[data-'+ p +']').foundation('_init');
              });
            },
            'string': function(){
+             plugins = hyphenate(plugins);
              $('[data-'+ plugins +']').foundation('_init');
            },
            'undefined': function(){
@@ -128,18 +125,6 @@ var Foundation = {
      }
    },
 
-  /**
-   * returns a random base-36 uid with namespacing
-   * @function
-   * @param {Number} length - number of random base-36 digits desired. Increase for more random strings.
-   * @param {String} namespace - name of plugin to be incorporated in uid, optional.
-   * @default {String} '' - if no plugin name is provided, nothing is appended to the uid.
-   * @returns {String} - unique id
-   */
-  GetYoDigits: function(length, namespace){
-    length = length || 6;
-    return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1) + (namespace ? '-' + namespace : '');
-  },
   /**
    * Initialize plugins on any elements within `elem` (and `elem` itself) that aren't already initialized.
    * @param {Object} elem - jQuery object containing the element to check inside. Also checks the element itself, unless it's the `document` object.
@@ -193,32 +178,49 @@ var Foundation = {
     });
   },
   getFnName: functionName,
-  transitionend: function($elem){
-    var transitions = {
-      'transition': 'transitionend',
-      'WebkitTransition': 'webkitTransitionEnd',
-      'MozTransition': 'transitionend',
-      'OTransition': 'otransitionend'
-    };
-    var elem = document.createElement('div'),
-        end;
 
-    for (var t in transitions){
-      if (typeof elem.style[t] !== 'undefined'){
-        end = transitions[t];
+  addToJquery: function($) {
+    // TODO: consider not making this a jQuery function
+    // TODO: need way to reflow vs. re-initialize
+    /**
+     * The Foundation jQuery method.
+     * @param {String|Array} method - An action to perform on the current jQuery object.
+     */
+    var foundation = function(method) {
+      var type = typeof method,
+          $noJS = $('.no-js');
+
+      if($noJS.length){
+        $noJS.removeClass('no-js');
       }
-    }
-    if(end){
-      return end;
-    }else{
-      end = setTimeout(function(){
-        $elem.triggerHandler('transitionend', [$elem]);
-      }, 1);
-      return 'transitionend';
-    }
+
+      if(type === 'undefined'){//needs to initialize the Foundation object, or an individual plugin.
+        MediaQuery._init();
+        Foundation.reflow(this);
+      }else if(type === 'string'){//an individual method to invoke on a plugin or group of plugins
+        var args = Array.prototype.slice.call(arguments, 1);//collect all the arguments, if necessary
+        var plugClass = this.data('zfPlugin');//determine the class of plugin
+
+        if(plugClass !== undefined && plugClass[method] !== undefined){//make sure both the class and method exist
+          if(this.length === 1){//if there's only one, call it directly.
+              plugClass[method].apply(plugClass, args);
+          }else{
+            this.each(function(i, el){//otherwise loop through the jQuery collection and invoke the method on each
+              plugClass[method].apply($(el).data('zfPlugin'), args);
+            });
+          }
+        }else{//error for no class or no method
+          throw new ReferenceError("We're sorry, '" + method + "' is not an available method for " + (plugClass ? functionName(plugClass) : 'this element') + '.');
+        }
+      }else{//error for invalid argument type
+        throw new TypeError(`We're sorry, ${type} is not a valid parameter. You must use a string representing the method you wish to invoke.`);
+      }
+      return this;
+    };
+    $.fn.foundation = foundation;
+    return $;
   }
 };
-
 
 Foundation.util = {
   /**
@@ -244,50 +246,7 @@ Foundation.util = {
   }
 };
 
-// TODO: consider not making this a jQuery function
-// TODO: need way to reflow vs. re-initialize
-/**
- * The Foundation jQuery method.
- * @param {String|Array} method - An action to perform on the current jQuery object.
- */
-var foundation = function(method) {
-  var type = typeof method,
-      $meta = $('meta.foundation-mq'),
-      $noJS = $('.no-js');
-
-  if(!$meta.length){
-    $('<meta class="foundation-mq">').appendTo(document.head);
-  }
-  if($noJS.length){
-    $noJS.removeClass('no-js');
-  }
-
-  if(type === 'undefined'){//needs to initialize the Foundation object, or an individual plugin.
-    Foundation.MediaQuery._init();
-    Foundation.reflow(this);
-  }else if(type === 'string'){//an individual method to invoke on a plugin or group of plugins
-    var args = Array.prototype.slice.call(arguments, 1);//collect all the arguments, if necessary
-    var plugClass = this.data('zfPlugin');//determine the class of plugin
-
-    if(plugClass !== undefined && plugClass[method] !== undefined){//make sure both the class and method exist
-      if(this.length === 1){//if there's only one, call it directly.
-          plugClass[method].apply(plugClass, args);
-      }else{
-        this.each(function(i, el){//otherwise loop through the jQuery collection and invoke the method on each
-          plugClass[method].apply($(el).data('zfPlugin'), args);
-        });
-      }
-    }else{//error for no class or no method
-      throw new ReferenceError("We're sorry, '" + method + "' is not an available method for " + (plugClass ? functionName(plugClass) : 'this element') + '.');
-    }
-  }else{//error for invalid argument type
-    throw new TypeError("We're sorry, '" + type + "' is not a valid parameter. You must use a string representing the method you wish to invoke.");
-  }
-  return this;
-};
-
 window.Foundation = Foundation;
-$.fn.foundation = foundation;
 
 // Polyfill for requestAnimationFrame
 (function() {
@@ -364,9 +323,9 @@ function functionName(fn) {
   }
 }
 function parseValue(str){
-  if(/true/.test(str)) return true;
-  else if(/false/.test(str)) return false;
-  else if(!isNaN(str * 1)) return parseFloat(str);
+  if ('true' === str) return true;
+  else if ('false' === str) return false;
+  else if (!isNaN(str * 1)) return parseFloat(str);
   return str;
 }
 // Convert PascalCase to kebab-case
@@ -375,4 +334,4 @@ function hyphenate(str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-}(jQuery);
+export {Foundation};

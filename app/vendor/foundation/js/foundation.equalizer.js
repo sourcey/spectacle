@@ -1,60 +1,56 @@
-!function(Foundation, $) {
-  'use strict';
+'use strict';
 
+import $ from 'jquery';
+import { MediaQuery } from './foundation.util.mediaQuery';
+import { onImagesLoaded } from './foundation.util.imageLoader';
+import { GetYoDigits } from './foundation.util.core';
+import { Plugin } from './foundation.plugin';
+
+/**
+ * Equalizer module.
+ * @module foundation.equalizer
+ * @requires foundation.util.mediaQuery
+ * @requires foundation.util.imageLoader if equalizer contains images
+ */
+
+class Equalizer extends Plugin {
   /**
    * Creates a new instance of Equalizer.
    * @class
+   * @name Equalizer
    * @fires Equalizer#init
    * @param {Object} element - jQuery object to add the trigger to.
    * @param {Object} options - Overrides to the default plugin settings.
    */
-  function Equalizer(element, options){
+  _setup(element, options){
     this.$element = element;
     this.options  = $.extend({}, Equalizer.defaults, this.$element.data(), options);
+    this.className = 'Equalizer'; // ie9 back compat
 
     this._init();
-
-    Foundation.registerPlugin(this, 'Equalizer');
   }
-
-  /**
-   * Default settings for plugin
-   */
-  Equalizer.defaults = {
-    /**
-     * Enable height equalization when stacked on smaller screens.
-     * @option
-     * @example true
-     */
-    equalizeOnStack: true,
-    /**
-     * Enable height equalization row by row.
-     * @option
-     * @example false
-     */
-    equalizeByRow: false,
-    /**
-     * String representing the minimum breakpoint size the plugin should equalize heights on.
-     * @option
-     * @example 'medium'
-     */
-    equalizeOn: ''
-  };
 
   /**
    * Initializes the Equalizer plugin and calls functions to get equalizer functioning on load.
    * @private
    */
-  Equalizer.prototype._init = function(){
+  _init() {
     var eqId = this.$element.attr('data-equalizer') || '';
-    var $watched = this.$element.find('[data-equalizer-watch="' + eqId + '"]');
+    var $watched = this.$element.find(`[data-equalizer-watch="${eqId}"]`);
+
+    MediaQuery._init();
 
     this.$watched = $watched.length ? $watched : this.$element.find('[data-equalizer-watch]');
-    this.$element.attr('data-resize', (eqId || Foundation.GetYoDigits(6, 'eq')));
+    this.$element.attr('data-resize', (eqId || GetYoDigits(6, 'eq')));
+    this.$element.attr('data-mutate', (eqId || GetYoDigits(6, 'eq')));
 
     this.hasNested = this.$element.find('[data-equalizer]').length > 0;
     this.isNested = this.$element.parentsUntil(document.body, '[data-equalizer]').length > 0;
     this.isOn = false;
+    this._bindHandler = {
+      onResizeMeBound: this._onResizeMe.bind(this),
+      onPostEqualizedBound: this._onPostEqualized.bind(this)
+    };
 
     var imgs = this.$element.find('img');
     var tooSmall;
@@ -66,43 +62,64 @@
     }
     if((tooSmall !== undefined && tooSmall === false) || tooSmall === undefined){
       if(imgs.length){
-        Foundation.onImagesLoaded(imgs, this._reflow.bind(this));
+        onImagesLoaded(imgs, this._reflow.bind(this));
       }else{
         this._reflow();
       }
     }
+  }
 
-  };
   /**
    * Removes event listeners if the breakpoint is too small.
    * @private
    */
-  Equalizer.prototype._pauseEvents = function(){
+  _pauseEvents() {
     this.isOn = false;
-    this.$element.off('.zf.equalizer resizeme.zf.trigger');
-  };
+    this.$element.off({
+      '.zf.equalizer': this._bindHandler.onPostEqualizedBound,
+      'resizeme.zf.trigger': this._bindHandler.onResizeMeBound,
+	  'mutateme.zf.trigger': this._bindHandler.onResizeMeBound
+    });
+  }
+
+  /**
+   * function to handle $elements resizeme.zf.trigger, with bound this on _bindHandler.onResizeMeBound
+   * @private
+   */
+  _onResizeMe(e) {
+    this._reflow();
+  }
+
+  /**
+   * function to handle $elements postequalized.zf.equalizer, with bound this on _bindHandler.onPostEqualizedBound
+   * @private
+   */
+  _onPostEqualized(e) {
+    if(e.target !== this.$element[0]){ this._reflow(); }
+  }
+
   /**
    * Initializes events for Equalizer.
    * @private
    */
-  Equalizer.prototype._events = function(){
+  _events() {
     var _this = this;
     this._pauseEvents();
     if(this.hasNested){
-      this.$element.on('postequalized.zf.equalizer', function(e){
-        if(e.target !== _this.$element[0]){ _this._reflow(); }
-      });
+      this.$element.on('postequalized.zf.equalizer', this._bindHandler.onPostEqualizedBound);
     }else{
-      this.$element.on('resizeme.zf.trigger', this._reflow.bind(this));
+      this.$element.on('resizeme.zf.trigger', this._bindHandler.onResizeMeBound);
+	  this.$element.on('mutateme.zf.trigger', this._bindHandler.onResizeMeBound);
     }
     this.isOn = true;
-  };
+  }
+
   /**
    * Checks the current breakpoint to the minimum required size.
    * @private
    */
-  Equalizer.prototype._checkMQ = function(){
-    var tooSmall = !Foundation.MediaQuery.atLeast(this.options.equalizeOn);
+  _checkMQ() {
+    var tooSmall = !MediaQuery.is(this.options.equalizeOn);
     if(tooSmall){
       if(this.isOn){
         this._pauseEvents();
@@ -115,18 +132,20 @@
     }
     return tooSmall;
   }
+
   /**
    * A noop version for the plugin
    * @private
    */
-  Equalizer.prototype._killswitch = function(){
+  _killswitch() {
     return;
-  };
+  }
+
   /**
    * Calls necessary functions to update Equalizer upon DOM change
    * @private
    */
-  Equalizer.prototype._reflow = function(){
+  _reflow() {
     if(!this.options.equalizeOnStack){
       if(this._isStacked()){
         this.$watched.css('height', 'auto');
@@ -138,34 +157,40 @@
     }else{
       this.getHeights(this.applyHeight.bind(this));
     }
-  };
+  }
+
   /**
    * Manually determines if the first 2 elements are *NOT* stacked.
    * @private
    */
-  Equalizer.prototype._isStacked = function(){
-    return this.$watched[0].offsetTop !== this.$watched[1].offsetTop;
-  };
+  _isStacked() {
+    if (!this.$watched[0] || !this.$watched[1]) {
+      return true;
+    }
+    return this.$watched[0].getBoundingClientRect().top !== this.$watched[1].getBoundingClientRect().top;
+  }
+
   /**
    * Finds the outer heights of children contained within an Equalizer parent and returns them in an array
    * @param {Function} cb - A non-optional callback to return the heights array to.
    * @returns {Array} heights - An array of heights of children within Equalizer container
    */
-  Equalizer.prototype.getHeights = function(cb){
+  getHeights(cb) {
     var heights = [];
     for(var i = 0, len = this.$watched.length; i < len; i++){
       this.$watched[i].style.height = 'auto';
       heights.push(this.$watched[i].offsetHeight);
     }
     cb(heights);
-  };
+  }
+
   /**
    * Finds the outer heights of children contained within an Equalizer parent and returns them in an array
    * @param {Function} cb - A non-optional callback to return the heights array to.
    * @returns {Array} groups - An array of heights of children within Equalizer container grouped by row with element,height and max as last child
    */
-  Equalizer.prototype.getHeightsByRow = function(cb) {
-    var lastElTopOffset = this.$watched.first().offset().top,
+  getHeightsByRow(cb) {
+    var lastElTopOffset = (this.$watched.length ? this.$watched.first().offset().top : 0),
         groups = [],
         group = 0;
     //group by Row
@@ -178,24 +203,25 @@
         group++;
         groups[group] = [];
         lastElTopOffset=elOffsetTop;
-      };
+      }
       groups[group].push([this.$watched[i],this.$watched[i].offsetHeight]);
     }
 
-    for (var i = 0, len = groups.length; i < len; i++) {
-      var heights = $(groups[i]).map(function () { return this[1]}).get();
+    for (var j = 0, ln = groups.length; j < ln; j++) {
+      var heights = $(groups[j]).map(function(){ return this[1]; }).get();
       var max         = Math.max.apply(null, heights);
-      groups[i].push(max);
+      groups[j].push(max);
     }
     cb(groups);
-  };
+  }
+
   /**
    * Changes the CSS height property of each child in an Equalizer parent to match the tallest
    * @param {array} heights - An array of heights of children within Equalizer container
    * @fires Equalizer#preequalized
    * @fires Equalizer#postequalized
    */
-  Equalizer.prototype.applyHeight = function(heights){
+  applyHeight(heights) {
     var max = Math.max.apply(null, heights);
     /**
      * Fires before the heights are applied
@@ -210,16 +236,17 @@
      * @event Equalizer#postequalized
      */
      this.$element.trigger('postequalized.zf.equalizer');
-  };
+  }
+
   /**
    * Changes the CSS height property of each child in an Equalizer parent to match the tallest by row
    * @param {array} groups - An array of heights of children within Equalizer container grouped by row with element,height and max as last child
    * @fires Equalizer#preequalized
-   * @fires Equalizer#preequalizedRow
-   * @fires Equalizer#postequalizedRow
+   * @fires Equalizer#preequalizedrow
+   * @fires Equalizer#postequalizedrow
    * @fires Equalizer#postequalized
    */
-  Equalizer.prototype.applyHeightByRow = function(groups){
+  applyHeightByRow(groups) {
     /**
      * Fires before the heights are applied
      */
@@ -230,10 +257,10 @@
       if (groupsILength<=2) {
         $(groups[i][0][0]).css({'height':'auto'});
         continue;
-      };
+      }
       /**
         * Fires before the heights per row are applied
-        * @event Equalizer#preequalizedRow
+        * @event Equalizer#preequalizedrow
         */
       this.$element.trigger('preequalizedrow.zf.equalizer');
       for (var j = 0, lenJ = (groupsILength-1); j < lenJ ; j++) {
@@ -241,7 +268,7 @@
       }
       /**
         * Fires when the heights per row have been applied
-        * @event Equalizer#postequalizedRow
+        * @event Equalizer#postequalizedrow
         */
       this.$element.trigger('postequalizedrow.zf.equalizer');
     }
@@ -249,26 +276,43 @@
      * Fires when the heights have been applied
      */
      this.$element.trigger('postequalized.zf.equalizer');
-  };
+  }
+
   /**
    * Destroys an instance of Equalizer.
    * @function
    */
-  Equalizer.prototype.destroy = function(){
+  _destroy() {
     this._pauseEvents();
     this.$watched.css('height', 'auto');
+  }
+}
 
-    Foundation.unregisterPlugin(this);
-  };
+/**
+ * Default settings for plugin
+ */
+Equalizer.defaults = {
+  /**
+   * Enable height equalization when stacked on smaller screens.
+   * @option
+   * @type {boolean}
+   * @default false
+   */
+  equalizeOnStack: false,
+  /**
+   * Enable height equalization row by row.
+   * @option
+   * @type {boolean}
+   * @default false
+   */
+  equalizeByRow: false,
+  /**
+   * String representing the minimum breakpoint size the plugin should equalize heights on.
+   * @option
+   * @type {string}
+   * @default ''
+   */
+  equalizeOn: ''
+};
 
-  Foundation.plugin(Equalizer, 'Equalizer');
-
-  // Exports for AMD/Browserify
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-    module.exports = Equalizer;
-  if (typeof define === 'function')
-    define(['foundation'], function() {
-      return Equalizer;
-    });
-
-}(Foundation, jQuery);
+export {Equalizer};

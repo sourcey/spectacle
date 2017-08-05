@@ -24,38 +24,55 @@ $input-prefix-padding: 1rem !default;
 @mixin foundation-form-prepostfix {
   $height: ($input-font-size + $form-spacing * 1.5);
 
-
   .input-group {
-    display: table;
+    display: if($global-flexbox, flex, table);
     width: 100%;
     margin-bottom: $form-spacing;
 
+    @if $global-flexbox {
+      align-items: stretch;
+    }
+
     > :first-child {
-      border-radius: $global-radius 0 0 $global-radius;
+      border-radius: if($global-text-direction == rtl, 0 $input-radius $input-radius 0, $input-radius 0 0 $input-radius);
     }
 
     > :last-child {
       > * {
-        border-radius: 0 $global-radius $global-radius 0;
+        border-radius: if($global-text-direction == rtl, $input-radius 0 0 $input-radius, 0 $input-radius $input-radius 0);
       }
     }
   }
 
   %input-group-child {
-    display: table-cell;
     margin: 0;
-    vertical-align: middle;
+    white-space: nowrap;
+
+    @if not $global-flexbox {
+      display: table-cell;
+      vertical-align: middle;
+    }
   }
 
   .input-group-label {
     @extend %input-group-child;
-    text-align: center;
-    width: 1%;
-    height: 100%;
     padding: 0 $input-prefix-padding;
-    background: $input-prefix-background;
-    color: $input-prefix-color;
     border: $input-prefix-border;
+    background: $input-prefix-background;
+
+    color: $input-prefix-color;
+    text-align: center;
+    white-space: nowrap;
+
+    @if $global-flexbox {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+    }
+    @else {
+      width: 1%;
+      height: 100%;
+    }
 
     @if has-value($input-prefix-border) {
       &:first-child {
@@ -71,21 +88,48 @@ $input-prefix-padding: 1rem !default;
   .input-group-field {
     @extend %input-group-child;
     border-radius: 0;
-    height: $height;
+
+    @if $global-flexbox {
+      flex: 1 1 0px; // sass-lint:disable-line zero-unit
+      height: auto;
+      min-width: 0;
+    }
+    @else {
+      height: $height;
+    }
   }
 
   .input-group-button {
     @extend %input-group-child;
-    height: 100%;
     padding-top: 0;
     padding-bottom: 0;
     text-align: center;
-    width: 1%;
+
+    @if $global-flexbox {
+      flex: 0 0 auto;
+    }
+    @else {
+      width: 1%;
+      height: 100%;
+    }
 
     a,
     input,
-    button {
-      margin: 0;
+    button,
+    label {
+      @extend %input-group-child;
+      height: $height;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      font-size: $input-font-size;
     }
+  }
+
+  // Specificity bump needed to prevent override by buttons
+  @if not $global-flexbox {
+      .input-group .input-group-button {
+          display: table-cell;
+      }
   }
 }
