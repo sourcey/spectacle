@@ -29,6 +29,29 @@ var common = {
      return html;
   },
 
+  markdownTraversal: function(value, stripParagraph) {
+    if (!value) {
+           return value;
+    }
+
+    var renderer = new marked.Renderer()
+    renderer.code = common.highlight
+
+    // change the default implementation of the heading renderer
+    renderer.heading = common.heading
+
+    var html = marked(value, { renderer: renderer })
+    // We strip the surrounding <p>-tag, if
+    if (stripParagraph) {
+      var $ = cheerio("<root>" + html + "</root>")
+      // Only strip <p>-tags and only if there is just one of them.
+      if ($.children().length === 1 && $.children('p').length === 1) {
+        html = $.children('p').html()
+      }
+    }
+    return html;
+  },
+
   // render heading element with data-traverse-target attribute
   heading : function (text, level, raw) {
     return '<h'
@@ -231,9 +254,6 @@ highlight.configure({
 // Create a custom renderer for highlight.js compatability
 var renderer = new marked.Renderer()
 renderer.code = common.highlight
-
-// change the default implementation of the heading renderer
-renderer.heading = common.heading
 
 // Configure marked.js
 marked.setOptions({
