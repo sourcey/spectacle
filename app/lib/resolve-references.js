@@ -1,14 +1,14 @@
 var fs = require("fs")
 var path = require("path")
 var yaml = require("js-yaml")
-var request = require("request-sync")
+var request = require("sync-request")
 var _ = require("lodash")
 var pathUtils = require("./urls")
 var contexts = require("./reference-contexts")
-var resolveLocal = require("./json-reference").resolveLocal;
-var jsonSearch = require("./json-reference").jsonSearch;
-var LocalRefError = require("./errors").LocalRefError;
-var TreeWalkError = require("./errors").TreeWalkError;
+var resolveLocal = require("./json-reference").resolveLocal
+var jsonSearch = require("./json-reference").jsonSearch
+var LocalRefError = require("./errors").LocalRefError
+var TreeWalkError = require("./errors").TreeWalkError
 
 /**
  * Utilities for the preprocessor that can resolve external references.
