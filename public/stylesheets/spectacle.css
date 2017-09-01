@@ -293,7 +293,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     #spectacle #logo img {
       max-height: 75px; }
   #spectacle .row, #spectacle article .prop-row, #spectacle article .doc-row {
-    max-width: 78.9473684211rem;
+    max-width: auto;
     margin-right: auto;
     margin-left: auto; }
     #spectacle .row::before, #spectacle article .prop-row::before, #spectacle article .doc-row::before, #spectacle .row::after, #spectacle article .prop-row::after, #spectacle article .doc-row::after {

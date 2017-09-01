@@ -497,7 +497,7 @@ textarea {
   display: none !important; }
 
 .row {
-  max-width: 78.9473684211rem;
+  max-width: auto;
   margin-right: auto;
   margin-left: auto; }
   .row::before, .row::after {
@@ -1392,7 +1392,7 @@ a {
 
 hr {
   clear: both;
-  max-width: 78.9473684211rem;
+  max-width: auto;
   height: 0;
   margin: 1.3157894737rem auto;
   border-top: 0;
