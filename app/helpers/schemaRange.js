@@ -28,8 +28,14 @@ module.exports = function(range, options) {
         range.maximum)
   } else {
     // if (hasMaxmium && hasMinimum)
-    return util.format("x %s %d | x %s %d",
+    return util.format("%d %s x %s %d",
+        range.minimum,
         range.minimumExclusive ? "<" : "\u2264",
+        range.minimumExclusive ? "<" : "\u2264",
+        range.maximum)
+    // NOTREACHED
+    return util.format("x %s %d | x %s %d",
+        range.minimumExclusive ? ">" : "\u2265",  // <<----- correction here
         range.minimum,
         range.maximumExclusive ? "<" : "\u2264",
         range.maximum)
