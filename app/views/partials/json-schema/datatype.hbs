@@ -9,6 +9,8 @@
 <span class="json-property-type">
   {{~#if $ref}}
     {{~>json-schema/reference .}}
+  {{~else if items.$ref}}
+    {{~>json-schema/reference .}}
   {{~else}}
     {{~schemaDatatype .}}
   {{~/if}}
