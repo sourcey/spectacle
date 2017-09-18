@@ -46,7 +46,11 @@
 {{#if minLength}}
   <span class="json-property-range" title="String length limits">
     {{#if maxLength}}
-      ({{minLength}} to {{maxLength}} chars)
+      {{#ifeq minLength maxLength}}
+        ({{minLength}} chars)
+      {{else}}
+        ({{minLength}} to {{maxLength}} chars)
+      {{/ifeq}}
     {{else}}
       (at least {{minLength}} chars)
     {{/if}}
