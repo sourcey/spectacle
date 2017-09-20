@@ -164,7 +164,7 @@ function replaceRefs(cwd, top, obj, context) {
 
   for(var k in obj) {
     var val = obj[k];
-    if(typeof val !== "object") { continue; }
+    if(typeof val !== "object" || val === null) { continue; }
 
     if(val.$ref) {
 
