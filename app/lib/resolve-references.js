@@ -59,7 +59,7 @@ function fetchReference(ref) {
   }
   else {
     if(pathUtils.absoluteURL(file)) {
-      src = request('GET', file).body;
+      src = request("GET", file).body;
     }
     else {
       src = fs.readFileSync(file, "utf8")
