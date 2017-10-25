@@ -58,7 +58,7 @@ The basic CLI options are detailed below:
 ```bash
 $ spectacle -h
 
-  Usage: spectacle spactacle [options] <specfile>
+  Usage: spectacle [options] <specfile>
 
   Options:
 
