@@ -1696,7 +1696,7 @@
                     <div class="prop-value">
                       <span class="json-property-type">integer</span>
                       <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits">x ≤ 1 | x ≤ 10</span>
+                      <span class="json-property-range" title="Value limits">1 ≤ x ≤ 10</span>
                     </div>
                   </div>
                   <div class="prop-row prop-inner">
@@ -2967,7 +2967,11 @@
                     </dt>
                     <dt data-property-name="tags">
                       <span class="json-property-name">tags:</span>
-                      <span class="json-property-type">object[]</span>
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/tag.yml#%2FTag">tag.yml#%2FTag</a>
+                        </span>
+                      </span>
                       <span class="json-property-range" title="Value limits"></span>
                     </dt>
                     <dt data-property-name="status" class="has-description">
