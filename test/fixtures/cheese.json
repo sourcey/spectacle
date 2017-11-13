@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Welcome to the sample Cheese Store API reference. This is a live example of how you can use [Spectacle](http://sourcey.com/spectacle) in conjunction with [Swagger](http://swagger.io) to generate beautiful static documentation for your own APIs.\n\nThe Cheese Store API is organized around the [REST](http://en.wikipedia.org/wiki/Representational_State_Transfer) mothodology, and it uses resource-oriented URLs, and common HTTP response codes to indicate API errors. All requests are authenticated using an `api-key` which can be obtained from your developer dashboard. And now, more cheese...\n\nHard cheese gouda say cheese. Ricotta cauliflower cheese cheesecake bocconcini edam bocconcini fromage feta. Who moved my cheese bocconcini cheese and wine cottage cheese cheese on toast who moved my cheese caerphilly stinking bishop. Bocconcini cheesy feet the big cheese macaroni cheese cheesy feet mascarpone.\n",
+        "description": "Welcome to the sample Cheese Store API reference. This is a live example of how you can use [Spectacle](https://sourcey.com/spectacle) in conjunction with [Swagger](https://swagger.io) to generate beautiful static documentation for your own APIs.\n\nThe Cheese Store API is organized around the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) methodology, and it uses resource-oriented URLs, and common HTTP response codes to indicate API errors. All requests are authenticated using an `api-key` which can be obtained from your developer dashboard. And now, more cheese...\n\nHard cheese gouda say cheese. Ricotta cauliflower cheese cheesecake bocconcini edam bocconcini fromage feta. Who moved my cheese bocconcini cheese and wine cottage cheese cheese on toast who moved my cheese caerphilly stinking bishop. Bocconcini cheesy feet the big cheese macaroni cheese cheesy feet mascarpone.\n",
         "version": "1.0.0",
         "title": "Cheese Store",
         "termsOfService": "http://cheesy.sourcey.com/terms",
@@ -148,7 +148,7 @@
                     "Cheese"
                 ],
                 "summary": "Finds cheeses by tags",
-                "description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
+                "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
                 "operationId": "findCheesesByTags",
                 "produces": [
                     "application/xml",
@@ -201,7 +201,7 @@
                     "Cheese"
                 ],
                 "summary": "Find cheese by ID",
-                "description": "Return a specific cheese by it's ID.",
+                "description": "Return a specific cheese by its ID.",
                 "operationId": "getCheeseById",
                 "produces": [
                     "application/xml",
