@@ -1,0 +1,14 @@
+type: object
+required:
+  - id
+  - nullable
+properties:
+  id:
+    type: string
+    description: A uuid
+  nullable:
+    type: string
+    description: A field that is nullable
+example:
+  id: b2eb9ac5-5c45-4ec6-af0a-7911cf1759f6
+  nullable: null

@@ -297,6 +297,25 @@ describe("resolve-references.js", function() {
         top.definitions.should.have.property("fixtures/User.yml");
       });
 
+      it("should not error on null ref", function() {
+
+        top = Object.create(minimal);
+        top["x-spec-path"] = cwd + "/test.json";
+        top.paths = { "/": { get: {
+          description: "",
+          responses: { "200": {
+            description: "",
+            schema: {
+              "$ref": "fixtures/NullExample.yml"
+            }
+          }
+          }}}};
+
+        res.replaceRefs(cwd, top, top, "");
+        top.should.have.property("definitions");
+        top.definitions.should.have.property("fixtures/NullExample.yml");
+      });
+
     });
 
   });
