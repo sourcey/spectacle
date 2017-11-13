@@ -37,7 +37,7 @@ function resolveLocal(doc, obj, ref) {
   }
   for(var k in obj) {
     var val = obj[k];
-    if(typeof val !== "object") { continue; }
+    if(typeof val !== "object" || val === null) { continue; }
     if(val.$ref) {
       var $ref = val.$ref;
       if($ref.indexOf("./") === 0 || $ref.indexOf("../") === 0) {
