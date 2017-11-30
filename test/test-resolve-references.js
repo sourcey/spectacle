@@ -238,6 +238,7 @@ describe("resolve-references.js", function() {
         top.paths = {
           "/": { "$ref": "fixtures/basic-path.yaml" },
         };
+        top["x-spec-path"] = cwd + "/test.json";
         res.replaceReference(cwd, top, top.paths["/"], "paths/%2F/");
         top.should.have.property("tags");
         top.tags.should.be.an.array;
