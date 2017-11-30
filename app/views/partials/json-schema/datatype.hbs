@@ -41,9 +41,9 @@
 </span>
 
 {{!-- Default values --}}
-{{~#if default}}
+{{~#ifneq default undefined}}
   <span class="json-property-default-value" title="Default value">{{~default}}</span>
-{{/if}}
+{{/ifneq}}
 
 {{#if minLength}}
   <span class="json-property-range" title="String length limits">
