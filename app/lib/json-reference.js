@@ -41,7 +41,7 @@ function resolveLocal(doc, obj, ref) {
     if(val.$ref) {
       var $ref = val.$ref;
       if($ref.indexOf("./") === 0 || $ref.indexOf("../") === 0) {
-        $ref = path.join(ref, k, $ref)
+        $ref = path.posix.join(ref, k, $ref)
       }
       if($ref.indexOf("#/") === 0) {
         Object.assign(val, jsonSearch($ref, doc))
@@ -49,7 +49,7 @@ function resolveLocal(doc, obj, ref) {
       }
     }
     else {
-      resolveLocal(doc, val, path.join(ref, k))
+      resolveLocal(doc, val, path.posix.join(ref, k))
     }
   }
 }

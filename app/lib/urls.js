@@ -33,7 +33,7 @@ function join(paths) {
     if(absoluteURL(url) || absoluteURL(val)) {
       return require("url").resolve(url, val)
     }
-    return path.join(url, val)
+    return path.posix.join(url, val)
   }, args[0])
 }
 
@@ -49,7 +49,7 @@ function relative(from, to) {
   if(localToRemote || differentDomains) {
     return to;
   }
-  return path.relative(from, to)
+  return path.posix.relative(from, to)
 }
 
 module.exports = {
