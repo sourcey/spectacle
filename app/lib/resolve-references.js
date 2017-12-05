@@ -62,6 +62,7 @@ function fetchReference(ref) {
       src = request("GET", file).body;
     }
     else {
+      // fs module can handle posix file separator on Windows
       src = fs.readFileSync(file, "utf8")
     }
     if(file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
@@ -78,7 +79,7 @@ function fetchReference(ref) {
   }
 
   if(src.$ref && typeof src.$ref === "string" && !localReference(src.$ref)) {
-    src = fetchReference(pathUtils.join(path.dirname(ref), src.$ref))
+    src = fetchReference(pathUtils.join(path.posix.dirname(ref), src.$ref))
   }
 
   return src;
@@ -95,12 +96,12 @@ function fetchReference(ref) {
 */
 function replaceReference(cwd, top, obj, context) {
   var ref = pathUtils.join(cwd, obj.$ref)
-  var external = pathUtils.relative(path.dirname(top["x-spec-path"]), ref)
+  var external = pathUtils.relative(path.posix.dirname(top["x-spec-path"]), ref)
   var referenced = module.exports.fetchReference(ref)
   if(typeof referenced === "object") {
     resolveLocal(referenced, referenced, "#/")
     referenced["x-external"] = external;
-    module.exports.replaceRefs(path.dirname(ref), top, referenced, context)
+    module.exports.replaceRefs(path.posix.dirname(ref), top, referenced, context)
   }
   if(contexts.definition(context)) {
     if(!top.definitions) { top.definitions = {}; }
@@ -169,7 +170,7 @@ function replaceRefs(cwd, top, obj, context) {
     if(val.$ref) {
 
       if(localReference(val.$ref)) {
-        if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
+        if((cwd === top["x-spec-path"]) || (cwd === path.posix.dirname(top["x-spec-path"]))) { continue; }
         throw new Error(
           "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.")
       }
