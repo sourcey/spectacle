@@ -171,7 +171,7 @@ function replaceRefs(cwd, top, obj, context) {
     if(val.$ref) {
 
       if(localReference(val.$ref)) {
-        if((cwd === top["x-spec-path"]) || (cwd === path.posix.dirname(top["x-spec-path"]))) { continue; }
+        if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
         throw new Error(
           "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.")
       }
