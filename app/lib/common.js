@@ -95,7 +95,7 @@ var common = {
       return this.formatExampleProp(value, root, options)
     }
 
-    console.error('Cannot format object ', value)
+    console.error('Cannot format example on object ', value)
   },
 
   formatExampleProp: function(ref, root, options) {
@@ -155,7 +155,7 @@ var common = {
       return ref.type + (ref.format ? ' (' + ref.format + ')' : '')
     }
 
-    console.error('Cannot format property ', ref)
+    console.error('Cannot format example on property ', ref)
   },
 
   printSchema: function(value) {
