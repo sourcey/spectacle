@@ -290,6 +290,11 @@ article {
     .prop-title {
       font-weight: bold;
     }
+    
+    .prop-subtitle {
+      font-weight: 400;
+      font-size: 80%;
+    }
 
     .prop-name {
       @extend .columns;
