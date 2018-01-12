@@ -63,4 +63,12 @@
       {{@key}}
     </a>
   {{/each}}
+  
+  <h5>Articles</h5>
+  {{#if x-spectacle-articles}}
+    {{#each x-spectacle-articles}}
+      <a href="#article-{{@key}}">{{name}}</a>
+    {{/each}}
+  {{/if}}
+
 </nav>
