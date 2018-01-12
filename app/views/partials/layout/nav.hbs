@@ -4,12 +4,17 @@
   @api public
 --}}
 <nav id="nav" role="navigation">
-  <h5>API Reference</h5>
+  <h5>Topics</h5>
   <a href="#introduction">Introduction</a>
 
   {{#if securityDefinitions}}
-    <!-- <h5>Security</h5> -->
     <a href="#authentication">Authentication</a>
+  {{/if}}
+
+  {{#if x-spectacle-topics}}
+    {{#each x-spectacle-topics}}
+      <a href="#topic-{{@key}}">{{name}}</a>
+    {{/each}}
   {{/if}}
 
   {{#if showTagSummary}}
@@ -63,12 +68,6 @@
       {{@key}}
     </a>
   {{/each}}
-  
-  <h5>Articles</h5>
-  {{#if x-spectacle-articles}}
-    {{#each x-spectacle-articles}}
-      <a href="#article-{{@key}}">{{name}}</a>
-    {{/each}}
-  {{/if}}
+
 
 </nav>
