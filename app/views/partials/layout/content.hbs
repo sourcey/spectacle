@@ -6,6 +6,7 @@
 <article>
   {{>swagger/introduction}}
   {{>swagger/securityDefinitions}}
+  {{>swagger/x-spectacle-topics}}
 
   {{#if showTagSummary}}
     {{>swagger/tags}}
@@ -14,8 +15,6 @@
   {{/if}}
 
   {{>swagger/definitions definitions=definitions}}
-
-  {{>swagger/x-spectacle-articles}}
 
   {{! Powered by link }}
   <div class="doc-row no-margin">
