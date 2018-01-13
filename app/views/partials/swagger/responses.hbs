@@ -34,6 +34,12 @@
               {{md description}}
             </div>
           </div>
+          {{#if schema.type}}
+            <div class="prop-row prop-inner">
+              <div class="prop-name">type</div>
+              <div class="prop-value">{{>json-schema/datatype schema}}</div>
+            </div>
+          {{/if}}
         {{/each}}
       </section>
     </div>
