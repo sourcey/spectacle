@@ -7,6 +7,12 @@
   <h5>Topics</h5>
   <a href="#introduction">Introduction</a>
 
+    <ul>
+    {{#each introSections}}
+        <li><a href="#{{id}}">{{name}}</a></li>
+    {{/each}}
+    </ul>
+
   {{#if securityDefinitions}}
     <a href="#authentication">Authentication</a>
   {{/if}}
