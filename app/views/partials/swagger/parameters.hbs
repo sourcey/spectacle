@@ -16,6 +16,12 @@
           {{#if required}}
             <span class="json-property-required"></span>
           {{/if}}
+          <div class="prop-subtitle">
+            in {{in}}
+          </div>
+          <div class="prop-subtitle">
+            {{~>json-schema/datatype . ~}}
+          </div>
           {{!--
           {{#if schema.$ref}}
             <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span>
@@ -29,20 +35,9 @@
       {{! parameter `collectionFormat` field }}
       {{~#if collectionFormat ~}}
         <div class="prop-row prop-inner">
-          <div class="prop-name param-label">format</div>
-          <div class="prop-value">{{md (swaggerCollectionFormat collectionFormat name) stripParagraph=true}}</div>
+          {{md (swaggerCollectionFormat collectionFormat name) stripParagraph=true}}
         </div>
       {{~/if}}
-      {{! parameter `type` field }}
-      <div class="prop-row prop-inner">
-        <div class="prop-name param-label">type</div>
-        <div class="prop-value">{{~>json-schema/datatype . ~}}</div>
-      </div>
-      {{! parameter `in` field }}
-      <div class="prop-row prop-inner">
-        <div class="prop-name param-label">in</div>
-        <div class="prop-value">{{in}}</div>
-      </div>
     {{/each}}
   </section>
 {{/if}}
