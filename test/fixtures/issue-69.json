@@ -1,0 +1,33 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/aws/healthcheck": {
+      "get": {
+        "tags": [
+          "Healthcheck"
+        ],
+        "summary": "Returns service status",
+        "description": "Checks if our APIs are online",
+        "operationId": "getStatus",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "All services online"
+          },
+          "500": {
+            "description": "Something is wrong",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Db not working",
+                "Redis not working"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
