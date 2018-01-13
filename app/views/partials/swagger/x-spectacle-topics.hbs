@@ -1,0 +1,12 @@
+{{#if x-spectacle-topics}}
+  {{#each x-spectacle-topics}}
+    <h1 id="topic-{{@key}}" data-traverse-target="topic-{{@key}}">{{name}}</h1>
+    <div class="panel">
+      <div class="doc-row">
+        <div class="doc-copy">
+          {{md description}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+{{/if}}
