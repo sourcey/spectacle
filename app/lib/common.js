@@ -85,9 +85,9 @@ var common = {
       return;
     }
 
-  	if (value.example) {
-  	  return value.example;
-  	}
+    if (value.example) {
+      return value.example;
+    }
     else if (value.schema) {
       return this.formatExampleProp(value.schema, root, options)
     }
@@ -95,7 +95,7 @@ var common = {
       return this.formatExampleProp(value, root, options)
     }
 
-    console.error('Cannot format object ', value)
+    console.error('Cannot format example on object ', value)
   },
 
   formatExampleProp: function(ref, root, options) {
@@ -123,10 +123,10 @@ var common = {
       return ref.example;
     }
     else if (ref.$ref) {
-  	  var remoteRef = this.resolveSchemaReference(ref.$ref, root)
+      var remoteRef = this.resolveSchemaReference(ref.$ref, root)
       if (remoteRef)
-  	    return this.formatExampleProp(remoteRef, root, options)
-  	}
+        return this.formatExampleProp(remoteRef, root, options)
+      }
     else if (ref.properties) { // && ref.type == 'object'
       var obj = {};
       Object.keys(ref.properties).forEach(function(k) {
@@ -148,14 +148,14 @@ var common = {
       })
       return obj;
     }
-  	else if (ref.items && ref.type == 'array') {
-  	  return [ this.formatExampleProp(ref.items, root, options) ];
-  	}
+    else if (ref.items && ref.type == 'array') {
+      return [ this.formatExampleProp(ref.items, root, options) ];
+    }
     else if (ref.type) {
-  	  return ref.type + (ref.format ? ' (' + ref.format + ')' : '')
-  	}
+      return ref.type + (ref.format ? ' (' + ref.format + ')' : '')
+    }
 
-    console.error('Cannot format property ', ref)
+    console.error('Cannot format example on property ', ref)
   },
 
   printSchema: function(value) {
