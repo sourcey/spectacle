@@ -13,7 +13,7 @@
 
   {{#if x-spectacle-topics}}
     {{#each x-spectacle-topics}}
-      <a href="#topic-{{@key}}">{{name}}</a>
+      <a href="#topic-{{htmlId @key}}">{{@key}}</a>
     {{/each}}
   {{/if}}
 
