@@ -43,3 +43,12 @@
     content: $label;
   }
 }
+
+@mixin inset-panel() {
+  background-color: transparent;
+  border: none;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #404040;
+  border-radius: 5px;
+  box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+}
