@@ -4,10 +4,15 @@
 --}}
 
 <article>
+  <h1 class="doc-title">{{info.title}}
+    <span>API Reference</span>
+  </h1>
+   {{#unless info.x-spectacle-hide}}
     {{>swagger/introduction}}
-    {{#unless securityDefinitions.x-spectacle-hide}}
-      {{>swagger/securityDefinitions}}
-    {{/unless}}
+  {{/unless}}
+  {{#unless securityDefinitions.x-spectacle-hide}}
+    {{>swagger/securityDefinitions}}
+  {{/unless}}
   {{>swagger/x-spectacle-topics}}
 
   {{#if showTagSummary}}
