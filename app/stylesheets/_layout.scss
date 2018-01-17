@@ -398,16 +398,39 @@ article {
       font-family: Consolas,"Liberation Mono",Courier,monospace;
       font-weight: inherit;
       color: inherit;
-      background-color: transparent;
-      border: none;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #404040;
-      border-radius: 5px;
-      box-shadow: 0 0 200px rgba(0, 0, 0, 0.33) inset;
+      @include inset-panel();
       word-spacing: normal;
       white-space: pre-wrap;
       word-break: normal;
     }
+
+
+    .swagger-response-headers {
+
+      @include inset-panel()
+      margin-bottom: 1.5rem;
+
+      thead {
+        color: $white;
+        font-size: 1rem;
+        opacity: 0.8;
+        background-color: transparent;
+        border: none;
+      }
+
+      tbody {
+        border: none;
+        background-color: transparent;
+
+        tr {
+          background-color: transparent;
+          border-top: 1px solid #404040;
+        }
+
+      }
+
+    }
+
   }
 
   //
