@@ -5,12 +5,14 @@
 --}}
 <nav id="nav" role="navigation">
   <h5>Topics</h5>
-  <a href="#introduction">Introduction</a>
+  {{#unless info.x-spectacle-hide}}
+    <a href="#introduction">Introduction</a>
+  {{/unless}}
 
   {{#if securityDefinitions}}
-      {{#unless securityDefinitions.x-spectacle-hide}}
-        <a href="#authentication">Authentication</a>
-      {{/unless}}
+   {{#unless securityDefinitions.x-spectacle-hide}}
+     <a href="#authentication">Authentication</a>
+   {{/unless}}
   {{/if}}
 
   {{#if x-spectacle-topics}}
