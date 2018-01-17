@@ -4,8 +4,10 @@
 --}}
 
 <article>
-  {{>swagger/introduction}}
-  {{>swagger/securityDefinitions}}
+    {{>swagger/introduction}}
+    {{#unless securityDefinitions.x-spectacle-hide}}
+      {{>swagger/securityDefinitions}}
+    {{/unless}}
   {{>swagger/x-spectacle-topics}}
 
   {{#if showTagSummary}}

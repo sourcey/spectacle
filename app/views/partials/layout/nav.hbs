@@ -8,7 +8,9 @@
   <a href="#introduction">Introduction</a>
 
   {{#if securityDefinitions}}
-    <a href="#authentication">Authentication</a>
+      {{#unless securityDefinitions.x-spectacle-hide}}
+        <a href="#authentication">Authentication</a>
+      {{/unless}}
   {{/if}}
 
   {{#if x-spectacle-topics}}
