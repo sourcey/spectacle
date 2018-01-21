@@ -22,6 +22,10 @@ module.exports = function(options, specData) {
     copy.logo = path.basename(options.logoFile)
   }
 
+  if (options.logoUrl) {
+    copy.logoUrl = options.logoUrl;
+  }
+
   // The "body"-parameter in each operation is stored in a
   // separate field "_request_body".
   if (copy.paths) {
