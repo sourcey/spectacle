@@ -9,7 +9,13 @@
     </button>
     {{#if logo}}
       <div id="logo">
+        {{#if logoUrl}}
+          <a href="{{logoUrl}}">
+        {{/if}}
         <img src="images/{{logo}}" title="{{info.title}}" />
+        {{#if logoUrl}}
+          </a>
+        {{/if}}
       </div>
     {{/if}}
     {{>layout/nav}}
