@@ -1,0 +1,23 @@
+swagger: '2.0'
+info:
+  description: https://github.com/sourcey/spectacle/issues/98
+  title: issue 98
+definitions:
+  Challenges:
+    type: object
+    properties:
+      total:
+        description: Total number of challenges
+        type: integer
+      completed:
+        description: Number of challenges completed by participant
+        type: integer
+paths:
+  /challenges:
+    get:
+      description: 'issue 98'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Challenges'
