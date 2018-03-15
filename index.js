@@ -17,7 +17,7 @@ var fs = require('fs'),
 tmp.setGracefulCleanup()
 
 var defaults = {
-    silent: false,
+    quiet: false,
     port: 4400,
     targetDir: path.resolve(process.cwd(), 'public'),
     targetFile: 'index.html',
@@ -59,7 +59,7 @@ module.exports = function (options) {
     //= Setup Grunt to do the heavy lifting
 
     grunt.initConfig(_.merge({ pkg: package }, config))
-    if(opts.silent) {
+    if(opts.quiet) {
         grunt.log.writeln = function() {}
         grunt.log.write = function() {}
         grunt.log.header = function() {}
@@ -128,14 +128,14 @@ module.exports = function (options) {
     var donePromise = new Promise(function(resolve, reject) {
       grunt.task.options({
           error: function(e) {
-              if(!opts.silent) {
+              if(!opts.quiet) {
                   console.warn('Task error:', e)
               }
               // TODO: fail here or push on?
               reject(e)
           },
           done: function() {
-              if(!opts.silent) {
+              if(!opts.quiet) {
                   console.log('All tasks complete')
               }
               resolve()
