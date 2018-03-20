@@ -5,29 +5,29 @@
  */
 module.exports = function (value) {
   return dataType(value)
-};
+}
 
 function dataType(value) {
   // console.log('dataType', value)
-  if (!value) return null;
+  if (!value) return null
   if (typeof value === 'string') {
     throw 'invalid value'
   }
   if (value['anyOf'] || value['allOf'] || value['oneOf']) {
-    return '';
+    return ''
   }
   if (!value.type) {
-    return 'object';
+    return 'object'
   }
   if (value.type === 'array') {
     if (!value.items) {
-      return 'array';
+      return 'array'
     }
     if (value.items.type) {
-      return dataType(value.items) + '[]';
+      return dataType(value.items) + '[]'
     } else {
-      return 'object[]';
+      return 'object[]'
     }
   }
-  return value.type;
+  return value.type
 }

@@ -744,7 +744,7 @@ definitions:
           name: tag
           wrapped: true
         items:
-          $ref: 'tag.yml#/Tag/'
+          $ref: 'tag.yml#/Tag'
       status:
         type: string
         description: Cheese status in the store

@@ -1123,6 +1123,9 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         border-top: 1px solid #ddd; }
       #spectacle article .prop-row .prop-title {
         font-weight: bold; }
+      #spectacle article .prop-row .prop-subtitle {
+        font-weight: 400;
+        font-size: 80%; }
       #spectacle article .prop-row .prop-name {
         text-align: right;
         padding-right: 0.85rem !important;

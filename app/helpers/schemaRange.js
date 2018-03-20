@@ -10,12 +10,12 @@ var util = require('util')
  * @param {Handlebars} engine the current handlebars engine
  */
 module.exports = function(range, options) {
-  var hasMinimum = range.minimum || range.minimum === 0;
-  var hasMaximum = range.maximum || range.maximum === 0;
+  var hasMinimum = range.minimum || range.minimum === 0
+  var hasMaximum = range.maximum || range.maximum === 0
 
   if (!hasMinimum && !hasMaximum) {
     // There is no range
-    return "";
+    return ""
   }
 
   if (hasMinimum && !hasMaximum) {
@@ -41,7 +41,7 @@ module.exports = function(range, options) {
         range.maximum)
   }
 
-  // var numberSet = "";
+  // var numberSet = ""
   // if (range.type === "integer") {
   //   numberSet = "\u2208 \u2124" // ELEMENT OF - DOUBLE-STRUCK CAPITAL Z
   // } else if (range.type === "number") {
@@ -67,4 +67,4 @@ module.exports = function(range, options) {
   //       range.maximumExclusive ? "<" : "\u2264",
   //       range.maximum)
   // }
-};
+}

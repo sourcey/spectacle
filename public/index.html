@@ -19,9 +19,8 @@
         <div id="logo">
           <img src="images/cheese.png" title="Cheese Store" /> </div>
         <nav id="nav" role="navigation">
-          <h5>API Reference</h5>
+          <h5>Topics</h5>
           <a href="#introduction">Introduction</a>
-          <!-- <h5>Security</h5> -->
           <a href="#authentication">Authentication</a>
           <h5>Operations</h5>
           <section>
@@ -113,10 +112,10 @@
         </button>
         <div class="example-box doc-content"></div>
         <article>
+          <h1 class="doc-title">Cheese Store
+            <span>API Reference</span>
+          </h1>
           <div id="introduction" data-traverse-target="introduction">
-            <h1 class="doc-title">Cheese Store
-              <span>API Reference</span>
-            </h1>
             <div class="doc-row">
               <div class="doc-copy">
                 <p>Welcome to the sample Cheese Store API reference. This is a live example of how you can use
@@ -259,7 +258,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
@@ -320,7 +322,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
@@ -420,7 +425,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
@@ -549,26 +557,17 @@
                     <div class="prop-name">
                       <div class="prop-title">tags</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in query </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string[]</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Tags to filter by</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">format</div>
-                    <div class="prop-value">multiple parameters (<code>tags=aaa&amp;tags=bbb</code>)</div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
+                  <div class="prop-row prop-inner"> Array values passed as multiple parameters: <code>?tags=aaa&amp;tags=bbb</code> </div>
                 </section>
               </div>
               <div class="doc-examples"></div>
@@ -588,6 +587,17 @@
                     </div>
                     <div class="prop-value">
                       <p>Successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
                     </div>
                   </div>
                   <div class="prop-row prop-group">
@@ -626,7 +636,10 @@
       <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
     ],
     <span class="hljs-attr">&quot;tags&quot;</span>: [
-      <span class="hljs-literal">null</span>
+      {
+        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+      }
     ],
     <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
   }
@@ -705,22 +718,16 @@
                     <div class="prop-name">
                       <div class="prop-title">cheeseId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>ID of cheese to return</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -778,7 +785,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
@@ -856,60 +866,42 @@
                     <div class="prop-name">
                       <div class="prop-title">cheeseId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>ID of the cheese to be updated</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">name</div>
+                      <div class="prop-subtitle"> in formData </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Updated name of the cheese</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">status</div>
+                      <div class="prop-subtitle"> in formData </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Updated status of the cheese</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
                   </div>
                 </section>
               </div>
@@ -1001,42 +993,30 @@
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">api_key</div>
+                      <div class="prop-subtitle"> in header </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p class="no-description">(no description)</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">header</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">cheeseId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Cheese ID to delete</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -1136,26 +1116,17 @@
                     <div class="prop-name">
                       <div class="prop-title">status</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in query </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string[]</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Status values that need to be considered for filter</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">format</div>
-                    <div class="prop-value">multiple parameters (<code>status=aaa&amp;status=bbb</code>)</div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string[]</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
+                  <div class="prop-row prop-inner"> Array values passed as multiple parameters: <code>?status=aaa&amp;status=bbb</code> </div>
                 </section>
               </div>
               <div class="doc-examples"></div>
@@ -1175,6 +1146,17 @@
                     </div>
                     <div class="prop-value">
                       <p>Successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
                     </div>
                   </div>
                   <div class="prop-row prop-group">
@@ -1213,7 +1195,10 @@
       <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
     ],
     <span class="hljs-attr">&quot;tags&quot;</span>: [
-      <span class="hljs-literal">null</span>
+      {
+        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+      }
     ],
     <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
   }
@@ -1285,60 +1270,42 @@
                     <div class="prop-name">
                       <div class="prop-title">cheeseId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>ID of cheese to update</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">additionalMetadata</div>
+                      <div class="prop-subtitle"> in formData </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Additional data to pass to server</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">file</div>
+                      <div class="prop-subtitle"> in formData </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">file</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Image file to upload</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">file</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">formData</div>
                   </div>
                 </section>
               </div>
@@ -1382,7 +1349,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }
@@ -1468,6 +1438,17 @@
                       <p>Successful operation</p>
                     </div>
                   </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Cheese">Cheese</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
                 </section>
               </div>
               <div class="doc-examples">
@@ -1490,7 +1471,10 @@
       <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
     ],
     <span class="hljs-attr">&quot;tags&quot;</span>: [
-      <span class="hljs-literal">null</span>
+      {
+        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+      }
     ],
     <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
   }
@@ -1686,22 +1670,16 @@
                     <div class="prop-name">
                       <div class="prop-title">orderId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits">1 ≤ x ≤ 10</span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>ID of cheese that needs to be fetched</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits">1 ≤ x ≤ 10</span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -1808,22 +1786,16 @@
                     <div class="prop-name">
                       <div class="prop-title">orderId</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">integer</span>
+                        <span class="json-property-format">(int64)</span>
+                        <span class="json-property-range" title="Value limits">x ≥ 1</span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>ID of the order that needs to be deleted</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">integer</span>
-                      <span class="json-property-format">(int64)</span>
-                      <span class="json-property-range" title="Value limits">x ≥ 1</span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -2078,41 +2050,29 @@
                     <div class="prop-name">
                       <div class="prop-title">username</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in query </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>The username for login</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
-                  </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
                       <div class="prop-title">password</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in query </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>The password for login in clear text</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">query</div>
                   </div>
                 </section>
               </div>
@@ -2129,6 +2089,13 @@
                     </div>
                     <div class="prop-value">
                       <p>Successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
                     </div>
                   </div>
                   <div class="prop-row prop-group">
@@ -2299,21 +2266,15 @@
                     <div class="prop-name">
                       <div class="prop-title">username</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>The username of the customer to be fetched.</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -2438,21 +2399,15 @@
                     <div class="prop-name">
                       <div class="prop-title">username</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Username of the customer to update.</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -2554,21 +2509,15 @@
                     <div class="prop-name">
                       <div class="prop-title">username</div>
                       <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
                     </div>
                     <div class="prop-value">
                       <p>Username of the customer to delete.</p>
                     </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">type</div>
-                    <div class="prop-value">
-                      <span class="json-property-type">string</span>
-                      <span class="json-property-range" title="Value limits"></span>
-                    </div>
-                  </div>
-                  <div class="prop-row prop-inner">
-                    <div class="prop-name param-label">in</div>
-                    <div class="prop-value">path</div>
                   </div>
                 </section>
               </div>
@@ -2675,6 +2624,7 @@
                       <span class="json-property-name">complete:</span>
                       <span class="json-property-type">boolean</span>
                       <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-default-value" title="Default value">false</span>
                     </dt>
                   </dl>
                 </section>
@@ -3009,7 +2959,7 @@
                       <span class="json-property-name">tags:</span>
                       <span class="json-property-type">
                         <span class="json-schema-ref-array">
-                          <a class="json-schema-ref" href="#/definitions/tag.yml#%2FTag">tag.yml#%2FTag</a>
+                          <a class="json-schema-ref" href=" #definition-tag.yml--Tag">tag.yml#/Tag</a>
                         </span>
                       </span>
                       <span class="json-property-range" title="Value limits"></span>
@@ -3044,7 +2994,10 @@
     <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
   ],
   <span class="hljs-attr">&quot;tags&quot;</span>: [
-    <span class="hljs-literal">null</span>
+    {
+      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
+      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+    }
   ],
   <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
 }

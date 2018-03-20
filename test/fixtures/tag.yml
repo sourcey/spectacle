@@ -1,4 +1,4 @@
-# Extracted from cheese.json#/definitions/Tag
+# Extracted from cheese.yml#/definitions/Tag
 Tag:
   type: object
   properties:

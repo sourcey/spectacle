@@ -126,7 +126,7 @@ var common = {
       var remoteRef = this.resolveSchemaReference(ref.$ref, root)
       if (remoteRef)
         return this.formatExampleProp(remoteRef, root, options)
-      }
+    }
     else if (ref.properties) { // && ref.type == 'object'
       var obj = {};
       Object.keys(ref.properties).forEach(function(k) {
@@ -155,7 +155,7 @@ var common = {
       return ref.type + (ref.format ? ' (' + ref.format + ')' : '')
     }
 
-    console.error('Cannot format example on property ', ref)
+    console.error('Cannot format example on property ', ref, ref.$ref)
   },
 
   printSchema: function(value) {
@@ -188,19 +188,18 @@ var common = {
   },
 
   resolveSchemaReference: function(reference, json) {
+    var hashParts
+
     reference = reference.trim()
-    if (reference.lastIndexOf('#', 0) < 0) {
-      console.warn('Remote references not supported yet. Reference must start with "#" (but was ' + reference + ')')
-      return {};
+    if (reference.indexOf('#') === 0) {
+      var hash = reference.split('#')[1]
+      hashParts = hash.split('/')
     }
-    var components = reference.split('#')
-    var url = components[0];
-    var hash = components[1];
-    var hashParts = hash.split('/')
-    // TODO : Download remote json from url if url not empty
-    var current = json; //options.data.root
-    // return current;
-      // console.log('aaaaaaaaaaaaaaaaaa', hashParts)
+    else {
+      hashParts = [ 'definitions', reference ]
+    }
+
+    var current = json;
     hashParts.forEach(function(hashPart) {
       // Traverse schema from root along the path
       if (hashPart.trim().length > 0) {
