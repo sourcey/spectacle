@@ -82,7 +82,7 @@ describe("preprocessor referencing", function() {
       });
 
       it("should update '$ref'", function() {
-        response.schema.should.have.property("$ref", "#/definitions/fixtures%2FUser.yml");
+        response.schema.should.have.property("$ref", "fixtures/User.yml");
       });
 
       it("should include the definition globally", function() {

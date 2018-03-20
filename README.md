@@ -22,6 +22,7 @@ See a demo of Spectacle in action here: [http://cheesestore.github.io](http://ch
 * **OpenAPI/Swagger 2.0 support**: Support for the latest OpenAPI/Swagger specification.
 * **Highly configurable**: Easily configurable Handlebars templates and SCSS styles so you can add your own design and flavour without going bald. See [Custom Builds](#custom-builds)
 * **Markdown support**: Render markdown written in any of your API descriptions.
+* **Remote file references**: Support for swagger specs split across multiple files.
 * **Clean responsive design**: Responsive HTML5 and CSS3 layout built with [Foundation 6](http://foundation.zurb.com/sites.html) that looks great on all devices and screen sizes.
 * **Embed into your existing website**: An embedded option so that generate partial docs without a HTML `<body>` for convenient integration into your existing website.
 * **Live preview developer mode**: Development mode that starts a local HTTP server with a file watcher and live reload so you can preview live changes in your browser as you update your spec.
@@ -47,7 +48,7 @@ Your generated documentation will be located in the `public` directory by defaul
 
 ### Docker
 
-A basic Docker script is included that allows Spectacle to be run from the inside, not outside. It's useful, for instance, in a Gitlab CI pipeline. Thanks @alexeiaguiar.
+[Docker](https://hub.docker.com/r/sourcey/spectacle/) images are included that allow Spectacle to be run from the inside. It's useful, for instance, in a Gitlab CI pipeline. Thanks @alexeiaguiar.
 
 How to use it: `docker run -it sourcey/spectacle /bin/sh`
 

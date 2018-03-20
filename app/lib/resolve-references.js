@@ -106,7 +106,8 @@ function replaceReference(cwd, top, obj, context) {
   if(contexts.definition(context)) {
     if(!top.definitions) { top.definitions = {}; }
     if(!top.definitions[external]) { top.definitions[external] = referenced; }
-    Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") })
+    // Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") })
+    Object.assign(obj, { "$ref": external })
   }
   else if(contexts.path(context)) {
     Object.keys(referenced).forEach(function(method) {
