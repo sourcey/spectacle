@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/sourcey/spectacle.git"
   },
+  "engines": {
+    "node": ">=8"
+  },
   "keywords": [
     "openapi",
     "swagger",
