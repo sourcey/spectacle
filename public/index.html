@@ -155,7 +155,16 @@
                   <span class="security-name">cheesy_auth</span>
                   <span class="swagger-security-definition-oauth2"></span>
                 </h3>
+                <section class="security-definition-description">
+                  <p>Provides OAuth access to the cheese</p>
+                </section>
                 <section class="swagger-security-definition-properties">
+                  <div class="prop-row security-definition-property">
+                    <div class="prop-name">
+                      <div class="prop-title security-definition-property-name">type</div>
+                    </div>
+                    <div class="prop-value security-definition-property-type"> oauth2 </div>
+                  </div>
                   <div class="prop-row security-definition-property">
                     <div class="prop-name">
                       <div class="prop-title security-definition-property-name">authorizationUrl</div>
@@ -168,6 +177,17 @@
                     </div>
                     <div class="prop-value security-definition-property-type"> implicit </div>
                   </div>
+                  <div class="prop-row security-definition-property">
+                    <div class="prop-name">
+                      <div class="prop-title security-definition-property-name">scopes</div>
+                    </div>
+                    <div class="prop-value security-definition-property-type">
+                      <span id="security-definition-scope-write:cheeses">write:cheeses</span>
+                      <p class="security-definition-scope-description">Modify cheeses in your account</p>
+                      <span id="security-definition-scope-read:cheeses">read:cheeses</span>
+                      <p class="security-definition-scope-description">Read your cheeses</p>
+                    </div>
+                  </div>
                 </section>
               </div>
             </div>
@@ -179,7 +199,16 @@
                   <span class="security-name">api_key</span>
                   <span class="swagger-security-definition-apiKey"></span>
                 </h3>
+                <section class="security-definition-description">
+                  <p>Provides API Key access to the cheese</p>
+                </section>
                 <section class="swagger-security-definition-properties">
+                  <div class="prop-row security-definition-property">
+                    <div class="prop-name">
+                      <div class="prop-title security-definition-property-name">type</div>
+                    </div>
+                    <div class="prop-value security-definition-property-type"> apiKey </div>
+                  </div>
                   <div class="prop-row security-definition-property">
                     <div class="prop-name">
                       <div class="prop-title security-definition-property-name">name</div>
@@ -361,7 +390,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -515,7 +547,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -676,7 +711,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -959,7 +997,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1074,7 +1115,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1235,7 +1279,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1376,7 +1423,10 @@
                         <td>
                           <a href="#security-definition-cheesy_auth">cheesy_auth</a>
                         </td>
-                        <td> write:cheeses , read:cheeses </td>
+                        <td>
+                          <a href="#security-definition-scope-write:cheeses">write:cheeses</a>,
+                          <a href="#security-definition-scope-read:cheeses">read:cheeses</a>
+                        </td>
                       </tr>
                     </tbody>
                   </table>

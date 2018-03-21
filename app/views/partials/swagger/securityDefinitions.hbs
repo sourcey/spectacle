@@ -16,20 +16,28 @@
             <span class="security-name">{{@key}}</span>
             <span class="swagger-security-definition-{{type}}"></span>
           </h3>
+          {{#if description}}
+            <section class="security-definition-description">
+              {{md description}}
+            </section>
+          {{/if}}
           <section class="swagger-security-definition-properties">
             {{#each this}}
-              {{#ifin @key "['type', 'scopes']"}}
+              {{#ifin @key "['description']"}}
               {{else}}
                 <div class="prop-row security-definition-property">
                   <div class="prop-name">
                     <div class="prop-title security-definition-property-name">{{@key}}</div>
                   </div>
                   <div class="prop-value security-definition-property-type">
-                    {{#ifeq @key 'description'}}
-                        {{md this}}
+                    {{#ifin @key "['scopes']"}}
+                      {{#each this}}
+                        <span id="security-definition-scope-{{htmlId @key}}">{{@key}}</span>
+                        <p class="security-definition-scope-description">{{this}}</p>
+                      {{/each}}
                     {{else}}
-                        {{this}}
-                    {{/ifeq}}
+                      {{this}}
+                    {{/ifin}}
                   </div>
                 </div>
               {{/ifin}}

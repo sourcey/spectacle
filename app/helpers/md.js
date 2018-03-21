@@ -10,6 +10,7 @@ var common = require('../lib/common')
  *      markdown, rendered as HTML.
  */
 module.exports = function(value, options) {
+  value = value + ''
   var html = common.markdown(value, options.hash ? options.hash.stripParagraph : false)
   return new Handlebars.SafeString(html)
 };

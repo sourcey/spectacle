@@ -290,7 +290,7 @@ article {
     .prop-title {
       font-weight: bold;
     }
-    
+
     .prop-subtitle {
       font-weight: 400;
       font-size: 80%;
@@ -475,6 +475,18 @@ article {
     }
   }
 
+  //
+  // Security definition panel
+
+  .security-definition-description {
+    margin-top: 1.5rem;
+    margin-bottom: .5rem;
+  }
+
+  .security-definition-scope-description {
+    color: $dark-gray;
+    margin-bottom: .5rem;
+  }
 
   //
   // Definition panel
