@@ -1220,6 +1220,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         right: 50%; } }
     #spectacle article .operation .operation-path {
       word-break: break-all; }
+    #spectacle article .security-definition-description {
+      margin-top: 1.5rem;
+      margin-bottom: .5rem; }
+    #spectacle article .security-definition-scope-description {
+      color: #8a8a8a;
+      margin-bottom: .5rem; }
     #spectacle article .definition .doc-examples h5 {
       margin-top: -1rem; }
     #spectacle article .definition .doc-copy > section {

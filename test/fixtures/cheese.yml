@@ -583,6 +583,7 @@ securityDefinitions:
   cheesy_auth:
     type: oauth2
     authorizationUrl: 'http://cheesy.sourcey.com/api/oauth/dialog'
+    description: Provides OAuth access to the cheese
     flow: implicit
     scopes:
       'write:cheeses': Modify cheeses in your account
@@ -590,6 +591,7 @@ securityDefinitions:
   api_key:
     type: apiKey
     name: api_key
+    description: Provides API Key access to the cheese
     in: header
 definitions:
   Order:
