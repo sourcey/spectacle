@@ -14,6 +14,9 @@
   {{~else}}
     {{~schemaDatatype .}}
   {{~/if}}
+  {{~#if x-nullable}}
+    | null
+  {{~/if}}
 </span>
 {{~#if format}}
   <span class="json-property-format">({{format}})</span>
