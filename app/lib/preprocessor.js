@@ -11,6 +11,7 @@ module.exports = function(options, specData) {
     console.warn("[WARNING] preprocessor must be given 'options.specFile'.  Defaulting to 'cwd'.")
     options.specFile = process.cwd()
   }
+  // Don't normalize x-spec-path to posix path. It must be a platoform specific.
   specData["x-spec-path"] = options.specFile;
 
   var copy = _.cloneDeep(specData)
