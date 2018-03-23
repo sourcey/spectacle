@@ -10,34 +10,36 @@
 {{#if parameters}}
   <section class="swagger-request-params">
     {{#each parameters}}
-      <div class="prop-row prop-group">
-        <div class="prop-name">
-          <div class="prop-title">{{name}}</div>
-          {{#if required}}
-            <span class="json-property-required"></span>
-          {{/if}}
-          <div class="prop-subtitle">
-            in {{in}}
+      {{#schemaReferenceContext $ref}}
+        <div class="prop-row prop-group">
+          <div class="prop-name">
+            <div class="prop-title">{{name}}</div>
+            {{#if required}}
+              <span class="json-property-required"></span>
+            {{/if}}
+            <div class="prop-subtitle">
+              in {{in}}
+            </div>
+            <div class="prop-subtitle">
+              {{~>json-schema/datatype . ~}}
+            </div>
+            {{!--
+            {{#if schema.$ref}}
+              <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span>
+            {{/if}}
+            --}}
           </div>
-          <div class="prop-subtitle">
-            {{~>json-schema/datatype . ~}}
+          <div class="prop-value">
+            {{>swagger/description description}}
           </div>
-          {{!--
-          {{#if schema.$ref}}
-            <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span>
-          {{/if}}
-          --}}
         </div>
-        <div class="prop-value">
-          {{>swagger/description description}}
-        </div>
-      </div>
-      {{! parameter `collectionFormat` field }}
-      {{~#if collectionFormat ~}}
-        <div class="prop-row prop-inner">
-          {{md (swaggerCollectionFormat collectionFormat name) stripParagraph=true}}
-        </div>
-      {{~/if}}
+        {{! parameter `collectionFormat` field }}
+        {{~#if collectionFormat ~}}
+          <div class="prop-row prop-inner">
+            {{md (swaggerCollectionFormat collectionFormat name) stripParagraph=true}}
+          </div>
+        {{~/if}}
+      {{/schemaReferenceContext}}
     {{/each}}
   </section>
 {{/if}}
