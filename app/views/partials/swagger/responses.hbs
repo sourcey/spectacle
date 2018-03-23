@@ -21,25 +21,27 @@
         --}}
 
         {{#each responses}}
-          <div class="prop-row prop-group">
-            <div class="prop-name">
-              {{! Use response-code and http-name as text}}
-              <div class="prop-title">{{@key}} {{httpResponseCode @key}}</div>
-              {{#if schema}}
-                <div class="prop-ref">{{>json-schema/reference schema}}</div>
-                <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span> -->
-              {{/if}}
+          {{#schemaReferenceContext $ref}}
+            <div class="prop-row prop-group">
+              <div class="prop-name">
+                {{! Use response-code and http-name as text}}
+                <div class="prop-title">{{@key}} {{httpResponseCode @key}}</div>
+                {{#if schema}}
+                  <div class="prop-ref">{{>json-schema/reference schema}}</div>
+                  <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href="{{$ref}}">{{$ref}}</a></span> -->
+                {{/if}}
+              </div>
+              <div class="prop-value">
+                {{md description}}
+              </div>
             </div>
-            <div class="prop-value">
-              {{md description}}
-            </div>
-          </div>
-          {{#if schema.type}}
-            <div class="prop-row prop-inner">
-              <div class="prop-name">type</div>
-              <div class="prop-value">{{>json-schema/datatype schema}}</div>
-            </div>
-          {{/if}}
+            {{#if schema.type}}
+              <div class="prop-row prop-inner">
+                <div class="prop-name">type</div>
+                <div class="prop-value">{{>json-schema/datatype schema}}</div>
+              </div>
+            {{/if}}
+          {{/schemaReferenceContext}}
         {{/each}}
       </section>
     </div>
@@ -53,37 +55,39 @@
       {{/if}}
 
       {{#each responses}}
-        {{#if schema}}
-        <section>
-          <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
-          {{>swagger/print-example .}}
-        </section>
-        {{/if}}
-        {{#if headers}}
+        {{#schemaReferenceContext $ref}}
+          {{#if schema}}
           <section>
-            <h5>Response Headers <span>({{@key}} {{httpResponseCode @key}})</span></h5>
-            <section class="swagger-response-headers">
-              <table class="table">
-                <thead>
-                <tr>
-                  <th class="swagger-response-header-name"></th>
-                  <th class="swagger-response-header-description"></th>
-                  <th class="swagger-response-header-data-type"></th>
-                </tr>
-                </thead>
-                <tbody>
-                {{#each headers}}
-                  {{#if $ref}}
-                    {{> swagger/responseHeaderRow header=(json-schema-resolve-ref $ref) name=@key}}
-                  {{else}}
-                    {{> swagger/responseHeaderRow header=. name=@key}}
-                  {{/if}}
-                {{/each}}
-                </tbody>
-              </table>
-            </section>
+            <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
+            {{>swagger/print-example .}}
           </section>
-        {{/if}}
+          {{/if}}
+          {{#if headers}}
+            <section>
+              <h5>Response Headers <span>({{@key}} {{httpResponseCode @key}})</span></h5>
+              <section class="swagger-response-headers">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th class="swagger-response-header-name"></th>
+                    <th class="swagger-response-header-description"></th>
+                    <th class="swagger-response-header-data-type"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {{#each headers}}
+                    {{#if $ref}}
+                      {{> swagger/responseHeaderRow header=(json-schema-resolve-ref $ref) name=@key}}
+                    {{else}}
+                      {{> swagger/responseHeaderRow header=. name=@key}}
+                    {{/if}}
+                  {{/each}}
+                  </tbody>
+                </table>
+              </section>
+            </section>
+          {{/if}}
+        {{/schemaReferenceContext}}
       {{/each}}
     </div>
   </div>
