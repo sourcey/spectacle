@@ -119,9 +119,12 @@ module.exports = function (options) {
     grunt.registerTask('develop', ['server', 'watch'])
 
     // Reload template data when watch files change
-    grunt.event.on('watch', function(action, filepath) {
-        // if (filepath == config.specFile)
-        grunt.config.set('compile-handlebars.compile.templateData', loadData())
+    grunt.event.on('watch', function() {
+        try {
+            grunt.config.set('compile-handlebars.compile.templateData', loadData())
+        } catch (e) {
+            grunt.fatal(e);
+        }
     })
 
     // Report, etc when all tasks have completed.
