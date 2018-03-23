@@ -19,6 +19,7 @@ tmp.setGracefulCleanup()
 var defaults = {
     quiet: false,
     port: 4400,
+    portLive: 4401,
     targetDir: path.resolve(process.cwd(), 'public'),
     targetFile: 'index.html',
     appDir: path.resolve(__dirname, 'app'),
@@ -164,7 +165,7 @@ module.exports = function (options) {
             grunt.task.run('copy:logo')
         }
         grunt.task.run('templates')
-        if (opts.developmentMode) {
+        if (opts.developmentMode || opts.developmentModeLive) {
             grunt.task.run('develop')
         }
     }
