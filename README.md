@@ -68,8 +68,7 @@ $ spectacle -h
     -C, --disable-css            omit CSS generation (default: false)
     -J, --disable-js             omit JavaScript generation (default: false)
     -e, --embeddable             omit the HTML <body/> and generate the documentation content only (default: false)
-    -d, --development-mode       start HTTP server with the file watcher (default: false)
-    -D, --development-mode-live  start HTTP server with the file watcher and live reload (default: false)
+    -d, --development-mode       start HTTP server with the file watcher and live reload (default: false)
     -s, --start-server           start the HTTP server without any development features
     -p, --port <port>            the port number for the HTTP server to listen on (default: 4400)
     -P, --port-live <port>       the port number for the live reload to listen on (default: 4401)
@@ -78,6 +77,7 @@ $ spectacle -h
     -a, --app-dir <dir>          the application source directory (default: app)
     -l, --logo-file <file>       specify a custom logo file (default: null)
     -c, --config-file <file>     specify a custom configuration file (default: app/lib/config.js)
+    -q, --quiet                  silence the output from the generator (default: false)
 ```
 
 Most options are self explanatory, but the following options warrant some further explanation:
