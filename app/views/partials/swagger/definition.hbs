@@ -23,6 +23,11 @@
         {{>json-schema/reference .}}
       {{else}}
         {{#if enum}}
+          {{#if description}}
+            <section class="json-schema-description">
+              {{md description}}
+            </section>
+          {{/if}}
           {{~>json-schema/datatype}}
         {{else}}
           {{>json-schema/body}}
