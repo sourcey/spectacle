@@ -28,7 +28,16 @@
           --}}
         </dd>
       {{/if}}
-      {{~>json-schema/properties}} 
+      {{#if properties}}
+        <dt class="json-inner-schema">
+          {{~>json-schema/body $ref="" description=""}}
+        </dt>
+      {{/if}}
+      {{#if items}}
+        <dt class="json-inner-schema">
+          {{~>json-schema/body $ref="" description=""}}
+        </dt>
+      {{/if}}
     {{/each}}
   </dl>
 </section>
