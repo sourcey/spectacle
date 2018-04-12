@@ -24,7 +24,8 @@ var defaults = {
     targetFile: 'index.html',
     appDir: path.resolve(__dirname, 'app'),
     configFile: path.resolve(__dirname, 'app/lib/config.js'),
-    cacheDir: tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' }).name
+    cacheDir: tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' }).name,
+    oneFile: false
 };
 function resolveOptions(options) {
     var opts = _.extend({}, defaults, options)
@@ -84,6 +85,7 @@ module.exports = function (options) {
     grunt.loadNpmTasks('grunt-compile-handlebars')
     grunt.loadNpmTasks('grunt-prettify')
     grunt.loadNpmTasks('grunt-sass')
+    grunt.loadNpmTasks('grunt-embed')
 
     process.chdir(cwd)
 
@@ -167,6 +169,9 @@ module.exports = function (options) {
         grunt.task.run('templates')
         if (opts.developmentMode || opts.developmentModeLive) {
             grunt.task.run('develop')
+        }
+        if (opts.oneFile) {
+            grunt.task.run('embed')
         }
     }
 
