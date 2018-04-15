@@ -110,6 +110,16 @@ module.exports = function(grunt, options, spec) {
           }
       },
 
+      embed: {
+         options: {
+             threshold: '1024KB'
+         },
+         index: {
+             src: options.targetDir + '/' + options.targetFile,
+             dest: options.targetDir + '/' + options.targetFile
+         }
+      },
+
       // Cleanup cache and traget files
       clean: {
           options: {
