@@ -1,0 +1,2061 @@
+{
+    "swagger": "2.0",
+    "x-api-id": "chai",
+    "info": {
+        "version": "1.0.0",
+        "title": "ChaiPCR (issue 98)",
+        "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification (Taken from https://github.com/sourcey/spectacle/files/1678647/swagger.json.zip for https://github.com/sourcey/spectacle/issues/98",
+        "termsOfService": "http://helloreverb.com/terms/",
+        "contact": {
+            "name": "Wordnik API Team"
+        },
+        "license": {
+            "name": "MIT"
+        }
+    },
+    "tags": [
+        {
+            "name": "Experiment",
+            "description": "Experiment defination"
+        }
+    ],
+    "host": "chaipcr.readme.io",
+    "basePath": "/api",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+	"/experiments": {
+            "get": {
+                "summary": "List all Experiments",
+                "description": "Returns all experiments from the system sorted by the id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiments response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Experiments"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Experiment",
+                "description": "Creates a new experiment, default protocol will be created",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "experiment",
+                        "in": "body",
+                        "description": "experiment to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExperimentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiment response",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    },
+                    "422": {
+                        "description": "experiment create error"
+                    }
+                }
+            }
+        },
+        "/experiments/{id}": {
+            "put": {
+                "summary": "Update Experiment",
+                "description": "Updates experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment to update",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "experiment",
+                        "in": "body",
+                        "description": "experiment to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExperimentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiment response",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    },
+                    "422": {
+                        "description": "experiment update error",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Show Experiment",
+                "description": "Returns a single experiment based on the id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiment response",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Experiment",
+                "description": "Deletes the experiment from the database based on id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiment deleted"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/copy": {
+            "post": {
+                "summary": "Copy Experiment",
+                "description": "Creates a new copy of the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment to copy",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "experiment response",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    },
+                    "422": {
+                        "description": "experiment copy error",
+                        "schema": {
+                            "$ref": "#/definitions/Experiment"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/temperature_data": {
+            "get": {
+                "summary": "Retrieve temperature data",
+                "description": "Returns the temperature data of an experiment based on the parameters specified",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment for which we need temperature data",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "starttime",
+                        "in": "query",
+                        "description": "Starting time in ms for temperature data",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "endtime",
+                        "in": "query",
+                        "description": "if not specified, it returns everything to the end of the experiment, in ms",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "resolution",
+                        "in": "query",
+                        "description": "Include data points for every x milliseconds. Must be a multiple of 1000 ms",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "temperature data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/TemperatureLog"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/amplification_data": {
+            "get": {
+                "summary": "Retrieve amplification data",
+                "description": "Returns the amplification data of an experiment based on the parameters specified",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment for which we need amplification data",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "raw",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "background",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "baseline",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "cq",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "step_id",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "step_id",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "amplification data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AmplificationData"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/melt_curve_data": {
+            "get": {
+                "summary": "Retrieve melt curve data",
+                "description": "Returns the melt curve data of an experiment based on the parameters specified",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment for which we need melt curve data",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "raw",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "normalized",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "derivative",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "tm",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "ramp_id",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "ramp_id",
+                        "in": "query",
+                        "description": "?",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "melt curve data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MeltData"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/export": {
+            "get": {
+                "summary": "Export Experiment",
+                "description": "Downloads a zip file which has csv files for temperature, amplification and meltcurve data",
+                "produces": [
+                    "application/zip"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment for which we need melt curve data",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "zipped data"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/device": {
+            "get": {
+                "summary": "Device information",
+                "description": "Returns device specific information",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "device response",
+                        "schema": {
+                            "$ref": "#/definitions/Device"
+                        }
+                    }
+                }
+            }
+        },
+        "/capabilities": {
+            "get": {
+                "summary": "Device capabilities information",
+                "description": "Returns device capabilities",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "capabilities response",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    }
+                }
+            }
+        },
+        "/device/status": {
+            "get": {
+                "summary": "Device status",
+                "description": "Returns the current status of the device",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device status response",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/device/software_update": {
+            "get": {
+                "summary": "Query the software update meta data",
+                "description": "Returns if there is a software update available ",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Software update response",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/SoftwareUpdate"
+                        }
+                    }
+                }
+            }
+        },
+        "/device/export_database": {
+            "get": {
+                "summary": "Export database",
+                "description": "Downloads the current database on the machine to exportdb.zip",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Downloaded database"
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/amplification_option": {
+            "get": {
+                "summary": "Amplification Options",
+                "description": "Returns the amplification options for the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns an object amplification_option which has the list of options",
+                        "schema": {
+                            "name": "amplification_option",
+                            "type": "object",
+                            "$ref": "#/definitions/Amplification_option"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Amplification Options",
+                "description": "Updates the passed amplification options for the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "amplification_option_params",
+                        "in": "body",
+                        "description": "Amplification options to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Amplification_option"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns an object amplification_option which has the list of options",
+                        "schema": {
+                            "name": "amplification_option",
+                            "type": "object",
+                            "$ref": "#/definitions/Amplification_option"
+                        }
+                    }
+                }
+            }
+        },
+        "/protocols/{id}": {
+            "put": {
+                "summary": "Update Protocol",
+                "description": "Updates the passed protocol data for the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Protocol"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "protocol id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "protocol_params",
+                        "in": "body",
+                        "description": "Protocol properties to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Protocol_params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns an object protocol which has the list of protocol properties",
+                        "schema": {
+                            "name": "Protocol",
+                            "type": "object",
+                            "$ref": "#/definitions/Protocol"
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/wells": {
+            "get": {
+                "summary": "List all Wells",
+                "description": "Returns all wells of the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of all the wells is returned in an array",
+                        "schema": {
+                            "name": "well",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Well"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Multiple Wells",
+                "description": "Update multiple wells at the same time for the specified experiment ",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "wells",
+                        "in": "body",
+                        "type": "array",
+                        "description": "Array of wells to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Well"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of all the wells is returned in an array",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Well"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/experiments/{id}/wells/{well_num}": {
+            "put": {
+                "summary": "Update Well",
+                "description": "Update a single well",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "well_num",
+                        "in": "path",
+                        "description": "well number",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "well",
+                        "in": "body",
+                        "description": "well to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Well"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated well is returned",
+                        "schema": {
+                            "$ref": "#/definitions/Well"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Well",
+                "description": "Deletes the specified well",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Experiment"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the experiment",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "well_num",
+                        "in": "path",
+                        "description": "well number",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Specified well is deleted from the experiment"
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Home Page",
+                "description": "Returns to the Home page",
+                "produces": [
+                    "application/html"
+                ],
+                "tags": [
+                    "Main"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Home Page is returned"
+                    }
+                }
+            }
+        },
+        "/welcome": {
+            "get": {
+                "summary": "Signup page",
+                "description": "Show this page when there is no user in the database",
+                "produces": [
+                    "application/html"
+                ],
+                "tags": [
+                    "Main"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Signup Page is returned"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "summary": "User information",
+                "description": "List all the users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "user to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/current": {
+            "get": {
+                "summary": "User information",
+                "description": "List the current user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current user response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/UserCurrent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/:id": {
+            "put": {
+                "description": "Update an user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "user to update",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "user to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Deleted"
+                    }
+                }
+            }
+        },
+        "/stages/{stage_id}/steps": {
+            "post": {
+                "summary": "Create Step",
+                "description": "Create a new step in the stage",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Steps"
+                ],
+                "parameters": [
+                    {
+                        "name": "stage_id",
+                        "in": "path",
+                        "description": "id of the stage",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "prev_id",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/CreateStepInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created step is returned",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Step"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/steps/{step_id}": {
+            "put": {
+                "summary": "Update Step",
+                "description": "Update properties of a step",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Steps"
+                ],
+                "parameters": [
+                    {
+                        "name": "step_id",
+                        "in": "path",
+                        "description": "id of the step",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "step",
+                        "in": "body",
+                        "description": "Step to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/StepInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated step is returned",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Step"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Step",
+                "description": "if last step in the asoociated stage is destroyed, the stage will be destroyed too if it is not the last stage in the protocol. ",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Steps"
+                ],
+                "parameters": [
+                    {
+                        "name": "step_id",
+                        "in": "path",
+                        "description": "id of the step",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Step is Deleted"
+                    }
+                }
+            }
+        },
+        "/steps/{step_id}/move": {
+            "post": {
+                "summary": "Move Step",
+                "description": "Move a step",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Steps"
+                ],
+                "parameters": [
+                    {
+                        "name": "step_id",
+                        "in": "path",
+                        "description": "id of the step",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "step",
+                        "in": "body",
+                        "description": "Step to move ??",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/StepMoveInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated step is returned",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Step"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/protocols/{protocol_id}/stages": {
+            "post": {
+                "summary": "Create Stage",
+                "description": "Create a new stage in the protocol",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stage"
+                ],
+                "parameters": [
+                    {
+                        "name": "protocol_id",
+                        "in": "path",
+                        "description": "id of the protocol",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "prev_id",
+                        "in": "body",
+                        "required": false,
+                        "description": "properties of the stage",
+                        "schema": {
+                            "$ref": "#/definitions/CreateStageInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created stage is returned",
+                        "schema": {
+                            "$ref": "#/definitions/Stage"
+                        }
+                    }
+                }
+            }
+        },
+        "/stages/{stage_id}": {
+            "put": {
+                "summary": "Update Stage",
+                "description": "Update properties of a stage",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stage"
+                ],
+                "parameters": [
+                    {
+                        "name": "stage_id",
+                        "in": "path",
+                        "description": "id of the stage",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "step",
+                        "in": "body",
+                        "description": "Stage to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/StageValue"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated stage is returned",
+                        "schema": {
+                            "$ref": "#/definitions/StageValue"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Stage",
+                "description": "Delete the entire stage",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stage"
+                ],
+                "parameters": [
+                    {
+                        "name": "stage_id",
+                        "in": "path",
+                        "description": "id of the stage",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stage is Deleted"
+                    }
+                }
+            }
+        },
+        "/stages/{stage_id}/move": {
+            "post": {
+                "summary": "Move Stage",
+                "description": "Move a Stage",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stage"
+                ],
+                "parameters": [
+                    {
+                        "name": "stage_id",
+                        "in": "path",
+                        "description": "id of the stage",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "prev_id",
+                        "in": "body",
+                        "description": "Previous stage id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/StageMoveInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Moved Stage",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/StageValue"
+                        }
+                    }
+                }
+            }
+        },
+        "/ramps/{id}": {
+            "put": {
+                "summary": "Update Ramp",
+                "description": "Updates the passed ramp data for the experiment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ramp"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ramp id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "ramp_params",
+                        "in": "body",
+                        "description": "Ramp properties to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ramp_params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns an object ramp which has the list of ramp properties",
+                        "schema": {
+                            "name": "Ramp",
+                            "type": "object",
+                            "$ref": "#/definitions/Ramp"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login",
+                "description": "Logs in the user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "login_params",
+                        "in": "body",
+                        "description": "Login detals",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/login_params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User is logged in to the application"
+                    }
+                }
+            },
+            "get": {
+                "summary": "Login page",
+                "description": "Show this page when there are users in the database and user is not logged in",
+                "produces": [
+                    "application/html"
+                ],
+                "tags": [
+                    "Main"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login Page is returned"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "summary": "Logout",
+                "description": "Logout of the application and redirected to the login page",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sessions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is logged out"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Experiments": {
+            "properties": {
+                "experiment": {
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string"
+                        },
+                        "time_valid": {
+                            "type": "boolean"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "started_at": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "completed_at": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "completion_status": {
+                            "type": "string"
+                        },
+                        "completion_message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "Experiment": {
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "time_valid": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "started_at": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "completed_at": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "completion_status": {
+                    "type": "string"
+                },
+                "completion_message": {
+                    "type": "string"
+                },
+                "protocol": {
+                    "type": "object",
+                    "$ref": "#/definitions/Protocol"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "ExperimentInput": {
+            "allOf": [
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "guid": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "Device": {
+            "properties": {
+                "serial_number": {
+                    "type": "string",
+                    "description": "Serial number of the device"
+                },
+                "model_number": {
+                    "type": "string",
+                    "description": "Hardware model number of the device"
+                },
+                "processor_architecture": {
+                    "type": "string",
+                    "description": "Device processor architecture"
+                },
+                "software": {
+                    "properties": {
+                        "version": {
+                            "type": "string",
+                            "description": "Current software version"
+                        },
+                        "platform": {
+                            "type": "string",
+                            "description": "Current software platform"
+                        }
+                    }
+                }
+            }
+        },
+        "Amplification_option_properties": {
+            "properties": {
+                "cq_method": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "min_fluorescence": {
+                    "type": "string"
+                },
+                "min_reliable_cycle": {
+                    "type": "string"
+                },
+                "min_d1": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "min_d2": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "baseline_cycle_bounds": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Amplification_option": {
+            "required": [
+                "amplification_option"
+            ],
+            "properties": {
+                "amplification_option": {
+                    "description": "Give a description of all the parameters",
+                    "$ref": "#/definitions/Amplification_option_properties"
+                }
+            }
+        },
+        "Protocol": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "lid_temperature": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "lid temperature, in degree C, default is 110, with precision to one decimal point"
+                },
+                "estimate_duration": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "stages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Stage"
+                    }
+                }
+            }
+        },
+        "Protocol_params": {
+            "required": [
+                "protocol"
+            ],
+            "properties": {
+                "protocol": {
+                    "description": "Give a description of all the parameters",
+                    "properties": {
+                        "lid_temperature": {
+                            "type": "number",
+                            "format": "float",
+                            "description": "lid temperature, in degree C, default is 110, with precision to one decimal point",
+                            "default": 110
+                        }
+                    }
+                }
+            }
+        },
+        "Stage": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "stage_type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "num_cycles": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "auto_delta": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "auto_delta_start_cycle": {
+                    "type": "integer"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Step"
+                    }
+                }
+            }
+        },
+        "CreateStageInput": {
+            "properties": {
+                "prev_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "required": true,
+                    "description": "prev stage id or null if it is the first node"
+                },
+                "stage": {
+                    "$ref": "#/definitions/Stage"
+                }
+            }
+        },
+        "StageMoveInput": {
+            "required": [
+                "prev_id"
+            ],
+            "properties": {
+                "prev_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "required": true,
+                    "description": "prev stage id or null if it is the first node"
+                }
+            }
+        },
+        "StageValue": {
+            "properties": {
+                "stage": {
+                    "description": "Give a description of all the parameters",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "stage_type": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "num_cycles": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "auto_delta": {
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "auto_delta_start_cycle": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "Step": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "temperature": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Temperature of the step, in degree C, with precision to one decimal point"
+                },
+                "hold_time": {
+                    "type": "integer",
+                    "description": "Hold time of the step, in seconds, 0 means infinite"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the step",
+                    "default": "Step <order_number>"
+                },
+                "pause": {
+                    "type": "boolean",
+                    "description": "machine will be paused when the step is reached",
+                    "default": false
+                },
+                "collect_data": {
+                    "type": "boolean",
+                    "description": "Collect data",
+                    "default": false
+                },
+                "delta_temperature": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Delta temperature, in degree C, with precision to two decimal points"
+                },
+                "delta_duration_s": {
+                    "type": "integer",
+                    "description": "Delta duration, in second"
+                },
+                "ramp": {
+                    "type": "object",
+                    "$ref": "#/definitions/Ramp"
+                }
+            }
+        },
+        "StepInput": {
+            "properties": {
+                "temperature": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Temperature of the step, in degree C, with precision to one decimal point"
+                },
+                "hold_time": {
+                    "type": "integer",
+                    "description": "Hold time of the step, in seconds, 0 means infinite"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the step",
+                    "default": "Step <order_number>"
+                },
+                "pause": {
+                    "type": "boolean",
+                    "description": "machine will be paused when the step is reached",
+                    "default": false
+                },
+                "collect_data": {
+                    "type": "boolean",
+                    "description": "Collect data",
+                    "default": false
+                },
+                "delta_temperature": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Delta temperature, in degree C, with precision to two decimal points"
+                },
+                "delta_duration_s": {
+                    "type": "integer",
+                    "description": "Delta duration, in second"
+                },
+                "ramp": {
+                    "type": "object",
+                    "$ref": "#/definitions/Ramp"
+                }
+            }
+        },
+        "StepMoveInput": {
+            "required": [
+                "prev_id"
+            ],
+            "properties": {
+                "prev_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "required": true,
+                    "description": "prev step id or null if it is the first node"
+                },
+                "stage_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "required": false,
+                    "description": "stage id or null if it is the same stage"
+                }
+            }
+        },
+        "CreateStepInput": {
+            "properties": {
+                "prev_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "required": true,
+                    "description": "prev step id or null if it is the first node"
+                }
+            }
+        },
+        "Ramp": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "rate": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Rate of the ramp, in degrees C/s, precision to 8 decimal point",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 5
+                },
+                "collect_data": {
+                    "type": "boolean",
+                    "description": "Collect data",
+                    "default": false
+                }
+            }
+        },
+        "ramp_params": {
+            "required": [
+                "ramp"
+            ],
+            "properties": {
+                "ramp": {
+                    "description": "Give a description of all the parameters",
+                    "properties": {
+                        "rate": {
+                            "type": "number",
+                            "format": "float",
+                            "description": "Rate of the ramp, in degrees C/s, precision to 8 decimal point",
+                            "default": 0,
+                            "minimum": 0,
+                            "maximum": 5
+                        },
+                        "collect_data": {
+                            "type": "boolean",
+                            "description": "Collect data",
+                            "default": false
+                        }
+                    }
+                }
+            }
+        },
+        "ErrorModel": {
+            "required": [
+                "errors"
+            ],
+            "properties": {
+                "errors": {
+                    "type": "string"
+                }
+            }
+        },
+        "AmplificationData": {
+            "properties": {
+                "partial": {
+                    "type": "boolean",
+                    "description": "?"
+                },
+                "total_cycles": {
+                    "type": "integer",
+                    "description": "?"
+                },
+                "steps": {
+                    "description": "?",
+                    "type": "array",
+                    "items": {
+                        "properties": {
+                            "step_id": {
+                                "type": "integer"
+                            },
+                            "amplification_data": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "channel": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "well_num": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "cycle_num": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "background_subtracted_value": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "baseline_subtracted_value": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        }
+                                    }
+                                }
+                            },
+                            "cq": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "channel": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "well_num": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "cq": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "MeltData": {
+            "properties": {
+                "partial": {
+                    "type": "boolean",
+                    "description": "?"
+                },
+                "ramps": {
+                    "description": "?",
+                    "type": "array",
+                    "items": {
+                        "properties": {
+                            "ramp_id": {
+                                "type": "integer"
+                            },
+                            "melt_curve_data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "well_num": {
+                                            "type": "integer",
+                                            "description": "?"
+                                        },
+                                        "temperature": {
+                                            "type": "array",
+                                            "description": "?"
+                                        },
+                                        "normalized_data": {
+                                            "type": "array",
+                                            "description": "?"
+                                        },
+                                        "derivative_data": {
+                                            "type": "array",
+                                            "description": "?"
+                                        },
+                                        "tm": {
+                                            "type": "array",
+                                            "description": "?"
+                                        },
+                                        "area": {
+                                            "type": "array",
+                                            "description": "?"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "TemperatureLog": {
+            "properties": {
+                "temperature_log": {
+                    "properties": {
+                        "elapsed_time": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "?"
+                        },
+                        "lid_temp": {
+                            "type": "string",
+                            "description": "?"
+                        },
+                        "heat_block_zone_1_temp": {
+                            "type": "string",
+                            "description": "?"
+                        },
+                        "heat_block_zone_2_temp": {
+                            "type": "boolean",
+                            "description": "?"
+                        }
+                    }
+                }
+            }
+        },
+        "Well": {
+            "properties": {
+                "well": {
+                    "properties": {
+                        "well_num": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "well_type": {
+                            "type": "string"
+                        },
+                        "sample_name": {
+                            "type": "string"
+                        },
+                        "notes": {
+                            "type": "string"
+                        },
+                        "targets": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
