@@ -1,10 +1,11 @@
-FROM node:7.5.0-alpine
+FROM node:8-alpine
 MAINTAINER Kam Low <hello@sourcey.com>
 
 USER 0
 WORKDIR /opt
 
-RUN apk update \
- && apk add git vim curl wget \
- && rm -rf /var/cache/apk/* \
- && npm install -g spectacle-docs
+RUN apk add --no-cache \
+  nodejs nodejs-npm g++ \
+  python python-dev
+
+RUN npm install --unsafe-perm -g spectacle-docs
