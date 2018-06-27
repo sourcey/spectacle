@@ -23,7 +23,7 @@
           {{/if}}
           <section class="swagger-security-definition-properties">
             {{#each this}}
-              {{#ifin @key "['description']"}}
+              {{#ifin @key "['description','x-spectacle-example']"}}
               {{else}}
                 <div class="prop-row security-definition-property">
                   <div class="prop-name">
@@ -44,6 +44,13 @@
             {{/each}}
           </section>
         </div>
+        {{#if x-spectacle-example}}
+          <div class="doc-examples">
+            <section>
+              {{md x-spectacle-example}}
+            </section>
+          </div>
+        {{/if}}
       </div>
     </div>
   {{/each}}
