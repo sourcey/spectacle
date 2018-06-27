@@ -6,6 +6,13 @@
         <div class="doc-copy">
           {{md description}}
         </div>
+        {{#if example}}
+        <div class="doc-examples">
+          <section>
+          {{md example}}
+          </section>
+        </div>
+        {{/if}}
       </div>
     </div>
   {{/each}}
