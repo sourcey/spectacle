@@ -21,7 +21,6 @@ button:focus {
   @include small-label($secondary-color);
 }
 
-
 //
 // Topbar layout
 
@@ -102,12 +101,12 @@ button:focus {
 
   section {
     > ul {
-     display: none;
+      display: none;
     }
 
     &.expand {
       > ul {
-       display: block;
+        display: block;
       }
     }
   }
@@ -116,7 +115,6 @@ button:focus {
     opacity: 0.5;
   }
 }
-
 
 //
 // Documentation layout
@@ -233,10 +231,10 @@ article {
     padding-bottom: 0.25rem;
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…gd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
     background-size: 100%;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(255,255,255,0.4)), color-stop(100%, rgba(255,255,255,0)));
-    background-image: -moz-linear-gradient(top, rgba(255,255,255,0.4), rgba(255,255,255,0));
-    background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.4), rgba(255,255,255,0));
-    background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0));
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(255, 255, 255, 0.4)), color-stop(100%, rgba(255, 255, 255, 0)));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
   }
 
   h3 {
@@ -247,16 +245,16 @@ article {
     @extend .doc-content;
   }
 
-  h1+.panel > h2 {
+  h1 + .panel > h2 {
     margin-top: 0;
     border-top: none;
   }
 
-  h1+.tag-description+.panel > h2 {
+  h1 + .tag-description + .panel > h2 {
     margin-top: 2rem;
   }
 
-  h1+.panel h3 {
+  h1 + .panel h3 {
     margin-top: 1rem;
   }
 
@@ -395,7 +393,7 @@ article {
       display: block;
       margin-bottom: 1.5rem;
       padding: 1.5rem;
-      font-family: Consolas,"Liberation Mono",Courier,monospace;
+      font-family: Consolas, "Liberation Mono", Courier, monospace;
       font-weight: inherit;
       color: inherit;
       @include inset-panel();
@@ -404,6 +402,20 @@ article {
       word-break: normal;
     }
 
+    tbody tr:nth-child(even) {
+      border-bottom: 0;
+      background-color: $light-black;
+    }
+
+    tbody, tfoot, thead {
+      color: #FFFFFF;
+      background-color: $black;
+      border: 0px;
+    }
+
+    thead {
+      background-color: $black;
+    }
 
     .swagger-response-headers {
 
@@ -465,7 +477,7 @@ article {
     }
 
     @include breakpoint(large) {
-    // @media screen and (min-width: $large-width) { // large and up
+      // @media screen and (min-width: $large-width) { // large and up
       .operation-tags {
         right: 50%;
       }
@@ -509,14 +521,13 @@ article {
     }
 
     dl dd {
-      font-weight: lighter;
+      font-style: italic;
     }
 
     .json-property-name {
       font-weight: bold;
     }
   }
-
 
   //
   // Code highlighting
