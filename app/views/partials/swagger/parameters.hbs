@@ -13,15 +13,12 @@
       {{#schemaReferenceContext $ref}}
         <div class="prop-row prop-group">
           <div class="prop-name">
-            <div class="prop-title">{{name}}</div>
+            <div class="prop-title">{{name}}: <span class="prop-type">{{~>json-schema/datatype . ~}}</span></div>
             {{#if required}}
               <span class="json-property-required"></span>
             {{/if}}
             <div class="prop-subtitle">
               in {{in}}
-            </div>
-            <div class="prop-subtitle">
-              {{~>json-schema/datatype . ~}}
             </div>
             {{!--
             {{#if schema.$ref}}
