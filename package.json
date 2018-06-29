@@ -51,7 +51,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-embed": "^0.2.1",
     "grunt-prettify": "^0.4.0",
-    "grunt-sass": "*",
+    "grunt-sass": "2.1.0",
     "handlebars": "^4.0.5",
     "highlight.js": "^9.1.0",
     "js-yaml": "^3.8.2",
