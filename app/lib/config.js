@@ -1,4 +1,5 @@
-var path = require('path')
+const path = require('path')
+const sass = require('node-sass')
 
 module.exports = function(grunt, options, spec) {
   return {
@@ -6,6 +7,8 @@ module.exports = function(grunt, options, spec) {
       // Compile SCSS source files into the cache directory
       sass: {
           options: {
+        			implementation: sass,
+        			// sourceMap: true,
               includePaths: [
                   options.appDir + '/vendor',
                   options.appDir + '/vendor/foundation/scss'
