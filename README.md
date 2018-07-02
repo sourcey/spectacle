@@ -136,6 +136,15 @@ Some parts of testing can be configured using environment variables.
 
 Include environment variables before calling `npm test`.  For example, `OFFLINE` mode can be enabled via `OFFLINE=true npm test`.
 
+
+<!-- ## Contributors
+
+Thanks to all the great developers who make Spectacle great!
+
+TODO
+-->
+
+
 ## More Information
 
 More info is available on the [Spectacle homepage](http://sourcey.com/spectacle).
