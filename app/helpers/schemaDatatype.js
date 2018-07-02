@@ -1,4 +1,11 @@
 /**
+* Copyright (c) 2015 Nils Knappmeier
+* https://github.com/bootprint/bootprint-openapi
+*
+* @license MIT
+**/
+
+/**
  * Returns a descriptive string for a datatype
  * @param value
  * @returns {String} a string like <code>string[]</code> or <code>object[][]</code>

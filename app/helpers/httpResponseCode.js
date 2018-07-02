@@ -1,3 +1,10 @@
+/**
+* Copyright (c) 2015 Nils Knappmeier
+* https://github.com/bootprint/bootprint-openapi
+*
+* @license MIT
+**/
+
 module.exports = function(code) {
   // Comments refer to the section number in rfc2616
   // If an rfc number is specified, the code is

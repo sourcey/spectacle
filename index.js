@@ -26,7 +26,8 @@ var defaults = {
     configFile: path.resolve(__dirname, 'app/lib/config.js'),
     cacheDir: tmp.dirSync({ unsafeCleanup: true, prefix: 'spectacle-' }).name,
     oneFile: false
-};
+}
+
 function resolveOptions(options) {
     var opts = _.extend({}, defaults, options)
 
@@ -36,7 +37,7 @@ function resolveOptions(options) {
     if (opts.logoFile && opts.logoFile.indexOf('test/fixtures') === 0)
         opts.logoFile = path.resolve(__dirname, opts.logoFile)
 
-    return opts;
+    return opts
 }
 
 /**
@@ -50,9 +51,9 @@ module.exports = function (options) {
 
     function loadData() {
         var specPath = path.resolve(opts.specFile)
-        delete require.cache[specPath];
-        return require(path.resolve(opts.appDir + '/lib/preprocessor'))(
-                                    options, require(specPath))
+        delete require.cache[specPath]
+        var specData = require(opts.appDir + '/lib/resolve-references.js').fetchReference(specPath)
+        return require(path.resolve(opts.appDir + '/lib/preprocessor'))(options, specData)
     }
 
     var config = require(path.resolve(opts.configFile))(grunt, opts, loadData())
