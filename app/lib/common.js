@@ -1,6 +1,7 @@
 var cheerio = require('cheerio')
 var marked = require('marked')
 var highlight = require('highlight.js')
+var yaml = require('js-yaml')
 var _ = require('lodash')
 
 var common = {
@@ -84,7 +85,7 @@ var common = {
       // throw 'Cannot format NULL object ' + value;
       return;
     }
-
+    
     if (value.example) {
       return value.example;
     }
@@ -158,16 +159,16 @@ var common = {
     console.error('Cannot format example on property ', ref, ref.$ref)
   },
 
-  printSchema: function(value) {
+  printSchema: function(value, toyaml) {
     if (!value) {
       return '';
     }
-
-    var schemaString = JSON.stringify(value, null, 2)
-
-    // Add an extra CRLR before the code so the postprocessor can determine
-    // the correct line indent for the <pre> tag.
-    var $ = cheerio.load(marked("```json\r\n" + schemaString + "\n```"))
+    
+    var schemaString = toyaml ? yaml.safeDump(value, {skipInvalid:true}) : JSON.stringify(value, null, 2) 
+      // Add an extra CRLR before the code so the postprocessor can determine
+      // the correct line indent for the <pre> tag.
+      
+    var $ = cheerio.load(marked(toyaml ? "```yaml\r\n" + schemaString + "```" : "```json\r\n" + schemaString + "\n```"))
     var definitions = $('span:not(:has(span)):contains("#/definitions/")')
     definitions.each(function(index, item) {
       var ref = $(item).html()
@@ -175,7 +176,7 @@ var common = {
       // TODO: This should be done in a template
       $(item).html("<a href=" + refLink + ">" + ref + "</a>")
     })
-
+    
     // Remove trailing whitespace before code tag
     // var re = /([\n\r\s]+)(<\/code>)/g;
     // str = $.html().replace(re, '$2')
@@ -183,7 +184,7 @@ var common = {
     // return '<pre><code class="hljs lang-json">' +
     //   this.highlight(schemaString, 'json') +
     //   '</code></pre>';
-
+    
     return $.html()
   },
 

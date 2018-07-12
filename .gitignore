@@ -4,3 +4,4 @@
 *cache
 *.log
 node_modules
+.history
