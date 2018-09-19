@@ -1,4 +1,10 @@
 var util = require('util')
+/**
+* Copyright (c) 2015 Nils Knappmeier
+* https://github.com/bootprint/bootprint-openapi
+*
+* @license MIT
+**/
 
 /**
  *

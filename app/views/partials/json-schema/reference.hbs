@@ -1,11 +1,9 @@
-{{!
-  Copyright (c) 2015 Nils Knappmeier
+{{!--
+  Original work Copyright (c) 2015 Nils Knappmeier
   https://github.com/bootprint/bootprint-json-schema
-
-  @license MIT
-}}
-
-{{!Renders a reference to a subschema}}
+  
+  Renders a reference to a subschema
+--}}
 {{#if $ref}}
   <span class="{{#if type}}json-schema-ref-{{type}}{{/if}}">
     <a class="json-schema-ref" href="{{schemaReferenceHref $ref}}">{{schemaSubschemaName $ref}}</a>

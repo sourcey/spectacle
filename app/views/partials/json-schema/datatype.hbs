@@ -1,18 +1,14 @@
-{{!
-  Copyright (c) 2015 Nils Knappmeier
+{{!--
+  Original work Copyright (c) 2015 Nils Knappmeier
   https://github.com/bootprint/bootprint-json-schema
 
-  @license MIT
-}}
+  When properties are renderered this partial renders the datatype of a property,
+  with a link to the type-definition (in case of a $ref).
+  Depending on the input, it renders an augmented data-type (e.g. "string[]"),
+  the 'format'-value (e.g. "date-time") and "enum"-values.
 
-{{!
-    When properties are renderered this partial renders the datatype of a property,
-    with a link to the type-definition (in case of a $ref).
-    Depending on the input, it renders an augmented data-type (e.g. "string[]"),
-    the 'format'-value (e.g. "date-time") and "enum"-values.
-
-    @param {boolean} discriminator true, this property is a swagger-discriminator (in which case enums are rendered as links)
-}}
+  @param {boolean} discriminator true, this property is a swagger-discriminator (in which case enums are rendered as links)
+--}}
 <span class="json-property-type">
   {{~#if $ref}}
     {{~>json-schema/reference .}}

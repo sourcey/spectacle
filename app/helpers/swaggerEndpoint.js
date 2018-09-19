@@ -1,3 +1,10 @@
+/**
+* Copyright (c) 2015 Nils Knappmeier
+* https://github.com/bootprint/bootprint-openapi
+*
+* @license MIT
+**/
+
 module.exports = function(options) {
   var data = options.data.root;
   var endpoint = 'http';

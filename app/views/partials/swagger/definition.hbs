@@ -1,8 +1,11 @@
-{{!
-    Renders a json.schema inside a panel.
-    @public
-    @readonly
-}}
+{{!--
+  Original work Copyright (c) 2015 Nils Knappmeier
+  https://github.com/bootprint/bootprint-openapi
+
+  Renders a json.schema inside a panel.
+  @public
+  @readonly
+--}}
 <div id="definition-{{htmlId @key}}" class="definition panel"
   data-traverse-target="definition-{{htmlId @key}}">
   {{#if title}}
