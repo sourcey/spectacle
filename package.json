@@ -1,6 +1,6 @@
 {
   "name": "spectacle-docs",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generate beautiful static API documentation from OpenAPI/Swagger 2.0 specifications",
   "preferGlobal": true,
   "bin": {
