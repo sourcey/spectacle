@@ -1,3 +1,10 @@
+/**
+* Copyright (c) 2015 Nils Knappmeier
+* https://github.com/bootprint/bootprint-openapi
+*
+* @license MIT
+**/
+
 module.exports = function(value, paramName) {
   return {
     'csv': 'Array values passed separated by comma: `?' + paramName + '=aaa,bbb`',

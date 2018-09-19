@@ -1,10 +1,13 @@
 {{!--
-    Renders the parameter table within a operation definition.
-    @param {Array<Parameter>|Object<Parameter>} parameters a list of Swagger-Parameter objects
-       If this is an object, an it is expected to be the global parameter list
-       https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#parametersDefinitionsObject
-       and the key of each entry is display in a column in front of the other columns.
-    @api public
+  Original work Copyright (c) 2015 Nils Knappmeier
+  https://github.com/bootprint/bootprint-openapi
+
+  Renders the parameter table within a operation definition.
+  @param {Array<Parameter>|Object<Parameter>} parameters a list of Swagger-Parameter objects
+     If this is an object, an it is expected to be the global parameter list
+     https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#parametersDefinitionsObject
+     and the key of each entry is display in a column in front of the other columns.
+  @api public
 --}}
 
 {{#if parameters}}
