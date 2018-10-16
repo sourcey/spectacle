@@ -33,7 +33,7 @@ describe("preprocessor referencing", function() {
 
       it("should include the path section", function() {
         processed.paths.should.have.property("/");
-        processed.paths["/"].should.be.an.object;
+        processed.paths["/"].should.be.an('object');
       });
 
       it("should include the imported paths", function() {
@@ -87,7 +87,7 @@ describe("preprocessor referencing", function() {
 
       it("should include the definition globally", function() {
         processed.should.have.property("definitions");
-        processed.definitions.should.be.an.object;
+        processed.definitions.should.be.an('object');
         processed.definitions.should.have.property("fixtures/User.yml");
         var schema = processed.definitions["fixtures/User.yml"];
         schema.should.have.property("x-external", "fixtures/User.yml");
