@@ -36,6 +36,9 @@ function resolveOptions(options) {
         opts.specFile = path.resolve(__dirname, opts.specFile)
     if (opts.logoFile && opts.logoFile.indexOf('test/fixtures') === 0)
         opts.logoFile = path.resolve(__dirname, opts.logoFile)
+    if (opts.appDir && opts.appDir.indexOf('/') !== 0)
+        opts.appDir = path.resolve(__dirname, opts.appDir)
+
 
     return opts
 }
