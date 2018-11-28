@@ -54,13 +54,13 @@ describe("resolve-references.js", function() {
 
       it("should read JSON files", function() {
         var out = res.fetchReference(__dirname+"/fixtures/document.json");
-        out.should.be.an.object;
+        out.should.be.an('object');
         out.should.have.property("foo", 1);
       });
 
       it("should read YAML files", function() {
         var out = res.fetchReference(__dirname+"/fixtures/document.yml");
-        out.should.be.an.object;
+        out.should.be.an('object');
         out.should.have.property("foo", 1);
       });
 
@@ -76,7 +76,7 @@ describe("resolve-references.js", function() {
       function remote(type, url) {
         it("can fetch "+type, function() {
           var out = res.fetchReference(url);
-          out.should.be.an.object;
+          out.should.be.an('object');
           out.should.have.property("foo", 1);
         });
       }
@@ -212,7 +212,7 @@ describe("resolve-references.js", function() {
         res.replaceReference(cwd, top, top.info, "info");
         top.info.should.not.have.property("$ref");
         top.info.should.have.property("document");
-        top.info.document.should.be.an.object;
+        top.info.document.should.be.an('object');
         top.info.document.should.have.property("foo", 1);
       });
 
@@ -241,12 +241,12 @@ describe("resolve-references.js", function() {
         top["x-spec-path"] = cwd + "/test.json";
         res.replaceReference(cwd, top, top.paths["/"], "paths/%2F/");
         top.should.have.property("tags");
-        top.tags.should.be.an.array;
+        top.tags.should.be.an('array');
         top.tags.length.should.equal(1);
         var tag = top.tags[0];
         tag.should.have.property("name", "default");
         tag.should.have.property("operations");
-        tag.operations.should.be.an.array;
+        tag.operations.should.be.an('array');
         tag.operations.should.include(top.paths["/"].get);
         tag.operations.should.include(top.paths["/"].post);
       });
@@ -277,7 +277,7 @@ describe("resolve-references.js", function() {
         res.replaceRefs(cwd, top, top, "");
         top.info.should.not.have.property("$ref");
         top.info.should.have.property("document");
-        top.info.document.should.be.an.object;
+        top.info.document.should.be.an('object');
         top.info.document.should.have.property("foo", 1);
       });
 
