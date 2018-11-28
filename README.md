@@ -41,7 +41,7 @@ Next pass your `swagger.json` document use the CLI to generate your documentatio
 spectacle -d your_swagger_api.json
 
 # Or use the cheese.json example to test it out
-# spectacle -d -l test/fixtures/cheese.png test/fixtures/cheese.json
+# spectacle -d -l test/fixtures/cheese.png test/fixtures/cheese.yml
 ```
 
 Your generated documentation will be located in the `public` directory by default. You can either copy the generated HTML to your web server, or view your docs by pointing your browser to [http://localhost:4400/](http://localhost:4400/).
