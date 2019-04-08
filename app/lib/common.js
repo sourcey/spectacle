@@ -4,6 +4,11 @@ var highlight = require('highlight.js')
 var yaml = require('js-yaml')
 var _ = require('lodash')
 
+const SUPPORTED_MIME_TYPES = [
+  'text/plain',
+  'application/json',
+]
+
 var common = {
 
   /**
@@ -86,13 +91,19 @@ var common = {
       return;
     }
     
-    if (value.example) {
-      return value.example;
+    // Response examples
+    if (value.examples) {
+      for (let mime_type of SUPPORTED_MIME_TYPES) {
+        if (value.examples[mime_type]) {
+          return value.examples[mime_type]
+        }
+      }
     }
-    else if (value.schema) {
+
+    if (value.schema) {
       return this.formatExampleProp(value.schema, root, options)
     }
-    else if (value.type || value.properties || value.allOf)  {
+    if (value.type || value.properties || value.allOf) {
       return this.formatExampleProp(value, root, options)
     }
 
