@@ -99,7 +99,9 @@ var common = {
         }
       }
     }
-
+    if (value.example) {
+      return value.example
+    }
     if (value.schema) {
       return this.formatExampleProp(value.schema, root, options)
     }
