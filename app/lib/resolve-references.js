@@ -12,26 +12,21 @@ var TreeWalkError = require("./errors").TreeWalkError
 
 /**
  * Utilities for the preprocessor that can resolve external references.
-*/
-
-/**
- * Stores a parsed copy of referenced files to improve preformance.
-*/
-var _cache = {};
+ */
 
 /**
  * The list of avalible HTTP methods.
-*/
+ */
 var httpMethods = require("./preprocessor").httpMethods;
 
 /**
  * Determines if a reference is relative to the current file.
  * @param {string} ref The file path or URL referenced.
  * @return {boolean} `true` if the reference points to the current file.
-*/
+ */
 function localReference(ref) {
   return (typeof ref.trim === "function" && ref.trim().indexOf("#") === 0) ||
-         (typeof ref.indexOf === "function" && ref.indexOf("#") === 0)
+    (typeof ref.indexOf === "function" && ref.indexOf("#") === 0)
 }
 
 /**
@@ -42,11 +37,11 @@ function localReference(ref) {
  * @todo Improve YAML detection
  * @todo Improve cache preformance by ensuring paths are normalized, etc.
  * @todo Test failure
-*/
+ */
 function fetchReference(ref) {
 
-  if(localReference(ref)) {
-    throw new LocalRefError("fetchReference('"+ref+"') given a reference to the current file.")
+  if (localReference(ref)) {
+    throw new LocalRefError("fetchReference('" + ref + "') given a reference to the current file.")
   }
 
   var file = ref.split("#", 1)[0];
@@ -54,31 +49,23 @@ function fetchReference(ref) {
 
   var src = null;
 
-  if(_cache[file]) {
-    src = _cache[file];
+  if (pathUtils.absoluteURL(file)) {
+    src = request("GET", file).body;
+  } else {
+    // fs module can handle posix file separator on Windows
+    src = fs.readFileSync(file, "utf8")
   }
-  else {
-    if(pathUtils.absoluteURL(file)) {
-      src = request("GET", file).body;
-    }
-    else {
-      // fs module can handle posix file separator on Windows
-      src = fs.readFileSync(file, "utf8")
-    }
-    if(file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
-      src = yaml.safeLoad(src)
-    }
-    else {
-      src = JSON.parse(src)
-    }
-    _cache[file] = src;
+  if (file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
+    src = yaml.safeLoad(src)
+  } else {
+    src = JSON.parse(src)
   }
 
-  if(refPath.length > 0) {
+  if (refPath.length > 0) {
     src = jsonSearch(refPath, src)
   }
 
-  if(src.$ref && typeof src.$ref === "string" && !localReference(src.$ref)) {
+  if (src.$ref && typeof src.$ref === "string" && !localReference(src.$ref)) {
     src = fetchReference(pathUtils.join(path.posix.dirname(ref), src.$ref))
   }
 
@@ -93,35 +80,38 @@ function fetchReference(ref) {
  * @param {object} obj The object referencing an external file.
  * @param {string} context The current reference path, e.g. `"#/paths/%2F/"`
  * @todo test failure
-*/
+ */
 function replaceReference(cwd, top, obj, context) {
   var ref = pathUtils.join(cwd, obj.$ref)
   var external = pathUtils.relative(path.posix.dirname(top["x-spec-path"]), ref)
   var referenced = module.exports.fetchReference(ref)
-  if(typeof referenced === "object") {
+  if (typeof referenced === "object") {
     resolveLocal(referenced, referenced, "#/")
     referenced["x-external"] = external;
     module.exports.replaceRefs(path.posix.dirname(ref), top, referenced, context)
   }
-  if(contexts.definition(context)) {
-    if(!top.definitions) { top.definitions = {}; }
-    if(!top.definitions[external]) { top.definitions[external] = referenced; }
+  if (contexts.definition(context)) {
+    if (!top.definitions) {
+      top.definitions = {};
+    }
+    if (!top.definitions[external]) {
+      top.definitions[external] = referenced;
+    }
     // Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") })
-    Object.assign(obj, { "$ref": external })
-  }
-  else if(contexts.path(context)) {
-    Object.keys(referenced).forEach(function(method) {
-      if(httpMethods.indexOf(method) < 0) {
+    Object.assign(obj, {"$ref": external})
+  } else if (contexts.path(context)) {
+    Object.keys(referenced).forEach(function (method) {
+      if (httpMethods.indexOf(method) < 0) {
         delete path[method];
         return;
       }
       var operation = referenced[method];
       operation.method = method;
       var operationTags = operation.tags || ["default"];
-      operationTags.forEach(function(tag) {
+      operationTags.forEach(function (tag) {
         top.tags = top.tags || [];
         var tagDef = _.find(top.tags, {name: tag})
-        if(!tagDef) {
+        if (!tagDef) {
           tagDef = {name: tag, operations: []};
           top.tags.push(tagDef)
         }
@@ -131,8 +121,7 @@ function replaceReference(cwd, top, obj, context) {
     })
     Object.assign(obj, referenced)
     delete obj.$ref;
-  }
-  else {
+  } else {
     Object.assign(obj, referenced)
     delete obj.$ref;
   }
@@ -149,39 +138,43 @@ function replaceReference(cwd, top, obj, context) {
  * @throws {TreeWalkError} if `obj` itself is a reference.
  * @todo Test failure
  * @todo Test edge cases (remote relative ref, etc.)
-*/
+ */
 function replaceRefs(cwd, top, obj, context) {
 
-  if(typeof cwd !== "string" || cwd.length < 1) {
-    throw new Error("replaceRefs must be given a 'cwd'.  Given '"+cwd+"'")
+  if (typeof cwd !== "string" || cwd.length < 1) {
+    throw new Error("replaceRefs must be given a 'cwd'.  Given '" + cwd + "'")
   }
-  if(typeof obj !== "object") {
-    console.warn("[WARN] replaceRefs() must be given an object for 'obj'.  Given "+typeof obj+" ("+obj+")")
-    return; }
+  if (typeof obj !== "object") {
+    console.warn("[WARN] replaceRefs() must be given an object for 'obj'.  Given " + typeof obj + " (" + obj + ")")
+    return;
+  }
 
-  if(obj.$ref) {
+  if (obj.$ref) {
     throw new TreeWalkError("Walked too deep in the tree looking for references. Can't resolve reference " +
-      obj.$ref + " in "+cwd+".")
+      obj.$ref + " in " + cwd + ".")
   }
 
-  for(var k in obj) {
+  for (var k in obj) {
     var val = obj[k];
-    if(typeof val !== "object" || val === null) { continue; }
+    if (typeof val !== "object" || val === null) {
+      continue;
+    }
 
-    if(val.$ref) {
+    if (val.$ref) {
 
-      if(localReference(val.$ref)) {
-        if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
+      if (localReference(val.$ref)) {
+        if ((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) {
+          continue;
+        }
         throw new Error(
-          "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.")
+          "Can't deal with internal references in external files yet.  Got: '" + val.$ref + "'.")
       }
 
       try {
         module.exports.replaceReference(cwd, top, val, context + k + "/")
-      }
-      catch (e) {
-        console.error("replaceRefs(): Couldn't replace reference '"+val.$ref+"' from '"+
-          cwd+"'.  Reference path: #/"+context)
+      } catch (e) {
+        console.error("replaceRefs(): Couldn't replace reference '" + val.$ref + "' from '" +
+          cwd + "'.  Reference path: #/" + context)
         throw e;
       }
 
@@ -194,7 +187,6 @@ function replaceRefs(cwd, top, obj, context) {
 }
 
 module.exports = {
-  _cache: _cache,
   localReference: localReference,
   fetchReference: fetchReference,
   replaceReference: replaceReference,
