@@ -118,16 +118,27 @@ var common = {
       return;
     }
 
-    // NOTE: Large schemas with circular references have been known to exceed
-    // maximum stack size, so bail out here before that happens.
-    // A better fix is required.
+    // Keep depth-based circular reference detection around to
+    // avoid errors in case '$ref's aren't being used
     // /usr/local/bin/node bin/spectacle -d test/fixtures/billing.yaml
-    if (!options.depth)
+    if (!options.depth) {
       options.depth = 0;
+    }
     options.depth++;
     if (options.depth > 100) {
-      // console.log('max depth', ref)
       return;
+    }
+
+    // Watch for circular references with '$ref' and use that instead of
+    // trying to make a recursive example
+    if (!options.refsSeen) {
+      options.refsSeen = [];
+    }
+    if (ref.$ref && options.refsSeen.indexOf(ref.$ref) !== -1) {
+      return ref.$ref;
+    }
+    if (ref.$ref) {
+      options.refsSeen.push(ref.$ref);
     }
 
     var showReadOnly = options.showReadOnly !== false
