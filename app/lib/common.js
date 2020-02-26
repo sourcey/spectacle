@@ -118,19 +118,10 @@ var common = {
       return;
     }
 
-    // Keep depth-based circular reference detection around to
-    // avoid errors in case '$ref's aren't being used
-    // /usr/local/bin/node bin/spectacle -d test/fixtures/billing.yaml
-    if (!options.depth) {
-      options.depth = 0;
-    }
-    options.depth++;
-    if (options.depth > 100) {
-      return;
-    }
-
+    options = _.cloneDeep(options);
     // Watch for circular references with '$ref' and use that instead of
     // trying to make a recursive example
+    // /usr/local/bin/node bin/spectacle -d test/fixtures/billing.yaml
     if (!options.refsSeen) {
       options.refsSeen = [];
     }
