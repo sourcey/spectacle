@@ -59,7 +59,7 @@
     "json-refs": "^3.0.12",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.11",
-    "marked": "^0.6.1",
+    "marked": "^0.7.0",
     "node-sass": "^4.14.1",
     "sync-request": "^6.0.0",
     "tmp": "0.0.33",
