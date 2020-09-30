@@ -6,7 +6,7 @@
 
 Spectacle generates beautiful static HTML5 documentation from [OpenAPI](https://openapis.org)/[Swagger](http://swagger.io) 2.0 API specifications.
 
-The goal of Spectacle is help you "save time and look good" by providing an extensible platform for auto generating your REST API docs. The default layout is a three column single page, similar to those
+The goal of Spectacle is to help you "save time and look good" by providing an extensible platform for auto generating your REST API docs. The default layout is a three column single page, similar to those
 employed by [Stripe](https://stripe.com/docs/api) and [Intercom](https://developers.intercom.com/reference).
 
 See a demo of Spectacle in action here: [http://cheesestore.github.io](http://cheesestore.github.io)
