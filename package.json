@@ -54,7 +54,7 @@
     "grunt-prettify": "^0.4.0",
     "grunt-sass": "^3.0.2",
     "handlebars": "^4.0.12",
-    "highlight.js": "^9.13.0",
+    "highlight.js": "^10.1.2",
     "js-yaml": "^3.12.0",
     "json-refs": "^3.0.12",
     "json-stable-stringify": "^1.0.1",
