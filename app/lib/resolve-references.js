@@ -56,7 +56,7 @@ function fetchReference(ref) {
     src = fs.readFileSync(file, "utf8")
   }
   if (file.indexOf(".yml") > -1 || file.indexOf(".yaml") > -1) {
-    src = yaml.safeLoad(src)
+    src = yaml.load(src)
   } else {
     src = JSON.parse(src)
   }
