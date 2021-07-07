@@ -7,8 +7,10 @@ var program = require('commander'),
 //
 //= Process CLI input
 
-program.version(package.version)
+program
+    .storeOptionsAsProperties()
     .usage('[options] <specfile>')
+    .version(package.version)
     .description(package.description)
     .option('-C, --disable-css', 'omit CSS generation (default: false)')
     .option('-J, --disable-js', 'omit JavaScript generation (default: false)')
