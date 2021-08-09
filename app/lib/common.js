@@ -26,10 +26,10 @@ var common = {
      var html = marked(value)
      // We strip the surrounding <p>-tag, if
      if (stripParagraph) {
-         var $ = cheerio("<root>" + html + "</root>")
+         var $ = cheerio.load("<root>" + html + "</root>")
          // Only strip <p>-tags and only if there is just one of them.
-         if ($.children().length === 1 && $.children('p').length === 1) {
-             html = $.children('p').html()
+         if ($.root().children().length === 1 && $.root().children('p').length === 1) {
+             html = $.root().children('p').html()
          }
      }
      return html;
@@ -39,7 +39,7 @@ var common = {
       var highlighted;
       if (lang) {
           try {
-              highlighted = highlight.highlight(lang, code).value;
+              highlighted = highlight.highlight(code, { language: lang }).value;
           } catch (e) {}
       }
       if (!highlighted) {
