@@ -26,9 +26,9 @@
 {{~/if~}}
 
 {{!-- Enum values --}}
-{{~#if enum}}
+{{~#if items.enum}}
   <span class="json-property-enum" title="Possible values">
-    {{#each enum}}
+    {{#each items.enum}}
       {{! Render enums in the descriminator as links to the appropriate definitions}}
       {{~#if ../discriminator}}
         <span class="json-property-enum-item"><a href="#definition-{{.}}">{{.}}</a></span>
