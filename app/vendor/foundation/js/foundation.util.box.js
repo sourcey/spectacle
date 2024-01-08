@@ -1,13 +1,7 @@
-'use strict';
-
-
-import { rtl as Rtl } from "./foundation.util.core";
-
 var Box = {
   ImNotTouchingYou: ImNotTouchingYou,
   OverlapArea: OverlapArea,
   GetDimensions: GetDimensions,
-  GetOffsets: GetOffsets,
   GetExplicitOffsets: GetExplicitOffsets
 }
 
@@ -23,7 +17,7 @@ var Box = {
  */
 function ImNotTouchingYou(element, parent, lrOnly, tbOnly, ignoreBottom) {
   return OverlapArea(element, parent, lrOnly, tbOnly, ignoreBottom) === 0;
-};
+}
 
 function OverlapArea(element, parent, lrOnly, tbOnly, ignoreBottom) {
   var eleDims = GetDimensions(element),
@@ -66,7 +60,7 @@ function OverlapArea(element, parent, lrOnly, tbOnly, ignoreBottom) {
  * @returns {Object} - nested object of integer pixel values
  * TODO - if element is window, return only those values.
  */
-function GetDimensions(elem, test){
+function GetDimensions(elem){
   elem = elem.length ? elem[0] : elem;
 
   if (elem === window || elem === document) {
@@ -119,65 +113,14 @@ function GetDimensions(elem, test){
  * @param {Boolean} isOverflow - if a collision event is detected, sets to true to default the element to full width - any desired offset.
  * TODO alter/rewrite to work with `em` values as well/instead of pixels
  */
-function GetOffsets(element, anchor, position, vOffset, hOffset, isOverflow) {
-  console.log("NOTE: GetOffsets is deprecated in favor of GetExplicitOffsets and will be removed in 6.5");
-  switch (position) {
-    case 'top':
-      return Rtl() ?
-        GetExplicitOffsets(element, anchor, 'top', 'left', vOffset, hOffset, isOverflow) :
-        GetExplicitOffsets(element, anchor, 'top', 'right', vOffset, hOffset, isOverflow);
-    case 'bottom':
-      return Rtl() ?
-        GetExplicitOffsets(element, anchor, 'bottom', 'left', vOffset, hOffset, isOverflow) :
-        GetExplicitOffsets(element, anchor, 'bottom', 'right', vOffset, hOffset, isOverflow);
-    case 'center top':
-      return GetExplicitOffsets(element, anchor, 'top', 'center', vOffset, hOffset, isOverflow);
-    case 'center bottom':
-      return GetExplicitOffsets(element, anchor, 'bottom', 'center', vOffset, hOffset, isOverflow);
-    case 'center left':
-      return GetExplicitOffsets(element, anchor, 'left', 'center', vOffset, hOffset, isOverflow);
-    case 'center right':
-      return GetExplicitOffsets(element, anchor, 'right', 'center', vOffset, hOffset, isOverflow);
-    case 'left bottom':
-      return GetExplicitOffsets(element, anchor, 'bottom', 'left', vOffset, hOffset, isOverflow);
-    case 'right bottom':
-      return GetExplicitOffsets(element, anchor, 'bottom', 'right', vOffset, hOffset, isOverflow);
-    // Backwards compatibility... this along with the reveal and reveal full
-    // classes are the only ones that didn't reference anchor
-    case 'center':
-      return {
-        left: ($eleDims.windowDims.offset.left + ($eleDims.windowDims.width / 2)) - ($eleDims.width / 2) + hOffset,
-        top: ($eleDims.windowDims.offset.top + ($eleDims.windowDims.height / 2)) - ($eleDims.height / 2 + vOffset)
-      }
-    case 'reveal':
-      return {
-        left: ($eleDims.windowDims.width - $eleDims.width) / 2 + hOffset,
-        top: $eleDims.windowDims.offset.top + vOffset
-      }
-    case 'reveal full':
-      return {
-        left: $eleDims.windowDims.offset.left,
-        top: $eleDims.windowDims.offset.top
-      }
-      break;
-    default:
-      return {
-        left: (Rtl() ? $anchorDims.offset.left - $eleDims.width + $anchorDims.width - hOffset: $anchorDims.offset.left + hOffset),
-        top: $anchorDims.offset.top + $anchorDims.height + vOffset
-      }
-
-  }
-
-}
-
 function GetExplicitOffsets(element, anchor, position, alignment, vOffset, hOffset, isOverflow) {
   var $eleDims = GetDimensions(element),
       $anchorDims = anchor ? GetDimensions(anchor) : null;
 
       var topVal, leftVal;
 
+  if ($anchorDims !== null) {
   // set position related attribute
-
   switch (position) {
     case 'top':
       topVal = $anchorDims.offset.top - ($eleDims.height + vOffset);
@@ -192,7 +135,6 @@ function GetExplicitOffsets(element, anchor, position, alignment, vOffset, hOffs
       leftVal = $anchorDims.offset.left + $anchorDims.width + hOffset;
       break;
   }
-
 
   // set alignment related attribute
   switch (position) {
@@ -225,6 +167,8 @@ function GetExplicitOffsets(element, anchor, position, alignment, vOffset, hOffs
       }
       break;
   }
+  }
+
   return {top: topVal, left: leftVal};
 }
 

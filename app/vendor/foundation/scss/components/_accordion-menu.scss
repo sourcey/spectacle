@@ -58,14 +58,16 @@ $accordionmenu-arrow-size: 6px !default;
       @include css-triangle($accordionmenu-arrow-size, $accordionmenu-arrow-color, down);
       position: absolute;
       top: 50%;
-      margin-top: -1 * ($accordionmenu-arrow-size / 2);
+      margin-top: -1 * ($accordionmenu-arrow-size * 0.5);
       #{$global-right}: 1rem;
     }
   }
+
   &.align-left .is-accordion-submenu-parent > a::after {
-    left: auto;
     right: 1rem;
+    left: auto;
   }
+
   &.align-right .is-accordion-submenu-parent > a::after {
     right: auto;
     left: 1rem;
@@ -93,7 +95,7 @@ $accordionmenu-arrow-size: 6px !default;
       }
       padding: $accordionmenu-padding;
     }
-    
+
     .is-accordion-submenu a {
       padding: $accordionmenu-submenu-padding;
     }
@@ -138,10 +140,11 @@ $accordionmenu-arrow-size: 6px !default;
     position: absolute;
     top: 0;
     #{$global-right}: 0;
-    cursor: pointer;
 
     width: $accordionmenu-submenu-toggle-width;
     height: $accordionmenu-submenu-toggle-height;
+
+    cursor: pointer;
 
     border-#{$global-left}: $accordion-submenu-toggle-border;
 
@@ -151,7 +154,7 @@ $accordionmenu-arrow-size: 6px !default;
 
     // Add the arrow to the toggle
     &::after {
-      @include css-triangle(6px, $accordionmenu-arrow-color, down);
+      @include css-triangle($accordionmenu-arrow-size, $accordionmenu-arrow-color, down);
 
       top: 0;
       bottom: 0;

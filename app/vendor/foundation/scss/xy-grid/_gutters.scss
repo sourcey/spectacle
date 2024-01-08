@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -26,20 +26,20 @@
   // Output our margin gutters.
   @if (type-of($gutters) == 'map') {
     @include -zf-breakpoint-value(auto, $gutters) {
-      $gutter: rem-calc($-zf-bp-value) / 2;
+      $gutter: rem-calc($-zf-bp-value) * 0.5;
 
       // Loop through each gutter position
       @each $value in $gutter-position {
-        #{$gutter-type}-#{$value}: #{$operator}$gutter;
+        #{$gutter-type}-#{$value}: unquote("#{$operator}#{$gutter}");
       }
     }
   }
-  @elseif (type-of($gutters) == 'number') {
-    $gutter: rem-calc($gutters) / 2;
+  @else if (type-of($gutters) == 'number') {
+    $gutter: rem-calc($gutters) * 0.5;
 
     // Loop through each gutter position
     @each $value in $gutter-position {
-      #{$gutter-type}-#{$value}: #{$operator}$gutter;
+      #{$gutter-type}-#{$value}: unquote("#{$operator}#{$gutter}");
     }
   }
 }

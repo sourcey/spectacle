@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -13,6 +13,14 @@ $accordion-background: $white !default;
 /// If `true`, adds plus and minus icons to the side of each accordion title.
 /// @type Boolean
 $accordion-plusminus: true !default;
+
+/// Content for the plus icon when `$accordion-plusminus` is `true`
+/// @type String
+$accordion-plus-content: '\002B' !default;
+
+/// Content for the minus icon when `$accordion-plusminus` is `true`
+/// @type String
+$accordion-minus-content: '\2013' !default;
 
 /// Font size of accordion titles.
 /// @type Number
@@ -53,6 +61,7 @@ $accordion-content-padding: 1rem !default;
   margin-#{$global-left}: 0;
   background: $background;
   list-style-type: none;
+
   &[disabled] {
     .accordion-title {
       cursor: not-allowed;
@@ -106,11 +115,11 @@ $accordion-content-padding: 1rem !default;
       top: 50%;
       #{$global-right}: 1rem;
       margin-top: -0.5rem;
-      content: '+';
+      content: $accordion-plus-content;
     }
 
     .is-active > &::before {
-      content: '\2013';
+      content: $accordion-minus-content;
     }
   }
 }

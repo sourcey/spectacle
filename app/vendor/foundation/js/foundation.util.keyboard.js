@@ -6,10 +6,8 @@
  *                                         *
  ******************************************/
 
-'use strict';
-
 import $ from 'jquery';
-import { rtl as Rtl } from './foundation.util.core';
+import { rtl as Rtl } from './foundation.core.utils';
 
 const keyCodes = {
   9: 'TAB',
@@ -32,6 +30,32 @@ function findFocusable($element) {
   return $element.find('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]').filter(function() {
     if (!$(this).is(':visible') || $(this).attr('tabindex') < 0) { return false; } //only have visible elements and those that have a tabindex greater or equal 0
     return true;
+  })
+  .sort( function( a, b ) {
+    if ($(a).attr('tabindex') === $(b).attr('tabindex')) {
+      return 0;
+    }
+    let aTabIndex = parseInt($(a).attr('tabindex'), 10),
+      bTabIndex = parseInt($(b).attr('tabindex'), 10);
+    // Undefined is treated the same as 0
+    if (typeof $(a).attr('tabindex') === 'undefined' && bTabIndex > 0) {
+      return 1;
+    }
+    if (typeof $(b).attr('tabindex') === 'undefined' && aTabIndex > 0) {
+      return -1;
+    }
+    if (aTabIndex === 0 && bTabIndex > 0) {
+      return 1;
+    }
+    if (bTabIndex === 0 && aTabIndex > 0) {
+      return -1;
+    }
+    if (aTabIndex < bTabIndex) {
+      return -1;
+    }
+    if (aTabIndex > bTabIndex) {
+      return 1;
+    }
   });
 }
 
@@ -77,7 +101,11 @@ var Keyboard = {
 
     if (!commandList) return console.warn('Component not defined!');
 
-    if (typeof commandList.ltr === 'undefined') { // this component does not differentiate between ltr and rtl
+    // Ignore the event if it was already handled
+    if (event.zfIsKeyHandled === true) return;
+
+    // This component does not differentiate between ltr and rtl
+    if (typeof commandList.ltr === 'undefined') {
         cmds = commandList; // use plain list
     } else { // merge ltr and rtl: if document is rtl, rtl overwrites ltr and vice versa
         if (Rtl()) cmds = $.extend({}, commandList.ltr, commandList.rtl);
@@ -87,13 +115,20 @@ var Keyboard = {
     command = cmds[keyCode];
 
     fn = functions[command];
-    if (fn && typeof fn === 'function') { // execute function  if exists
+     // Execute the handler if found
+    if (fn && typeof fn === 'function') {
       var returnValue = fn.apply();
-      if (functions.handled || typeof functions.handled === 'function') { // execute function when event was handled
+
+      // Mark the event as "handled" to prevent future handlings
+      event.zfIsKeyHandled = true;
+
+      // Execute function when event was handled
+      if (functions.handled || typeof functions.handled === 'function') {
           functions.handled(returnValue);
       }
     } else {
-      if (functions.unhandled || typeof functions.unhandled === 'function') { // execute function when event was not handled
+       // Execute function when event was not handled
+      if (functions.unhandled || typeof functions.unhandled === 'function') {
           functions.unhandled();
       }
     }
@@ -155,7 +190,9 @@ var Keyboard = {
  */
 function getKeyCodes(kcs) {
   var k = {};
-  for (var kc in kcs) k[kcs[kc]] = kcs[kc];
+  for (var kc in kcs) {
+    if (kcs.hasOwnProperty(kc)) k[kcs[kc]] = kcs[kc];
+  }
   return k;
 }
 

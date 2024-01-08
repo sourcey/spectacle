@@ -1,7 +1,4 @@
-'use strict';
-
-import $ from 'jquery';
-import { GetYoDigits } from './foundation.util.core';
+import { GetYoDigits } from './foundation.core.utils';
 
 // Abstract class for providing lifecycle hooks. Expect plugins to define AT LEAST
 // {function} _setup (replaces previous constructor),
@@ -32,7 +29,9 @@ class Plugin {
          */
         .trigger(`destroyed.zf.${pluginName}`);
     for(var prop in this){
-      this[prop] = null;//clean up script to prep for garbage collection.
+      if (this.hasOwnProperty(prop)) {
+        this[prop] = null; //clean up script to prep for garbage collection.
+      }
     }
   }
 }
@@ -44,11 +43,7 @@ function hyphenate(str) {
 }
 
 function getPluginName(obj) {
-  if(typeof(obj.constructor.name) !== 'undefined') {
-    return hyphenate(obj.constructor.name);
-  } else {
-    return hyphenate(obj.className);
-  }
+  return hyphenate(obj.className);
 }
 
 export {Plugin};

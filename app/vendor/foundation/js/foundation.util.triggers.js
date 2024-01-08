@@ -1,6 +1,5 @@
-'use strict';
-
 import $ from 'jquery';
+import { onLoad } from './foundation.core.utils';
 import { Motion } from './foundation.util.motion';
 
 const MutationObserver = (function () {
@@ -11,7 +10,7 @@ const MutationObserver = (function () {
     }
   }
   return false;
-}());
+})();
 
 const triggers = (el, type) => {
   el.data(type).split(' ').forEach(id => {
@@ -49,8 +48,10 @@ Triggers.Listeners.Basic  = {
     }
   },
   closeableListener: function(e) {
-    e.stopPropagation();
     let animation = $(this).data('closable');
+
+    // Only close the first closable element. See https://git.io/zf-7833
+    e.stopPropagation();
 
     if(animation !== ''){
       Motion.animateOut($(this), animation, function() {
@@ -139,7 +140,7 @@ Triggers.Initializers.addClosemeListener = function(pluginName) {
     if(typeof pluginName === 'string'){
       plugNames.push(pluginName);
     }else if(typeof pluginName === 'object' && typeof pluginName[0] === 'string'){
-      plugNames.concat(pluginName);
+      plugNames = plugNames.concat(pluginName);
     }else{
       console.error('Plugin names must be strings');
     }
@@ -155,11 +156,11 @@ Triggers.Initializers.addClosemeListener = function(pluginName) {
 
 function debounceGlobalListener(debounce, trigger, listener) {
   let timer, args = Array.prototype.slice.call(arguments, 3);
-  $(window).off(trigger).on(trigger, function(e) {
+  $(window).on(trigger, function() {
     if (timer) { clearTimeout(timer); }
     timer = setTimeout(function(){
       listener.apply(null, args);
-    }, debounce || 10);//default time to emit scroll event
+    }, debounce || 10); //default time to emit scroll event
   });
 }
 
@@ -234,29 +235,20 @@ Triggers.Initializers.addSimpleListeners = function() {
 Triggers.Initializers.addGlobalListeners = function() {
   let $document = $(document);
   Triggers.Initializers.addMutationEventsListener($document);
-  Triggers.Initializers.addResizeListener();
+  Triggers.Initializers.addResizeListener(250);
   Triggers.Initializers.addScrollListener();
   Triggers.Initializers.addClosemeListener();
 }
 
 
-Triggers.init = function($, Foundation) {
-  if (typeof($.triggersInitialized) === 'undefined') {
-    let $document = $(document);
-
-    if(document.readyState === "complete") {
+Triggers.init = function (__, Foundation) {
+  onLoad($(window), function () {
+    if ($.triggersInitialized !== true) {
       Triggers.Initializers.addSimpleListeners();
       Triggers.Initializers.addGlobalListeners();
-    } else {
-      $(window).on('load', () => {
-        Triggers.Initializers.addSimpleListeners();
-        Triggers.Initializers.addGlobalListeners();
-      });
+      $.triggersInitialized = true;
     }
-
-
-    $.triggersInitialized = true;
-  }
+  });
 
   if(Foundation) {
     Foundation.Triggers = Triggers;
