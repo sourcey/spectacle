@@ -23,7 +23,7 @@ var common = {
          return value;
      }
 
-     var html = marked(value)
+     var html = marked.marked(value)
      // We strip the surrounding <p>-tag, if
      if (stripParagraph) {
          var $ = cheerio.load("<root>" + html + "</root>")
@@ -48,7 +48,7 @@ var common = {
 
       return '<pre><code'
           + (lang
-              ? ' class="hljs ' + this.options.langPrefix + lang + '"'
+              ? ' class="hljs language-' + lang + '"'
               : ' class="hljs"')
           + '>'
           + highlighted //code //
@@ -183,7 +183,7 @@ var common = {
       // Add an extra CRLR before the code so the postprocessor can determine
       // the correct line indent for the <pre> tag.
       
-    var $ = cheerio.load(marked(toyaml ? "```yaml\r\n" + schemaString + "```" : "```json\r\n" + schemaString + "\n```"))
+    var $ = cheerio.load(marked.marked(toyaml ? "```yaml\r\n" + schemaString + "```" : "```json\r\n" + schemaString + "\n```"))
     var definitions = $('span:not(:has(span)):contains("#/definitions/")')
     definitions.each(function(index, item) {
       var ref = $(item).html()
