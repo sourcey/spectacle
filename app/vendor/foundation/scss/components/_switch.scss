@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -53,6 +53,14 @@ $switch-paddle-radius: $global-radius !default;
 /// switch transition.
 /// @type Number
 $switch-paddle-transition: all 0.25s ease-out !default;
+
+/// Opacity of a disabled switch.
+/// @type Number
+$switch-opacity-disabled: 0.5 !default;
+
+/// Cursor for a disabled switch.
+/// @type Cursor
+$switch-cursor-disabled: not-allowed !default;
 
 // make them variables
 // ask about accessibility on label
@@ -132,6 +140,12 @@ $switch-paddle-transition: all 0.25s ease-out !default;
     }
   }
 
+  // indicate a disabled switch
+  input:disabled ~ & {
+    cursor: $switch-cursor-disabled;
+    opacity: $switch-opacity-disabled;
+  }
+
   input:focus ~ & {
     @include disable-mouse-outline;
   }
@@ -201,8 +215,8 @@ $switch-paddle-transition: all 0.25s ease-out !default;
 @mixin foundation-switch {
   // Container class
   .switch {
-    height: $switch-height;
     @include switch-container;
+    height: $switch-height;
   }
 
   // <input> element

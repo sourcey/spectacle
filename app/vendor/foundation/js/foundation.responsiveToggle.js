@@ -1,10 +1,8 @@
-'use strict';
-
 import $ from 'jquery';
 
 import { MediaQuery } from './foundation.util.mediaQuery';
 import { Motion } from './foundation.util.motion';
-import { Plugin } from './foundation.plugin';
+import { Plugin } from './foundation.core.plugin';
 
 /**
  * ResponsiveToggle module.
@@ -67,8 +65,6 @@ class ResponsiveToggle extends Plugin {
    * @private
    */
   _events() {
-    var _this = this;
-
     this._updateMqHandler = this._update.bind(this);
 
     $(window).on('changed.zf.mediaquery', this._updateMqHandler);

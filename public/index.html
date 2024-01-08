@@ -6,7 +6,7 @@
     <title>Cheese Store | API Reference</title>
     <link rel="stylesheet" href="stylesheets/foundation.min.css" />
     <link rel="stylesheet" href="stylesheets/spectacle.min.css" />
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <script src="javascripts/foundation.js"></script> -->
     <script src="javascripts/spectacle.min.js"></script>
   </head>
@@ -241,7 +241,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Add a new cheese to the store</span>
+              <span class="operation-summary">
+                <p>Add a new cheese to the store</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -279,24 +281,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -347,24 +349,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -376,11 +378,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -423,7 +425,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Update an existing cheese</span>
+              <span class="operation-summary">
+                <p>Update an existing cheese</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -461,24 +465,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -529,11 +533,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -545,11 +549,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -592,7 +596,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Finds cheeses by tags</span>
+              <span class="operation-summary">
+                <p>Finds cheeses by tags</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -627,7 +633,9 @@
                       <p>Tags to filter by</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner"> Array values passed as multiple parameters: <code>?tags=aaa&amp;tags=bbb</code> </div>
+                  <div class="prop-row prop-inner">
+                    <p>Array values passed as multiple parameters: <code>?tags=aaa&amp;tags=bbb</code></p>
+                  </div>
                 </section>
               </div>
               <div class="doc-examples"></div>
@@ -687,26 +695,26 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">[
-  {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-    },
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-    ],
-    <span class="hljs-attr">&quot;tags&quot;</span>: [
-      {
-        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-      }
-    ],
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-  }
-]
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
+  <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -718,11 +726,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -765,7 +773,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Find cheese by ID</span>
+              <span class="operation-summary">
+                <p>Find cheese by ID</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -849,24 +859,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -878,11 +888,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -922,7 +932,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Update a cheese</span>
+              <span class="operation-summary">
+                <p>Update a cheese</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1020,11 +1032,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1067,7 +1079,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Deletes a cheese</span>
+              <span class="operation-summary">
+                <p>Deletes a cheese</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1144,11 +1158,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1191,7 +1205,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Finds cheeses by status</span>
+              <span class="operation-summary">
+                <p>Finds cheeses by status</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1226,7 +1242,9 @@
                       <p>Status values that need to be considered for filter</p>
                     </div>
                   </div>
-                  <div class="prop-row prop-inner"> Array values passed as multiple parameters: <code>?status=aaa&amp;status=bbb</code> </div>
+                  <div class="prop-row prop-inner">
+                    <p>Array values passed as multiple parameters: <code>?status=aaa&amp;status=bbb</code></p>
+                  </div>
                 </section>
               </div>
               <div class="doc-examples"></div>
@@ -1286,26 +1304,26 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">[
-  {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-    },
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-    ],
-    <span class="hljs-attr">&quot;tags&quot;</span>: [
-      {
-        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-      }
-    ],
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-  }
-]
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
+  <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1317,11 +1335,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1364,7 +1382,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Upload a cheese image</span>
+              <span class="operation-summary">
+                <p>Upload a cheese image</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1455,24 +1475,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1521,7 +1541,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Return cheese inventories by available status</span>
+              <span class="operation-summary">
+                <p>Return cheese inventories by available status</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1583,26 +1605,26 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">[
-  {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;category&quot;</span>: {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-    },
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-    <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-      <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-    ],
-    <span class="hljs-attr">&quot;tags&quot;</span>: [
-      {
-        <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-        <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-      }
-    ],
-    <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-  }
-]
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
+  <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1642,7 +1664,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Place a cheese order</span>
+              <span class="operation-summary">
+                <p>Place a cheese order</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1684,14 +1708,14 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"cheeseId"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"complete"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"true"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"quantity"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"66"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"shipDate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"04-10-2017 00:09:21 UTC"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1742,14 +1766,14 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"cheeseId"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"complete"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"true"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"quantity"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"66"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"shipDate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"04-10-2017 00:09:21 UTC"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1761,11 +1785,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1783,7 +1807,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Find purchase order by ID</span>
+              <span class="operation-summary">
+                <p>Find purchase order by ID</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1867,14 +1893,14 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"cheeseId"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"complete"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"true"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"quantity"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"66"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"shipDate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"04-10-2017 00:09:21 UTC"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1886,11 +1912,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -1908,7 +1934,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Delete purchase order by ID</span>
+              <span class="operation-summary">
+                <p>Delete purchase order by ID</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -1978,11 +2006,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2006,7 +2034,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Create customer account</span>
+              <span class="operation-summary">
+                <p>Create customer account</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2048,16 +2078,16 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"username"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"gordo"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"firstName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alotta"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"lastName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Cheese"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"love@cheese.com"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"password"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"secret"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"phone"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+3344556677"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"customerStatus"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"obese"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2094,7 +2124,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Create multiple customers</span>
+              <span class="operation-summary">
+                <p>Create multiple customers</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2108,9 +2140,9 @@
               <div class="doc-copy">
                 <section class="swagger-operation-description">
                   <p>Create a list of customers from the given input array.</p>
-                  <p>And here is a random inline code block:</p> <pre><code class="hljs language-json">{
-  <span class="hljs-attr">"greeting"</span>: Wassup()
-}
+                  <p>And here is a random inline code block:</p> <pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;greeting&quot;</span><span class="hljs-punctuation">:</span> Wassup()
+<span class="hljs-punctuation">}</span>
 </code></pre>
                   <p>All good?</p>
                 </section>
@@ -2137,18 +2169,18 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">[
-  {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
-    <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
-    <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
-    <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
-    <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
-    <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
-    <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
-  }
-]
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
+  <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"username"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"gordo"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"firstName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alotta"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"lastName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Cheese"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"love@cheese.com"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"password"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"secret"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"phone"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+3344556677"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"customerStatus"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"obese"</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2185,7 +2217,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Customer login</span>
+              <span class="operation-summary">
+                <p>Customer login</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2286,7 +2320,7 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json"><span class="hljs-string">&quot;string&quot;</span>
+                  <body><pre><code class="hljs language-json"><span class="hljs-string">"string"</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2338,11 +2372,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2360,7 +2394,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Customer logout</span>
+              <span class="operation-summary">
+                <p>Customer logout</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2411,7 +2447,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Get customer by username</span>
+              <span class="operation-summary">
+                <p>Get customer by username</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2494,16 +2532,16 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"username"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"gordo"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"firstName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alotta"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"lastName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Cheese"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"love@cheese.com"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"password"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"secret"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"phone"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+3344556677"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"customerStatus"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"obese"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2515,11 +2553,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2537,7 +2575,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Update customer</span>
+              <span class="operation-summary">
+                <p>Update customer</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2596,16 +2636,16 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"username"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"gordo"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"firstName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alotta"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"lastName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Cheese"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"love@cheese.com"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"password"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"secret"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"phone"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+3344556677"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"customerStatus"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"obese"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2650,11 +2690,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2672,7 +2712,9 @@
             <!-- </div> -->
             <!-- </section> -->
             <h2 class="operation-title">
-              <span class="operation-summary">Delete customer</span>
+              <span class="operation-summary">
+                <p>Delete customer</p>
+              </span>
             </h2>
             <div class="doc-row">
               <div class="doc-copy">
@@ -2749,11 +2791,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2827,14 +2869,14 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;cheeseId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;complete&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
-  <span class="hljs-attr">&quot;quantity&quot;</span>: <span class="hljs-string">&quot;66&quot;</span>,
-  <span class="hljs-attr">&quot;shipDate&quot;</span>: <span class="hljs-string">&quot;04-10-2017 00:09:21 UTC&quot;</span>,
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"cheeseId"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"complete"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"true"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"quantity"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"66"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"shipDate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"04-10-2017 00:09:21 UTC"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2875,10 +2917,10 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -2964,16 +3006,16 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;username&quot;</span>: <span class="hljs-string">&quot;gordo&quot;</span>,
-  <span class="hljs-attr">&quot;firstName&quot;</span>: <span class="hljs-string">&quot;Alotta&quot;</span>,
-  <span class="hljs-attr">&quot;lastName&quot;</span>: <span class="hljs-string">&quot;Cheese&quot;</span>,
-  <span class="hljs-attr">&quot;email&quot;</span>: <span class="hljs-string">&quot;love@cheese.com&quot;</span>,
-  <span class="hljs-attr">&quot;password&quot;</span>: <span class="hljs-string">&quot;secret&quot;</span>,
-  <span class="hljs-attr">&quot;phone&quot;</span>: <span class="hljs-string">&quot;+3344556677&quot;</span>,
-  <span class="hljs-attr">&quot;customerStatus&quot;</span>: <span class="hljs-string">&quot;obese&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"username"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"gordo"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"firstName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alotta"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"lastName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Cheese"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"love@cheese.com"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"password"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"secret"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"phone"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+3344556677"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"customerStatus"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"obese"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -3019,11 +3061,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;integer (int32)&quot;</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;No cheese found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;No cheese for you!&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int32)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"No cheese found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"No cheese for you!"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -3069,11 +3111,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">422</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Validation error&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese is not mouldy enough&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">422</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Validation error"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese is not mouldy enough"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -3119,11 +3161,11 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-number">404</span>,
-  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Not found&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Your cheese has already been eaten&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"code"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">404</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Not found"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Your cheese has already been eaten"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -3220,24 +3262,24 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">&quot;category&quot;</span>: {
-    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Italian Cheese&quot;</span>
-  },
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Gorgonzola&quot;</span>,
-  <span class="hljs-attr">&quot;photoUrls&quot;</span>: [
-    <span class="hljs-string">&quot;https://wannabechef.com/gorgonzola.jpg&quot;</span>
-  ],
-  <span class="hljs-attr">&quot;tags&quot;</span>: [
-    {
-      <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-    }
-  ],
-  <span class="hljs-attr">&quot;status&quot;</span>: <span class="hljs-string">&quot;available&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"category"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Italian Cheese"</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Gorgonzola"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"photoUrls"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">"https://wannabechef.com/gorgonzola.jpg"</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"tags"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"available"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->
@@ -3278,10 +3320,10 @@
                   <!-- <div class="hljs"> -->
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json">{
-  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;integer (int64)&quot;</span>,
-  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
-}
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer (int64)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span>
+<span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                   <!-- </div> -->

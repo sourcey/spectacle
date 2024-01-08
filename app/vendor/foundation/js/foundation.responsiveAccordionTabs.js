@@ -1,9 +1,7 @@
-'use strict';
-
 import $ from 'jquery';
 import { MediaQuery } from './foundation.util.mediaQuery';
-import { GetYoDigits } from './foundation.util.core';
-import { Plugin }from './foundation.plugin';
+import { GetYoDigits } from './foundation.core.utils';
+import { Plugin }from './foundation.core.plugin';
 
 import { Accordion } from './foundation.accordion';
 import { Tabs } from './foundation.tabs';
@@ -12,11 +10,17 @@ import { Tabs } from './foundation.tabs';
 var MenuPlugins = {
   tabs: {
     cssClass: 'tabs',
-    plugin: Tabs
+    plugin:   Tabs,
+    open:     (plugin, target) => plugin.selectTab(target),
+    close:    null /* not supported */,
+    toggle:   null /* not supported */,
   },
   accordion: {
     cssClass: 'accordion',
-    plugin: Accordion
+    plugin:   Accordion,
+    open:     (plugin, target) => plugin.down($(target)),
+    close:    (plugin, target) => plugin.up($(target)),
+    toggle:   (plugin, target) => plugin.toggle($(target)),
   }
 };
 
@@ -30,6 +34,11 @@ var MenuPlugins = {
  */
 
 class ResponsiveAccordionTabs extends Plugin{
+  constructor(element, options) {
+    super(element, options);
+    return this.options.reflow && this.storezfData || this;
+  }
+
   /**
    * Creates a new instance of a responsive accordion tabs.
    * @class
@@ -40,14 +49,17 @@ class ResponsiveAccordionTabs extends Plugin{
    */
   _setup(element, options) {
     this.$element = $(element);
-    this.options  = $.extend({}, this.$element.data(), options);
+    this.$element.data('zfPluginBase', this);
+    this.options = $.extend({}, ResponsiveAccordionTabs.defaults, this.$element.data(), options);
+
     this.rules = this.$element.data('responsive-accordion-tabs');
     this.currentMq = null;
+    this.currentRule = null;
     this.currentPlugin = null;
     this.className = 'ResponsiveAccordionTabs'; // ie9 back compat
     if (!this.$element.attr('id')) {
       this.$element.attr('id',GetYoDigits(6, 'responsiveaccordiontabs'));
-    };
+    }
 
     this._init();
     this._events();
@@ -108,6 +120,7 @@ class ResponsiveAccordionTabs extends Plugin{
           tmpPlugin.destroy();
         }
         catch(e) {
+          console.warn(`Warning: Problems getting Accordion/Tab options: ${e}`);
         }
       }
     }
@@ -119,11 +132,8 @@ class ResponsiveAccordionTabs extends Plugin{
    * @private
    */
   _events() {
-    var _this = this;
-
-    $(window).on('changed.zf.mediaquery', function() {
-      _this._checkMediaQueries();
-    });
+    this._changedZfMediaQueryHandler = this._checkMediaQueries.bind(this);
+    $(window).on('changed.zf.mediaquery', this._changedZfMediaQueryHandler);
   }
 
   /**
@@ -161,7 +171,8 @@ class ResponsiveAccordionTabs extends Plugin{
       this.currentPlugin.destroy();
     }
     this._handleMarkup(this.rules[matchedMq].cssClass);
-    this.currentPlugin = new this.rules[matchedMq].plugin(this.$element, {});
+    this.currentRule = this.rules[matchedMq];
+    this.currentPlugin = new this.currentRule.plugin(this.$element, this.options);
     this.storezfData = this.currentPlugin.$element.data('zfPlugin');
 
   }
@@ -172,7 +183,7 @@ class ResponsiveAccordionTabs extends Plugin{
     if ($panels.length) fromString = 'tabs';
     if (fromString === toSet) {
       return;
-    };
+    }
 
     var tabsTitle = _this.allOptions.linkClass?_this.allOptions.linkClass:'tabs-title';
     var tabsPanel = _this.allOptions.panelClass?_this.allOptions.panelClass:'tabs-panel';
@@ -184,9 +195,9 @@ class ResponsiveAccordionTabs extends Plugin{
     if (fromString === 'tabs') {
       $panels = $panels.children('.'+tabsPanel).removeClass(tabsPanel).removeAttr('role').removeAttr('aria-hidden').removeAttr('aria-labelledby');
       $panels.children('a').removeAttr('role').removeAttr('aria-controls').removeAttr('aria-selected');
-    }else{
+    } else {
       $panels = $liHeads.children('[data-tab-content]').removeClass('accordion-content');
-    };
+    }
 
     $panels.css({display:'',visibility:''});
     $liHeads.css({display:'',visibility:''});
@@ -197,15 +208,15 @@ class ResponsiveAccordionTabs extends Plugin{
         $liHeads.addClass('accordion-item').attr('data-accordion-item','');
         $liHeadsA.addClass('accordion-title');
       });
-    }else if (toSet === 'tabs'){
+    } else if (toSet === 'tabs') {
       var $tabsContent = $('[data-tabs-content='+_this.$element.attr('id')+']');
       var $placeholder = $('#tabs-placeholder-'+_this.$element.attr('id'));
       if ($placeholder.length) {
         $tabsContent = $('<div class="tabs-content"></div>').insertAfter($placeholder).attr('data-tabs-content',_this.$element.attr('id'));
         $placeholder.remove();
-      }else{
+      } else {
         $tabsContent = $('<div class="tabs-content"></div>').insertAfter(_this.$element).attr('data-tabs-content',_this.$element.attr('id'));
-      };
+      }
       $panels.each(function(key,value){
         var tempValue = $(value).appendTo($tabsContent).addClass(tabsPanel);
         var hash = $liHeadsA.get(key).hash.slice(1);
@@ -213,19 +224,56 @@ class ResponsiveAccordionTabs extends Plugin{
         if (hash !== id) {
           if (hash !== '') {
             $(value).attr('id',hash);
-          }else{
+          } else {
             hash = id;
             $(value).attr('id',hash);
             $($liHeadsA.get(key)).attr('href',$($liHeadsA.get(key)).attr('href').replace('#','')+'#'+hash);
-          };
-        };
+          }
+        }
         var isActive = $($liHeads.get(key)).hasClass('is-active');
         if (isActive) {
           tempValue.addClass('is-active');
-        };
+        }
       });
       $liHeads.addClass(tabsTitle);
     };
+  }
+
+  /**
+   * Opens the plugin pane defined by `target`.
+   * @param {jQuery | String} target - jQuery object or string of the id of the pane to open.
+   * @see Accordion.down
+   * @see Tabs.selectTab
+   * @function
+   */
+  open() {
+    if (this.currentRule && typeof this.currentRule.open === 'function') {
+      return this.currentRule.open(this.currentPlugin, ...arguments);
+    }
+  }
+
+  /**
+   * Closes the plugin pane defined by `target`. Not availaible for Tabs.
+   * @param {jQuery | String} target - jQuery object or string of the id of the pane to close.
+   * @see Accordion.up
+   * @function
+   */
+  close() {
+    if (this.currentRule && typeof this.currentRule.close === 'function') {
+      return this.currentRule.close(this.currentPlugin, ...arguments);
+    }
+  }
+
+  /**
+   * Toggles the plugin pane defined by `target`. Not availaible for Tabs.
+   * @param {jQuery | String} target - jQuery object or string of the id of the pane to toggle.
+   * @see Accordion.toggle
+   * @function
+   */
+  toggle() {
+    if (this.currentRule && typeof this.currentRule.toggle === 'function') {
+      return this.currentRule.toggle(this.currentPlugin, ...arguments);
+    }
   }
 
   /**
@@ -234,7 +282,7 @@ class ResponsiveAccordionTabs extends Plugin{
    */
   _destroy() {
     if (this.currentPlugin) this.currentPlugin.destroy();
-    $(window).off('.zf.ResponsiveAccordionTabs');
+    $(window).off('changed.zf.mediaquery', this._changedZfMediaQueryHandler);
   }
 }
 

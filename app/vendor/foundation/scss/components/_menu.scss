@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -26,6 +26,10 @@ $menu-simple-margin: 1rem !default;
 /// @type Color
 $menu-item-color-active: $white !default;
 
+/// Alternative text color of an active menu item..
+/// @type Color
+$menu-item-color-alt-active: $black !default;
+
 /// Background color of an active menu item.
 /// @type Color
 $menu-item-background-active: get-color(primary) !default;
@@ -34,19 +38,20 @@ $menu-item-background-active: get-color(primary) !default;
 /// @type Number
 $menu-icon-spacing: 0.25rem !default;
 
-/// Background color for an hovered menu item.
-/// @type Color
-$menu-item-background-hover: $light-gray !default;
-
-/// Backward compatibility for menu state. If true, this duplicate `active` with `is-active`. 
+/// Backward compatibility for menu state. If true, this duplicate `active` with `is-active`.
 /// But please note that `active` will be removed in upcoming versions.
 /// @type Boolean
 $menu-state-back-compat: true !default;
 
-/// Backward compatibility for menu centered. If true, this duplicate `.menu-centered > .menu` with `.menu.align-center`. 
+/// Backward compatibility for menu centered. If true, this duplicate `.menu-centered > .menu` with `.menu.align-center`.
 /// But please note that `menu-centered` will be removed in upcoming versions.
 /// @type Boolean
 $menu-centered-back-compat: true !default;
+
+/// Backward compatibility for using `icon-*` classes without `.icons` classes
+/// But please note that this backward compatibility will be removed in upcoming versions.
+/// @type Boolean
+$menu-icons-back-compat: true !default;
 
 /// Creates the base styles for a Menu.
 @mixin menu-base {
@@ -68,7 +73,6 @@ $menu-centered-back-compat: true !default;
   .button {
     line-height: 1;
     text-decoration: none;
-    white-space: nowrap;
     display: block;
     padding: $menu-items-padding;
   }
@@ -254,6 +258,33 @@ $menu-centered-back-compat: true !default;
   }
 }
 
+/// Align top/bottom icons within a menu.
+/// @param {Keyword} $alignment [center] - Alignment of the icon
+@mixin menu-icon-alignment($alignment: center) {
+  @if $global-flexbox {
+    &.icon-top,
+    &.icon-bottom {
+      li a {
+        img,
+        i,
+        svg {
+          @if $alignment == left {
+            text-align: left;
+          }
+
+          @else if $alignment == right {
+            text-align: right;
+          }
+
+          @else {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
 /// Adds position classes for icons within a menu.
 @mixin menu-icon-position($position: left, $spacing: $menu-icon-spacing) {
   @if $position == left {
@@ -350,7 +381,7 @@ $menu-centered-back-compat: true !default;
 
 @mixin menu-state-active {
   background: $menu-item-background-active;
-  color: $menu-item-color-active;
+  color: color-pick-contrast($menu-item-background-active, ($menu-item-color-active, $menu-item-color-alt-active));
 }
 
 @mixin foundation-menu {
@@ -365,11 +396,13 @@ $menu-centered-back-compat: true !default;
     // Vertical orientation modifier
     &.vertical {
       @include menu-direction(vertical);
+      @include menu-icon-alignment(left);
     }
 
     // Even-width modifier for horizontal orientation
     &.expanded {
       @include menu-expand;
+      @include menu-icon-alignment(left);
     }
 
     // Simple
@@ -406,31 +439,46 @@ $menu-centered-back-compat: true !default;
       @include menu-icons;
     }
 
-    // Icon Left
-    &.icon-left {
-      @include menu-icon-position(left);
+    // Backward Compatibility for active state
+    @if $menu-icons-back-compat {
+      &.icon-top,
+      &.icon-right,
+      &.icon-bottom,
+      &.icon-left {
+        @include menu-icons;
+      }
     }
 
-    // Icon Right
-    &.icon-right {
-      @include menu-icon-position(right);
-    }
+    // Menu icon position
+    // Includes specificity to nested icons with a different position
+    &,
+    &.nested {
+      // Icon Left
+      &.icon-left {
+        @include menu-icon-position(left);
+      }
 
-    // Icon Top
-    &.icon-top {
-      @include menu-icon-position(top);
-    }
+      // Icon Right
+      &.icon-right {
+        @include menu-icon-position(right);
+      }
 
-    // Icon Bottom
-    &.icon-bottom {
-      @include menu-icon-position(bottom);
+      // Icon Top
+      &.icon-top {
+        @include menu-icon-position(top);
+      }
+
+      // Icon Bottom
+      &.icon-bottom {
+        @include menu-icon-position(bottom);
+      }
     }
 
     // Active state
     .is-active > a {
       @include menu-state-active;
     }
-    
+
     // Backward Compatibility for active state
     @if $menu-state-back-compat {
       .active > a {
@@ -446,6 +494,7 @@ $menu-centered-back-compat: true !default;
     // Align right
     &.align-#{$global-right} {
       @include menu-align(right);
+      @include menu-icon-alignment(right);
 
       .nested {
         @include menu-nested($nested-alignment: right);
@@ -468,7 +517,7 @@ $menu-centered-back-compat: true !default;
         @if $global-flexbox {
           justify-content: center;
         }
-        
+
         @include menu-align(center);
       }
     }

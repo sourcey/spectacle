@@ -1,10 +1,8 @@
-'use strict';
-
 import $ from 'jquery';
 
 import { MediaQuery } from './foundation.util.mediaQuery';
-import { GetYoDigits } from './foundation.util.core';
-import { Plugin } from './foundation.plugin';
+import { GetYoDigits } from './foundation.core.utils';
+import { Plugin } from './foundation.core.plugin';
 
 import { DropdownMenu } from './foundation.dropdownMenu';
 import { Drilldown } from './foundation.drilldown';
@@ -44,7 +42,7 @@ class ResponsiveMenu extends Plugin {
    * @param {jQuery} element - jQuery object to make into a dropdown menu.
    * @param {Object} options - Overrides to the default plugin settings.
    */
-  _setup(element, options) {
+  _setup(element) {
     this.$element = $(element);
     this.rules = this.$element.data('responsive-menu');
     this.currentMq = null;

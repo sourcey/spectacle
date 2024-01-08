@@ -33,7 +33,7 @@ $(function() {
       };
 
     // Drawer open buttons
-    $drawerLayout.find('[data-drawer-slide]').click(function(e) {
+    $drawerLayout.find('[data-drawer-slide]').on('click', function(e) {
       var $this = $(this),
         direction = $this.data('drawer-slide');
       $drawerLayout.addClass('drawer-open');
@@ -41,13 +41,13 @@ $(function() {
 
       var $overlay = $('<a href="#" class="drawer-overlay"></a>')
       $drawer.append($overlay);
-      $overlay.click(closeDrawer);
+      $overlay.on('click', closeDrawer);
 
       return false;
     });
 
     // Drawer close buttons
-    $drawerLayout.find('[data-drawer-close]').click(closeDrawer);
+    $drawerLayout.find('[data-drawer-close]').on('click', closeDrawer);
   }
 });
 
@@ -161,13 +161,13 @@ Traverse.prototype._events = function() {
         easing:   _this.options.animationEasing
       };
 
-  $(window).one('load', function(){
+  $(function(){
     _this.calcPoints();
     _this._updateActive();
 
-    $(this).resize(function(e) {
+    $(this).on('resize', function(e) {
       _this.reflow();
-    }).scroll(function(e) {
+    }).on('scroll', function(e) {
       _this._updateActive();
     });
   })

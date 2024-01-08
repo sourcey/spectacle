@@ -1,10 +1,8 @@
-'use strict';
-
 import $ from 'jquery';
 import { MediaQuery } from './foundation.util.mediaQuery';
-import { Plugin } from './foundation.plugin';
-import { GetYoDigits } from './foundation.util.core';
-
+import { Plugin } from './foundation.core.plugin';
+import { GetYoDigits } from './foundation.core.utils';
+import { Triggers } from './foundation.util.triggers';
 
 /**
  * Interchange module.
@@ -23,10 +21,13 @@ class Interchange extends Plugin {
    */
   _setup(element, options) {
     this.$element = element;
-    this.options = $.extend({}, Interchange.defaults, options);
+    this.options = $.extend({}, Interchange.defaults, this.$element.data(), options);
     this.rules = [];
     this.currentPath = '';
     this.className = 'Interchange'; // ie9 back compat
+
+    // Triggers init is idempotent, just need to make sure it is initialized
+    Triggers.init($);
 
     this._init();
     this._events();
@@ -46,6 +47,7 @@ class Interchange extends Plugin {
       'id': id
     });
 
+    this._parseOptions();
     this._addBreakpoints();
     this._generateRules();
     this._reflow();
@@ -84,6 +86,22 @@ class Interchange extends Plugin {
   }
 
   /**
+   * Check options valifity and set defaults for:
+   * - `data-interchange-type`: if set, enforce the type of replacement (auto, src, background or html)
+   * @function
+   * @private
+   */
+  _parseOptions() {
+    var types = ['auto', 'src', 'background', 'html'];
+    if (typeof this.options.type === 'undefined')
+      this.options.type = 'auto';
+    else if (types.indexOf(this.options.type) === -1) {
+      console.warn(`Warning: invalid value "${this.options.type}" for Interchange option "type"`);
+      this.options.type = 'auto';
+    }
+  }
+
+  /**
    * Gets the Foundation breakpoints and adds them to the Interchange.SPECIAL_QUERIES object.
    * @function
    * @private
@@ -101,10 +119,9 @@ class Interchange extends Plugin {
    * Checks the Interchange element for the provided media query + content pairings
    * @function
    * @private
-   * @param {Object} element - jQuery object that is an Interchange instance
    * @returns {Array} scenarios - Array of objects that have 'mq' and 'path' keys with corresponding keys
    */
-  _generateRules(element) {
+  _generateRules() {
     var rulesList = [];
     var rules;
 
@@ -115,7 +132,7 @@ class Interchange extends Plugin {
       rules = this.$element.data('interchange');
     }
 
-    rules =  typeof rules === 'string' ? rules.match(/\[.*?\]/g) : rules;
+    rules =  typeof rules === 'string' ? rules.match(/\[.*?, .*?\]/g) : rules;
 
     for (var i in rules) {
       if(rules.hasOwnProperty(i)) {
@@ -146,29 +163,39 @@ class Interchange extends Plugin {
   replace(path) {
     if (this.currentPath === path) return;
 
-    var _this = this,
-        trigger = 'replaced.zf.interchange';
+    var trigger = 'replaced.zf.interchange';
+
+    var type = this.options.type;
+    if (type === 'auto') {
+      if (this.$element[0].nodeName === 'IMG')
+        type = 'src';
+      else if (path.match(/\.(gif|jpe?g|png|svg|tiff)([?#].*)?/i))
+        type = 'background';
+      else
+        type = 'html';
+    }
 
     // Replacing images
-    if (this.$element[0].nodeName === 'IMG') {
-      this.$element.attr('src', path).on('load', function() {
-        _this.currentPath = path;
-      })
-      .trigger(trigger);
+    if (type === 'src') {
+      this.$element.attr('src', path)
+        .on('load', () => { this.currentPath = path; })
+        .trigger(trigger);
     }
     // Replacing background images
-    else if (path.match(/\.(gif|jpg|jpeg|png|svg|tiff)([?#].*)?/i)) {
+    else if (type === 'background') {
       path = path.replace(/\(/g, '%28').replace(/\)/g, '%29');
-      this.$element.css({ 'background-image': 'url('+path+')' })
-          .trigger(trigger);
+      this.$element
+        .css({ 'background-image': 'url(' + path + ')' })
+        .trigger(trigger);
     }
     // Replacing HTML
-    else {
-      $.get(path, function(response) {
-        _this.$element.html(response)
-             .trigger(trigger);
+    else if (type === 'html') {
+      $.get(path, (response) => {
+        this.$element
+          .html(response)
+          .trigger(trigger);
         $(response).foundation();
-        _this.currentPath = path;
+        this.currentPath = path;
       });
     }
 
@@ -198,7 +225,19 @@ Interchange.defaults = {
    * @type {?array}
    * @default null
    */
-  rules: null
+  rules: null,
+
+  /**
+   * Type of the responsive ressource to replace. It can take the following options:
+   * - `auto` (default): choose the type according to the element tag or the ressource extension,
+   * - `src`: replace the `[src]` attribute, recommended for images `<img>`.
+   * - `background`: replace the `background-image` CSS property.
+   * - `html`: replace the element content.
+   * @option
+   * @type {string}
+   * @default 'auto'
+   */
+  type: 'auto'
 };
 
 Interchange.SPECIAL_QUERIES = {

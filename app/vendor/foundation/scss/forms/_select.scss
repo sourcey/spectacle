@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -76,6 +76,10 @@ $select-radius: $global-radius !default;
   &[multiple] {
     height: auto;
     background-image: none;
+  }
+  &:not([multiple]) {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 

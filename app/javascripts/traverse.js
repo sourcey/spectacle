@@ -108,13 +108,13 @@ Traverse.prototype._events = function() {
         easing:   _this.options.animationEasing
       };
 
-  $(window).one('load', function(){
+  $(function(){
     _this.calcPoints();
     _this._updateActive();
 
-    $(this).resize(function(e) {
+    $(this).on('resize', function(e) {
       _this.reflow();
-    }).scroll(function(e) {
+    }).on('scroll', function(e) {
       _this._updateActive();
     });
   })

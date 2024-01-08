@@ -1,5 +1,5 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 ////
@@ -13,21 +13,7 @@
 @function text-inputs($types: (), $modifier: '') {
   $return: ();
 
-  $all-types:
-    text
-    password
-    date
-    datetime
-    datetime-local
-    month
-    week
-    email
-    number
-    search
-    tel
-    time
-    url
-    color;
+  $all-types: text password date datetime datetime-local month week email number search tel time url color;
 
   @if not has-value($types) {
     $types: $all-types;

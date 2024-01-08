@@ -33,7 +33,7 @@ $(function() {
       };
 
     // Drawer open buttons
-    $drawerLayout.find('[data-drawer-slide]').click(function(e) {
+    $drawerLayout.find('[data-drawer-slide]').on('click', function(e) {
       var $this = $(this),
         direction = $this.data('drawer-slide');
       $drawerLayout.addClass('drawer-open');
@@ -41,12 +41,12 @@ $(function() {
 
       var $overlay = $('<a href="#" class="drawer-overlay"></a>')
       $drawer.append($overlay);
-      $overlay.click(closeDrawer);
+      $overlay.on('click', closeDrawer);
 
       return false;
     });
 
     // Drawer close buttons
-    $drawerLayout.find('[data-drawer-close]').click(closeDrawer);
+    $drawerLayout.find('[data-drawer-close]').on('click', closeDrawer);
   }
 });

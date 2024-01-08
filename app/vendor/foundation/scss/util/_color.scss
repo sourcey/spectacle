@@ -1,10 +1,17 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
 @import 'math';
 
 $contrast-warnings: true !default;
+
+/// Patch to fix issue #12080
+$primary-color: null !default;
+$secondary-color: null !default;
+$warning-color: null !default;
+$alert-color: null !default;
+$success-color: null !default;
 
 ////
 /// @group functions
@@ -23,9 +30,9 @@ $contrast-warnings: true !default;
 
   @for $i from 1 through 3 {
     $rgb: nth($rgba, $i);
-    $rgb: $rgb / 255;
+    $rgb: divide($rgb, 255);
 
-    $rgb: if($rgb < 0.03928, $rgb / 12.92, pow(($rgb + 0.055) / 1.055, 2.4));
+    $rgb: if($rgb < 0.03928, divide($rgb, 12.92), pow(divide($rgb + 0.055, 1.055), 2.4));
 
     $rgba2: append($rgba2, $rgb);
   }
@@ -44,13 +51,13 @@ $contrast-warnings: true !default;
   // Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
   $luminance1: color-luminance($color1) + 0.05;
   $luminance2: color-luminance($color2) + 0.05;
-  $ratio: $luminance1 / $luminance2;
+  $ratio: divide($luminance1, $luminance2);
 
   @if $luminance2 > $luminance1 {
-    $ratio: 1 / $ratio;
+    $ratio: divide(1, $ratio);
   }
 
-  $ratio: round($ratio * 10) / 10;
+  $ratio: round($ratio * 10) * 0.1;
 
   @return $ratio;
 }
@@ -75,7 +82,7 @@ $contrast-warnings: true !default;
   }
 
   @if ($contrast-warnings and $contrast < 3) {
-    @warn "Contrast ratio of #{$best} on #{$base} is pretty bad, just #{$contrast}";
+    @warn 'Contrast ratio of #{$best} on #{$base} is pretty bad, just #{$contrast}';
   }
 
   @return $best;
@@ -109,21 +116,31 @@ $contrast-warnings: true !default;
   }
 }
 
-/// Transfers the colors in the `$foundation-palette`map into variables, such as `$primary-color` and `$secondary-color`. Call this mixin below the Global section of your settings file to properly migrate your codebase.
+/// Transfers the colors in the `$foundation-palette` map into variables, such as `$primary-color` and `$secondary-color`. Call this mixin below the Global section of your settings file to properly migrate your codebase.
 @mixin add-foundation-colors() {
   @if map-has-key($foundation-palette, primary) {
     $primary-color: map-get($foundation-palette, primary) !global;
+  } @else {
+    $primary-color: #1779ba !global;
   }
   @if map-has-key($foundation-palette, secondary) {
     $secondary-color: map-get($foundation-palette, secondary) !global;
+  } @else {
+    $secondary-color: #767676 !global;
   }
   @if map-has-key($foundation-palette, success) {
     $success-color: map-get($foundation-palette, success) !global;
+  } @else {
+    $success-color: #3adb76 !global;
   }
   @if map-has-key($foundation-palette, warning) {
     $warning-color: map-get($foundation-palette, warning) !global;
+  } @else {
+    $warning-color: #ffae00 !global;
   }
   @if map-has-key($foundation-palette, alert) {
     $alert-color: map-get($foundation-palette, alert) !global;
+  } @else {
+    $alert-color: #cc4b37 !global;
   }
 }

@@ -1,10 +1,8 @@
-"use strict";
-
 import $ from 'jquery';
-import { GetYoDigits } from './foundation.util.core';
+import { GetYoDigits } from './foundation.core.utils';
 import { MediaQuery } from './foundation.util.mediaQuery';
 
-var FOUNDATION_VERSION = '6.4.1';
+var FOUNDATION_VERSION = '6.7.5';
 
 // Global Foundation object
 // This is attached to the window, or used as a module for AMD/Browserify
@@ -80,7 +78,9 @@ var Foundation = {
            */
           .trigger(`destroyed.zf.${pluginName}`);
     for(var prop in plugin){
-      plugin[prop] = null;//clean up script to prep for garbage collection.
+      if(typeof plugin[prop] === 'function'){
+        plugin[prop] = null; //clean up script to prep for garbage collection.
+      }
     }
     return;
   },
@@ -113,7 +113,7 @@ var Foundation = {
              $('[data-'+ plugins +']').foundation('_init');
            },
            'undefined': function(){
-             this['object'](Object.keys(_this._plugins));
+             this.object(Object.keys(_this._plugins));
            }
          };
          fns[type](plugins);
@@ -149,21 +149,18 @@ var Foundation = {
       var plugin = _this._plugins[name];
 
       // Localize the search to all elements inside elem, as well as elem itself, unless elem === document
-      var $elem = $(elem).find('[data-'+name+']').addBack('[data-'+name+']');
+      var $elem = $(elem).find('[data-'+name+']').addBack('[data-'+name+']').filter(function () {
+        return typeof $(this).data("zfPlugin") === 'undefined';
+      });
 
       // For each plugin found, initialize it
       $elem.each(function() {
         var $el = $(this),
-            opts = {};
-        // Don't double-dip on plugins
-        if ($el.data('zfPlugin')) {
-          console.warn("Tried to initialize "+name+" on an element that already has a Foundation plugin.");
-          return;
-        }
+            opts = { reflow: true };
 
         if($el.attr('data-options')){
-          var thing = $el.attr('data-options').split(';').forEach(function(e, i){
-            var opt = e.split(':').map(function(el){ return el.trim(); });
+          $el.attr('data-options').split(';').forEach(function(option){
+            var opt = option.split(':').map(function(el){ return el.trim(); });
             if(opt[0]) opts[opt[0]] = parseValue(opt[1]);
           });
         }
@@ -179,7 +176,7 @@ var Foundation = {
   },
   getFnName: functionName,
 
-  addToJquery: function($) {
+  addToJquery: function() {
     // TODO: consider not making this a jQuery function
     // TODO: need way to reflow vs. re-initialize
     /**
@@ -201,7 +198,7 @@ var Foundation = {
         var args = Array.prototype.slice.call(arguments, 1);//collect all the arguments, if necessary
         var plugClass = this.data('zfPlugin');//determine the class of plugin
 
-        if(plugClass !== undefined && plugClass[method] !== undefined){//make sure both the class and method exist
+        if(typeof plugClass !== 'undefined' && typeof plugClass[method] !== 'undefined'){//make sure both the class and method exist
           if(this.length === 1){//if there's only one, call it directly.
               plugClass[method].apply(plugClass, args);
           }else{
@@ -282,6 +279,7 @@ window.Foundation = Foundation;
   }
 })();
 if (!Function.prototype.bind) {
+  /* eslint-disable no-extend-native */
   Function.prototype.bind = function(oThis) {
     if (typeof this !== 'function') {
       // closest thing possible to the ECMAScript 5
@@ -310,12 +308,12 @@ if (!Function.prototype.bind) {
 }
 // Polyfill to get the name of a function in IE9
 function functionName(fn) {
-  if (Function.prototype.name === undefined) {
+  if (typeof Function.prototype.name === 'undefined') {
     var funcNameRegex = /function\s([^(]{1,})\(/;
     var results = (funcNameRegex).exec((fn).toString());
     return (results && results.length > 1) ? results[1].trim() : "";
   }
-  else if (fn.prototype === undefined) {
+  else if (typeof fn.prototype === 'undefined') {
     return fn.constructor.name;
   }
   else {

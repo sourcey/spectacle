@@ -1,6 +1,10 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
+
+@import 'math';
+
+$unit-warnings: true !default;
 
 ////
 /// @group functions
@@ -14,13 +18,13 @@ $global-font-size: 100% !default;
 ///
 /// @returns {Number} The same number, sans unit.
 @function strip-unit($num) {
-  @return $num / ($num * 0 + 1);
+  @return divide($num, $num * 0 + 1);
 }
 
 /// Converts one or more pixel values into matching rem values.
 ///
 /// @param {Number|List} $values - One or more values to convert. Be sure to separate them with spaces and not commas. If you need to convert a comma-separated list, wrap the list in parentheses.
-/// @param {Number} $base [null] - The base value to use when calculating the `rem`. If you're using Foundation out of the box, this is 16px. If this parameter is `null`, the function will reference the `$base-font-size` variable as the base.
+/// @param {Number} $base [null] - The base value to use when calculating the `rem`. If you're using Foundation out of the box, this is 16px. If this parameter is `null`, the function will reference the `$global-font-size` variable as the base.
 ///
 /// @returns {List} A list of converted values.
 @function rem-calc($values, $base: null) {
@@ -35,7 +39,7 @@ $global-font-size: 100% !default;
   // If the base font size is a %, then multiply it by 16px
   // This is because 100% font size = 16px in most all browsers
   @if unit($base) == '%' {
-    $base: ($base / 100%) * 16px;
+    $base: divide($base, 100%) * 16px;
   }
 
   // Using rem as base allows correct scaling
@@ -75,7 +79,9 @@ $global-font-size: 100% !default;
 @function -zf-to-rem($value, $base: null) {
   // Check if the value is a number
   @if type-of($value) != 'number' {
-    @warn inspect($value) + ' was passed to rem-calc(), which is not a number.';
+    @if $unit-warnings {
+      @warn inspect($value) + ' was passed to rem-calc(), which is not a number.';
+    }
     @return $value;
   }
 
@@ -86,7 +92,7 @@ $global-font-size: 100% !default;
 
   // Calculate rem if units for $value is not rem or em
   @if unit($value) != 'rem' {
-    $value: strip-unit($value) / strip-unit($base) * 1rem;
+    $value: divide(strip-unit($value), strip-unit($base)) * 1rem;
   }
 
   // Turn 0rem into 0
@@ -114,7 +120,7 @@ $global-font-size: 100% !default;
 
   // If the base font size is a %, then multiply it by 16px
   @if unit($base) == '%' {
-    $base: ($base / 100%) * 16px;
+    $base: divide($base, 100%) * 16px;
   }
 
   @if unit($base) == 'rem' {
@@ -125,9 +131,9 @@ $global-font-size: 100% !default;
     $base: strip-unit($base) * 16px;
   }
 
-  // Now lets convert our value to pixels too
+  // Now let's convert our value to pixels too
   @if unit($value) == '%' {
-    $value: ($value / 100%) * $base;
+    $value: divide($value, 100%) * $base;
   }
 
   @if unit($value) == 'rem' {
@@ -140,12 +146,12 @@ $global-font-size: 100% !default;
 
   // 'px'
   @if unit($value) == 'px' {
-    @return strip-unit($value) / strip-unit($base);
+    @return divide(strip-unit($value), strip-unit($base));
   }
 
-  // assume that line-heights greatern then 10 are meant to be absolute in 'px'
+  // assume that line-heights greater than 10 are meant to be absolute in 'px'
   @if unitless($value) and ($value > 10) {
-    @return $value / strip-unit($base);
+    @return divide($value, strip-unit($base));
   }
 
   @return $value;

@@ -1,12 +1,14 @@
-// Foundation for Sites by ZURB
-// foundation.zurb.com
+// Foundation for Sites
+// https://get.foundation
 // Licensed under MIT Open Source
 
-// sass-lint:disable force-attribute-nesting, force-pseudo-nesting, no-color-literals, no-qualifying-elements
+// sass-lint:disable no-color-literals, no-qualifying-elements
 
 ////
 /// @group global
 ////
+
+@import 'util/util';
 
 /// Font size attribute applied to `<html>` and `<body>`. We use 100% by default so the value is inherited from the user's browser settings.
 /// @type Number
@@ -23,11 +25,11 @@ $global-lineheight: 1.5 !default;
 /// Colors used for buttons, callouts, links, etc. There must always be a color called `primary`.
 /// @type Map
 $foundation-palette: (
-  primary: #1779ba,
-  secondary: #767676,
-  success: #3adb76,
-  warning: #ffae00,
-  alert: #cc4b37,
+  "primary": #1779ba,
+  "secondary": #767676,
+  "success": #3adb76,
+  "warning": #ffae00,
+  "alert": #cc4b37,
 ) !default;
 
 /// Color used for light gray UI items.
@@ -61,6 +63,10 @@ $body-font-color: $black !default;
 /// Font stack of the body.
 /// @type List
 $body-font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif !default;
+
+/// Set to `true` to enable safe padding on the body for non-rectangular devices (i.e. phones with notches)
+/// @type Boolean
+$body-safe-padding: false !default;
 
 /// Set to `true` to enable antialiased type, using the `-webkit-font-smoothing` and `-moz-osx-font-smoothing` CSS properties.
 /// @type Boolean
@@ -109,6 +115,10 @@ $global-flexbox: true !default;
 /// @type Boolean
 $global-prototype-breakpoints: false !default;
 
+/// Button cursor's value, `auto` by default
+/// @type Keyword
+$global-button-cursor: auto !default;
+
 @if not map-has-key($foundation-palette, primary) {
   @error 'In $foundation-palette, you must have a color named "primary".';
 }
@@ -117,19 +127,18 @@ $global-prototype-breakpoints: false !default;
 $global-left: if($global-text-direction == rtl, right, left);
 $global-right: if($global-text-direction == rtl, left, right);
 
+// Internal variable that contains the flex justifying options
+$-zf-flex-justify: -zf-flex-justify($global-text-direction);
+
 /// Global tolerance for color pick contrast.
 /// @type Number
 $global-color-pick-contrast-tolerance: 0 !default;
 
 // Internal variables used for colors
-$primary-color: get-color(primary);
-$secondary-color: get-color(secondary);
-$success-color: get-color(success);
-$warning-color: get-color(warning);
-$alert-color: get-color(alert);
+@include add-foundation-colors;
 
 @mixin foundation-global-styles {
-  @include -zf-normalize;
+  @include foundation-normalize;
 
   // These styles are applied to a <meta> tag, which is read by the Foundation JavaScript
   .foundation-mq {
@@ -153,6 +162,14 @@ $alert-color: get-color(alert);
     margin: 0;
     padding: 0;
 
+    @if ($body-safe-padding) {
+      // using environment variables to account for non-rectangular displays e.g. phones with notches
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+    }
+
     background: $body-background;
 
     font-family: $body-font-family;
@@ -161,8 +178,8 @@ $alert-color: get-color(alert);
     color: $body-font-color;
 
     @if ($body-antialiased) {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased; // sass-lint:disable-line no-vendor-prefixes
+      -moz-osx-font-smoothing: grayscale; // sass-lint:disable-line no-vendor-prefixes
     }
   }
 
@@ -205,20 +222,19 @@ $alert-color: get-color(alert);
   // Reset <button> styles created by most browsers
   button {
     @include disable-mouse-outline;
-
     padding: 0;
-
     appearance: none;
     border: 0;
     border-radius: $global-radius;
     background: transparent;
-
     line-height: 1;
+    cursor: $global-button-cursor;
   }
 
   // Prevent text overflow on pre
   pre {
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   // Make reset inherit font-family instead of settings sans-serif
@@ -238,10 +254,4 @@ $alert-color: get-color(alert);
   .is-hidden {
     display: none !important;
   }
-}
-
-/// Loads normalize.css.
-/// @access private
-@mixin -zf-normalize {
-  @include normalize();
 }
