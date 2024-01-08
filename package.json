@@ -17,7 +17,7 @@
     "url": "git+https://github.com/sourcey/spectacle.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=18"
   },
   "keywords": [
     "openapi",
