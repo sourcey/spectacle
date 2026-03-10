@@ -154,7 +154,10 @@ function PropertyRow({
   maxDepth,
 }: PropertyRowProps) {
   const hasInner =
-    schema.properties || (schema.type === "array" && schema.items?.properties);
+    schema.properties ||
+    (schema.type === "array" &&
+      schema.items &&
+      (schema.items.properties || schema.items.allOf || schema.items.oneOf || schema.items.anyOf));
 
   return (
     <div class="param-item">
