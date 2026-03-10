@@ -1,8 +1,7 @@
-~*
-*~
-*bak
-*cache
-*.log
-node_modules
-.history
-.idea
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+.preview/
+plan.md
