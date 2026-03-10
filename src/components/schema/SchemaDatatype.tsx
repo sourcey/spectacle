@@ -16,16 +16,8 @@ export function SchemaDatatype({ schema }: SchemaDatatypeProps) {
       {schema.format && (
         <span class="json-property-format"> ({schema.format})</span>
       )}
-      {schema.enum?.length && (
-        <span class="json-property-enum">
-          {schema.enum.map((v, i) => (
-            <span key={i} class="json-property-enum-item">
-              {i > 0 ? ", " : ""}
-              {String(v)}
-            </span>
-          ))}
-        </span>
-      )}
+      {renderEnum(schema.enum) ||
+        (schema.type === "array" && schema.items?.enum && renderEnum(schema.items.enum))}
       {schemaRange(schema) && (
         <span class="json-property-range">{schemaRange(schema)}</span>
       )}
@@ -34,6 +26,20 @@ export function SchemaDatatype({ schema }: SchemaDatatypeProps) {
       )}
       {schema.nullable && <span class="json-property-type"> | null</span>}
     </>
+  );
+}
+
+function renderEnum(values?: unknown[]) {
+  if (!values?.length) return null;
+  return (
+    <span class="json-property-enum">
+      {values.map((v, i) => (
+        <span key={i} class="json-property-enum-item">
+          {i > 0 ? ", " : ""}
+          {String(v)}
+        </span>
+      ))}
+    </span>
   );
 }
 
