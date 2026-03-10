@@ -1,0 +1,1426 @@
+/**
+ * Spectacle 2.0 — Default Theme
+ *
+ * Design: Stripe-inspired. Clean lines, generous whitespace, clear hierarchy.
+ * Layout: fixed sidebar + split content/examples at 64em+.
+ * Dark panel: continuous right strip for code and examples.
+ */
+
+/* ── CSS Custom Properties ────────────────────────────────────────── */
+
+:root {
+  --sidebar-width: 260px;
+  --content-padding: 2rem;
+
+  /* Light theme */
+  --color-heading: #0f172a;
+  --color-body: #374151;
+  --color-muted: #6b7280;
+  --color-faint: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-bg-subtle: #f9fafb;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+
+  /* Dark panel */
+  --dark-bg: #0f1117;
+  --dark-bg-raised: #161922;
+  --dark-border: rgba(255, 255, 255, 0.08);
+  --dark-text: #d1d5db;
+  --dark-text-muted: #9ca3af;
+  --dark-text-faint: #6b7280;
+  --dark-code: #93c5fd;
+  --dark-url: #a3e635;
+
+  /* Method colors */
+  --method-get: #16a34a;
+  --method-post: #2563eb;
+  --method-put: #d97706;
+  --method-delete: #dc2626;
+  --method-patch: #9333ea;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --text-sm: 0.8125rem;
+  --text-xs: 0.75rem;
+  --text-body: 0.9375rem;
+  --text-base: 0.875rem;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-body);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Typography ────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.125rem; }
+h4 { font-size: 1rem; font-weight: 500; }
+h5 { font-size: var(--text-base); font-weight: 600; }
+
+p {
+  margin: 0 0 0.625rem;
+  font-size: var(--text-body);
+  line-height: 1.65;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover { color: var(--color-accent-hover); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  color: #e11d48;
+  background: #fef2f2;
+  border: 1px solid #fecdd3;
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+}
+
+pre { margin: 0; }
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+table { width: 100%; border-collapse: collapse; }
+thead { border-bottom: 1px solid var(--color-border); }
+th {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+td { padding: 0.5rem 0.75rem; font-size: var(--text-base); }
+tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
+#spectacle tbody tr:last-child { border-bottom: none; }
+
+#spectacle button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Page Layout ───────────────────────────────────────────────────── */
+
+#spectacle #page { width: 100%; min-height: 100vh; }
+
+/* ── Sidebar ───────────────────────────────────────────────────────── */
+
+#spectacle #sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  padding: 1.5rem 0.75rem 1.5rem 1.25rem;
+  background: var(--color-bg-subtle);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 100;
+  -webkit-overflow-scrolling: touch;
+}
+
+#spectacle #sidebar::-webkit-scrollbar { width: 3px; }
+#spectacle #sidebar::-webkit-scrollbar-track { background: transparent; }
+#spectacle #sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+#spectacle #sidebar .close-button {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-muted);
+  display: none;
+  transition: color 0.15s;
+  line-height: 1;
+  padding: 0.25rem;
+}
+#spectacle #sidebar .close-button:hover { color: var(--color-heading); }
+
+#spectacle #logo {
+  text-align: center;
+  padding: 0 0.5rem 1rem 0;
+}
+#spectacle #logo img { max-height: 60px; }
+
+/* Nav sections */
+#spectacle .nav-section {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+#spectacle .nav-section + .nav-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.75rem;
+}
+
+/* ── Small Caps Label (shared) ────────────────────────────────────── */
+
+#spectacle .nav-group-label,
+#spectacle .section-label,
+#spectacle .schema-variant-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-faint);
+}
+
+#spectacle .nav-group-label {
+  padding: 0.5rem 0.5rem 0.25rem;
+}
+
+#spectacle .section-label {
+  margin-bottom: 0;
+  padding-bottom: 0.375rem;
+}
+
+#spectacle .schema-variant-label {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+#spectacle .nav-link {
+  display: block;
+  padding: 0.3rem 0.5rem;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  font-weight: 450;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all 0.1s ease;
+}
+
+#spectacle .nav-link:hover {
+  color: var(--color-heading);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+#spectacle .nav-link.active {
+  color: var(--color-accent);
+  background: rgba(37, 99, 235, 0.08);
+  font-weight: 500;
+}
+
+/* Method dots */
+#spectacle .nav-operation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.75rem;
+}
+
+#spectacle .method-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* ── Main Content ──────────────────────────────────────────────────── */
+
+#spectacle #docs {
+  margin-left: var(--sidebar-width);
+  background: #fff;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Dark example strip */
+#spectacle .example-box { display: none; }
+
+@media screen and (min-width: 64em) {
+  #spectacle .example-box {
+    display: block;
+    background: var(--dark-bg);
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+  }
+}
+
+#spectacle article { position: relative; }
+
+/* ── Doc Header ────────────────────────────────────────────────────── */
+
+#spectacle .doc-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 2.5rem var(--content-padding) 1rem;
+}
+
+#spectacle .doc-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+#spectacle .doc-version {
+  font-size: var(--text-sm);
+  color: var(--color-faint);
+  font-weight: 400;
+}
+
+/* ── Half-width headers on desktop ────────────────────────────────── */
+
+@media screen and (min-width: 64em) {
+  #spectacle .doc-header,
+  #spectacle .operation-header,
+  #spectacle .tag-header,
+  #spectacle .definition-header,
+  #spectacle .auth-header {
+    max-width: 50%;
+  }
+}
+
+/* ── Doc Row (two-column layout) ───────────────────────────────────── */
+
+#spectacle .doc-row {
+  display: flex;
+  margin: 0;
+}
+
+@media screen and (max-width: 63.9375em) {
+  #spectacle .doc-row { flex-direction: column; }
+}
+
+#spectacle .doc-copy {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0.75rem var(--content-padding) 1.5rem;
+}
+
+#spectacle .doc-examples {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0.75rem var(--content-padding) 1rem;
+  color: var(--dark-text);
+  background: var(--dark-bg);
+}
+
+@media screen and (max-width: 63.9375em) {
+  #spectacle .doc-copy,
+  #spectacle .doc-examples {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  #spectacle .doc-examples:not(:empty) {
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* ── Tag Group ─────────────────────────────────────────────────────── */
+
+#spectacle .tag-group {
+  border-top: 1px solid var(--color-border);
+}
+
+#spectacle .tag-header {
+  padding: 1.5rem var(--content-padding) 0.5rem;
+}
+
+#spectacle .tag-header h1 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin-bottom: 0.25rem;
+}
+
+#spectacle .tag-description {
+  color: var(--color-muted);
+  font-size: var(--text-base);
+}
+
+#spectacle .tag-description p { margin-bottom: 0.25rem; }
+
+/* ── Operation ─────────────────────────────────────────────────────── */
+
+#spectacle .operation {
+  border-top: 1px solid var(--color-border);
+  position: relative;
+}
+
+/* First child after tag header — no double border */
+#spectacle .tag-header + .operation,
+#spectacle .tag-header + .definition {
+  border-top: none;
+}
+
+#spectacle .operation-header {
+  padding: 1.5rem var(--content-padding) 0;
+}
+
+#spectacle .operation-method-path {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  margin-bottom: 0.25rem;
+}
+
+#spectacle .operation-method { color: #fff; }
+#spectacle .method-get { background: var(--method-get); }
+#spectacle .method-post { background: var(--method-post); }
+#spectacle .method-put { background: var(--method-put); }
+#spectacle .method-delete { background: var(--method-delete); }
+#spectacle .method-patch { background: var(--method-patch); }
+#spectacle .method-options,
+#spectacle .method-head { background: var(--color-muted); }
+
+#spectacle .operation-path {
+  color: var(--color-heading);
+  word-break: break-all;
+}
+
+#spectacle .operation-summary {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 0.125rem;
+}
+
+#spectacle .operation-summary p { margin: 0; display: inline; }
+
+#spectacle .operation-description {
+  padding-bottom: 0.5rem;
+}
+
+#spectacle .operation-description p {
+  font-size: var(--text-body);
+  color: var(--color-body);
+}
+
+/* ── Content Section ───────────────────────────────────────────────── */
+
+#spectacle .content-section {
+  padding-top: 1.25rem;
+}
+
+/* ── Content Type Line ─────────────────────────────────────────────── */
+
+#spectacle .content-type-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: var(--text-base);
+}
+
+#spectacle .content-type-line code {
+  color: var(--color-body);
+  background: var(--color-bg-subtle);
+  border-color: var(--color-border);
+  font-size: var(--text-sm);
+}
+
+/* ── Bordered List (shared: params + responses) ──────────────────── */
+
+#spectacle .params-list,
+#spectacle .responses-list {
+  border-top: 1px solid var(--color-border);
+}
+
+#spectacle .param-item,
+#spectacle .response-item {
+  border-bottom: 1px solid var(--color-bg-subtle);
+}
+
+#spectacle .param-item:last-child,
+#spectacle .response-item:last-child {
+  border-bottom: none;
+}
+
+#spectacle .param-item {
+  padding: 0.75rem 0;
+}
+
+#spectacle .response-item {
+  padding: 0.625rem 0;
+}
+
+/* ── Parameter List ──────────────────────────────────────────────── */
+
+#spectacle .param-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+#spectacle .param-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-heading);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+#spectacle .param-type {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+#spectacle .param-type .json-property-type {
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+#spectacle .param-type .json-property-format {
+  color: var(--color-faint);
+}
+
+#spectacle .param-in {
+  font-weight: 600;
+  color: var(--color-faint);
+  background: var(--color-bg-subtle);
+  border-color: var(--color-border);
+  margin-left: auto;
+}
+
+#spectacle .param-description {
+  padding-top: 0.25rem;
+  font-size: var(--text-base);
+  color: var(--color-body);
+}
+
+#spectacle .param-description p {
+  margin-bottom: 0.25rem;
+  font-size: var(--text-base);
+}
+
+/* ── Schema Utilities ──────────────────────────────────────────────── */
+
+#spectacle .schema-description {
+  margin-bottom: 0.5rem;
+}
+
+#spectacle .schema-description p {
+  font-size: var(--text-base);
+  color: var(--color-body);
+}
+
+#spectacle .schema-nested {
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-border);
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+#spectacle .schema-variants {
+  margin-bottom: 0.5rem;
+}
+
+#spectacle .schema-variant-option {
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-border);
+  margin-bottom: 0.5rem;
+}
+
+#spectacle .schema-max-depth {
+  color: var(--color-faint);
+  font-size: var(--text-sm);
+  font-style: italic;
+}
+
+#spectacle .schema-array-info {
+  margin-bottom: 0.5rem;
+  font-size: var(--text-base);
+}
+
+/* ── Badges (shared base) ──────────────────────────────────────────── */
+
+#spectacle .badge,
+#spectacle .param-in,
+#spectacle .status-code,
+#spectacle .operation-method,
+#spectacle .search-result-method {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  vertical-align: baseline;
+}
+
+#spectacle .badge-required {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+#spectacle .badge-deprecated {
+  background: #fffbeb;
+  color: #d97706;
+  border-color: #fde68a;
+}
+
+#spectacle .badge-info {
+  background: var(--color-bg-subtle);
+  color: var(--color-muted);
+  border-color: var(--color-border);
+}
+
+/* ── Type display ──────────────────────────────────────────────────── */
+
+#spectacle .json-property-type {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+#spectacle .json-property-format {
+  font-size: var(--text-sm);
+  color: var(--color-faint);
+}
+
+#spectacle .json-property-enum {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+#spectacle .json-property-enum-item {
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+#spectacle .json-property-enum-item::before,
+#spectacle .json-property-enum-item::after { content: '"'; color: var(--color-faint); }
+
+#spectacle .json-property-default-value {
+  font-size: var(--text-sm);
+  color: var(--color-faint);
+}
+#spectacle .json-property-default-value::before { content: '= '; }
+
+#spectacle .json-property-range {
+  font-size: var(--text-sm);
+  color: var(--color-faint);
+}
+
+#spectacle .json-property-name {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+/* ── Responses ─────────────────────────────────────────────────────── */
+
+#spectacle .response-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+#spectacle .status-code {
+  font-family: var(--font-mono);
+}
+
+#spectacle .status-code.status-success { background: #dcfce7; color: #166534; }
+#spectacle .status-code.status-redirect { background: #dbeafe; color: #1e40af; }
+#spectacle .status-code.status-client-error { background: #fef3c7; color: #92400e; }
+#spectacle .status-code.status-server-error { background: #fee2e2; color: #991b1b; }
+#spectacle .status-code.status-default { background: var(--color-bg-subtle); color: var(--color-muted); }
+
+#spectacle .response-status-text {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-heading);
+}
+
+#spectacle .response-type {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-left: auto;
+}
+
+#spectacle .response-description {
+  padding-top: 0.125rem;
+}
+
+#spectacle .response-description p {
+  font-size: var(--text-base);
+  color: var(--color-body);
+  margin-bottom: 0.125rem;
+}
+
+/* ── Dark Panel ────────────────────────────────────────────────────── */
+
+/* Dark card (shared) */
+#spectacle .example-block,
+#spectacle .code-samples,
+#spectacle .doc-examples > .code-block-wrapper {
+  margin-bottom: 1rem;
+  background: var(--dark-bg-raised);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+#spectacle .example-block-header {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dark-text-muted);
+  border-bottom: 1px solid var(--dark-border);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+#spectacle .example-block-header .status-code {
+  font-size: var(--text-xs);
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+#spectacle .example-block-header .status-code.status-success { color: #4ade80; }
+#spectacle .example-block-header .status-code.status-redirect { color: #60a5fa; }
+#spectacle .example-block-header .status-code.status-client-error { color: #fbbf24; }
+#spectacle .example-block-header .status-code.status-server-error { color: #f87171; }
+#spectacle .example-block-header .status-code.status-default { color: var(--dark-text-muted); }
+
+/* Code block */
+#spectacle .code-block-wrapper {
+  position: relative;
+}
+
+#spectacle .example-block .code-block-wrapper { margin: 0; }
+
+#spectacle .code-block {
+  overflow-x: auto;
+}
+
+#spectacle .code-block pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: normal;
+  background: transparent !important;
+}
+
+#spectacle .code-block code {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+#spectacle .code-block code span { font-size: inherit; }
+
+/* Server URLs */
+#spectacle .server-url-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.375rem 0.75rem;
+}
+
+#spectacle .server-url-item + .server-url-item {
+  border-top: 1px solid var(--dark-border);
+}
+
+#spectacle .server-url {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--dark-url);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+#spectacle .server-description {
+  font-size: var(--text-xs);
+  color: var(--dark-text-faint);
+}
+
+#spectacle .intro-meta {
+  font-size: var(--text-base);
+  color: var(--color-muted);
+}
+
+/* Response headers in dark panel */
+#spectacle .response-headers-table {
+  padding: 0 0.75rem 0.5rem;
+}
+
+#spectacle .response-headers-table table { border: none; }
+#spectacle .response-headers-table thead { border-bottom: 1px solid var(--dark-border); }
+#spectacle .response-headers-table th { color: var(--dark-text-faint); font-size: 0.6875rem; }
+#spectacle .response-headers-table td {
+  color: var(--dark-text);
+  font-size: var(--text-sm);
+}
+#spectacle .response-headers-table tr:not(:last-child) td {
+  border-bottom: 1px solid var(--dark-border);
+}
+#spectacle .response-headers-table code {
+  color: var(--dark-code);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Dark panel typography */
+#spectacle .doc-examples h5 {
+  color: var(--dark-text-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+#spectacle .doc-examples p {
+  color: var(--dark-text-muted);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+/* ── Language Tabs ─────────────────────────────────────────────────── */
+
+#spectacle .code-samples-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--dark-border);
+  padding: 0 0.25rem;
+}
+
+#spectacle .code-samples-tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--dark-text-faint);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+#spectacle .code-samples-tab:hover { color: var(--dark-text); }
+
+#spectacle .code-samples-tab.active {
+  color: #f9fafb;
+  border-bottom-color: var(--color-accent);
+}
+
+#spectacle .code-samples-panel { display: none; }
+#spectacle .code-samples-panel.active { display: block; }
+
+/* ── Copy Button ───────────────────────────────────────────────────── */
+
+#spectacle .copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  color: var(--dark-text-faint);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 1;
+}
+
+#spectacle .copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+#spectacle .copy-btn.copied {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+/* ── Section Borders (split light/dark on desktop) ────────────────── */
+
+#spectacle .definition,
+#spectacle .auth-section,
+#spectacle .doc-footer {
+  border-top: 1px solid var(--color-border);
+}
+
+@media screen and (min-width: 64em) {
+  #spectacle .operation,
+  #spectacle .definition,
+  #spectacle .tag-group,
+  #spectacle .auth-section {
+    border-top-color: transparent;
+    position: relative;
+  }
+
+  #spectacle .operation::before,
+  #spectacle .definition::before,
+  #spectacle .tag-group::before,
+  #spectacle .auth-section::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 50%;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Dark side gets a subtle border */
+  #spectacle .operation::after,
+  #spectacle .definition::after,
+  #spectacle .tag-group::after,
+  #spectacle .auth-section::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: 0;
+    width: 50%;
+    border-top: 1px solid var(--dark-border);
+  }
+
+  /* No double border after tag header */
+  #spectacle .tag-header + .operation::before,
+  #spectacle .tag-header + .operation::after,
+  #spectacle .tag-header + .definition::before,
+  #spectacle .tag-header + .definition::after {
+    display: none;
+  }
+}
+
+/* ── Definition ────────────────────────────────────────────────────── */
+
+#spectacle .definition .doc-examples {
+  padding-top: 0.25rem;
+}
+
+/* In definitions, the params-list sits directly under the header —
+   the border-top feels redundant; reduce spacing for a tighter look. */
+#spectacle .definition .params-list {
+  border-top: none;
+}
+
+#spectacle .definition .param-item {
+  padding: 0.3rem 0;
+}
+
+#spectacle .definition-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 1.25rem var(--content-padding) 0;
+}
+
+#spectacle .definition-header h2 {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+#spectacle .definition-type {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+/* ── Authentication Section ─────────────────────────────────────────── */
+
+#spectacle .auth-header {
+  padding: 1.5rem var(--content-padding) 0;
+}
+
+/* Auth section params don't need a top border — the header provides separation */
+#spectacle .auth-section .params-list {
+  border-top: none;
+}
+
+#spectacle .auth-header h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.125rem;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+
+#spectacle .doc-footer {
+  padding: 3rem var(--content-padding) 2rem;
+  font-size: var(--text-sm);
+}
+
+@media screen and (min-width: 64em) {
+  #spectacle .doc-footer {
+    max-width: 50%;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 63.9375em) {
+  #spectacle .doc-footer {
+    text-align: center;
+  }
+}
+
+#spectacle .doc-footer a {
+  color: var(--color-faint);
+  text-decoration: none;
+}
+
+#spectacle .doc-footer a:hover { color: var(--color-muted); }
+#spectacle .doc-footer strong { color: var(--color-body); }
+
+/* ── Hamburger Menu ────────────────────────────────────────────────── */
+
+#spectacle .floating-menu-icon {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(15, 17, 23, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 200;
+  transition: opacity 0.2s ease;
+}
+
+#spectacle .floating-menu-icon .hamburger {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 12px;
+}
+
+#spectacle .floating-menu-icon .hamburger::after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  top: 0;
+  left: 0;
+  box-shadow: 0 5px 0 #fff, 0 10px 0 #fff;
+  border-radius: 1px;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+
+@media screen and (min-width: 64em) {
+  #spectacle .floating-menu-icon { opacity: 0; pointer-events: none; }
+}
+
+@media screen and (max-width: 63.9375em) {
+  #spectacle #sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+
+  #spectacle #sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  #spectacle #sidebar .close-button { display: block; }
+  #spectacle .floating-menu-icon { opacity: 1; }
+  #spectacle #docs { margin-left: 0; }
+
+  #spectacle .doc-header,
+  #spectacle .operation-header,
+  #spectacle .tag-header,
+  #spectacle .definition-header {
+    max-width: 100% !important;
+  }
+
+  #spectacle .example-box { display: none; }
+}
+
+/* ── Selection ─────────────────────────────────────────────────────── */
+
+#spectacle ::selection { background: rgba(37, 99, 235, 0.12); }
+#spectacle .doc-examples ::selection { background: rgba(163, 230, 53, 0.2); }
+
+/* ── Dark Panel Overrides ──────────────────────────────────────────── */
+/* Prevent light-theme code/table styles from leaking into the dark panel */
+
+#spectacle .doc-examples code {
+  color: var(--dark-code);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+#spectacle .doc-examples thead {
+  border-bottom-color: var(--dark-border);
+}
+
+#spectacle .doc-examples tbody tr {
+  border-bottom-color: var(--dark-border);
+}
+#spectacle .doc-examples tbody tr:last-child {
+  border-bottom: none;
+}
+
+#spectacle .doc-examples th {
+  color: var(--dark-text-faint);
+}
+
+#spectacle .doc-examples td {
+  color: var(--dark-text);
+}
+
+/* ── Empty state ───────────────────────────────────────────────────── */
+
+#spectacle .doc-examples:empty { display: none; }
+
+/* ── Dark Mode ────────────────────────────────────────────────────── */
+/* Most borders already use var(--color-border) / var(--color-bg-subtle),
+   so overriding the custom properties is enough — no per-element rules needed. */
+
+[data-theme="dark"] {
+  --color-heading: #f1f5f9;
+  --color-body: #cbd5e1;
+  --color-muted: #94a3b8;
+  --color-faint: #64748b;
+  --color-border: #1e293b;
+  --color-bg-subtle: #0f172a;
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93bbfc;
+
+  --dm-bg: #0b0f19;
+  --dm-surface: #1e293b;
+  --dm-surface-raised: #334155;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] #spectacle {
+  background: var(--dm-bg);
+  color: var(--color-body);
+}
+
+[data-theme="dark"] #spectacle #sidebar {
+  background: var(--color-bg-subtle);
+}
+
+[data-theme="dark"] #spectacle #sidebar::-webkit-scrollbar-thumb { background: var(--dm-surface-raised); }
+
+[data-theme="dark"] #spectacle .nav-link:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] #spectacle .nav-link.active {
+  background: rgba(96, 165, 250, 0.1);
+}
+
+[data-theme="dark"] #spectacle #docs {
+  background: var(--dm-bg);
+}
+
+[data-theme="dark"] #spectacle code {
+  color: #f472b6;
+  background: rgba(244, 114, 182, 0.08);
+  border-color: rgba(244, 114, 182, 0.15);
+}
+
+/* Badges & param-in need distinct dark surfaces */
+[data-theme="dark"] #spectacle .param-in,
+[data-theme="dark"] #spectacle .badge-info {
+  background: var(--dm-surface);
+  border-color: var(--dm-surface-raised);
+}
+
+[data-theme="dark"] #spectacle .badge-required {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+[data-theme="dark"] #spectacle .badge-deprecated {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.25);
+}
+
+/* Status codes */
+[data-theme="dark"] #spectacle .status-code.status-success { background: rgba(22, 163, 74, 0.15); color: #4ade80; }
+[data-theme="dark"] #spectacle .status-code.status-redirect { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+[data-theme="dark"] #spectacle .status-code.status-client-error { background: rgba(217, 119, 6, 0.15); color: #fbbf24; }
+[data-theme="dark"] #spectacle .status-code.status-server-error { background: rgba(220, 38, 38, 0.15); color: #f87171; }
+[data-theme="dark"] #spectacle .status-code.status-default { background: var(--dm-surface); color: var(--color-muted); }
+
+/* Split border pseudo-elements use var(--color-border), which is already overridden.
+   Only the ::before needs an explicit override since it references --color-border. */
+
+[data-theme="dark"] #spectacle .floating-menu-icon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+[data-theme="dark"] #spectacle ::selection { background: rgba(96, 165, 250, 0.2); }
+
+/* ── Theme Toggle Button ──────────────────────────────────────────── */
+
+#spectacle #theme-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 0.4rem;
+  cursor: pointer;
+  color: var(--color-muted);
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#spectacle #theme-toggle:hover {
+  color: var(--color-heading);
+  border-color: var(--color-muted);
+}
+
+#spectacle #theme-toggle svg { width: 14px; height: 14px; }
+
+/* Show appropriate icon per theme */
+#spectacle #theme-toggle .icon-sun { display: none; }
+#spectacle #theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] #spectacle #theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] #spectacle #theme-toggle .icon-moon { display: none; }
+
+/* ── Search Button ────────────────────────────────────────────────── */
+
+#spectacle #search-open {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-faint);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+#spectacle #search-open:hover {
+  border-color: var(--color-muted);
+  color: var(--color-muted);
+}
+
+#spectacle #search-open svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+#spectacle .search-shortcut {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  color: var(--color-faint);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  font-family: var(--font-sans);
+}
+
+/* ── Search Dialog ────────────────────────────────────────────────── */
+
+#spectacle #search-dialog {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+#spectacle #search-dialog.open {
+  display: flex;
+}
+
+#spectacle .search-dialog-inner {
+  width: 100%;
+  max-width: 540px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin: 0 1rem;
+}
+
+[data-theme="dark"] #spectacle .search-dialog-inner {
+  background: var(--dm-surface);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+#spectacle #search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-heading);
+  background: transparent;
+  outline: none;
+}
+
+#spectacle #search-input::placeholder { color: var(--color-faint); }
+
+[data-theme="dark"] #spectacle #search-input {
+  border-bottom-color: var(--dm-surface-raised);
+}
+
+#spectacle #search-results {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+#spectacle .search-result {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: var(--color-body);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+#spectacle .search-result:hover,
+#spectacle .search-result.active {
+  background: rgba(37, 99, 235, 0.06);
+  color: var(--color-heading);
+}
+
+[data-theme="dark"] #spectacle .search-result:hover,
+[data-theme="dark"] #spectacle .search-result.active {
+  background: rgba(96, 165, 250, 0.08);
+}
+
+#spectacle .search-result-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  flex: 1;
+  min-width: 0;
+}
+
+#spectacle .search-result-method {
+  color: #fff;
+  flex-shrink: 0;
+}
+
+#spectacle .search-result-method.method-get { background: var(--method-get); }
+#spectacle .search-result-method.method-post { background: var(--method-post); }
+#spectacle .search-result-method.method-put { background: var(--method-put); }
+#spectacle .search-result-method.method-delete { background: var(--method-delete); }
+#spectacle .search-result-method.method-patch { background: var(--method-patch); }
+
+#spectacle .search-result-path {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#spectacle .search-result-summary {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#spectacle .search-result-tag {
+  font-size: 0.6875rem;
+  color: var(--color-faint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
