@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { resolve, extname } from "node:path";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
@@ -60,7 +62,7 @@ export async function buildDocs(options: BuildOptions): Promise<BuildResult> {
 
   // Override branding if provided via options
   if (options.logo) {
-    spec.info.logo = options.logo;
+    spec.info.logo = await resolveAssetUrl(options.logo);
   }
   if (options.favicon) {
     spec.info.favicon = options.favicon;
@@ -89,3 +91,24 @@ export type {
   NormalizedRequestBody,
   NormalizedResponse,
 } from "./core/types.js";
+
+const MIME_TYPES: Record<string, string> = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".webp": "image/webp",
+  ".ico": "image/x-icon",
+};
+
+async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
+  if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://") || pathOrUrl.startsWith("data:")) {
+    return pathOrUrl;
+  }
+  const abs = resolve(pathOrUrl);
+  const ext = extname(abs).toLowerCase();
+  const mime = MIME_TYPES[ext] ?? "application/octet-stream";
+  const data = await readFile(abs);
+  return `data:${mime};base64,${data.toString("base64")}`;
+}

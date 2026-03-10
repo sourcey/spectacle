@@ -28,6 +28,8 @@
     "lint:fix": "eslint src/ test/ --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "typecheck": "tsc --noEmit",
+    "demo": "npx tsx src/cli.ts build test/fixtures/cheese.yml -o .preview --logo test/fixtures/cheese.png",
+    "demo:dev": "npx tsx src/cli.ts dev test/fixtures/cheese.yml --logo test/fixtures/cheese.png",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

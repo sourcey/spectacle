@@ -35,7 +35,6 @@ function renderEnum(values?: unknown[]) {
     <span class="json-property-enum">
       {values.map((v, i) => (
         <span key={i} class="json-property-enum-item">
-          {i > 0 ? ", " : ""}
           {String(v)}
         </span>
       ))}

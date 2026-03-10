@@ -8,8 +8,8 @@ describe("loadSpec", () => {
   it("loads a YAML spec file", async () => {
     const result = await loadSpec(`${FIXTURES}/cheese.yml`);
     expect(result.format).toBe("yaml");
-    expect(result.version).toBe("swagger-2.0");
-    expect(result.raw.swagger).toBe("2.0");
+    expect(result.version).toBe("openapi-3.1");
+    expect(result.raw.openapi).toBe("3.1.0");
     expect((result.raw.info as Record<string, unknown>).title).toBe("Cheese Store");
   });
 

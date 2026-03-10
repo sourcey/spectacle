@@ -10,6 +10,9 @@
     var index = tab.getAttribute('data-tab-index');
     var lang = tab.textContent.trim();
 
+    // Preserve scroll position so panel height changes don't shift the page
+    var scrollY = window.scrollY;
+
     // Activate this tab locally
     activateTab(container, index);
 
@@ -18,7 +21,6 @@
       selectedLang = lang;
       document.querySelectorAll('.code-samples').forEach(function (group) {
         if (group === container) return;
-        var matching = group.querySelector('.code-samples-tab[data-tab-index]');
         // Find tab with same language name
         group.querySelectorAll('.code-samples-tab').forEach(function (t) {
           if (t.textContent.trim() === lang) {
@@ -27,6 +29,8 @@
         });
       });
     }
+
+    window.scrollTo(0, scrollY);
   });
 
   function activateTab(container, index) {

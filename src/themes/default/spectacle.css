@@ -18,7 +18,7 @@
   --color-muted: #6b7280;
   --color-faint: #9ca3af;
   --color-border: #e5e7eb;
-  --color-bg-subtle: #f9fafb;
+  --color-bg-subtle: #f3f4f6;
   --color-accent: #2563eb;
   --color-accent-hover: #1d4ed8;
 
@@ -122,9 +122,9 @@ pre code {
   font-size: inherit;
 }
 
-table { width: 100%; border-collapse: collapse; }
-thead { border-bottom: 1px solid var(--color-border); }
-th {
+#spectacle table { width: 100%; border-collapse: collapse; }
+#spectacle thead { border-bottom: 1px solid var(--color-border); }
+#spectacle th {
   padding: 0.5rem 0.75rem;
   font-weight: 600;
   text-align: left;
@@ -133,9 +133,87 @@ th {
   letter-spacing: 0.05em;
   color: var(--color-muted);
 }
-td { padding: 0.5rem 0.75rem; font-size: var(--text-base); }
-tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
+#spectacle td { padding: 0.5rem 0.75rem; font-size: var(--text-base); }
+#spectacle tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 #spectacle tbody tr:last-child { border-bottom: none; }
+
+/* ── Prose (markdown content) ──────────────────────────────────────── */
+
+#spectacle .prose h1,
+#spectacle .prose h2,
+#spectacle .prose h3,
+#spectacle .prose h4 {
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+}
+
+#spectacle .prose > :first-child {
+  margin-top: 0;
+}
+
+#spectacle .prose > :last-child {
+  margin-bottom: 0;
+}
+
+#spectacle .prose p {
+  margin-bottom: 0.875em;
+}
+
+#spectacle .prose ul,
+#spectacle .prose ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+#spectacle .prose li {
+  margin-bottom: 0.25em;
+  line-height: 1.65;
+}
+
+#spectacle .prose li > ul,
+#spectacle .prose li > ol {
+  margin-top: 0.25em;
+  margin-bottom: 0;
+}
+
+#spectacle .prose blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+#spectacle .prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+#spectacle .prose pre {
+  margin: 1em 0;
+  padding: 0.875em 1em;
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+
+#spectacle .prose pre code {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+#spectacle .prose hr {
+  margin: 1.5em 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+#spectacle .prose table {
+  margin: 1em 0;
+}
+
+#spectacle .prose img {
+  max-width: 100%;
+  border-radius: var(--radius);
+}
 
 #spectacle button:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -492,7 +570,7 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 }
 
 #spectacle .param-item {
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
 }
 
 #spectacle .response-item {
@@ -519,6 +597,9 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 }
 
 #spectacle .param-type {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.375rem;
   font-size: var(--text-sm);
   color: var(--color-muted);
 }
@@ -643,27 +724,30 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 }
 
 #spectacle .json-property-enum {
-  font-size: var(--text-sm);
-  color: var(--color-muted);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
-#spectacle .json-property-enum-item {
-  font-size: var(--text-sm);
-  font-family: var(--font-mono);
-}
-#spectacle .json-property-enum-item::before,
-#spectacle .json-property-enum-item::after { content: '"'; color: var(--color-faint); }
-
-#spectacle .json-property-default-value {
-  font-size: var(--text-sm);
-  color: var(--color-faint);
-}
-#spectacle .json-property-default-value::before { content: '= '; }
-
+#spectacle .json-property-enum-item,
+#spectacle .json-property-default-value,
 #spectacle .json-property-range {
-  font-size: var(--text-sm);
-  color: var(--color-faint);
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--color-muted);
+  background: var(--color-bg-subtle);
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
 }
+
+#spectacle .json-property-enum-item { color: var(--color-body); }
+#spectacle .json-property-default-value::before { content: '= '; color: var(--color-faint); }
 
 #spectacle .json-property-name {
   font-weight: 600;
@@ -695,6 +779,9 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 }
 
 #spectacle .response-type {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.375rem;
   font-size: var(--text-sm);
   color: var(--color-muted);
   margin-left: auto;
@@ -816,25 +903,12 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
 
 /* Response headers in dark panel */
 #spectacle .response-headers-table {
-  padding: 0 0.75rem 0.5rem;
+  padding: 0 0.75rem;
 }
 
 #spectacle .response-headers-table table { border: none; }
-#spectacle .response-headers-table thead { border-bottom: 1px solid var(--dark-border); }
-#spectacle .response-headers-table th { color: var(--dark-text-faint); font-size: 0.6875rem; }
-#spectacle .response-headers-table td {
-  color: var(--dark-text);
-  font-size: var(--text-sm);
-}
-#spectacle .response-headers-table tr:not(:last-child) td {
-  border-bottom: 1px solid var(--dark-border);
-}
-#spectacle .response-headers-table code {
-  color: var(--dark-code);
-  background: transparent;
-  border: none;
-  padding: 0;
-}
+#spectacle .response-headers-table th { font-size: 0.6875rem; }
+#spectacle .response-headers-table td { font-size: var(--text-sm); }
 
 /* Dark panel typography */
 #spectacle .doc-examples h5 {
@@ -977,10 +1051,6 @@ tbody tr { border-bottom: 1px solid var(--color-bg-subtle); }
    the border-top feels redundant; reduce spacing for a tighter look. */
 #spectacle .definition .params-list {
   border-top: none;
-}
-
-#spectacle .definition .param-item {
-  padding: 0.3rem 0;
 }
 
 #spectacle .definition-header {

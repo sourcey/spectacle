@@ -2,7 +2,6 @@ import type { NormalizedSchema } from "../../core/types.js";
 import { htmlId } from "../../utils/html-id.js";
 import { SchemaView } from "../schema/SchemaView.js";
 import { ExampleView } from "../schema/ExampleView.js";
-import { Markdown } from "../ui/Markdown.js";
 
 interface DefinitionProps {
   name: string;
@@ -14,19 +13,14 @@ export function Definition({ name, schema }: DefinitionProps) {
 
   return (
     <div id={id} class="definition" data-traverse-target={id}>
+      <a id={`/definitions/${name}`} />
       <div class="definition-header">
-        <a id={`/definitions/${name}`} />
         <h2>{name}</h2>
         <span class="definition-type">{schema.type ?? "object"}</span>
       </div>
 
       <div class="doc-row">
         <div class="doc-copy">
-          {schema.description && (
-            <div class="schema-description">
-              <Markdown content={schema.description} />
-            </div>
-          )}
           <SchemaView schema={schema} />
         </div>
         <div class="doc-examples">
