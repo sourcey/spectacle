@@ -15,7 +15,8 @@ export function Markdown({ content, inline, class: className }: MarkdownProps) {
     return <span class={className} dangerouslySetInnerHTML={{ __html: html }} />;
   }
 
+  const cls = className ? `prose ${className}` : "prose";
   return (
-    <div class={className} dangerouslySetInnerHTML={{ __html: html }} />
+    <div class={cls} dangerouslySetInnerHTML={{ __html: html }} />
   );
 }
