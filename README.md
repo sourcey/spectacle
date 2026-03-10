@@ -2,6 +2,11 @@
 
 > The gentleman at REST
 
+[![CI](https://github.com/sourcey/spectacle/actions/workflows/ci.yml/badge.svg)](https://github.com/sourcey/spectacle/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/spectacle-docs)](https://www.npmjs.com/package/spectacle-docs)
+[![Node](https://img.shields.io/node/v/spectacle-docs)](https://nodejs.org)
+[![License](https://img.shields.io/npm/l/spectacle-docs)](https://github.com/sourcey/spectacle/blob/master/LICENSE)
+
 Spectacle generates beautiful static HTML documentation from [OpenAPI](https://openapis.org) / [Swagger](http://swagger.io) specifications.
 
 The goal of Spectacle is to help you **save time and look good** by auto generating your API docs from your spec. The output is a clean three-column layout inspired by [Stripe](https://stripe.com/docs/api) — a fixed sidebar, documentation on the left, and code examples on the right.
