@@ -251,6 +251,8 @@ npm run lint       # ESLint
 
 ## More Information
 
+For more details, visit [sourcey.com/code/spectacle](https://sourcey.com/code/spectacle).
+
 Please use the [GitHub issue tracker](https://github.com/sourcey/spectacle/issues) if you have any ideas or bugs to report.
 
 All contributions are welcome.

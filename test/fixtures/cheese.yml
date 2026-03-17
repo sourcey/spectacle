@@ -3,7 +3,7 @@ info:
   title: Cheese Store
   version: 2.0.0
   description: |
-    Welcome to the **Cheese Store API** reference. This is a live example of how you can use [Spectacle](https://sourcey.com/spectacle) to generate beautiful static documentation for your APIs.
+    Welcome to the **Cheese Store API** reference. This is a live example of how you can use [Spectacle](https://sourcey.com/code/spectacle) to generate beautiful static documentation for your APIs.
 
     The Cheese Store API is organized around [REST](https://en.wikipedia.org/wiki/Representational_state_transfer). It uses resource-oriented URLs, standard HTTP methods, and returns JSON responses. All requests are authenticated using an API key or OAuth2 token.
 
