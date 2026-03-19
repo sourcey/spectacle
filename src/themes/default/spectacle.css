@@ -237,6 +237,8 @@ pre code {
   background: var(--color-bg-subtle);
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
   z-index: 100;
   -webkit-overflow-scrolling: touch;
@@ -1499,6 +1501,46 @@ pre code {
   padding: 1rem;
   color: var(--color-muted);
   font-size: var(--text-sm);
+}
+
+/* ── Sidebar Footer ───────────────────────────────────────────────── */
+
+#spectacle #nav {
+  flex: 1;
+}
+
+#spectacle .sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-faint);
+}
+
+#spectacle .sidebar-footer a {
+  color: var(--color-faint);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+#spectacle .sidebar-footer a:hover {
+  color: var(--color-muted);
+}
+
+#spectacle .sidebar-footer strong {
+  font-weight: 500;
+}
+
+[data-theme="dark"] #spectacle .sidebar-footer {
+  border-top-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .sidebar-footer a {
+  color: var(--dark-text-faint);
+}
+
+[data-theme="dark"] #spectacle .sidebar-footer a:hover {
+  color: var(--dark-text-muted);
 }
 
 /* ── Tab Bar ──────────────────────────────────────────────────────── */

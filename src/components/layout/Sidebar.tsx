@@ -164,6 +164,12 @@ export function Sidebar() {
       </div>
 
       {nav ? <MultiPageNav nav={nav} /> : <LegacyNav />}
+
+      <footer class="sidebar-footer">
+        <a href="https://github.com/sourcey/spectacle">
+          Documentation by <strong>Spectacle</strong>
+        </a>
+      </footer>
     </div>
   );
 }
