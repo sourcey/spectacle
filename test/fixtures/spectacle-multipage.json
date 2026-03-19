@@ -1,0 +1,22 @@
+{
+  "navigation": [
+    {
+      "label": "Guides",
+      "slug": "guides",
+      "groups": [
+        {
+          "label": "Getting Started",
+          "pages": [
+            "docs/introduction.md",
+            "docs/quickstart.md"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "API Reference",
+      "slug": "api",
+      "spec": "petstore-openapi3.yaml"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 import { createContext } from "preact";
 import type { NormalizedSpec } from "../core/types.js";
+import type { SiteNavigation } from "../core/navigation.js";
+import type { MarkdownPage } from "../core/markdown-loader.js";
 
 /**
  * Options that control rendering behavior.
@@ -22,6 +24,15 @@ export interface RenderContext {
 }
 
 /**
+ * What the current page is rendering.
+ */
+export interface CurrentPage {
+  kind: "spec" | "markdown";
+  spec?: NormalizedSpec;
+  markdown?: MarkdownPage;
+}
+
+/**
  * Preact context for passing spec data to deeply nested components.
  */
 export const SpecContext = createContext<NormalizedSpec>(null as never);
@@ -34,3 +45,15 @@ export const OptionsContext = createContext<RenderOptions>({
   singleFile: false,
   assetBase: "",
 });
+
+/**
+ * Preact context for site-wide navigation (multi-page mode).
+ * Null in legacy single-spec mode.
+ */
+export const NavigationContext = createContext<SiteNavigation | null>(null);
+
+/**
+ * Preact context for the current page being rendered (multi-page mode).
+ * Null in legacy single-spec mode.
+ */
+export const PageContext = createContext<CurrentPage | null>(null);

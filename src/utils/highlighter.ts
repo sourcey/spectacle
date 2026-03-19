@@ -3,14 +3,26 @@ import {
   createJavaScriptRegexEngine,
 } from "shiki";
 import js from "shiki/langs/javascript.mjs";
+import ts from "shiki/langs/typescript.mjs";
 import bash from "shiki/langs/bash.mjs";
 import python from "shiki/langs/python.mjs";
 import json from "shiki/langs/json.mjs";
+import cpp from "shiki/langs/cpp.mjs";
+import c from "shiki/langs/c.mjs";
+import yaml from "shiki/langs/yaml.mjs";
+import html from "shiki/langs/html.mjs";
+import css from "shiki/langs/css.mjs";
+import go from "shiki/langs/go.mjs";
+import rust from "shiki/langs/rust.mjs";
+import cmake from "shiki/langs/cmake.mjs";
+import sql from "shiki/langs/sql.mjs";
+import xml from "shiki/langs/xml.mjs";
+import docker from "shiki/langs/docker.mjs";
 import monokai from "shiki/themes/monokai.mjs";
 
 const highlighter = createHighlighterCoreSync({
   themes: [monokai],
-  langs: [js, bash, python, json],
+  langs: [js, ts, bash, python, json, cpp, c, yaml, html, css, go, rust, cmake, sql, xml, docker],
   engine: createJavaScriptRegexEngine(),
 });
 

@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
-import { buildDocs } from "./index.js";
-import { loadConfig } from "./config.js";
+import { buildDocs, buildSiteDocs } from "./index.js";
+import { loadConfig, isMultiPageConfig } from "./config.js";
 
 const build = defineCommand({
   meta: {
     name: "build",
-    description: "Build API documentation from an OpenAPI/Swagger spec",
+    description: "Build documentation from an OpenAPI spec or spectacle.json config",
   },
   args: {
     spec: {
       type: "positional",
-      description: "Path or URL to the OpenAPI/Swagger spec file",
-      required: true,
+      description: "Path or URL to the OpenAPI/Swagger spec file (optional if spectacle.json exists)",
+      required: false,
     },
     output: {
       type: "string",
@@ -48,27 +48,50 @@ const build = defineCommand({
     const startTime = Date.now();
     const config = await loadConfig();
 
-    if (!args.quiet) {
-      console.log(`\nSpectacle — generating API docs from ${args.spec}\n`);
-    }
-
     try {
-      const result = await buildDocs({
-        specSource: args.spec,
-        outputDir: args.output,
-        logo: args.logo || config.logo,
-        favicon: config.favicon,
-        singleFile: args["single-file"],
-        embeddable: args.embed,
-        themeOverrides: config.theme,
-      });
+      if (args.spec) {
+        // Legacy single-spec mode: always use buildDocs when a spec is provided
+        if (!args.quiet) {
+          console.log(`\nSpectacle — generating API docs from ${args.spec}\n`);
+        }
 
-      if (!args.quiet) {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-        console.log(`  Spec:       ${result.spec.info.title} v${result.spec.info.version}`);
-        console.log(`  Operations: ${result.spec.operations.length}`);
-        console.log(`  Schemas:    ${Object.keys(result.spec.schemas).length}`);
-        console.log(`  Time:       ${elapsed}s\n`);
+        const result = await buildDocs({
+          specSource: args.spec,
+          outputDir: args.output,
+          logo: args.logo || config.logo,
+          favicon: config.favicon,
+          singleFile: args["single-file"],
+          embeddable: args.embed,
+          themeOverrides: config.theme,
+        });
+
+        if (!args.quiet) {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          console.log(`  Spec:       ${result.spec.info.title} v${result.spec.info.version}`);
+          console.log(`  Operations: ${result.spec.operations.length}`);
+          console.log(`  Schemas:    ${Object.keys(result.spec.schemas).length}`);
+          console.log(`  Time:       ${elapsed}s\n`);
+        }
+      } else if (isMultiPageConfig(config)) {
+        // Multi-page site mode: build from spectacle.json navigation config
+        if (!args.quiet) {
+          console.log(`\nSpectacle — building documentation site\n`);
+        }
+
+        const result = await buildSiteDocs({
+          outputDir: args.output,
+        });
+
+        if (!args.quiet) {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          console.log(`  Pages:  ${result.pageCount}`);
+          console.log(`  Output: ${result.outputDir}`);
+          console.log(`  Time:   ${elapsed}s\n`);
+        }
+      } else {
+        console.error("\nError: No spec file provided and no spectacle.json with navigation found.");
+        console.error("Usage: spectacle build <spec-file>  or  create a spectacle.json with navigation config.\n");
+        process.exit(1);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
