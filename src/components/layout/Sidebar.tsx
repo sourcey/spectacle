@@ -167,7 +167,7 @@ export function Sidebar() {
 
       <footer class="sidebar-footer">
         <a href="https://github.com/sourcey/spectacle">
-          Documentation by <strong>Spectacle</strong>
+          Docs by <strong>Spectacle</strong>
         </a>
       </footer>
     </div>
