@@ -18,11 +18,6 @@ function MarkdownPageContent({ page }: { page: MarkdownPage }) {
         <h1>{page.title}</h1>
       </header>
       <div class="prose" dangerouslySetInnerHTML={{ __html: page.html }} />
-      <footer class="doc-footer">
-        <a href="https://github.com/sourcey/spectacle">
-          Documentation by <strong>Spectacle</strong>
-        </a>
-      </footer>
     </article>
   );
 }
@@ -56,11 +51,6 @@ function SpecPageContent() {
         </div>
       )}
 
-      <footer class="doc-footer">
-        <a href="https://github.com/sourcey/spectacle">
-          Documentation by <strong>Spectacle</strong>
-        </a>
-      </footer>
     </article>
   );
 }
