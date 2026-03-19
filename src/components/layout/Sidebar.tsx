@@ -40,108 +40,64 @@ function MoonIcon() {
 }
 
 /**
- * Multi-page sidebar: renders navigation from SiteNavigation model.
- * Shows the active tab's groups and items with cross-page links.
+ * Multi-page sidebar: navigation only (logo, search, theme are in the Header).
  */
-function MultiPageNav({ nav }: { nav: SiteNavigation }) {
+function MultiPageSidebar({ nav }: { nav: SiteNavigation }) {
   const options = useContext(OptionsContext);
   const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
   if (!activeTab) return null;
 
-  // Prepend asset base so hrefs are relative to the current page's directory
   const base = options.assetBase;
 
   return (
-    <nav id="nav" role="navigation">
-      {activeTab.groups.map((group) => (
-        <div key={group.label} class="nav-section">
-          {group.label && <div class="nav-group-label">{group.label}</div>}
-          {group.items.map((item) => (
-            <a
-              key={item.id}
-              href={`${base}${item.href}`}
-              class={`nav-link${item.method ? " nav-operation" : ""}${item.id === nav.activePageSlug ? " active" : ""}`}
-            >
-              {item.method && (
-                <span
-                  class="method-dot"
-                  style={{ background: methodDotColor(item.method) }}
-                  title={item.method.toUpperCase()}
-                />
-              )}
-              {item.label}
-            </a>
-          ))}
-        </div>
-      ))}
-    </nav>
-  );
-}
+    <div id="sidebar">
+      <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
+        <span aria-hidden="true">&times;</span>
+      </button>
 
-/**
- * Legacy sidebar: renders navigation from SpecContext (single-page mode).
- * This is the original Sidebar code, unchanged.
- */
-function LegacyNav() {
-  const spec = useContext(SpecContext);
-
-  return (
-    <nav id="nav" role="navigation">
-      <div class="nav-section">
-        <a href="#introduction" class="nav-link">Introduction</a>
-        {Object.keys(spec.securitySchemes).length > 0 && (
-          <a href="#authentication" class="nav-link">Authentication</a>
-        )}
-      </div>
-
-      {spec.tags
-        .filter((t) => !t.hidden)
-        .map((tag) => (
-          <div key={tag.name} class="nav-section">
-            <div class="nav-group-label">{tag.name}</div>
-            {tag.operations.map((op) => (
+      <nav id="nav" role="navigation">
+        {activeTab.groups.map((group) => (
+          <div key={group.label} class="nav-section">
+            {group.label && <div class="nav-group-label">{group.label}</div>}
+            {group.items.map((item) => (
               <a
-                key={`${op.method}-${op.path}`}
-                href={`#operation-${htmlId(op.path)}-${htmlId(op.method)}`}
-                class="nav-link nav-operation"
+                key={item.id}
+                href={`${base}${item.href}`}
+                class={`nav-link${item.method ? " nav-operation" : ""}${item.id === nav.activePageSlug ? " active" : ""}`}
               >
-                <span
-                  class="method-dot"
-                  style={{ background: methodDotColor(op.method) }}
-                  title={op.method.toUpperCase()}
-                />
-                {op.summary ?? `${op.method.toUpperCase()} ${op.path}`}
+                {item.method && (
+                  <span
+                    class="method-dot"
+                    style={{ background: methodDotColor(item.method) }}
+                    title={item.method.toUpperCase()}
+                  />
+                )}
+                {item.label}
               </a>
             ))}
           </div>
         ))}
+      </nav>
 
-      {Object.keys(spec.schemas).length > 0 && (
-        <div class="nav-section">
-          <div class="nav-group-label">Models</div>
-          {Object.keys(spec.schemas).map((name) => (
-            <a key={name} href={`#definition-${htmlId(name)}`} class="nav-link">
-              {name}
-            </a>
-          ))}
-        </div>
-      )}
-    </nav>
+      <footer class="sidebar-footer">
+        <a href="https://github.com/sourcey/spectacle">
+          Docs by <strong>Spectacle</strong>
+        </a>
+      </footer>
+    </div>
   );
 }
 
-export function Sidebar() {
+/**
+ * Legacy sidebar: logo, search, theme toggle, and spec-derived navigation.
+ * This is the original single-page Sidebar, unchanged.
+ */
+function LegacySidebar() {
   const spec = useContext(SpecContext);
-  const nav = useContext(NavigationContext);
 
   return (
     <div id="sidebar">
-      <button
-        class="close-button"
-        aria-label="Close menu"
-        type="button"
-        data-drawer-close
-      >
+      <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
         <span aria-hidden="true">&times;</span>
       </button>
 
@@ -163,7 +119,47 @@ export function Sidebar() {
         </button>
       </div>
 
-      {nav ? <MultiPageNav nav={nav} /> : <LegacyNav />}
+      <nav id="nav" role="navigation">
+        <div class="nav-section">
+          <a href="#introduction" class="nav-link">Introduction</a>
+          {Object.keys(spec.securitySchemes).length > 0 && (
+            <a href="#authentication" class="nav-link">Authentication</a>
+          )}
+        </div>
+
+        {spec.tags
+          .filter((t) => !t.hidden)
+          .map((tag) => (
+            <div key={tag.name} class="nav-section">
+              <div class="nav-group-label">{tag.name}</div>
+              {tag.operations.map((op) => (
+                <a
+                  key={`${op.method}-${op.path}`}
+                  href={`#operation-${htmlId(op.path)}-${htmlId(op.method)}`}
+                  class="nav-link nav-operation"
+                >
+                  <span
+                    class="method-dot"
+                    style={{ background: methodDotColor(op.method) }}
+                    title={op.method.toUpperCase()}
+                  />
+                  {op.summary ?? `${op.method.toUpperCase()} ${op.path}`}
+                </a>
+              ))}
+            </div>
+          ))}
+
+        {Object.keys(spec.schemas).length > 0 && (
+          <div class="nav-section">
+            <div class="nav-group-label">Models</div>
+            {Object.keys(spec.schemas).map((name) => (
+              <a key={name} href={`#definition-${htmlId(name)}`} class="nav-link">
+                {name}
+              </a>
+            ))}
+          </div>
+        )}
+      </nav>
 
       <footer class="sidebar-footer">
         <a href="https://github.com/sourcey/spectacle">
@@ -172,4 +168,9 @@ export function Sidebar() {
       </footer>
     </div>
   );
+}
+
+export function Sidebar() {
+  const nav = useContext(NavigationContext);
+  return nav ? <MultiPageSidebar nav={nav} /> : <LegacySidebar />;
 }

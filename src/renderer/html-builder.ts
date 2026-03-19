@@ -1,6 +1,7 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { build as viteBuild } from "vite";
 import { renderSpec, renderPage } from "./static-renderer.js";
 import type { NormalizedSpec } from "../core/types.js";
 import type { RenderOptions, CurrentPage } from "./context.js";
@@ -8,16 +9,6 @@ import type { SiteNavigation } from "../core/navigation.js";
 import { withActivePage } from "../core/navigation.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-/** Client module load order */
-const CLIENT_MODULES = [
-  "sidebar.js",
-  "scroll-tracker.js",
-  "tabs.js",
-  "copy.js",
-  "theme-toggle.js",
-  "search.js",
-];
 
 export interface HtmlBuildOptions extends Partial<RenderOptions> {
   /** CSS custom property overrides, e.g. { "--color-accent": "#e11d48" } */
@@ -60,9 +51,8 @@ export async function buildHtml(
   // Copy CSS from theme, appending any custom overrides
   await writeThemeCSS(resolvedDir, options?.themeOverrides);
 
-  // Write client JS
-  const js = await bundleClientJS();
-  await writeFile(resolve(resolvedDir, "spectacle.js"), js, "utf-8");
+  // Bundle client JS via Vite
+  await bundleClientJS(resolvedDir);
 
   return { htmlPath, outputDir: resolvedDir };
 }
@@ -130,8 +120,7 @@ export async function buildSite(
 
   // Write shared assets
   await writeThemeCSS(resolvedDir, options?.themeOverrides);
-  const js = await bundleClientJS();
-  await writeFile(resolve(resolvedDir, "spectacle.js"), js, "utf-8");
+  await bundleClientJS(resolvedDir);
 
   // Write search index if provided
   if (options?.searchIndex) {
@@ -163,16 +152,29 @@ async function writeThemeCSS(
 }
 
 /**
- * Bundle client-side JavaScript from src/client/ modules.
+ * Bundle client-side JavaScript using Vite.
  */
-async function bundleClientJS(): Promise<string> {
-  const clientDir = resolve(__dirname, "../client");
-  const parts = ["// Spectacle 2.0 Client\n'use strict';\n"];
+async function bundleClientJS(outputDir: string): Promise<void> {
+  const clientEntry = resolve(__dirname, "../client/index.js");
 
-  for (const mod of CLIENT_MODULES) {
-    const src = await readFile(join(clientDir, mod), "utf-8");
-    parts.push(src);
-  }
-
-  return parts.join("\n");
+  await viteBuild({
+    root: process.cwd(),
+    logLevel: "silent",
+    build: {
+      outDir: outputDir,
+      emptyOutDir: false,
+      lib: {
+        entry: clientEntry,
+        formats: ["iife"],
+        name: "Spectacle",
+        fileName: () => "spectacle.js",
+      },
+      rollupOptions: {
+        output: {
+          entryFileNames: "spectacle.js",
+        },
+      },
+      minify: true,
+    },
+  });
 }

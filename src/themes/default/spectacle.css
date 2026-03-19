@@ -9,8 +9,12 @@
 /* ── CSS Custom Properties ────────────────────────────────────────── */
 
 :root {
-  --sidebar-width: 260px;
-  --content-padding: 2rem;
+  --sidebar-width: 18rem;
+  --header-height: 3rem;
+  --toc-width: 19rem;
+  --toc-inner-width: 16.5rem;
+  --content-padding: 2.5rem;
+  --content-max-width: 44rem;
 
   /* Light theme */
   --color-heading: #0f172a;
@@ -22,7 +26,7 @@
   --color-accent: #2563eb;
   --color-accent-hover: #1d4ed8;
 
-  /* Dark panel */
+  /* Dark panel (OpenAPI examples) */
   --dark-bg: #0f1117;
   --dark-bg-raised: #161922;
   --dark-border: rgba(255, 255, 255, 0.08);
@@ -31,6 +35,17 @@
   --dark-text-faint: #6b7280;
   --dark-code: #93c5fd;
   --dark-url: #a3e635;
+
+  /* Chrome (multi-page header + sidebar) */
+  --chrome-bg: #111827;
+  --chrome-bg-hover: rgba(255, 255, 255, 0.04);
+  --chrome-bg-active: rgba(99, 102, 241, 0.1);
+  --chrome-border: rgba(255, 255, 255, 0.08);
+  --chrome-text: #e5e7eb;
+  --chrome-text-muted: #9ca3af;
+  --chrome-text-faint: #6b7280;
+  --chrome-accent: #818cf8;
+  --chrome-accent-border: #6366f1;
 
   /* Method colors */
   --method-get: #16a34a;
@@ -222,7 +237,10 @@ pre code {
 
 /* ── Page Layout ───────────────────────────────────────────────────── */
 
-#spectacle #page { width: 100%; min-height: 100vh; }
+#spectacle #page {
+  width: 100%;
+  min-height: 100vh;
+}
 
 /* ── Sidebar ───────────────────────────────────────────────────────── */
 
@@ -233,7 +251,7 @@ pre code {
   bottom: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  padding: 1.5rem 0.75rem 1.5rem 1.25rem;
+  padding: 1.25rem 0.75rem 1.25rem 1rem;
   background: var(--color-bg-subtle);
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
@@ -272,13 +290,12 @@ pre code {
 
 /* Nav sections */
 #spectacle .nav-section {
-  padding-bottom: 0.25rem;
-  margin-bottom: 0.25rem;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 #spectacle .nav-section + .nav-section {
-  border-top: 1px solid var(--color-border);
-  padding-top: 0.75rem;
+  margin-top: 2rem;
 }
 
 /* ── Small Caps Label (shared) ────────────────────────────────────── */
@@ -294,7 +311,13 @@ pre code {
 }
 
 #spectacle .nav-group-label {
-  padding: 0.5rem 0.5rem 0.25rem;
+  padding: 0 0.5rem;
+  margin-bottom: 0.375rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: none;        /* Override shared uppercase */
+  letter-spacing: normal;
+  color: var(--color-heading);
 }
 
 #spectacle .section-label {
@@ -310,27 +333,24 @@ pre code {
 
 #spectacle .nav-link {
   display: block;
-  padding: 0.3rem 0.5rem;
-  color: var(--color-muted);
+  padding: 0.375rem 0.5rem;
+  color: #374151;
   font-size: var(--text-sm);
-  font-weight: 450;
+  font-weight: 400;
   line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   text-decoration: none;
-  border-radius: var(--radius-sm);
-  transition: all 0.1s ease;
+  border-radius: 0.75rem;
+  transition: color 0.12s, background 0.12s;
 }
 
 #spectacle .nav-link:hover {
-  color: var(--color-heading);
-  background: rgba(0, 0, 0, 0.04);
+  color: #111827;
+  background: rgba(75, 85, 99, 0.05);
 }
 
 #spectacle .nav-link.active {
   color: var(--color-accent);
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(37, 99, 235, 0.1);
   font-weight: 500;
 }
 
@@ -1186,6 +1206,53 @@ pre code {
   }
 
   #spectacle .example-box { display: none; }
+
+  /* Header stays visible on mobile but sidebar slides over it */
+  #spectacle #page.has-header #sidebar {
+    z-index: 110;
+  }
+
+  /* Hamburger adjusts for header */
+  #spectacle #page.has-header .floating-menu-icon {
+    top: calc(var(--header-height) + 0.75rem);
+  }
+}
+
+/* Medium screens: tighter content padding */
+@media screen and (max-width: 63.9375em) {
+  #spectacle .prose-page {
+    padding: 1.5rem 1.25rem 3rem;
+  }
+}
+
+/* Small screens: mobile-friendly */
+@media screen and (max-width: 48em) {
+  #spectacle .prose-page {
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  #spectacle .prose-header h1 {
+    font-size: 1.375rem;
+  }
+
+  #spectacle .header-search span,
+  #spectacle .header-search kbd {
+    display: none;
+  }
+
+  #spectacle .header-search {
+    width: auto;
+    min-width: 0;
+    padding: 0.3rem 0.5rem;
+  }
+
+  #spectacle .header-tab {
+    padding: 0 0.375rem;
+  }
+
+  #spectacle .header-left {
+    gap: 0.75rem;
+  }
 }
 
 /* ── Selection ─────────────────────────────────────────────────────── */
@@ -1542,65 +1609,272 @@ pre code {
   color: var(--dark-text-muted);
 }
 
-/* ── Tab Bar ──────────────────────────────────────────────────────── */
+/* ── Site Header (multi-page mode) ────────────────────────────────── */
 
-#spectacle #tab-bar {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--color-border);
-  background: white;
-  padding: 0 var(--content-padding);
-  position: sticky;
+#spectacle #site-header {
+  position: fixed;
   top: 0;
-  z-index: 90;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--chrome-border);
+  z-index: 100;
 }
 
-#spectacle .tab-link {
+#spectacle .header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+#spectacle .header-logo img {
+  height: 1.75rem;
+  display: block;
+}
+
+#spectacle .header-tabs {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: var(--header-height);
+}
+
+#spectacle .header-tab {
   display: inline-flex;
   align-items: center;
-  padding: 0.75rem 1.25rem;
+  height: 100%;
+  padding: 0;
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--color-muted);
+  color: var(--chrome-text-faint);
   text-decoration: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
+  position: relative;
+  transition: color 0.15s;
+}
+
+#spectacle .header-tab:hover {
+  color: var(--chrome-text);
+}
+
+#spectacle .header-tab.active {
+  color: var(--chrome-text);
+}
+
+#spectacle .header-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--chrome-accent);
+}
+
+#spectacle .header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#spectacle .header-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 0.875rem 0 0.75rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--chrome-text-faint);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  min-width: 200px;
+}
+
+#spectacle .header-search:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#spectacle .header-search kbd {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  padding: 0.125em 0.4em;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: var(--chrome-text-faint);
+  margin-left: auto;
+  line-height: 1;
+}
+
+#spectacle .header-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--chrome-text-faint);
   transition: color 0.15s, border-color 0.15s;
 }
 
-#spectacle .tab-link:hover {
-  color: var(--color-heading);
+#spectacle .header-theme-toggle:hover {
+  color: var(--chrome-text);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
-#spectacle .tab-link.active {
+/* Layout offset when header is present */
+#spectacle #page.has-header #sidebar {
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  background: var(--chrome-bg);
+  border-right-color: var(--chrome-border);
+}
+
+#spectacle #page.has-header #docs {
+  padding-top: var(--header-height);
+}
+
+/* Dark sidebar nav styles for multi-page mode */
+#spectacle #page.has-header .nav-group-label {
+  color: var(--chrome-text);
+}
+
+#spectacle #page.has-header .nav-link {
+  color: #9ca3af;
+}
+
+#spectacle #page.has-header .nav-link:hover {
+  color: #d1d5db;
+  background: rgba(229, 231, 235, 0.05);
+}
+
+#spectacle #page.has-header .nav-link.active {
+  color: var(--chrome-accent);
+  background: rgba(129, 140, 248, 0.1);
+}
+
+#spectacle #page.has-header .sidebar-footer a {
+  color: var(--chrome-text-faint);
+}
+
+#spectacle #page.has-header .sidebar-footer a:hover {
+  color: var(--chrome-text-muted);
+}
+
+#spectacle #page.has-header #sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Table of Contents (right sidebar) ───────────────────────────── */
+
+#spectacle #toc {
+  display: none;
+}
+
+@media screen and (min-width: 80em) {
+  #spectacle #page.has-header #toc {
+    display: block;
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    width: var(--toc-width);
+    height: calc(100vh - var(--header-height));
+    padding: 2rem 1rem 2rem 2.5rem;
+    overflow-y: auto;
+  }
+
+  /* Constrain docs area when TOC is visible */
+  #spectacle #page.has-header #docs {
+    margin-right: var(--toc-width);
+  }
+}
+
+#spectacle .toc-inner {
+  width: var(--toc-inner-width);
+}
+
+#spectacle .toc-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-muted);
+  margin-bottom: 0.5rem;
+}
+
+#spectacle .toc-link {
+  display: block;
+  font-size: var(--text-sm);
+  color: #4b5563;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  line-height: 1.5;
+  transition: color 0.12s;
+}
+
+#spectacle .toc-link:hover {
+  color: #111827;
+}
+
+#spectacle .toc-link.active {
   color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
+}
+
+#spectacle .toc-link.toc-level-3 {
+  padding-left: 0.75rem;
+}
+
+[data-theme="dark"] #spectacle .toc-label {
+  color: var(--color-faint);
+}
+
+[data-theme="dark"] #spectacle .toc-link {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] #spectacle .toc-link:hover {
+  color: var(--dark-text);
 }
 
 /* ── Prose Page Layout ────────────────────────────────────────────── */
 
 #spectacle .prose-page {
-  max-width: 48rem;
-  margin: 0 auto;
+  max-width: var(--content-max-width);
   padding: 2rem var(--content-padding) 4rem;
 }
 
 #spectacle .prose-header h1 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--color-heading);
-  line-height: 1.2;
+  line-height: 1.25;
+  margin: 0 0 0.375rem 0;
+  letter-spacing: -0.015em;
+}
+
+#spectacle .prose-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-muted);
   margin: 0 0 1.5rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
 }
 
 /* ── Prose Typography ─────────────────────────────────────────────── */
 /* Designed for long-form reading. Comfortable rhythm, clear hierarchy. */
 
 #spectacle .prose {
-  font-size: 1rem;
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-body);
 }
@@ -1618,12 +1892,10 @@ pre code {
 }
 
 #spectacle .prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-heading);
-  margin: 2rem 0 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
+  margin: 2rem 0 0.625rem;
   line-height: 1.3;
 }
 
@@ -1663,17 +1935,18 @@ pre code {
 /* Inline code */
 #spectacle .prose code {
   font-family: var(--font-mono);
-  font-size: 0.875em;
+  font-size: 0.85em;
   background: var(--color-bg-subtle);
-  padding: 0.15em 0.4em;
+  padding: 0.125em 0.35em;
   border-radius: var(--radius-sm);
   color: var(--color-heading);
 }
 
 /* Code blocks (Shiki output) — override inline code style */
 #spectacle .prose pre {
-  margin: 1.5rem 0;
-  border-radius: var(--radius-lg);
+  margin: 1.25rem 0;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-md);
   overflow-x: auto;
   font-size: var(--text-sm);
   line-height: 1.6;
@@ -1695,7 +1968,8 @@ pre code {
 }
 
 #spectacle .prose li {
-  margin: 0.25rem 0;
+  margin: 0.375rem 0;
+  line-height: 1.65;
 }
 
 #spectacle .prose li > p {
@@ -1769,26 +2043,17 @@ pre code {
 
 /* ── Dark Mode: Tab Bar & Prose ───────────────────────────────────── */
 
-[data-theme="dark"] #spectacle #tab-bar {
-  background: var(--dm-surface, #1a1a2e);
-  border-bottom-color: var(--dark-border);
+/* Header and multi-page sidebar are already dark; dark mode just deepens slightly */
+[data-theme="dark"] #spectacle #site-header {
+  background: #0a0e1a;
 }
 
-[data-theme="dark"] #spectacle .tab-link {
-  color: var(--dark-text-muted);
-}
-
-[data-theme="dark"] #spectacle .tab-link:hover {
-  color: var(--dark-text);
-}
-
-[data-theme="dark"] #spectacle .tab-link.active {
-  color: var(--color-accent);
+[data-theme="dark"] #spectacle #page.has-header #sidebar {
+  background: #0a0e1a;
 }
 
 [data-theme="dark"] #spectacle .prose-header h1 {
   color: var(--dark-text);
-  border-bottom-color: var(--dark-border);
 }
 
 [data-theme="dark"] #spectacle .prose {
@@ -1801,10 +2066,6 @@ pre code {
 [data-theme="dark"] #spectacle .prose h4,
 [data-theme="dark"] #spectacle .prose strong {
   color: #f1f5f9;
-}
-
-[data-theme="dark"] #spectacle .prose h2 {
-  border-bottom-color: var(--dark-border);
 }
 
 [data-theme="dark"] #spectacle .prose code {
