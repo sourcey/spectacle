@@ -84,7 +84,7 @@ export function Page() {
           <span class="hamburger" />
         </button>
 
-        <div class="example-box" />
+        {page?.kind !== "markdown" && <div class="example-box" />}
 
         {page?.kind === "markdown"
           ? <MarkdownPageContent page={page.markdown!} />
