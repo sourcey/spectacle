@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import { SpecContext, NavigationContext } from "../../renderer/context.js";
+import { SpecContext, NavigationContext, OptionsContext } from "../../renderer/context.js";
 import type { SiteNavigation } from "../../core/navigation.js";
 import { htmlId } from "../../utils/html-id.js";
 
@@ -44,8 +44,12 @@ function MoonIcon() {
  * Shows the active tab's groups and items with cross-page links.
  */
 function MultiPageNav({ nav }: { nav: SiteNavigation }) {
+  const options = useContext(OptionsContext);
   const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
   if (!activeTab) return null;
+
+  // Prepend asset base so hrefs are relative to the current page's directory
+  const base = options.assetBase;
 
   return (
     <nav id="nav" role="navigation">
@@ -55,7 +59,7 @@ function MultiPageNav({ nav }: { nav: SiteNavigation }) {
           {group.items.map((item) => (
             <a
               key={item.id}
-              href={item.href}
+              href={`${base}${item.href}`}
               class={`nav-link${item.method ? " nav-operation" : ""}${item.id === nav.activePageSlug ? " active" : ""}`}
             >
               {item.method && (
