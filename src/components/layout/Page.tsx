@@ -1,8 +1,9 @@
 import { useContext } from "preact/hooks";
 import { SpecContext, PageContext, NavigationContext } from "../../renderer/context.js";
 import type { MarkdownPage } from "../../core/markdown-loader.js";
+import { Header } from "./Header.js";
 import { Sidebar } from "./Sidebar.js";
-import { TabBar } from "./TabBar.js";
+import { TableOfContents } from "./TableOfContents.js";
 import { Introduction } from "../openapi/Introduction.js";
 import { SecurityDefinitions } from "../openapi/Security.js";
 import { Tags } from "../openapi/Tags.js";
@@ -16,6 +17,9 @@ function MarkdownPageContent({ page }: { page: MarkdownPage }) {
     <article class="prose-page">
       <header class="prose-header">
         <h1>{page.title}</h1>
+        {page.description && (
+          <p class="prose-description">{page.description}</p>
+        )}
       </header>
       <div class="prose" dangerouslySetInnerHTML={{ __html: page.html }} />
     </article>
@@ -58,14 +62,14 @@ function SpecPageContent() {
 export function Page() {
   const page = useContext(PageContext);
   const nav = useContext(NavigationContext);
+  const isMultiPage = nav !== null;
 
   return (
-    <div id="page">
+    <div id="page" class={isMultiPage ? "has-header" : ""}>
+      {isMultiPage && <Header />}
       <Sidebar />
 
       <div id="docs">
-        {nav && <TabBar />}
-
         <button
           class="floating-menu-icon"
           type="button"
@@ -81,6 +85,10 @@ export function Page() {
           : <SpecPageContent />
         }
       </div>
+
+      {page?.kind === "markdown" && page.markdown!.headings.length > 0 && (
+        <TableOfContents headings={page.markdown!.headings} />
+      )}
 
       <div id="search-dialog" role="dialog" aria-label="Search">
         <div class="search-dialog-inner">

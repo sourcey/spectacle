@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc && cp -r src/themes dist/ && cp -r src/client dist/",
+    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -33,14 +33,19 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@preact/preset-vite": "^2.10.4",
     "@readme/openapi-parser": "^4.0.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.2.2",
     "citty": "^0.1.6",
     "js-yaml": "^4.1.0",
     "marked": "^15.0.0",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
     "shiki": "^4.0.2",
-    "swagger2openapi": "^7.0.8"
+    "swagger2openapi": "^7.0.8",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.1"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",

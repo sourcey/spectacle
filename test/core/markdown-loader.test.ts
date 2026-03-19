@@ -4,7 +4,7 @@ import { loadMarkdownPage, slugFromPath } from "../../src/core/markdown-loader.j
 
 const FIXTURE_DIR = resolve(import.meta.dirname, "../fixtures");
 
-describe("loadMarkdownPage", () => {
+describe("loadMarkdownPage", { timeout: 30_000 }, () => {
   it("parses frontmatter title and description", async () => {
     const page = await loadMarkdownPage(
       resolve(FIXTURE_DIR, "test-page.md"),

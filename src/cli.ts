@@ -104,13 +104,13 @@ const build = defineCommand({
 const dev = defineCommand({
   meta: {
     name: "dev",
-    description: "Start a dev server with live reload on spec changes",
+    description: "Start a dev server with live reload",
   },
   args: {
     spec: {
       type: "positional",
-      description: "Path to the OpenAPI/Swagger spec file",
-      required: true,
+      description: "Path to the OpenAPI/Swagger spec file (optional if spectacle.json exists)",
+      required: false,
     },
     port: {
       type: "string",
@@ -134,7 +134,7 @@ const dev = defineCommand({
     const config = await loadConfig();
     const { startDevServer } = await import("./dev-server.js");
     await startDevServer({
-      specSource: args.spec,
+      specSource: args.spec || undefined,
       outputDir: args.output,
       port: parseInt(args.port, 10),
       logo: args.logo || config.logo,
