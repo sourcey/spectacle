@@ -1494,3 +1494,298 @@ pre code {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+#spectacle .search-loading {
+  padding: 1rem;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+/* ── Tab Bar ──────────────────────────────────────────────────────── */
+
+#spectacle #tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: white;
+  padding: 0 var(--content-padding);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+#spectacle .tab-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+#spectacle .tab-link:hover {
+  color: var(--color-heading);
+}
+
+#spectacle .tab-link.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ── Prose Page Layout ────────────────────────────────────────────── */
+
+#spectacle .prose-page {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem var(--content-padding) 4rem;
+}
+
+#spectacle .prose-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  line-height: 1.2;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Prose Typography ─────────────────────────────────────────────── */
+/* Designed for long-form reading. Comfortable rhythm, clear hierarchy. */
+
+#spectacle .prose {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-body);
+}
+
+#spectacle .prose > *:first-child { margin-top: 0; }
+#spectacle .prose > *:last-child { margin-bottom: 0; }
+
+/* Headings */
+#spectacle .prose h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin: 2.5rem 0 1rem;
+  line-height: 1.25;
+}
+
+#spectacle .prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.3;
+}
+
+#spectacle .prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 1.75rem 0 0.5rem;
+  line-height: 1.35;
+}
+
+#spectacle .prose h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 1.5rem 0 0.5rem;
+  line-height: 1.4;
+}
+
+/* Paragraphs */
+#spectacle .prose p {
+  margin: 0 0 1.25rem;
+}
+
+/* Links */
+#spectacle .prose a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+#spectacle .prose a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* Inline code */
+#spectacle .prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-bg-subtle);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  color: var(--color-heading);
+}
+
+/* Code blocks (Shiki output) — override inline code style */
+#spectacle .prose pre {
+  margin: 1.5rem 0;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+#spectacle .prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Lists */
+#spectacle .prose ul,
+#spectacle .prose ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.75rem;
+}
+
+#spectacle .prose li {
+  margin: 0.25rem 0;
+}
+
+#spectacle .prose li > p {
+  margin: 0.5rem 0;
+}
+
+#spectacle .prose ul ul,
+#spectacle .prose ol ol,
+#spectacle .prose ul ol,
+#spectacle .prose ol ul {
+  margin: 0.25rem 0;
+}
+
+/* Blockquotes */
+#spectacle .prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-muted);
+  background: var(--color-bg-subtle);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+#spectacle .prose blockquote p {
+  margin: 0;
+}
+
+/* Tables */
+#spectacle .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: var(--text-base);
+}
+
+#spectacle .prose thead th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-heading);
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+#spectacle .prose tbody td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+/* Images */
+#spectacle .prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  margin: 1.5rem auto;
+  display: block;
+}
+
+/* Horizontal rules */
+#spectacle .prose hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+/* Strong and emphasis */
+#spectacle .prose strong {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+/* ── Dark Mode: Tab Bar & Prose ───────────────────────────────────── */
+
+[data-theme="dark"] #spectacle #tab-bar {
+  background: var(--dm-surface, #1a1a2e);
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .tab-link {
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] #spectacle .tab-link:hover {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] #spectacle .tab-link.active {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] #spectacle .prose-header h1 {
+  color: var(--dark-text);
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .prose {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] #spectacle .prose h1,
+[data-theme="dark"] #spectacle .prose h2,
+[data-theme="dark"] #spectacle .prose h3,
+[data-theme="dark"] #spectacle .prose h4,
+[data-theme="dark"] #spectacle .prose strong {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] #spectacle .prose h2 {
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .prose code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] #spectacle .prose blockquote {
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: var(--color-accent);
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] #spectacle .prose thead th {
+  color: #f1f5f9;
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .prose tbody td {
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] #spectacle .prose hr {
+  border-top-color: var(--dark-border);
+}
