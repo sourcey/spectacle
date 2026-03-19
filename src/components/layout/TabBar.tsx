@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import { NavigationContext } from "../../renderer/context.js";
+import { NavigationContext, OptionsContext } from "../../renderer/context.js";
 
 /**
  * Horizontal tab bar for multi-page sites.
@@ -7,14 +7,17 @@ import { NavigationContext } from "../../renderer/context.js";
  */
 export function TabBar() {
   const nav = useContext(NavigationContext);
+  const options = useContext(OptionsContext);
   if (!nav || nav.tabs.length <= 1) return null;
+
+  const base = options.assetBase;
 
   return (
     <div id="tab-bar">
       {nav.tabs.map((tab) => (
         <a
           key={tab.slug}
-          href={tab.href}
+          href={`${base}${tab.href}`}
           class={`tab-link${tab.slug === nav.activeTabSlug ? " active" : ""}`}
         >
           {tab.label}
