@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: https://github.com/sourcey/spectacle/issues/98
+  description: https://github.com/sourcey/sourcey/issues/98
   title: issue 98
 definitions:
   Challenges:

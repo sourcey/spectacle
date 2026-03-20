@@ -15,7 +15,7 @@ export function Markdown({ content, inline, class: className }: MarkdownProps) {
     return <span class={className} dangerouslySetInnerHTML={{ __html: html }} />;
   }
 
-  const cls = className ? `prose ${className}` : "prose";
+  const cls = className ? `prose prose-gray dark:prose-invert ${className}` : "prose prose-gray dark:prose-invert";
   return (
     <div class={cls} dangerouslySetInnerHTML={{ __html: html }} />
   );

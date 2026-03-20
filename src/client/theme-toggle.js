@@ -1,6 +1,7 @@
 // Theme toggle — dark/light mode with localStorage persistence
+// Uses .dark class on <html> (standard convention)
 (function () {
-  var STORAGE_KEY = 'spectacle-theme';
+  var STORAGE_KEY = 'sourcey-theme';
   var btn = document.getElementById('theme-toggle');
   var root = document.documentElement;
 
@@ -11,7 +12,12 @@
   }
 
   function apply(theme) {
-    root.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    root.style.colorScheme = theme;
     if (btn) {
       btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
       btn.setAttribute('title', theme === 'dark' ? 'Light mode' : 'Dark mode');
@@ -22,10 +28,9 @@
 
   if (btn) {
     btn.addEventListener('click', function () {
-      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      var next = root.classList.contains('dark') ? 'light' : 'dark';
       localStorage.setItem(STORAGE_KEY, next);
       apply(next);
     });
   }
-
 })();

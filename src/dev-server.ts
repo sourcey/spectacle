@@ -1,94 +1,101 @@
-import { createServer as createViteServer, type InlineConfig } from "vite";
-import { resolve, dirname } from "node:path";
+import { createServer as createViteServer, type InlineConfig, type ViteDevServer } from "vite";
+import { resolve, dirname, extname } from "node:path";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { loadConfig, isMultiPageConfig } from "./config.js";
+import { loadConfig } from "./config.js";
+import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
 import { normalizeSpec } from "./core/normalizer.js";
-import { renderSpec, renderPage } from "./renderer/static-renderer.js";
 import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation, withActivePage } from "./core/navigation.js";
 import type { SiteTab } from "./core/navigation.js";
 import type { NormalizedSpec } from "./core/types.js";
-import type { CurrentPage, RenderOptions } from "./renderer/context.js";
+import type { CurrentPage, RenderOptions, SiteConfig } from "./renderer/context.js";
 import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
 import type { MarkdownPage } from "./core/markdown-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
-import { spectaclePlugin } from "./vite/watcher-plugin.js";
-import type { SpectacleConfig, NavigationTab } from "./config.js";
+import { sourceyPlugin } from "./vite-plugin.js";
+import tailwindcss from "@tailwindcss/vite";
+import preact from "@preact/preset-vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export interface DevServerOptions {
-  specSource?: string;
-  outputDir: string;
   port: number;
-  logo?: string;
-  favicon?: string;
-  themeOverrides?: Record<string, string>;
 }
 
-/**
- * Start a Vite-powered dev server for Spectacle.
- *
- * In multi-page mode: renders each page on-the-fly via SSR.
- * In legacy mode: renders the single spec page.
- * CSS is served by Vite with native HMR (no page reload for CSS changes).
- * Client JS is served by Vite with module imports.
- * Spec/markdown changes trigger full page reload.
- */
 export async function startDevServer(options: DevServerOptions): Promise<void> {
-  const { specSource, port, logo, favicon } = options;
-
+  const { port } = options;
   const config = await loadConfig();
-  const multiPage = !specSource && isMultiPageConfig(config);
 
-  // Collect watch paths for the plugin
+  const tabs = config.tabs;
+
+  // Collect watch paths
   const watchPaths: string[] = [];
-  if (multiPage) {
-    for (const tab of config.navigation!) {
-      if (tab.spec) watchPaths.push(resolve(tab.spec));
-      if (tab.groups) {
-        for (const group of tab.groups) {
-          for (const pagePath of group.pages) {
-            watchPaths.push(resolve(pagePath));
-          }
+  for (const tab of tabs) {
+    if (tab.openapi) watchPaths.push(tab.openapi);
+    if (tab.groups) {
+      for (const group of tab.groups) {
+        for (const pagePath of group.pages) {
+          watchPaths.push(pagePath);
         }
       }
     }
-  } else if (specSource) {
-    watchPaths.push(resolve(specSource));
   }
 
-  // Resolve paths relative to project root (not dist/) for Vite dev serving
-  // __dirname at runtime is dist/, but Vite needs the source files
+  // Resolve source paths for Vite dev serving
   const projectRoot = resolve(__dirname, "..");
-  const cssPath = resolve(projectRoot, "src/themes/default/spectacle.css");
+  const tailwindCssPath = resolve(projectRoot, "src/themes/default/main.css");
+  const sourceyCssPath = resolve(projectRoot, "src/themes/default/sourcey.css");
   const clientEntry = resolve(projectRoot, "src/client/index.ts");
+  const ssrRendererPath = resolve(projectRoot, "src/renderer/static-renderer.ts");
 
-  // SSR render function: given a URL, return full HTML
+  let vite: ViteDevServer;
+
   async function render(url: string): Promise<string | null> {
-    let html: string | null = null;
+    // Load render-path modules through Vite's SSR graph so invalidateAll() works.
+    // Static imports would survive invalidation and serve stale output.
+    const { renderPage } = await vite.ssrLoadModule(ssrRendererPath) as {
+      renderPage: typeof import("./renderer/static-renderer.js").renderPage;
+    };
+    const mdLoader = await vite.ssrLoadModule(
+      resolve(projectRoot, "src/core/markdown-loader.ts")
+    ) as typeof import("./core/markdown-loader.js");
 
-    if (multiPage) {
-      html = await renderMultiPage(url, config, { logo, favicon });
-    } else if (specSource) {
-      html = await renderLegacy(specSource, { logo, favicon });
+    const { siteTabs, primarySpec, pageMap } = await loadSiteData(tabs, mdLoader.loadMarkdownPage);
+    const navigation = buildSiteNavigation(siteTabs);
+    const site = await buildSiteConfig(config);
+
+    let pagePath = url.replace(/^\//, "").replace(/\/$/, "");
+    if (!pagePath || pagePath === "index.html") {
+      const firstKey = pageMap.keys().next().value;
+      if (!firstKey) return null;
+      pagePath = firstKey;
+    }
+    if (!pagePath.endsWith(".html")) {
+      pagePath += "/index.html";
     }
 
-    if (!html) return null;
+    const pageData = pageMap.get(pagePath);
+    if (!pageData) return null;
 
-    // Rewrite asset paths: CSS via Vite (HMR), JS as ES module
+    const activeNav = withActivePage(navigation, pageData.tabSlug, pageData.pageSlug);
+    const renderOptions: RenderOptions = { embeddable: false, assetBase: "/" };
+
+    let html = renderPage(pageData.spec, renderOptions, activeNav, pageData.currentPage, site);
+
+    // Rewrite asset paths for Vite HMR
     html = html.replace(
-      /<link rel="stylesheet" href="[^"]*spectacle\.css"[^>]*\/>/,
-      `<link rel="stylesheet" href="/@fs${cssPath}" />`
+      /<link rel="stylesheet" href="[^"]*sourcey\.css"[^>]*\/>/,
+      `<link rel="stylesheet" href="/@fs${tailwindCssPath}" />\n<link rel="stylesheet" href="/@fs${sourceyCssPath}?direct" />`
     );
     html = html.replace(
-      /<script src="[^"]*spectacle\.js"[^>]*><\/script>/,
+      /<script src="[^"]*sourcey\.js"[^>]*><\/script>/,
       `<script type="module" src="/@fs${clientEntry}"></script>`
     );
     html = html.replace(
-      /<script src="[^"]*spectacle\.js"[^>]*\/>/,
+      /<script src="[^"]*sourcey\.js"[^>]*\/>/,
       `<script type="module" src="/@fs${clientEntry}"></script>`
     );
 
@@ -103,86 +110,32 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       hmr: true,
     },
     plugins: [
-      spectaclePlugin({
+      preact(),
+      tailwindcss(),
+      sourceyPlugin({
         watchPaths,
         render,
-        searchIndex: multiPage
-          ? () => buildSearchIndexForDev(config, { logo, favicon })
-          : undefined,
+        searchIndex: () => buildSearchIndexForDev(config),
       }),
     ],
     clearScreen: false,
     logLevel: "warn",
     optimizeDeps: {
-      exclude: ["spectacle"],
+      exclude: ["sourcey"],
     },
   };
 
-  const vite = await createViteServer(viteConfig);
+  vite = await createViteServer(viteConfig);
   await vite.listen();
 
-  console.log(`\n  Spectacle dev server running at http://localhost:${port}`);
-  console.log(`  Watching: ${watchPaths.length} content file${watchPaths.length === 1 ? "" : "s"} + CSS (HMR)`);
+  console.log(`\n  Sourcey dev server running at http://localhost:${port}`);
+  console.log(`  Watching: ${watchPaths.length} content file${watchPaths.length === 1 ? "" : "s"} + components + CSS (HMR)`);
   console.log(`  Press Ctrl+C to stop\n`);
 }
 
 // ---------------------------------------------------------------------------
-// Legacy single-spec rendering
+// Helpers
 // ---------------------------------------------------------------------------
-
-async function renderLegacy(
-  specSource: string,
-  branding: { logo?: string; favicon?: string },
-): Promise<string> {
-  const loaded = await loadSpec(resolve(specSource));
-  const parsed = await parseSpec(loaded);
-  const openapi3 = await convertToOpenApi3(parsed);
-  const spec = normalizeSpec(openapi3);
-
-  if (branding.logo) spec.info.logo = branding.logo;
-  if (branding.favicon) spec.info.favicon = branding.favicon;
-
-  const options: RenderOptions = { embeddable: false, singleFile: false, assetBase: "" };
-  return `<!DOCTYPE html>\n${renderSpec(spec, options)}`;
-}
-
-// ---------------------------------------------------------------------------
-// Multi-page rendering
-// ---------------------------------------------------------------------------
-
-async function renderMultiPage(
-  url: string,
-  config: SpectacleConfig,
-  branding: { logo?: string; favicon?: string },
-): Promise<string | null> {
-  const tabs = config.navigation!;
-  const configDir = process.cwd();
-
-  // Build the full site data (specs, pages, navigation)
-  const { siteTabs, primarySpec, pageMap } = await loadSiteData(tabs, configDir, config, branding);
-  const navigation = buildSiteNavigation(siteTabs);
-
-  // Normalise URL to match page keys
-  let pagePath = url.replace(/^\//, "").replace(/\/$/, "");
-  if (!pagePath || pagePath === "index.html") {
-    // Redirect to first page
-    const firstKey = pageMap.keys().next().value;
-    if (!firstKey) return null;
-    pagePath = firstKey;
-  }
-  if (!pagePath.endsWith(".html")) {
-    pagePath += "/index.html";
-  }
-
-  const pageData = pageMap.get(pagePath);
-  if (!pageData) return null;
-
-  const activeNav = withActivePage(navigation, pageData.tabSlug, pageData.pageSlug);
-  const options: RenderOptions = { embeddable: false, singleFile: false, assetBase: "/" };
-
-  const html = renderPage(pageData.spec, options, activeNav, pageData.currentPage);
-  return `<!DOCTYPE html>\n${html}`;
-}
 
 interface PageMapEntry {
   spec: NormalizedSpec;
@@ -192,105 +145,130 @@ interface PageMapEntry {
 }
 
 async function loadSiteData(
-  tabs: NavigationTab[],
-  configDir: string,
-  config: SpectacleConfig,
-  branding: { logo?: string; favicon?: string },
+  tabs: ResolvedTab[],
+  loadMarkdownPageFn: typeof loadMarkdownPage = loadMarkdownPage,
 ) {
   const specsBySlug = new Map<string, NormalizedSpec>();
   const siteTabs: SiteTab[] = [];
   const pageMap = new Map<string, PageMapEntry>();
 
-  // Load specs
-  for (const tabConfig of tabs) {
-    if (!tabConfig.spec) continue;
-    const specPath = resolve(configDir, tabConfig.spec);
-    const loaded = await loadSpec(specPath);
+  for (const tab of tabs) {
+    if (!tab.openapi) continue;
+    const loaded = await loadSpec(tab.openapi);
     const parsed = await parseSpec(loaded);
     const openapi3 = await convertToOpenApi3(parsed);
     const spec = normalizeSpec(openapi3);
-    if (branding.logo) spec.info.logo = branding.logo;
-    if (branding.favicon) spec.info.favicon = branding.favicon;
-    if (config.logo) spec.info.logo = config.logo;
-    if (config.favicon) spec.info.favicon = config.favicon;
-    specsBySlug.set(tabConfig.slug, spec);
+    specsBySlug.set(tab.slug, spec);
   }
 
   const primarySpec: NormalizedSpec = specsBySlug.values().next().value ?? {
-    info: { title: "", version: "", description: "", logo: config.logo, favicon: config.favicon },
+    info: { title: "", version: "", description: "" },
     servers: [], tags: [], operations: [], schemas: {}, securitySchemes: {}, webhooks: [],
   };
 
-  // Process all tabs
-  for (const tabConfig of tabs) {
-    if (tabConfig.spec) {
-      const spec = specsBySlug.get(tabConfig.slug)!;
-      const tab = buildNavFromSpec(spec, tabConfig.slug);
-      tab.label = tabConfig.label;
-      siteTabs.push(tab);
+  for (const tab of tabs) {
+    if (tab.openapi) {
+      const spec = specsBySlug.get(tab.slug)!;
+      const navTab = buildNavFromSpec(spec, tab.slug);
+      navTab.label = tab.label;
+      siteTabs.push(navTab);
 
-      pageMap.set(`${tabConfig.slug}/index.html`, {
+      pageMap.set(`${tab.slug}/index.html`, {
         spec,
         currentPage: { kind: "spec", spec },
-        tabSlug: tabConfig.slug,
+        tabSlug: tab.slug,
         pageSlug: "introduction",
       });
-    } else if (tabConfig.groups) {
+    } else if (tab.groups) {
       const pagesByPath = new Map<string, MarkdownPage>();
 
-      for (const group of tabConfig.groups) {
+      for (const group of tab.groups) {
         for (const pagePath of group.pages) {
-          const fullPath = resolve(configDir, pagePath);
           const slug = slugFromPath(pagePath);
-          const page = await loadMarkdownPage(fullPath, slug);
+          const page = await loadMarkdownPageFn(pagePath, slug);
           pagesByPath.set(pagePath, page);
 
-          pageMap.set(`${tabConfig.slug}/${slug}.html`, {
+          pageMap.set(`${tab.slug}/${slug}.html`, {
             spec: primarySpec,
             currentPage: { kind: "markdown", markdown: page },
-            tabSlug: tabConfig.slug,
+            tabSlug: tab.slug,
             pageSlug: slug,
           });
         }
       }
 
-      const tab = buildNavFromPages(tabConfig, pagesByPath);
-      siteTabs.push(tab);
+      const navTab = buildNavFromPages(tab, pagesByPath);
+      siteTabs.push(navTab);
     }
   }
 
-  return { siteTabs, primarySpec, pageMap };
+  return { siteTabs, primarySpec, pageMap, specsBySlug };
 }
 
-async function buildSearchIndexForDev(
-  config: SpectacleConfig,
-  branding: { logo?: string; favicon?: string },
-): Promise<string> {
-  const tabs = config.navigation!;
-  const configDir = process.cwd();
-  const { siteTabs, pageMap } = await loadSiteData(tabs, configDir, config, branding);
+async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
+  const logo = config.logo
+    ? {
+        light: await resolveAssetUrl(config.logo.light ?? ""),
+        dark: config.logo.dark ? await resolveAssetUrl(config.logo.dark) : undefined,
+        href: config.logo.href,
+      }
+    : undefined;
+
+  const customCSS = await loadCustomCSS(config.theme.css);
+
+  return {
+    name: config.name,
+    theme: config.theme,
+    logo: logo?.light ? logo : undefined,
+    favicon: config.favicon,
+    repo: config.repo,
+    codeSamples: config.codeSamples,
+    navbar: config.navbar,
+    footer: config.footer,
+    customCSS: customCSS || undefined,
+  };
+}
+
+async function loadCustomCSS(paths: string[]): Promise<string> {
+  const parts: string[] = [];
+  for (const p of paths) {
+    parts.push(await readFile(p, "utf-8"));
+  }
+  return parts.join("\n");
+}
+
+async function buildSearchIndexForDev(config: ResolvedConfig): Promise<string> {
+  const { siteTabs, pageMap, specsBySlug } = await loadSiteData(config.tabs);
   const navigation = buildSiteNavigation(siteTabs);
 
-  const specsBySlug = new Map<string, NormalizedSpec>();
   const markdownPagesByTab = new Map<string, MarkdownPage[]>();
-
-  for (const [, entry] of pageMap) {
-    if (entry.currentPage.kind === "spec") {
-      specsBySlug.set(entry.tabSlug, entry.spec);
-    }
-  }
-
-  for (const tabConfig of tabs) {
-    if (tabConfig.groups) {
+  for (const tab of config.tabs) {
+    if (tab.groups) {
       const tabPages: MarkdownPage[] = [];
       for (const [, entry] of pageMap) {
-        if (entry.tabSlug === tabConfig.slug && entry.currentPage.kind === "markdown") {
+        if (entry.tabSlug === tab.slug && entry.currentPage.kind === "markdown") {
           tabPages.push(entry.currentPage.markdown!);
         }
       }
-      markdownPagesByTab.set(tabConfig.slug, tabPages);
+      markdownPagesByTab.set(tab.slug, tabPages);
     }
   }
 
   return buildSearchIndex(specsBySlug, markdownPagesByTab, navigation);
+}
+
+const MIME_TYPES: Record<string, string> = {
+  ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+  ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
+};
+
+async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
+  if (!pathOrUrl || pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://") || pathOrUrl.startsWith("data:")) {
+    return pathOrUrl;
+  }
+  const abs = resolve(pathOrUrl);
+  const ext = extname(abs).toLowerCase();
+  const mime = MIME_TYPES[ext] ?? "application/octet-stream";
+  const data = await readFile(abs);
+  return `data:${mime};base64,${data.toString("base64")}`;
 }

@@ -9,58 +9,14 @@
   var entries = [];
   var activeIndex = -1;
   var filtered = [];
-  var multiPage = false;
   var indexLoaded = false;
 
-  // Detect multi-page mode via meta tag
-  var searchMeta = document.querySelector('meta[name="spectacle-search"]');
-  if (searchMeta) {
-    multiPage = true;
-    // Load index lazily on first open
-  } else {
-    // Legacy: build index from DOM
-    buildDomIndex();
-    indexLoaded = true;
-  }
-
-  function buildDomIndex() {
-    document.querySelectorAll('[data-traverse-target]').forEach(function (el) {
-      var id = el.getAttribute('data-traverse-target');
-      var method = '', path = '', summary = '', tag = '';
-
-      var methodEl = el.querySelector('.operation-method');
-      var pathEl = el.querySelector('.operation-path');
-      var summaryEl = el.querySelector('.operation-summary');
-
-      if (methodEl) method = methodEl.textContent.trim();
-      if (pathEl) path = pathEl.textContent.trim();
-      if (summaryEl) summary = summaryEl.textContent.trim();
-
-      if (!method && !path) {
-        var heading = el.querySelector('h1, h2');
-        if (heading) summary = heading.textContent.trim();
-      }
-
-      var tagGroup = el.closest('.tag-group');
-      if (tagGroup) {
-        var tagLabel = tagGroup.querySelector('.tag-header h1');
-        if (tagLabel) tag = tagLabel.textContent.trim();
-      }
-
-      entries.push({
-        id: id,
-        url: '#' + id,
-        method: method,
-        path: path,
-        summary: summary,
-        tag: tag,
-        searchText: [method, path, summary, tag].join(' ').toLowerCase()
-      });
-    });
-  }
+  // Always load from JSON search index
+  var searchMeta = document.querySelector('meta[name="sourcey-search"]');
 
   function loadJsonIndex(callback) {
     if (indexLoaded) { callback(); return; }
+    if (!searchMeta) { indexLoaded = true; callback(); return; }
     var url = searchMeta.getAttribute('content');
     fetch(url).then(function (r) { return r.json(); }).then(function (data) {
       entries = data.map(function (e) {
@@ -87,7 +43,7 @@
     dialog.classList.add('open');
     input.value = '';
     input.focus();
-    if (multiPage && !indexLoaded) {
+    if (!indexLoaded) {
       results.innerHTML = '<div class="search-loading">Loading…</div>';
       loadJsonIndex(function () { showResults(''); });
     } else {
@@ -141,18 +97,7 @@
     if (index < 0 || index >= filtered.length) return;
     var entry = filtered[index];
     close();
-
-    if (multiPage) {
-      // Cross-page navigation
-      window.location.href = entry.url;
-    } else {
-      // Same-page scroll (legacy)
-      var target = document.getElementById(entry.id);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.location.hash = '#' + entry.id;
-      }
-    }
+    window.location.href = entry.url;
   }
 
   function onDialogKey(e) {
@@ -190,6 +135,10 @@
 
   // Open search
   if (openBtn) openBtn.addEventListener('click', open);
+
+  // Also bind mobile search button
+  var mobileBtn = document.getElementById('search-open-mobile');
+  if (mobileBtn) mobileBtn.addEventListener('click', open);
 
   // Keyboard shortcut: Ctrl+K or /
   document.addEventListener('keydown', function (e) {

@@ -1,5 +1,5 @@
 import type { NormalizedSpec } from "./types.js";
-import type { NavigationTab } from "../config.js";
+import type { ResolvedTab } from "../config.js";
 import type { MarkdownPage } from "./markdown-loader.js";
 import { htmlId } from "../utils/html-id.js";
 
@@ -104,34 +104,33 @@ export function buildNavFromSpec(
  * Groups come from the config; items come from loaded page data.
  */
 export function buildNavFromPages(
-  tabConfig: NavigationTab,
+  tab: ResolvedTab,
   pagesByPath: Map<string, MarkdownPage>,
 ): SiteTab {
   const groups: SiteNavGroup[] = [];
 
-  if (tabConfig.groups) {
-    for (const groupConfig of tabConfig.groups) {
+  if (tab.groups) {
+    for (const group of tab.groups) {
       const items: SiteNavItem[] = [];
-      for (const pagePath of groupConfig.pages) {
+      for (const pagePath of group.pages) {
         const page = pagesByPath.get(pagePath);
         if (!page) continue;
         items.push({
           label: page.title,
-          href: `${tabConfig.slug}/${page.slug}.html`,
+          href: `${tab.slug}/${page.slug}.html`,
           id: page.slug,
         });
       }
-      groups.push({ label: groupConfig.label, items });
+      groups.push({ label: group.label, items });
     }
   }
 
-  // First page href for tab link
   const firstItem = groups[0]?.items[0];
-  const href = firstItem?.href ?? `${tabConfig.slug}/`;
+  const href = firstItem?.href ?? `${tab.slug}/`;
 
   return {
-    label: tabConfig.label,
-    slug: tabConfig.slug,
+    label: tab.label,
+    slug: tab.slug,
     href,
     kind: "docs",
     groups,

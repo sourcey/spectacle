@@ -1,13 +1,13 @@
 {
-  "name": "spectacle-docs",
-  "version": "2.0.0",
-  "description": "Generate beautiful static API documentation from OpenAPI/Swagger specifications",
+  "name": "sourcey",
+  "version": "3.0.0",
+  "description": "Open source documentation platform. API references, guides, static output.",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "bin": {
-    "spectacle": "./dist/cli.js"
+    "sourcey": "dist/cli.js"
   },
   "exports": {
     ".": {
@@ -28,8 +28,8 @@
     "lint:fix": "eslint src/ test/ --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "demo": "npx tsx src/cli.ts build test/fixtures/cheese.yml -o .preview --logo test/fixtures/cheese.png",
-    "demo:dev": "npx tsx src/cli.ts dev test/fixtures/cheese.yml --logo test/fixtures/cheese.png",
+    "demo": "cd demo && npx tsx ../src/cli.ts build -o ../.preview",
+    "demo:dev": "cd demo && npx tsx ../src/cli.ts dev",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -66,13 +66,13 @@
     "docs"
   ],
   "author": "Kam Low <auscaster@gmail.com> (https://sourcey.com)",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sourcey/spectacle.git"
+    "url": "git+https://github.com/sourcey/sourcey.git"
   },
   "bugs": {
-    "url": "https://github.com/sourcey/spectacle/issues"
+    "url": "https://github.com/sourcey/sourcey/issues"
   },
-  "homepage": "https://github.com/sourcey/spectacle#readme"
+  "homepage": "https://github.com/sourcey/sourcey#readme"
 }
