@@ -35,6 +35,7 @@ export function Head() {
       --content-max-width: ${layout.content};
       --header-height: ${headerHeight};
     }
+    html { scroll-padding-top: ${headerHeight}; }
     body { margin: 0; background: rgb(var(--color-background-light)); }
     .dark body { background: rgb(var(--color-background-dark)); }
   `;
