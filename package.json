@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Open source documentation platform. API references, guides, static output.",
   "type": "module",
   "engines": {
@@ -40,7 +40,7 @@
     "citty": "^0.1.6",
     "js-yaml": "^4.1.0",
     "marked": "^15.0.0",
-    "moxygen": "file:../moxygen-v2",
+    "moxygen": "^2.0.0",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
     "shiki": "^4.0.2",
