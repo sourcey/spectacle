@@ -129,7 +129,7 @@ function normalizeTags(
             t.externalDocs as Record<string, unknown> | undefined,
           ),
           operations: [],
-          hidden: t["x-spectacle-hide"] === true,
+          hidden: t["x-sourcey-hide"] === true,
         });
       }
     }
@@ -210,9 +210,9 @@ function normalizeOperations(
         callbacks: normalizeCallbacks(
           opRaw.callbacks as Record<string, Record<string, unknown>> | undefined,
         ),
-        hidden: opRaw["x-spectacle-hide"] === true,
+        hidden: opRaw["x-sourcey-hide"] === true,
         codeSamples: normalizeCodeSamples(
-          opRaw["x-spectacle-code-samples"] as Record<string, unknown>[] | undefined,
+          opRaw["x-sourcey-code-samples"] as Record<string, unknown>[] | undefined,
           opRaw["x-code-samples"] as Record<string, unknown>[] | undefined,
         ),
       };
@@ -370,10 +370,10 @@ function normalizeSecurityRequirements(
 }
 
 function normalizeCodeSamples(
-  spectacleSamples?: Record<string, unknown>[],
+  sourceySamples?: Record<string, unknown>[],
   genericSamples?: Record<string, unknown>[],
 ): CodeSample[] | undefined {
-  const samples = spectacleSamples ?? genericSamples;
+  const samples = sourceySamples ?? genericSamples;
   if (!samples?.length) return undefined;
   return samples.map((s) => ({
     lang: str(s.lang, "text"),

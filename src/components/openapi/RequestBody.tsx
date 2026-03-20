@@ -8,6 +8,9 @@ interface RequestBodyProps {
   body: NormalizedRequestBody;
 }
 
+/**
+ * Request body content (rendered in the main content column).
+ */
 export function RequestBody({ body }: RequestBodyProps) {
   const mediaTypes = Object.entries(body.content);
   if (!mediaTypes.length) return null;
@@ -16,12 +19,14 @@ export function RequestBody({ body }: RequestBodyProps) {
     <div>
       {mediaTypes.map(([mediaType, content]) => (
         <div key={mediaType}>
-          <div class="content-type-line">
-            <code>{mediaType}</code>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="font-mono px-2 py-0.5 text-xs font-medium text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-300))]">
+              {mediaType}
+            </div>
             {body.required && <RequiredBadge />}
           </div>
           {body.description && (
-            <div class="param-description">
+            <div class="mb-4 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
               <Markdown content={body.description} />
             </div>
           )}
@@ -36,6 +41,9 @@ interface RequestBodyExampleProps {
   body: NormalizedRequestBody;
 }
 
+/**
+ * Request body example (rendered in the sticky code panel).
+ */
 export function RequestBodyExample({ body }: RequestBodyExampleProps) {
   const mediaTypes = Object.entries(body.content);
   if (!mediaTypes.length) return null;
@@ -43,10 +51,5 @@ export function RequestBodyExample({ body }: RequestBodyExampleProps) {
   const [, content] = mediaTypes[0];
   if (!content.schema) return null;
 
-  return (
-    <div class="example-block">
-      <div class="example-block-header">Request Body</div>
-      <ExampleView schema={content.schema} />
-    </div>
-  );
+  return <ExampleView schema={content.schema} title="Request Body" />;
 }

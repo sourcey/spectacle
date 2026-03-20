@@ -2,7 +2,7 @@ import type { Plugin, ViteDevServer } from "vite";
 import { resolve, extname } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-export interface SpectaclePluginOptions {
+export interface SourceyPluginOptions {
   /** Additional file paths to watch (specs, markdown) */
   watchPaths: string[];
   /** SSR render function: given a URL path, return HTML or null */
@@ -12,16 +12,16 @@ export interface SpectaclePluginOptions {
 }
 
 /**
- * Vite plugin for Spectacle.
+ * Vite plugin for Sourcey.
  * - Injects SSR middleware that renders pages on the fly
  * - Watches spec and markdown files; triggers full reload on change
  */
-export function spectaclePlugin(options: SpectaclePluginOptions): Plugin {
+export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
   const { watchPaths, render, searchIndex } = options;
   const watchSet = new Set(watchPaths.map((p) => resolve(p)));
 
   return {
-    name: "spectacle",
+    name: "sourcey",
 
     configureServer(server: ViteDevServer) {
       // Add spec/markdown files to Vite's watcher
@@ -29,15 +29,22 @@ export function spectaclePlugin(options: SpectaclePluginOptions): Plugin {
         server.watcher.add(resolve(p));
       }
 
-      // Trigger full reload when watched files change
+      // Trigger full reload when watched files or source components change
       server.watcher.on("change", (file) => {
         const ext = extname(file);
         if (
           watchSet.has(file) ||
           ext === ".md" ||
           ext === ".yml" ||
-          ext === ".yaml"
+          ext === ".yaml" ||
+          ext === ".tsx" ||
+          ext === ".ts"
         ) {
+          // Invalidate entire SSR module graph so next render uses fresh source.
+          // Shallow invalidation misses transitive importers (e.g. markdown-loader
+          // changes don't propagate to static-renderer), so nuke everything.
+          server.moduleGraph.invalidateAll();
+
           const timestamp = new Date().toLocaleTimeString();
           console.log(`  [${timestamp}] ${file} changed, reloading…`);
           server.ws.send({ type: "full-reload" });

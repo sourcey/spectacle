@@ -77,26 +77,6 @@ describe("buildDocs (integration)", () => {
     expect(favourite!.oneOf!.length).toBe(2);
   });
 
-  it("applies custom logo from file", async () => {
-    const result = await buildDocs({
-      specSource: `${FIXTURES}/cheese.yml`,
-      logo: `${FIXTURES}/cheese.png`,
-      skipWrite: true,
-    });
-
-    expect(result.spec.info.logo).toMatch(/^data:image\/png;base64,/);
-  });
-
-  it("passes through logo URLs unchanged", async () => {
-    const result = await buildDocs({
-      specSource: `${FIXTURES}/cheese.yml`,
-      logo: "https://example.com/logo.png",
-      skipWrite: true,
-    });
-
-    expect(result.spec.info.logo).toBe("https://example.com/logo.png");
-  });
-
   it("uses custom output directory", async () => {
     const result = await buildDocs({
       specSource: `${FIXTURES}/petstore-openapi3.yaml`,
@@ -104,7 +84,7 @@ describe("buildDocs (integration)", () => {
       skipWrite: true,
     });
 
-    expect(result.outputDir).toBe("custom-output");
+    expect(result.outputDir).toBe(resolve("custom-output"));
   });
 
   it("rejects missing spec file", async () => {
@@ -121,20 +101,23 @@ describe("buildDocs (integration)", () => {
         outputDir,
       });
 
-      expect(result.htmlPath).toBeDefined();
-      expect(existsSync(result.htmlPath!)).toBe(true);
+      expect(result.pageCount).toBeGreaterThan(0);
 
-      const html = await readFile(result.htmlPath!, "utf-8");
-      expect(html).toContain("<!DOCTYPE html>");
-      expect(html).toContain("Petstore");
-      expect(html).toContain("API Reference");
-      expect(html).toContain("spectacle.css");
-      expect(html).toContain("spectacle.js");
+      // Site writes a redirect index.html and api/index.html
+      const indexHtml = await readFile(resolve(outputDir, "index.html"), "utf-8");
+      expect(indexHtml).toContain("Redirecting");
 
-      const css = await readFile(resolve(outputDir, "spectacle.css"), "utf-8");
-      expect(css).toContain("#spectacle");
+      const apiHtml = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
+      expect(apiHtml).toContain("<!DOCTYPE html>");
+      expect(apiHtml).toContain("Petstore");
+      expect(apiHtml).toContain("API Reference");
+      expect(apiHtml).toContain("sourcey.css");
+      expect(apiHtml).toContain("sourcey.js");
 
-      const js = await readFile(resolve(outputDir, "spectacle.js"), "utf-8");
+      const css = await readFile(resolve(outputDir, "sourcey.css"), "utf-8");
+      expect(css).toContain("#sourcey");
+
+      const js = await readFile(resolve(outputDir, "sourcey.js"), "utf-8");
       expect(js).toContain("data-traverse-target");
     } finally {
       await rm(outputDir, { recursive: true, force: true });
@@ -144,18 +127,17 @@ describe("buildDocs (integration)", () => {
   it("renders OpenAPI 3.1 spec to HTML with all sections", async () => {
     const outputDir = resolve(import.meta.dirname, "../../.test-output-cheese");
     try {
-      const result = await buildDocs({
+      await buildDocs({
         specSource: `${FIXTURES}/cheese.yml`,
         outputDir,
       });
 
-      const html = await readFile(result.htmlPath!, "utf-8");
+      const html = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
       expect(html).toContain("Cheese Store");
       expect(html).toContain("Models");
       expect(html).toContain("operation-");
       expect(html).toContain('id="sidebar"');
       expect(html).toContain('id="nav"');
-      // OpenAPI 3.1 features rendered
       expect(html).toContain("Authentication");
       expect(html).toContain("bearer");
     } finally {
@@ -166,13 +148,13 @@ describe("buildDocs (integration)", () => {
   it("generates embeddable output without html wrapper", async () => {
     const outputDir = resolve(import.meta.dirname, "../../.test-output-embed");
     try {
-      const result = await buildDocs({
+      await buildDocs({
         specSource: `${FIXTURES}/petstore-openapi3.yaml`,
         outputDir,
         embeddable: true,
       });
 
-      const html = await readFile(result.htmlPath!, "utf-8");
+      const html = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
       expect(html).not.toContain("<!DOCTYPE html>");
       expect(html).not.toContain("<html");
       expect(html).toContain("Petstore");

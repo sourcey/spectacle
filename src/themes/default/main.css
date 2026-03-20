@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@source "../../components/**/*.tsx";
+
+/* Dark mode via .dark class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design Tokens ──────────────────────────────────────── */
+/* RGB triplets consumed via rgb(var(--color-gray-N))       */
+
+@theme static {
+  /* Layout */
+  --sidebar-width: 18rem;
+  --header-height: 7rem;
+  --toc-width: 19rem;
+  --toc-inner-width: 16.5rem;
+  --content-padding: 2.5rem;
+  --content-max-width: 44rem;
+  --radius: 0.75rem;
+
+  /* Primary (indigo) */
+  --color-primary: 99 102 241;
+  --color-primary-light: 129 140 248;
+  --color-primary-dark: 79 70 229;
+
+  /* Backgrounds */
+  --color-background-light: 255 255 255;
+  --color-background-dark: 11 12 16;
+  --color-code-block-light: 255 255 255;
+  --color-code-block-dark: 11 12 14;
+
+  /* Semantic */
+  --color-success: 34 197 94;
+  --color-overlay: 0 0 0;
+  --color-border-dark-subtle: 255 255 255;
+  --color-surface-dark-tint: 255 255 255;
+
+  /* Stone scale (code blocks) */
+  --color-stone-50: 250 250 249;
+  --color-stone-100: 245 245 244;
+  --color-stone-200: 231 229 228;
+  --color-stone-400: 168 162 158;
+  --color-stone-500: 120 113 108;
+  --color-stone-600: 87 83 78;
+  --color-stone-700: 68 64 60;
+  --color-stone-950: 12 10 9;
+
+  /* Gray scale */
+  --color-gray-50: 245 245 250;
+  --color-gray-100: 241 241 245;
+  --color-gray-200: 225 225 229;
+  --color-gray-300: 209 209 213;
+  --color-gray-400: 161 161 165;
+  --color-gray-500: 115 115 119;
+  --color-gray-600: 83 83 87;
+  --color-gray-700: 65 65 69;
+  --color-gray-800: 40 40 44;
+  --color-gray-900: 25 25 30;
+  --color-gray-950: 13 13 17;
+
+  /* Method colors */
+  --method-get: #16a34a;
+  --method-post: #2563eb;
+  --method-put: #d97706;
+  --method-delete: #dc2626;
+  --method-patch: #9333ea;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+}
+
