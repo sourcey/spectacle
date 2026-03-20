@@ -14,6 +14,7 @@ import type { NormalizedSpec } from "./core/types.js";
 import type { CurrentPage, RenderOptions, SiteConfig } from "./renderer/context.js";
 import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
 import type { MarkdownPage } from "./core/markdown-loader.js";
+import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import { sourceyPlugin } from "./vite-plugin.js";
 import tailwindcss from "@tailwindcss/vite";
@@ -35,6 +36,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   const watchPaths: string[] = [];
   for (const tab of tabs) {
     if (tab.openapi) watchPaths.push(tab.openapi);
+    if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
     if (tab.groups) {
       for (const group of tab.groups) {
         for (const pagePath of group.pages) {
@@ -179,6 +181,19 @@ async function loadSiteData(
         tabSlug: tab.slug,
         pageSlug: "introduction",
       });
+    } else if (tab.doxygen) {
+      const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+
+      for (const [slug, page] of pages) {
+        pageMap.set(`${tab.slug}/${slug}.html`, {
+          spec: primarySpec,
+          currentPage: { kind: "markdown", markdown: page },
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      siteTabs.push(navTab);
     } else if (tab.groups) {
       const pagesByPath = new Map<string, MarkdownPage>();
 
@@ -243,7 +258,7 @@ async function buildSearchIndexForDev(config: ResolvedConfig): Promise<string> {
 
   const markdownPagesByTab = new Map<string, MarkdownPage[]>();
   for (const tab of config.tabs) {
-    if (tab.groups) {
+    if (tab.groups || tab.doxygen) {
       const tabPages: MarkdownPage[] = [];
       for (const [, entry] of pageMap) {
         if (entry.tabSlug === tab.slug && entry.currentPage.kind === "markdown") {
