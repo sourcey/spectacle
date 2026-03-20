@@ -243,9 +243,15 @@ function resolveTheme(raw: SourceyConfig, configDir: string): ResolvedTheme {
       }
     : { ...DEFAULT_COLORS };
 
+  const userSans = raw.theme?.fonts?.sans;
+  const userMono = raw.theme?.fonts?.mono;
   const fonts = {
-    sans: raw.theme?.fonts?.sans ?? DEFAULT_FONTS.sans,
-    mono: raw.theme?.fonts?.mono ?? DEFAULT_FONTS.mono,
+    sans: userSans
+      ? `'${userSans}', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`
+      : DEFAULT_FONTS.sans,
+    mono: userMono
+      ? `'${userMono}', 'SF Mono', 'Fira Code', Consolas, monospace`
+      : DEFAULT_FONTS.mono,
   };
 
   const layout = {

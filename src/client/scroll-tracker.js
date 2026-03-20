@@ -46,11 +46,15 @@
     }
   });
 
+  // Only manage active state on fragment-linked nav items and TOC items.
+  // Doc page nav links keep their SSR-set active class untouched.
+  var fragmentNavLinks = Object.values(linkMap);
+
   function activate(id, force) {
     if (id === currentId && !force) return;
     currentId = id;
 
-    navLinks.forEach(function (link) {
+    fragmentNavLinks.forEach(function (link) {
       link.classList.remove('active');
     });
     tocLinks.forEach(function (link) {
