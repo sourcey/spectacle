@@ -40,6 +40,7 @@
     "citty": "^0.1.6",
     "js-yaml": "^4.1.0",
     "marked": "^15.0.0",
+    "moxygen": "file:../moxygen-v2",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
     "shiki": "^4.0.2",

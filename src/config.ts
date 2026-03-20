@@ -1,5 +1,5 @@
-import { access } from "node:fs/promises";
-import { resolve, dirname } from "node:path";
+import { access, readdir } from "node:fs/promises";
+import { resolve, dirname, basename, extname } from "node:path";
 import { pathToFileURL } from "node:url";
 
 // ---------------------------------------------------------------------------
@@ -56,10 +56,20 @@ export interface SourceyConfig {
   };
 }
 
+export interface DoxygenConfig {
+  /** Path to Doxygen XML output directory */
+  xml: string;
+  /** Programming language (default: "cpp") */
+  language?: string;
+  /** Use Doxygen groups for navigation grouping */
+  groups?: boolean;
+}
+
 export interface TabConfig {
   tab: string;
   openapi?: string;
   groups?: GroupConfig[];
+  doxygen?: DoxygenConfig;
 }
 
 export interface GroupConfig {
@@ -103,11 +113,18 @@ export interface ResolvedConfig {
   footer: { links: NavbarLink[] };
 }
 
+export interface ResolvedDoxygenConfig {
+  xml: string;
+  language: string;
+  groups: boolean;
+}
+
 export interface ResolvedTab {
   label: string;
   slug: string;
   openapi?: string;
   groups?: ResolvedGroup[];
+  doxygen?: ResolvedDoxygenConfig;
 }
 
 export interface ResolvedGroup {
@@ -259,17 +276,30 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
     if (slugs.has(slug)) throw new Error(`Duplicate tab slug "${slug}" (from "${tab.tab}")`);
     slugs.add(slug);
 
-    if (tab.openapi && tab.groups) {
-      throw new Error(`Tab "${tab.tab}" has both "openapi" and "groups"; use one or the other`);
+    const sources = [tab.openapi, tab.groups, tab.doxygen].filter(Boolean).length;
+    if (sources > 1) {
+      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", or "doxygen"`);
     }
-    if (!tab.openapi && !tab.groups) {
-      throw new Error(`Tab "${tab.tab}" needs either "openapi" or "groups"`);
+    if (sources === 0) {
+      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", or "doxygen"`);
     }
 
     if (tab.openapi) {
       const absPath = resolve(configDir, tab.openapi);
       await assertExists(absPath, `OpenAPI spec "${tab.openapi}" in tab "${tab.tab}"`);
       resolved.push({ label: tab.tab, slug, openapi: absPath });
+    } else if (tab.doxygen) {
+      const absXml = resolve(configDir, tab.doxygen.xml);
+      await assertExists(absXml, `Doxygen XML directory "${tab.doxygen.xml}" in tab "${tab.tab}"`);
+      resolved.push({
+        label: tab.tab,
+        slug,
+        doxygen: {
+          xml: absXml,
+          language: tab.doxygen.language ?? "cpp",
+          groups: tab.doxygen.groups ?? false,
+        },
+      });
     } else {
       const groups = await resolveGroups(tab.groups!, tab.tab, configDir);
       resolved.push({ label: tab.tab, slug, groups });
@@ -288,14 +318,53 @@ async function resolveGroups(groups: GroupConfig[], tabName: string, configDir: 
 
     const pages: string[] = [];
     for (const pageSlug of group.pages) {
-      const absPath = await resolvePagePath(pageSlug, configDir);
-      pages.push(absPath);
+      if (pageSlug.includes("*")) {
+        const expanded = await expandGlob(pageSlug, configDir);
+        pages.push(...expanded);
+      } else {
+        const absPath = await resolvePagePath(pageSlug, configDir);
+        pages.push(absPath);
+      }
     }
 
     resolved.push({ label: group.group, pages });
   }
 
   return resolved;
+}
+
+/**
+ * Expand a simple glob pattern like "doc/api-*" into matching .md/.mdx files.
+ * Supports trailing * only (e.g. "doc/api-*", "guides/*").
+ */
+async function expandGlob(pattern: string, configDir: string): Promise<string[]> {
+  const absPattern = resolve(configDir, pattern);
+  const dir = dirname(absPattern);
+  const prefix = basename(absPattern).replace("*", "");
+
+  try {
+    const entries = await readdir(dir);
+    const matches = entries
+      .filter((f) => {
+        const ext = extname(f);
+        if (ext !== ".md" && ext !== ".mdx") return false;
+        const name = basename(f, ext);
+        return prefix ? name.startsWith(prefix) : true;
+      })
+      .sort()
+      .map((f) => resolve(dir, f));
+
+    if (!matches.length) {
+      throw new Error(`Glob "${pattern}" matched no files in ${dir}`);
+    }
+
+    return matches;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new Error(`Glob directory not found: ${dir}`);
+    }
+    throw err;
+  }
 }
 
 async function resolvePagePath(slug: string, configDir: string): Promise<string> {

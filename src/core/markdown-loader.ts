@@ -345,10 +345,18 @@ export async function loadMarkdownPage(
   const headings = extractHeadings(preprocessed);
   const html = renderMarkdown(preprocessed);
 
-  const title = meta.title ?? slug;
+  const title = meta.title ?? extractFirstHeading(preprocessed) ?? slug;
   const description = meta.description ?? "";
 
   return { title, description, slug, html, headings, sourcePath: relative(process.cwd(), filePath) };
+}
+
+/**
+ * Extract the first # heading from markdown as a fallback title.
+ */
+function extractFirstHeading(md: string): string | undefined {
+  const match = md.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : undefined;
 }
 
 /**
