@@ -1,264 +1,174 @@
-# Spectacle
+# Sourcey
 
-> The gentleman at REST
+> Your API docs shouldn't depend on someone else's SaaS.
 
-[![CI](https://github.com/sourcey/spectacle/actions/workflows/ci.yml/badge.svg)](https://github.com/sourcey/spectacle/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/spectacle-docs)](https://www.npmjs.com/package/spectacle-docs)
-[![Node](https://img.shields.io/node/v/spectacle-docs)](https://nodejs.org)
-[![License](https://img.shields.io/npm/l/spectacle-docs)](https://github.com/sourcey/spectacle/blob/master/LICENSE)
+Sourcey is an open source documentation platform. Point it at an OpenAPI spec, add markdown guides, get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
 
-Spectacle generates beautiful static HTML documentation from [OpenAPI](https://openapis.org) / [Swagger](http://swagger.io) specifications.
+[![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
+[![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
+[![License: AGPL-3.0](https://img.shields.io/npm/l/sourcey)](LICENSE)
 
-The goal of Spectacle is to help you **save time and look good** by auto generating your API docs from your spec. The output is a clean three-column layout inspired by [Stripe](https://stripe.com/docs/api) — a fixed sidebar, documentation on the left, and code examples on the right.
+```bash
+npx sourcey dev
+```
 
-Supports **OpenAPI 3.0**, **OpenAPI 3.1**, and **Swagger 2.0** (auto-converted).
+![Sourcey](assets/screenshot.jpg)
 
----
+**[Live demo](https://cheesestore.github.io/)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/sourcey/sourcey)
 
 ## Features
 
-- **OpenAPI 3.x + Swagger 2.0** — full support, with automatic Swagger-to-OpenAPI conversion
-- **Beautiful three-column layout** — sidebar navigation, docs, and dark code panel
-- **Dark mode** — toggle with a button, respects system preference, persists with localStorage
-- **Client-side search** — `/` or `Ctrl+K` to search endpoints and models instantly
-- **Auto-generated code samples** — cURL, JavaScript (fetch), and Python (requests) for every operation
-- **Synced language tabs** — switch language in one example, all others follow
-- **Shiki syntax highlighting** — VS Code-quality highlighting at build time
-- **Markdown descriptions** — full markdown rendering in all description fields
-- **Dev server with live reload** — `spectacle dev` watches your spec and reloads the browser
-- **Theming** — override any CSS variable via `spectacle.json` — colors, fonts, spacing
-- **Custom branding** — logo and favicon via config
-- **Embeddable output** — generate partial HTML for embedding into your own site
-- **Zero client-side dependencies** — no frameworks shipped to the browser
+- **API reference from OpenAPI** — endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
+- **Markdown guides with rich components** — steps, cards, accordions, syntax-highlighted code blocks; everything you need for prose docs alongside your API reference
+- **TypeScript config** — `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
+- **Theme presets** — default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
+- **Vite dev server** — SSR hot reload on every component and CSS change; spec and markdown changes trigger instant refresh
+- **Dark mode** — semantic design tokens, light/dark logo variants, localStorage persistence
+- **Client-side search** — instant fuzzy search across all pages and API operations
+- **Static HTML output** — no framework runtime, no vendor lock-in. Deploy to GitHub Pages, Vercel, Netlify, S3, anywhere
+- **Open source** — AGPL-3.0. Self-host, fork, extend. Your docs, your infrastructure
 
-## Quick Start
+### Sourcey vs alternatives
 
-Install Spectacle:
+| | Sourcey | Mintlify | GitBook | Fern | Redocly | VitePress |
+|---|---|---|---|---|---|---|
+| OpenAPI reference | Native | Native | No | Native | Native | Plugin |
+| Markdown guides | Native | Native | Native | Native | Native | Native |
+| Static output you own | Yes | No | No | No | Yes | Yes |
+| Zero JS shipped | Yes | No | No | No | No | No (Vue SPA) |
+| TypeScript config | Yes | JSON | GUI | YAML | YAML | TS |
+| Hot reload dev server | Vite SSR | Hosted | Hosted | Hosted | Webpack | Vite SPA |
+| Rich components | Yes | Yes | Limited | Yes | No | Vue |
+| Theme presets | Yes | No | No | No | No | Yes |
+| Self-hosted | Yes | No | No | No | Yes | Yes |
+| Pricing | Free / AGPL | $150+/mo | Free / paid | Paid | Free / paid | Free |
 
-```bash
-npm install -g spectacle-docs
-```
-
-Generate docs from your spec:
-
-```bash
-spectacle build your_api.yaml -o docs/
-```
-
-That's it. Open `docs/index.html` in your browser.
-
-## CLI
-
-```
-spectacle build <spec> [options]    Build static documentation
-spectacle dev <spec> [options]      Start dev server with live reload
-spectacle validate <spec>           Validate a spec file
-spectacle <spec>                    Shorthand for 'spectacle build'
-```
-
-### Build options
-
-| Flag | Alias | Description | Default |
-|------|-------|-------------|---------|
-| `--output <dir>` | `-o`, `-t` | Output directory | `dist` |
-| `--logo <file>` | `-l` | Custom logo image | — |
-| `--single-file` | `-1` | Embed all assets into a single HTML file | `false` |
-| `--embed` | `-e` | Omit `<html>`/`<body>` tags for embedding | `false` |
-| `--quiet` | `-q` | Suppress output | `false` |
-
-### Dev server options
-
-| Flag | Alias | Description | Default |
-|------|-------|-------------|---------|
-| `--port <port>` | `-p` | Port to listen on | `4400` |
-| `--output <dir>` | `-o` | Build output directory | `.preview` |
-| `--logo <file>` | `-l` | Custom logo image | — |
-
-### Examples
+## Quick start
 
 ```bash
-# Build docs to a custom directory
-spectacle build api.yaml -o public/docs
+# From a single OpenAPI spec
+sourcey build api.yaml -o docs/
 
-# Start dev server with live reload
-spectacle dev api.yaml
+# Multi-page site (reads sourcey.config.ts)
+sourcey build -o docs/
 
-# Validate a spec without building
-spectacle validate api.yaml
-
-# Build with a custom logo
-spectacle build api.yaml --logo ./logo.png -o docs/
+# Dev server with hot reload
+sourcey dev
 ```
 
 ## Configuration
 
-Create a `spectacle.json` in your project root to configure branding and theming. CLI flags take precedence over config values.
+Create `sourcey.config.ts` in your project root:
 
-```json
-{
-  "logo": "./logo.png",
-  "favicon": "./favicon.ico",
-  "theme": {
-    "--color-accent": "#e11d48",
-    "--font-sans": "'IBM Plex Sans', sans-serif",
-    "--sidebar-width": "280px"
-  }
+```typescript
+import { defineConfig } from "sourcey";
+
+export default defineConfig({
+  name: "My API",
+  theme: {
+    preset: "default",  // "default" | "minimal" | "api-first"
+    colors: {
+      primary: "#6366F1",
+      light: "#818CF8",
+      dark: "#4F46E5",
+    },
+  },
+  logo: "./logo.png",
+  navigation: {
+    tabs: [
+      {
+        tab: "Documentation",
+        groups: [
+          {
+            group: "Getting Started",
+            pages: ["introduction", "quickstart", "authentication"],
+          },
+        ],
+      },
+      {
+        tab: "API Reference",
+        openapi: "./openapi.yaml",
+      },
+    ],
+  },
+  navbar: {
+    links: [{ type: "github", href: "https://github.com/you/repo" }],
+    primary: { type: "button", label: "Dashboard", href: "https://app.example.com" },
+  },
+  footer: {
+    socials: { github: "https://github.com/you/repo" },
+  },
+});
+```
+
+Each tab is either an `openapi` spec or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
+
+### Markdown components
+
+Guides support rich components in standard markdown:
+
+```markdown
+<Steps>
+  <Step title="Install">Run `npm install sourcey`</Step>
+  <Step title="Configure">Create `sourcey.config.ts`</Step>
+  <Step title="Build">Run `sourcey build`</Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="book" href="/api">Full endpoint docs</Card>
+  <Card title="Guides" icon="map" href="/docs">Step-by-step tutorials</Card>
+</CardGroup>
+
+<AccordionGroup>
+  <Accordion title="How does auth work?">We use API keys and OAuth2.</Accordion>
+</AccordionGroup>
+```
+
+### Theme
+
+All visual configuration lives under `theme`. Colors, fonts, layout dimensions, and a preset that controls page structure:
+
+```typescript
+theme: {
+  preset: "api-first",
+  colors: { primary: "#f59e0b", light: "#fbbf24", dark: "#d97706" },
+  fonts: { sans: "'Lexend', sans-serif", mono: "'Fira Code', monospace" },
+  layout: { sidebar: "16rem", content: "48rem" },
+  css: ["./brand.css"],
 }
 ```
 
-### Theme variables
+Presets control layout structure: `"default"` (sidebar + TOC), `"minimal"` (single centered column), `"api-first"` (three-column with persistent code panels). Everything else applies on top.
 
-The `theme` object accepts any CSS custom property. Here are the available variables:
+## CLI
 
-#### Layout
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--sidebar-width` | `260px` | Sidebar width |
-| `--content-padding` | `2rem` | Content area padding |
-
-#### Colors
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--color-accent` | `#2563eb` | Links, active states, accent color |
-| `--color-accent-hover` | `#1d4ed8` | Accent hover state |
-| `--color-heading` | `#0f172a` | Heading text |
-| `--color-body` | `#374151` | Body text |
-| `--color-muted` | `#6b7280` | Secondary text |
-| `--color-faint` | `#9ca3af` | Tertiary text, labels |
-| `--color-border` | `#e5e7eb` | Borders and dividers |
-| `--color-bg-subtle` | `#f9fafb` | Subtle backgrounds |
-
-#### Method colors
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--method-get` | `#16a34a` | GET badge and dot |
-| `--method-post` | `#2563eb` | POST badge and dot |
-| `--method-put` | `#d97706` | PUT badge and dot |
-| `--method-delete` | `#dc2626` | DELETE badge and dot |
-| `--method-patch` | `#9333ea` | PATCH badge and dot |
-
-#### Typography
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--font-sans` | `'Inter', system-ui, sans-serif` | Body font |
-| `--font-mono` | `'JetBrains Mono', monospace` | Code font |
-
-#### Dark panel
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dark-bg` | `#0f1117` | Dark panel background |
-| `--dark-bg-raised` | `#161922` | Raised element background |
-| `--dark-border` | `rgba(255,255,255,0.08)` | Dark panel borders |
-
-## Programmatic API
-
-```typescript
-import { buildDocs } from 'spectacle-docs';
-
-const result = await buildDocs({
-  specSource: './api.yaml',
-  outputDir: './docs',
-  logo: './logo.png',
-  favicon: './favicon.ico',
-  themeOverrides: {
-    '--color-accent': '#e11d48',
-  },
-});
-
-console.log(result.spec.info.title);      // "My API"
-console.log(result.spec.operations.length); // 42
+```bash
+sourcey dev                       Dev server (reads sourcey.config.ts)
+sourcey build                     Build site (reads sourcey.config.ts)
+sourcey build api.yaml            Quick build from a single spec
+sourcey validate api.yaml         Validate a spec file
 ```
 
-### Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `specSource` | `string` | Path or URL to the spec file (required) |
-| `outputDir` | `string` | Output directory (default: `"dist"`) |
-| `logo` | `string` | Path to a custom logo |
-| `favicon` | `string` | Path to a custom favicon |
-| `singleFile` | `boolean` | Embed assets into one HTML file |
-| `embeddable` | `boolean` | Omit `<html>`/`<body>` tags |
-| `skipWrite` | `boolean` | Parse and normalize without writing files |
-| `themeOverrides` | `Record<string, string>` | CSS custom property overrides |
-
-## Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `/` or `Ctrl+K` | Open search |
-| `Escape` | Close search or sidebar |
-| `↑` / `↓` | Navigate search results |
-| `Enter` | Go to selected result |
+| Command | Flag | Description |
+| --- | --- | --- |
+| `build` | `--output, -o` | Output directory (default: `dist`) |
+| `build` | `--embed, -e` | Embeddable output (no html/body wrapper) |
+| `build` | `--quiet, -q` | Suppress output |
+| `dev` | `--port, -p` | Dev server port (default: `4400`) |
 
 ## Development
 
 ```bash
-git clone https://github.com/sourcey/spectacle.git
-cd spectacle
-npm install
-npm run build
-npm test
+git clone https://github.com/sourcey/sourcey.git
+cd sourcey && npm install
+npm run build && npm test
+
+# Run the demo site
+cd demo && npx tsx ../src/cli.ts dev
 ```
-
-### Project structure
-
-```
-src/
-  cli.ts              CLI entry point (citty)
-  index.ts            Programmatic API
-  config.ts           spectacle.json loader
-  dev-server.ts       Dev server with live reload
-  core/               Spec processing pipeline
-    loader.ts         Load from file/URL
-    parser.ts         Validate and dereference $refs
-    converter.ts      Swagger 2.0 → OpenAPI 3.x
-    normalizer.ts     OpenAPI → internal model
-    types.ts          Internal types
-  components/         Preact components (SSG)
-    layout/           Page, Sidebar, Head
-    openapi/          Operation, Parameters, Responses, etc.
-    schema/           SchemaView, ExampleView
-    ui/               Badge, CodeBlock, Markdown, SectionLabel
-  renderer/           HTML generation
-    static-renderer.ts  Preact → HTML string
-    html-builder.ts     Assemble HTML + CSS + JS
-    context.ts          Render context
-  client/             Browser JavaScript (vanilla JS)
-    sidebar.js        Drawer toggle, close on outside click/Escape
-    scroll-tracker.js IntersectionObserver nav highlighting
-    tabs.js           Synced language tab switching
-    copy.js           Clipboard copy with feedback
-    theme-toggle.js   Dark/light mode toggle
-    search.js         Client-side search dialog
-  themes/
-    default/          Default theme CSS
-```
-
-### Testing
-
-```bash
-npm test           # Run all tests
-npm run test:watch # Watch mode
-npm run typecheck  # TypeScript type checking
-npm run lint       # ESLint
-```
-
-## More Information
-
-For more details, visit [sourcey.com/code/spectacle](https://sourcey.com/code/spectacle).
-
-Please use the [GitHub issue tracker](https://github.com/sourcey/spectacle/issues) if you have any ideas or bugs to report.
-
-All contributions are welcome.
-
-Good luck and enjoy Spectacle!
 
 ## License
 
-MIT
+[AGPL-3.0](LICENSE). Free to use, self-host, and modify. If you run Sourcey as a hosted service, you open-source your stack.
+
+Commercial licensing available; contact [sourcey.com](https://sourcey.com).

@@ -3,44 +3,47 @@ import { httpStatusText } from "../../utils/http.js";
 import { SchemaDatatype } from "../schema/SchemaDatatype.js";
 import { ExampleView } from "../schema/ExampleView.js";
 import { Markdown } from "../ui/Markdown.js";
+import { CopyButton } from "../ui/CopyButton.js";
+import { generateExample } from "../../utils/example-generator.js";
+import { highlightCode } from "../../utils/highlighter.js";
 
 interface ResponsesProps {
   responses: NormalizedResponse[];
 }
 
-function statusClass(code: string): string {
-  if (code.startsWith("2")) return "status-success";
-  if (code.startsWith("3")) return "status-redirect";
-  if (code.startsWith("4")) return "status-client-error";
-  if (code.startsWith("5")) return "status-server-error";
-  return "status-default";
+function statusColorClass(code: string): string {
+  if (code.startsWith("2")) return "bg-green-400/20 text-green-700 dark:text-green-400";
+  if (code.startsWith("3")) return "bg-blue-400/20 text-blue-700 dark:text-blue-400";
+  if (code.startsWith("4")) return "bg-yellow-400/20 text-yellow-700 dark:text-yellow-400";
+  if (code.startsWith("5")) return "bg-red-400/20 text-red-700 dark:text-red-400";
+  return "bg-gray-400/20 text-gray-700 dark:text-gray-400";
 }
 
 /**
- * Left-side: response status list.
+ * Response status list (rendered in the content column).
  */
 export function ResponsesCopy({ responses }: ResponsesProps) {
   if (!responses.length) return null;
 
   return (
-    <div class="responses-list">
+    <div>
       {responses.map((r) => (
-        <div key={r.statusCode} class="response-item">
-          <div class="response-header">
-            <span class={`status-code ${statusClass(r.statusCode)}`}>
+        <div key={r.statusCode} class="py-6 border-b border-[rgb(var(--color-gray-100))] dark:border-[rgb(var(--color-gray-800))] last:border-b-0">
+          <div class="flex items-baseline gap-2 font-mono text-sm">
+            <span class={`px-1.5 py-0.5 rounded-md text-xs font-bold ${statusColorClass(r.statusCode)}`}>
               {r.statusCode}
             </span>
-            <span class="response-status-text">
+            <span class="font-medium text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">
               {httpStatusText(r.statusCode)}
             </span>
             {r.content && (
-              <span class="response-type">
+              <span class="text-xs text-[rgb(var(--color-gray-500))]">
                 {renderResponseType(r)}
               </span>
             )}
           </div>
           {r.description && (
-            <div class="response-description">
+            <div class="mt-2 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
               <Markdown content={r.description} />
             </div>
           )}
@@ -51,7 +54,8 @@ export function ResponsesCopy({ responses }: ResponsesProps) {
 }
 
 /**
- * Right-side: response examples + headers in dark panel.
+ * Response examples with status code tabs on the code block card.
+ * Status code tabs are part of the code block header.
  */
 export function ResponsesExamples({ responses }: ResponsesProps) {
   if (!responses.length) return null;
@@ -60,64 +64,63 @@ export function ResponsesExamples({ responses }: ResponsesProps) {
     .map((r) => {
       const schema = getResponseSchema(r);
       if (!schema) return null;
-      return (
-        <div key={r.statusCode} class="example-block">
-          <div class="example-block-header">
-            <span class={`status-code ${statusClass(r.statusCode)}`}>
-              {r.statusCode}
-            </span>
-            <span>{httpStatusText(r.statusCode)}</span>
-          </div>
-          <ExampleView schema={schema} />
-        </div>
-      );
+      const example = schema.example ?? generateExample(schema);
+      if (example === undefined) return null;
+      const json = JSON.stringify(example, null, 2);
+      const html = highlightCode(json, "json");
+      return { statusCode: r.statusCode, html };
     })
-    .filter(Boolean);
+    .filter(Boolean) as { statusCode: string; html: string }[];
 
-  const headers = responses
-    .map((r) => {
-      if (!r.headers || Object.keys(r.headers).length === 0) return null;
-      return (
-        <div key={`headers-${r.statusCode}`} class="example-block">
-          <div class="example-block-header">
-            Response Headers ({r.statusCode})
-          </div>
-          <div class="response-headers-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Header</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(r.headers).map(([name, header]) => (
-                  <tr key={name}>
-                    <td><code>{name}</code></td>
-                    <td>{header.description ?? ""}</td>
-                    <td>
-                      {header.schema && (
-                        <SchemaDatatype schema={header.schema} />
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
-    })
-    .filter(Boolean);
+  if (!examples.length) return null;
 
-  if (!examples.length && !headers.length) return null;
+  // Single response: use plain ExampleView
+  if (examples.length === 1) {
+    const r = responses.find((r) => r.statusCode === examples[0].statusCode)!;
+    const schema = getResponseSchema(r)!;
+    return <ExampleView schema={schema} title={`${examples[0].statusCode}`} />;
+  }
 
+  // Multiple responses: tabbed code block with status code tabs in the header
   return (
-    <>
-      {examples}
-      {headers}
-    </>
+    <div class="response-tabs code-group not-prose relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[rgb(var(--color-stone-950)/0.1)] dark:border-[rgb(255_255_255/0.1)]">
+      {/* Tab bar with status code tabs */}
+      <div class="relative flex items-center justify-between gap-2 px-3">
+        <div class="response-tab-list flex gap-1 overflow-x-auto text-xs leading-6" role="tablist">
+          {examples.map((ex, i) => (
+            <button
+              key={ex.statusCode}
+              type="button"
+              role="tab"
+              aria-selected={i === 0 ? "true" : "false"}
+              class={`response-tab group relative my-1 mb-1.5 flex items-center gap-1.5 whitespace-nowrap font-medium outline-0${i === 0 ? " active" : ""}`}
+              data-response-index={String(i)}
+            >
+              <div class="z-10 flex items-center gap-1.5 rounded-lg px-1.5 group-hover:bg-[rgb(var(--color-stone-200)/0.5)] group-hover:text-[rgb(var(--color-primary))] dark:group-hover:bg-[rgb(var(--color-stone-700)/0.7)] dark:group-hover:text-[rgb(var(--color-primary-light))]">
+                {ex.statusCode}
+              </div>
+            </button>
+          ))}
+        </div>
+        <div class="flex shrink-0 items-center justify-end gap-1.5">
+          <CopyButton />
+        </div>
+      </div>
+
+      {/* Code panels */}
+      {examples.map((ex, i) => (
+        <div
+          key={ex.statusCode}
+          class={`response-panel${i === 0 ? " active" : ""}`}
+          role="tabpanel"
+          data-response-panel={String(i)}
+        >
+          <div class="relative w-full px-4 py-3.5 text-sm leading-6 bg-[rgb(var(--color-code-block-light))] dark:bg-[rgb(var(--color-code-block-dark))] overflow-x-auto" style="font-variant-ligatures: none">
+            <div class="font-mono whitespace-pre text-xs leading-[1.35rem]" dangerouslySetInnerHTML={{ __html: ex.html }} />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 

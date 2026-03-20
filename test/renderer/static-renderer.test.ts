@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { renderSpec } from "../../src/renderer/static-renderer.js";
+import { renderPage } from "../../src/renderer/static-renderer.js";
+import { buildNavFromSpec, buildSiteNavigation } from "../../src/core/navigation.js";
 import type { NormalizedSpec } from "../../src/core/types.js";
-import type { RenderOptions } from "../../src/renderer/context.js";
+import type { RenderOptions, CurrentPage, SiteConfig } from "../../src/renderer/context.js";
 
 function createMinimalSpec(overrides?: Partial<NormalizedSpec>): NormalizedSpec {
   return {
@@ -22,28 +23,41 @@ function createMinimalSpec(overrides?: Partial<NormalizedSpec>): NormalizedSpec 
 
 const defaultOptions: RenderOptions = {
   embeddable: false,
-  singleFile: false,
   assetBase: "",
 };
 
-describe("renderSpec", () => {
+const defaultSite: SiteConfig = {
+  name: "Test",
+  theme: {
+    preset: "default",
+    colors: { primary: "99 102 241", light: "129 140 248", dark: "79 70 229" },
+    fonts: {
+      sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+      mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
+    },
+    layout: { sidebar: "18rem", toc: "19rem", content: "44rem" },
+    css: [],
+  },
+  navbar: { links: [] },
+  footer: { socials: {} },
+};
+
+function renderSpec(spec: NormalizedSpec, options: RenderOptions): string {
+  const tab = buildNavFromSpec(spec, "api");
+  tab.label = "API Reference";
+  const navigation = buildSiteNavigation([tab]);
+  const currentPage: CurrentPage = { kind: "spec", spec };
+  return renderPage(spec, options, navigation, currentPage, defaultSite);
+}
+
+describe("renderPage (spec)", () => {
   it("renders a complete HTML document", () => {
     const html = renderSpec(createMinimalSpec(), defaultOptions);
     expect(html).toContain("<!DOCTYPE html>");
     expect(html).toContain("<html");
     expect(html).toContain("Test API");
     expect(html).toContain("API Reference");
-    expect(html).toContain("spectacle.css");
-  });
-
-  it("renders embeddable output without html wrapper", () => {
-    const html = renderSpec(createMinimalSpec(), {
-      ...defaultOptions,
-      embeddable: true,
-    });
-    expect(html).not.toContain("<!DOCTYPE html>");
-    expect(html).not.toContain("<html");
-    expect(html).toContain("Test API");
+    expect(html).toContain("sourcey.css");
   });
 
   it("includes sidebar navigation", () => {

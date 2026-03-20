@@ -2,6 +2,7 @@ import { createContext } from "preact";
 import type { NormalizedSpec } from "../core/types.js";
 import type { SiteNavigation } from "../core/navigation.js";
 import type { MarkdownPage } from "../core/markdown-loader.js";
+import type { NavbarLink, ResolvedTheme } from "../config.js";
 
 /**
  * Options that control rendering behavior.
@@ -9,8 +10,6 @@ import type { MarkdownPage } from "../core/markdown-loader.js";
 export interface RenderOptions {
   /** Whether to generate embeddable output (no html/body wrapper) */
   embeddable: boolean;
-  /** Whether to inline all assets into a single file */
-  singleFile: boolean;
   /** Base URL for assets (CSS, JS) */
   assetBase: string;
 }
@@ -42,18 +41,32 @@ export const SpecContext = createContext<NormalizedSpec>(null as never);
  */
 export const OptionsContext = createContext<RenderOptions>({
   embeddable: false,
-  singleFile: false,
   assetBase: "",
 });
 
 /**
- * Preact context for site-wide navigation (multi-page mode).
- * Null in legacy single-spec mode.
+ * Preact context for site-wide navigation.
  */
-export const NavigationContext = createContext<SiteNavigation | null>(null);
+export const NavigationContext = createContext<SiteNavigation>(null as never);
 
 /**
- * Preact context for the current page being rendered (multi-page mode).
- * Null in legacy single-spec mode.
+ * Preact context for the current page being rendered.
  */
-export const PageContext = createContext<CurrentPage | null>(null);
+export const PageContext = createContext<CurrentPage>(null as never);
+
+/**
+ * Site-wide config available to all layout components.
+ */
+export interface SiteConfig {
+  name: string;
+  theme: ResolvedTheme;
+  logo?: { light?: string; dark?: string; href?: string };
+  favicon?: string;
+  repo?: string;
+  codeSamples: string[];
+  navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
+  footer: { links: NavbarLink[] };
+  customCSS?: string;
+}
+
+export const SiteContext = createContext<SiteConfig>(null as never);

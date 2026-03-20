@@ -1,48 +1,42 @@
 import { useContext } from "preact/hooks";
-import { SpecContext, NavigationContext, OptionsContext } from "../../renderer/context.js";
-import type { SiteNavigation } from "../../core/navigation.js";
-import { htmlId } from "../../utils/html-id.js";
+import { NavigationContext, OptionsContext } from "../../renderer/context.js";
 
-function methodDotColor(method: string): string {
-  switch (method.toLowerCase()) {
-    case "get": return "#22c55e";
-    case "post": return "#3b82f6";
-    case "put": return "#f59e0b";
-    case "delete": return "#ef4444";
-    case "patch": return "#a855f7";
-    default: return "#94a3b8";
-  }
-}
+/**
+ * Method pill for API sidebar navigation items.
+ * Colored method badges.
+ */
+function MethodPill({ method }: { method: string }) {
+  const m = method.toUpperCase();
+  const label = m === "DELETE" ? "DEL" : m;
 
-function SearchIcon() {
+  // Method pill colors
+  const colors: Record<string, string> = {
+    GET: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
+    POST: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
+    PUT: "bg-yellow-400/20 dark:bg-yellow-400/20 text-yellow-700 dark:text-yellow-400",
+    DELETE: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
+    DEL: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
+    PATCH: "bg-orange-400/20 dark:bg-orange-400/20 text-orange-700 dark:text-orange-400",
+  };
+
   return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <circle cx="8.5" cy="8.5" r="5.5" />
-      <path d="M12.5 12.5L17 17" />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor">
-      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor">
-      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-    </svg>
+    <span class="flex items-center w-8 h-[1lh] shrink-0">
+      <span class={`px-1 py-0.5 rounded-md text-[0.55rem] leading-tight font-bold ${colors[m] ?? "bg-gray-400/20 text-gray-700"}`}>
+        {label}
+      </span>
+    </span>
   );
 }
 
 /**
- * Multi-page sidebar: navigation only (logo, search, theme are in the Header).
+ * Sidebar clean design:
+ * - No border-right
+ * - Bold group headers (not uppercase)
+ * - Method pills for API operations
+ * - Active item with primary bg/text and text-shadow trick
  */
-function MultiPageSidebar({ nav }: { nav: SiteNavigation }) {
+export function Sidebar() {
+  const nav = useContext(NavigationContext);
   const options = useContext(OptionsContext);
   const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
   if (!activeTab) return null;
@@ -50,127 +44,45 @@ function MultiPageSidebar({ nav }: { nav: SiteNavigation }) {
   const base = options.assetBase;
 
   return (
-    <div id="sidebar">
-      <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div
+      id="sidebar"
+      class="z-20 hidden lg:block fixed bottom-0 right-auto w-[18rem]"
+      style="top: var(--header-height)"
+    >
+      <div class="absolute inset-0 z-10 overflow-auto pr-8 pb-10" id="sidebar-content">
+        <div class="relative lg:text-sm lg:leading-6">
+          {/* Gradient fade at top */}
+          <div class="sticky top-0 h-8 z-10 bg-gradient-to-b from-[rgb(var(--color-background-light))] dark:from-[rgb(var(--color-background-dark))]" />
 
-      <nav id="nav" role="navigation">
-        {activeTab.groups.map((group) => (
-          <div key={group.label} class="nav-section">
-            {group.label && <div class="nav-group-label">{group.label}</div>}
-            {group.items.map((item) => (
-              <a
-                key={item.id}
-                href={`${base}${item.href}`}
-                class={`nav-link${item.method ? " nav-operation" : ""}${item.id === nav.activePageSlug ? " active" : ""}`}
-              >
-                {item.method && (
-                  <span
-                    class="method-dot"
-                    style={{ background: methodDotColor(item.method) }}
-                    title={item.method.toUpperCase()}
-                  />
+          <nav id="nav" role="navigation">
+            {activeTab.groups.map((group, gi) => (
+              <div key={group.label} class={gi > 0 ? "mt-6 lg:mt-8" : ""}>
+                {group.label && (
+                  <div class="flex items-center gap-2.5 pl-4 mb-3.5 lg:mb-2.5 font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">
+                    <h5>{group.label}</h5>
+                  </div>
                 )}
-                {item.label}
-              </a>
+                <ul class="space-y-px">
+                  {group.items.map((item) => {
+                    const isActive = item.id === nav.activePageSlug;
+                    return (
+                      <li key={item.id} class="relative">
+                        <a
+                          href={`${base}${item.href}`}
+                          class={`nav-link${isActive ? " active" : ""}`}
+                        >
+                          {item.method && <MethodPill method={item.method} />}
+                          <div class="flex-1 break-words [word-break:break-word]">{item.label}</div>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             ))}
-          </div>
-        ))}
-      </nav>
-
-      <footer class="sidebar-footer">
-        <a href="https://github.com/sourcey/spectacle">
-          Docs by <strong>Spectacle</strong>
-        </a>
-      </footer>
-    </div>
-  );
-}
-
-/**
- * Legacy sidebar: logo, search, theme toggle, and spec-derived navigation.
- * This is the original single-page Sidebar, unchanged.
- */
-function LegacySidebar() {
-  const spec = useContext(SpecContext);
-
-  return (
-    <div id="sidebar">
-      <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
-        <span aria-hidden="true">&times;</span>
-      </button>
-
-      {spec.info.logo && (
-        <div id="logo">
-          <img src={spec.info.logo} alt={spec.info.title} />
+          </nav>
         </div>
-      )}
-
-      <div style={{ display: "flex", alignItems: "stretch", gap: "0.5rem", padding: "0 0.5rem 0.75rem 0" }}>
-        <button id="search-open" type="button" aria-label="Search">
-          <SearchIcon />
-          <span>Search…</span>
-          <span class="search-shortcut">/</span>
-        </button>
-        <button id="theme-toggle" type="button" aria-label="Toggle theme">
-          <span class="icon-sun"><SunIcon /></span>
-          <span class="icon-moon"><MoonIcon /></span>
-        </button>
       </div>
-
-      <nav id="nav" role="navigation">
-        <div class="nav-section">
-          <a href="#introduction" class="nav-link">Introduction</a>
-          {Object.keys(spec.securitySchemes).length > 0 && (
-            <a href="#authentication" class="nav-link">Authentication</a>
-          )}
-        </div>
-
-        {spec.tags
-          .filter((t) => !t.hidden)
-          .map((tag) => (
-            <div key={tag.name} class="nav-section">
-              <div class="nav-group-label">{tag.name}</div>
-              {tag.operations.map((op) => (
-                <a
-                  key={`${op.method}-${op.path}`}
-                  href={`#operation-${htmlId(op.path)}-${htmlId(op.method)}`}
-                  class="nav-link nav-operation"
-                >
-                  <span
-                    class="method-dot"
-                    style={{ background: methodDotColor(op.method) }}
-                    title={op.method.toUpperCase()}
-                  />
-                  {op.summary ?? `${op.method.toUpperCase()} ${op.path}`}
-                </a>
-              ))}
-            </div>
-          ))}
-
-        {Object.keys(spec.schemas).length > 0 && (
-          <div class="nav-section">
-            <div class="nav-group-label">Models</div>
-            {Object.keys(spec.schemas).map((name) => (
-              <a key={name} href={`#definition-${htmlId(name)}`} class="nav-link">
-                {name}
-              </a>
-            ))}
-          </div>
-        )}
-      </nav>
-
-      <footer class="sidebar-footer">
-        <a href="https://github.com/sourcey/spectacle">
-          Docs by <strong>Spectacle</strong>
-        </a>
-      </footer>
     </div>
   );
-}
-
-export function Sidebar() {
-  const nav = useContext(NavigationContext);
-  return nav ? <MultiPageSidebar nav={nav} /> : <LegacySidebar />;
 }

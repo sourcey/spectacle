@@ -36,7 +36,9 @@ export function buildSearchIndex(
   specs: Map<string, NormalizedSpec>,
   pages: Map<string, MarkdownPage[]>,
   navigation: SiteNavigation,
+  assetBase = "/",
 ): string {
+  const base = assetBase.endsWith("/") ? assetBase : assetBase + "/";
   const entries: SearchEntry[] = [];
 
   // Index OpenAPI specs
@@ -50,7 +52,7 @@ export function buildSearchIndex(
       entries.push({
         title: op.summary ?? `${op.method.toUpperCase()} ${op.path}`,
         content: op.description?.slice(0, 200) ?? "",
-        url: `${basePath}#operation-${htmlId(op.path)}-${htmlId(op.method)}`,
+        url: `${base}${basePath}#operation-${htmlId(op.path)}-${htmlId(op.method)}`,
         method: op.method,
         path: op.path,
         tab: tabLabel,
@@ -63,7 +65,7 @@ export function buildSearchIndex(
       entries.push({
         title: name,
         content: spec.schemas[name].description?.slice(0, 200) ?? "",
-        url: `${basePath}#definition-${htmlId(name)}`,
+        url: `${base}${basePath}#definition-${htmlId(name)}`,
         tab: tabLabel,
         category: "Models",
       });
@@ -80,7 +82,7 @@ export function buildSearchIndex(
       entries.push({
         title: page.title,
         content: page.description || stripHtml(page.html).slice(0, 200),
-        url: `${tabSlug}/${page.slug}.html`,
+        url: `${base}${tabSlug}/${page.slug}.html`,
         tab: tabLabel,
         category: "Pages",
       });
@@ -90,7 +92,7 @@ export function buildSearchIndex(
         entries.push({
           title: heading.text,
           content: `${page.title} — ${heading.text}`,
-          url: `${tabSlug}/${page.slug}.html#${heading.id}`,
+          url: `${base}${tabSlug}/${page.slug}.html#${heading.id}`,
           tab: tabLabel,
           category: "Sections",
         });

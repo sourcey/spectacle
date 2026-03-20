@@ -6,7 +6,7 @@ interface SchemaDatatypeProps {
 }
 
 /**
- * Renders type information matching the original Spectacle schema display.
+ * Renders type information matching the original Sourcey schema display.
  * Uses .json-property-type, .json-property-format, .json-property-enum, etc.
  */
 export function SchemaDatatype({ schema }: SchemaDatatypeProps) {

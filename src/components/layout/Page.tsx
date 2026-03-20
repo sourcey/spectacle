@@ -1,6 +1,7 @@
 import { useContext } from "preact/hooks";
-import { SpecContext, PageContext, NavigationContext } from "../../renderer/context.js";
+import { SpecContext, PageContext, NavigationContext, SiteContext } from "../../renderer/context.js";
 import type { MarkdownPage } from "../../core/markdown-loader.js";
+import { Markdown } from "../ui/Markdown.js";
 import { Header } from "./Header.js";
 import { Sidebar } from "./Sidebar.js";
 import { TableOfContents } from "./TableOfContents.js";
@@ -8,94 +9,210 @@ import { Introduction } from "../openapi/Introduction.js";
 import { SecurityDefinitions } from "../openapi/Security.js";
 import { Tags } from "../openapi/Tags.js";
 import { Definition } from "../openapi/Definition.js";
+import { SocialIcon } from "../ui/SocialIcon.js";
 
 /**
- * Renders a standalone markdown page with prose typography.
+ * Markdown page content with prose typography.
  */
-function MarkdownPageContent({ page }: { page: MarkdownPage }) {
+function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; className?: string }) {
+  const nav = useContext(NavigationContext);
+
+  // Find the group label for the current page (eyebrow)
+  const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
+  const activeGroup = activeTab?.groups.find((g) =>
+    g.items.some((item) => item.id === nav.activePageSlug),
+  );
+  const eyebrow = activeGroup?.label;
+
   return (
-    <article class="prose-page">
-      <header class="prose-header">
-        <h1>{page.title}</h1>
+    <div class={`relative grow box-border flex-col w-full mx-auto px-1 ${className}`} id="content-area">
+      <header class="relative leading-none">
+        <div class="mt-0.5 space-y-2.5">
+          {eyebrow && (
+            <div class="h-5 text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))] text-sm font-semibold">{eyebrow}</div>
+          )}
+          <div class="flex flex-col sm:flex-row items-start sm:items-center relative gap-2 min-w-0">
+            <h1 class="text-2xl sm:text-3xl text-[rgb(var(--color-gray-900))] tracking-tight dark:text-[rgb(var(--color-gray-200))] font-bold" style="overflow-wrap: anywhere">{page.title}</h1>
+          </div>
+        </div>
         {page.description && (
-          <p class="prose-description">{page.description}</p>
+          <div class="mt-2 text-lg prose prose-gray dark:prose-invert" style="overflow-wrap: anywhere">
+            <Markdown content={page.description} inline />
+          </div>
         )}
       </header>
-      <div class="prose" dangerouslySetInnerHTML={{ __html: page.html }} />
-    </article>
+      <div class="prose prose-gray dark:prose-invert relative mt-8 mb-14 max-w-none" dangerouslySetInnerHTML={{ __html: page.html }} />
+      <ContentFooter />
+    </div>
   );
 }
 
 /**
- * Renders an OpenAPI spec page (existing behaviour).
+ * OpenAPI spec page content.
  */
-function SpecPageContent() {
+function SpecPageContent({ className = "" }: { className?: string }) {
   const spec = useContext(SpecContext);
   const serverUrl = spec.servers[0]?.url ?? "/";
 
   return (
-    <article>
-      <header class="doc-header">
-        <h1 class="doc-title">{spec.info.title}</h1>
-        <span class="doc-version">v{spec.info.version}</span>
-      </header>
-
-      <Introduction />
-      <SecurityDefinitions />
-      <Tags tags={spec.tags} serverUrl={serverUrl} />
-
-      {Object.keys(spec.schemas).length > 0 && (
-        <div class="tag-group">
-          <div class="tag-header">
-            <h1>Models</h1>
+    <div class={`relative grow box-border flex-col w-full mx-auto px-1 ${className}`} id="content-area">
+      <article>
+        <header class="mb-8">
+          <div class="flex items-baseline gap-3">
+            <h1 class="text-2xl sm:text-3xl font-bold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] tracking-tight">{spec.info.title}</h1>
+            <span class="text-sm text-[rgb(var(--color-gray-400))]">v{spec.info.version}</span>
           </div>
-          {Object.entries(spec.schemas).map(([name, schema]) => (
-            <Definition key={name} name={name} schema={schema} />
-          ))}
-        </div>
-      )}
+        </header>
 
-    </article>
+        <Introduction />
+        <SecurityDefinitions />
+        <Tags tags={spec.tags} serverUrl={serverUrl} />
+
+        {Object.keys(spec.schemas).length > 0 && (
+          <div class="mt-12">
+            <div class="mb-6">
+              <h1 class="text-xl font-bold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">Models</h1>
+            </div>
+            {Object.entries(spec.schemas).map(([name, schema]) => (
+              <Definition key={name} name={name} schema={schema} />
+            ))}
+          </div>
+        )}
+      </article>
+      <ContentFooter />
+    </div>
   );
 }
 
-export function Page() {
+function ContentFooter() {
+  const site = useContext(SiteContext);
   const page = useContext(PageContext);
-  const nav = useContext(NavigationContext);
-  const isMultiPage = nav !== null;
+  const links = site.footer.links;
+
+  // Build "Edit this page" URL for markdown pages when repo is configured
+  let editUrl: string | undefined;
+  if (site.repo && page.kind === "markdown" && page.markdown?.sourcePath) {
+    const repoBase = site.repo.replace(/\/$/, "");
+    editUrl = `${repoBase}/edit/main/${page.markdown.sourcePath}`;
+  }
+
+  const linkStyle = "hover:text-[rgb(var(--color-gray-600))] dark:hover:text-[rgb(var(--color-gray-300))] transition-colors";
 
   return (
-    <div id="page" class={isMultiPage ? "has-header" : ""}>
-      {isMultiPage && <Header />}
-      <Sidebar />
-
-      <div id="docs">
-        <button
-          class="floating-menu-icon"
-          type="button"
-          data-drawer-slide="right"
-        >
-          <span class="hamburger" />
-        </button>
-
-        {page?.kind !== "markdown" && <div class="example-box" />}
-
-        {page?.kind === "markdown"
-          ? <MarkdownPageContent page={page.markdown!} />
-          : <SpecPageContent />
-        }
+    <div class="mt-16 mb-8 flex items-center justify-between border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] pt-6 text-xs text-[rgb(var(--color-gray-400))]">
+      <span>
+        Built with{" "}
+        <a href="https://sourcey.com" target="_blank" rel="noopener noreferrer" class={linkStyle}>
+          Sourcey
+        </a>
+      </span>
+      <div class="flex items-center gap-4">
+        {editUrl && (
+          <a href={editUrl} target="_blank" rel="noopener noreferrer" class={linkStyle}>
+            Edit this page
+          </a>
+        )}
+        {links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={linkStyle}
+          >
+            {link.type === "link"
+              ? (link.label ?? link.href)
+              : (<><SocialIcon type={link.type} />{link.label && <span class="ml-1">{link.label}</span>}</>)}
+          </a>
+        ))}
       </div>
+    </div>
+  );
+}
 
-      {page?.kind === "markdown" && page.markdown!.headings.length > 0 && (
-        <TableOfContents headings={page.markdown!.headings} />
-      )}
+// ---------------------------------------------------------------------------
+// Layout presets
+// ---------------------------------------------------------------------------
 
+function DefaultLayout() {
+  const page = useContext(PageContext);
+
+  return (
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
+      <Sidebar />
+      <div id="docs" class="pt-40 lg:pt-10">
+        {page.kind === "markdown" ? (
+          <div class="flex flex-row-reverse gap-12 box-border w-full">
+            <TableOfContents headings={page.markdown!.headings} />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+          </div>
+        ) : (
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MinimalLayout() {
+  const page = useContext(PageContext);
+
+  return (
+    <div class="max-w-3xl mx-auto relative px-4 lg:px-8">
+      <div id="docs" class="pt-40 lg:pt-10">
+        {page.kind === "markdown" ? (
+          <MarkdownPageContent page={page.markdown!} />
+        ) : (
+          <SpecPageContent />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ApiFirstLayout() {
+  const page = useContext(PageContext);
+
+  return (
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
+      <Sidebar />
+      <div id="docs" class="pt-40 lg:pt-10">
+        {page.kind === "markdown" ? (
+          <div class="flex flex-row-reverse gap-12 box-border w-full">
+            <TableOfContents headings={page.markdown!.headings} />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+          </div>
+        ) : (
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page shell
+// ---------------------------------------------------------------------------
+
+export function Page() {
+  const site = useContext(SiteContext);
+  const preset = site.theme.preset;
+
+  const Layout = preset === "minimal" ? MinimalLayout
+    : preset === "api-first" ? ApiFirstLayout
+    : DefaultLayout;
+
+  return (
+    <div id="page" class="relative antialiased text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">
+      <Header />
+      <span class="fixed inset-0 bg-[rgb(var(--color-background-light))] dark:bg-[rgb(var(--color-background-dark))] -z-10 pointer-events-none" />
+      <Layout />
       <div id="search-dialog" role="dialog" aria-label="Search">
         <div class="search-dialog-inner">
           <input
             id="search-input"
             type="text"
-            placeholder="Search…"
+            placeholder="Search..."
             autocomplete="off"
             spellcheck={false}
           />

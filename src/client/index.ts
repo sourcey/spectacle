@@ -1,4 +1,4 @@
-// Spectacle client entry — bundled by Vite
+// Sourcey client entry — bundled by Vite
 import "./sidebar.js";
 import "./scroll-tracker.js";
 import "./tabs.js";
