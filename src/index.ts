@@ -10,6 +10,7 @@ import type { NormalizedSpec } from "./core/types.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadConfig, configFromSpec } from "./config.js";
 import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
+import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import type { MarkdownPage } from "./core/markdown-loader.js";
 import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation } from "./core/navigation.js";
 import type { SiteTab } from "./core/navigation.js";
@@ -111,6 +112,20 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
         tabSlug: tab.slug,
         pageSlug: "introduction",
       });
+    } else if (tab.doxygen) {
+      const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+
+      for (const [slug, page] of pages) {
+        sitePages.push({
+          outputPath: `${tab.slug}/${slug}.html`,
+          currentPage: { kind: "markdown", markdown: page },
+          spec: primarySpec,
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      siteTabs.push(navTab);
     } else if (tab.groups) {
       const pagesByPath = new Map<string, MarkdownPage>();
 
@@ -140,7 +155,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   // Build search index
   const markdownPagesByTab = new Map<string, MarkdownPage[]>();
   for (const tab of tabs) {
-    if (tab.groups) {
+    if (tab.groups || tab.doxygen) {
       const tabPages = sitePages
         .filter((p) => p.tabSlug === tab.slug && p.currentPage.kind === "markdown")
         .map((p) => p.currentPage.markdown!);
