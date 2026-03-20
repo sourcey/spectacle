@@ -68,12 +68,29 @@
       });
     }
 
+    // Sort by category so groups stay together
+    var categoryOrder = { Pages: 0, Sections: 1, Endpoints: 2, Models: 3 };
+    filtered.sort(function (a, b) {
+      return (categoryOrder[a.category] || 9) - (categoryOrder[b.category] || 9);
+    });
+
     activeIndex = filtered.length ? 0 : -1;
     render();
   }
 
   function render() {
-    results.innerHTML = filtered.map(function (e, i) {
+    var html = '';
+    var lastCategory = '';
+
+    for (var i = 0; i < filtered.length; i++) {
+      var e = filtered[i];
+      var cat = e.category || 'Results';
+
+      if (cat !== lastCategory) {
+        html += '<div class="search-category">' + escapeHtml(cat) + '</div>';
+        lastCategory = cat;
+      }
+
       var cls = 'search-result' + (i === activeIndex ? ' active' : '');
       var label = e.method
         ? '<span class="search-result-method method-' + e.method.toLowerCase() + '">' + e.method + '</span> ' +
@@ -81,10 +98,17 @@
         : '<span class="search-result-path">' + escapeHtml(e.summary) + '</span>';
       var tagLine = e.tag ? '<span class="search-result-tag">' + escapeHtml(e.tag) + '</span>' : '';
       var summaryLine = e.method && e.summary ? '<span class="search-result-summary">' + escapeHtml(e.summary) + '</span>' : '';
-      return '<a href="' + e.url + '" class="' + cls + '" data-index="' + i + '">' +
+
+      html += '<a href="' + e.url + '" class="' + cls + '" data-index="' + i + '">' +
         '<div class="search-result-main">' + label + summaryLine + '</div>' +
         tagLine + '</a>';
-    }).join('');
+    }
+
+    results.innerHTML = html;
+
+    // Scroll active result into view
+    var activeEl = results.querySelector('.search-result.active');
+    if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
   }
 
   function escapeHtml(s) {

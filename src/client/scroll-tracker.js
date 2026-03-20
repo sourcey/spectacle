@@ -33,8 +33,8 @@
     }
   });
 
-  // If no fragment-based links found, bail (e.g. markdown pages)
-  if (!Object.keys(linkMap).length) return;
+  // If no fragment-based nav links AND no TOC headings, nothing to track
+  if (!Object.keys(linkMap).length && !tocHeadingEls.length) return;
 
   // TOC links (right sidebar) — share the same scroll tracking
   var tocLinks = document.querySelectorAll('#toc .toc-item');
@@ -69,43 +69,36 @@
     }
   }
 
-  // When a nav link is clicked, force-activate it immediately.
-  // This handles the case where the target is near the bottom of the page
-  // and the browser can't scroll far enough for the scroll tracker to pick it up.
-  var tocEl = document.getElementById('toc');
-  if (tocEl) {
-    tocEl.addEventListener('click', function (e) {
-      var link = e.target.closest('.toc-item');
-      if (!link) return;
-      var href = link.getAttribute('href');
-      if (!href || href.indexOf('#') === -1) return;
-      var id = href.split('#')[1];
-      if (!id) return;
-      clickedId = id;
-      activate(id, true);
-      clearTimeout(clickTimer);
-      clickTimer = setTimeout(function () { clickedId = null; }, 800);
-    });
-  }
-
-  document.getElementById('nav').addEventListener('click', function (e) {
-    var link = e.target.closest('.nav-link');
+  // Handle anchor clicks: activate highlight, scroll with header offset, lock scroll tracker.
+  function handleAnchorClick(e, selector) {
+    var link = e.target.closest(selector);
     if (!link) return;
     var href = link.getAttribute('href');
     if (!href || href.indexOf('#') === -1) return;
-
     var id = href.split('#')[1];
     if (!id) return;
 
+    e.preventDefault();
     clickedId = id;
     activate(id, true);
 
-    // Clear the override after scroll settles so scroll-based tracking resumes
+    var el = document.getElementById(id);
+    if (el) {
+      var header = document.getElementById('header');
+      var offset = (header ? header.offsetHeight : 112) + 16;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+      history.replaceState(null, '', '#' + id);
+    }
+
     clearTimeout(clickTimer);
-    clickTimer = setTimeout(function () {
-      clickedId = null;
-    }, 800);
-  });
+    clickTimer = setTimeout(function () { clickedId = null; }, 800);
+  }
+
+  var tocEl = document.getElementById('toc');
+  if (tocEl) tocEl.addEventListener('click', function (e) { handleAnchorClick(e, '.toc-item'); });
+
+  var navEl = document.getElementById('nav');
+  if (navEl) navEl.addEventListener('click', function (e) { handleAnchorClick(e, '.nav-link'); });
 
   // Use scroll event for reliable activation at all positions.
   function onScroll() {
