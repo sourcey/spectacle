@@ -348,7 +348,13 @@ export async function loadMarkdownPage(
   const title = meta.title ?? extractFirstHeading(preprocessed) ?? slug;
   const description = meta.description ?? "";
 
-  return { title, description, slug, html, headings, sourcePath: relative(process.cwd(), filePath) };
+  // Strip leading h1 from rendered HTML when it duplicates the page title
+  const cleanHtml = html.replace(
+    /^\s*<h1[^>]*>(.*?)<\/h1>\s*/i,
+    (_m, inner) => inner.replace(/<[^>]+>/g, "").trim() === title ? "" : _m,
+  );
+
+  return { title, description, slug, html: cleanHtml, headings, sourcePath: relative(process.cwd(), filePath) };
 }
 
 /**
