@@ -237,6 +237,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     logo: logo?.light ? logo : undefined,
     favicon: config.favicon,
     repo: config.repo,
+    editBranch: config.editBranch,
     codeSamples: config.codeSamples,
     navbar: config.navbar,
     footer: config.footer,

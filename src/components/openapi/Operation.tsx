@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import type { NormalizedOperation } from "../../core/types.js";
+import type { NormalizedOperation, NormalizedRequestBody } from "../../core/types.js";
 import { htmlId } from "../../utils/html-id.js";
 import { SiteContext } from "../../renderer/context.js";
 import { Markdown } from "../ui/Markdown.js";
@@ -54,7 +54,7 @@ export function Operation({ operation: op, serverUrl }: OperationProps) {
 
           {hasBody && (
             <div class="mt-6">
-              <SectionLabel>Body</SectionLabel>
+              <SectionLabel meta={bodyMediaType(op.requestBody!)}>Body</SectionLabel>
               <RequestBody body={op.requestBody!} />
             </div>
           )}
@@ -92,4 +92,9 @@ export function Operation({ operation: op, serverUrl }: OperationProps) {
       </div>
     </div>
   );
+}
+
+function bodyMediaType(body: NormalizedRequestBody): string | undefined {
+  const types = Object.keys(body.content);
+  return types.length ? types[0] : undefined;
 }
