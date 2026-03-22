@@ -26,10 +26,10 @@ export function ResponsesCopy({ responses }: ResponsesProps) {
   if (!responses.length) return null;
 
   return (
-    <div>
+    <div class="params-list">
       {responses.map((r) => (
-        <div key={r.statusCode} class="py-6 border-b border-[rgb(var(--color-gray-100))] dark:border-[rgb(var(--color-gray-800))] last:border-b-0">
-          <div class="flex items-baseline gap-2 font-mono text-sm">
+        <div key={r.statusCode} class="param-item">
+          <div class="param-header font-mono text-sm">
             <span class={`px-1.5 py-0.5 rounded-md text-xs font-bold ${statusColorClass(r.statusCode)}`}>
               {r.statusCode}
             </span>
@@ -37,13 +37,13 @@ export function ResponsesCopy({ responses }: ResponsesProps) {
               {httpStatusText(r.statusCode)}
             </span>
             {r.content && (
-              <span class="text-xs text-[rgb(var(--color-gray-500))]">
+              <span class="param-type">
                 {renderResponseType(r)}
               </span>
             )}
           </div>
           {r.description && (
-            <div class="mt-2 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
+            <div class="param-description">
               <Markdown content={r.description} />
             </div>
           )}

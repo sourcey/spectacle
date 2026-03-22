@@ -11,6 +11,7 @@ export default defineConfig({
   },
   logo: "../test/fixtures/cheese.png",
   repo: "https://github.com/sourcey/sourcey",
+  editBranch: "master",
   codeSamples: ["curl", "javascript", "typescript", "python", "go", "ruby", "rust"],
   navigation: {
     tabs: [

@@ -63,6 +63,7 @@ export interface SiteConfig {
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
   repo?: string;
+  editBranch?: string;
   codeSamples: string[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
   footer: { links: NavbarLink[] };

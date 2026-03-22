@@ -6,16 +6,18 @@ interface SchemaDatatypeProps {
 }
 
 /**
- * Renders type information matching the original Sourcey schema display.
- * Uses .json-property-type, .json-property-format, .json-property-enum, etc.
+ * Renders type information as a pill badge.
+ * Combines type, format, and nullable into one label.
  */
 export function SchemaDatatype({ schema }: SchemaDatatypeProps) {
+  const base = formatBaseType(schema);
+  const suffix = schema.nullable ? " | null" : "";
+  const fmt = schema.format ? `<${schema.format}>` : "";
+  const typeLabel = `${base}${fmt}${suffix}`;
+
   return (
     <>
-      <span class="json-property-type">{formatBaseType(schema)}</span>
-      {schema.format && (
-        <span class="json-property-format"> ({schema.format})</span>
-      )}
+      <span class="json-property-type">{typeLabel}</span>
       {renderEnum(schema.enum) ||
         (schema.type === "array" && schema.items?.enum && renderEnum(schema.items.enum))}
       {schemaRange(schema) && (
@@ -24,7 +26,6 @@ export function SchemaDatatype({ schema }: SchemaDatatypeProps) {
       {schema.default !== undefined && (
         <span class="json-property-default-value">{String(schema.default)}</span>
       )}
-      {schema.nullable && <span class="json-property-type"> | null</span>}
     </>
   );
 }

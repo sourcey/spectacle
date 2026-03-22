@@ -232,6 +232,65 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 /* ── Schema Utilities (used by SchemaView.tsx) ─────────────────────── */
 
+/* ── Collapsible child attributes ── */
+
+#sourcey .schema-expandable {
+  margin-top: 1rem;
+  border: 1px solid rgb(var(--color-gray-200) / 0.7);
+  border-radius: 0.75rem;
+}
+.dark #sourcey .schema-expandable {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+#sourcey .schema-expandable-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgb(var(--color-gray-600));
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+#sourcey .schema-expandable-toggle::-webkit-details-marker {
+  display: none;
+}
+.dark #sourcey .schema-expandable-toggle {
+  color: rgb(var(--color-gray-300));
+}
+#sourcey .schema-expandable-toggle:hover {
+  background: rgb(var(--color-gray-100) / 0.5);
+  color: rgb(var(--color-gray-900));
+  border-radius: 0.75rem;
+}
+.dark #sourcey .schema-expandable-toggle:hover {
+  background: rgb(255 255 255 / 0.05);
+  color: rgb(var(--color-gray-200));
+}
+
+#sourcey .schema-expandable-icon {
+  width: 0.625rem;
+  height: 0.625rem;
+  flex-shrink: 0;
+  transition: transform 75ms;
+  color: rgb(var(--color-gray-400));
+}
+#sourcey details[open] > .schema-expandable-toggle > .schema-expandable-icon {
+  transform: rotate(90deg);
+}
+
+#sourcey .schema-expandable-content {
+  padding: 0 1rem 0.5rem;
+  border-top: 1px solid rgb(var(--color-gray-100));
+}
+.dark #sourcey .schema-expandable-content {
+  border-top-color: rgb(255 255 255 / 0.1);
+}
+
+/* Legacy schema-nested — kept for variant nesting */
 #sourcey .schema-nested {
   padding-left: 1rem;
   border-left: 2px solid rgb(var(--color-gray-200));
@@ -262,13 +321,25 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 /* ── Type Display (used by SchemaDatatype.tsx) ─────────────────────── */
 
 #sourcey .json-property-type {
+  display: inline-flex;
+  align-items: center;
   font-style: normal;
-  font-weight: 400;
-  color: rgb(var(--color-gray-500));
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(var(--color-gray-600));
+  background: rgb(var(--color-gray-100) / 0.5);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+.dark #sourcey .json-property-type {
+  background: rgb(var(--color-surface-dark-tint) / 0.05);
+  color: rgb(var(--color-gray-200));
 }
 
 #sourcey .json-property-format {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: rgb(var(--color-gray-400));
 }
 
@@ -310,15 +381,8 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 /* ── Parameter/Schema List (used by SchemaView.tsx, Parameters.tsx) ── */
 
-#sourcey .params-list {
-  border-top: 1px solid rgb(var(--color-gray-200));
-}
-.dark #sourcey .params-list {
-  border-top-color: rgb(var(--color-gray-800));
-}
-
 #sourcey .param-item {
-  padding: 1.25rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid rgb(var(--color-gray-100));
 }
 .dark #sourcey .param-item {
@@ -353,8 +417,6 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   display: inline-flex;
   align-items: baseline;
   gap: 0.375rem;
-  font-size: 0.8125rem;
-  color: rgb(var(--color-gray-500));
 }
 
 #sourcey .param-in {
