@@ -1,7 +1,6 @@
 import type { NormalizedRequestBody } from "../../core/types.js";
 import { SchemaView } from "../schema/SchemaView.js";
 import { ExampleView } from "../schema/ExampleView.js";
-import { RequiredBadge } from "../ui/Badge.js";
 import { Markdown } from "../ui/Markdown.js";
 
 interface RequestBodyProps {
@@ -19,12 +18,6 @@ export function RequestBody({ body }: RequestBodyProps) {
     <div>
       {mediaTypes.map(([mediaType, content]) => (
         <div key={mediaType}>
-          <div class="flex items-center gap-2 mb-2">
-            <div class="font-mono px-2 py-0.5 text-xs font-medium text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-300))]">
-              {mediaType}
-            </div>
-            {body.required && <RequiredBadge />}
-          </div>
           {body.description && (
             <div class="mb-4 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
               <Markdown content={body.description} />

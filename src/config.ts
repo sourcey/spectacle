@@ -36,8 +36,10 @@ export interface SourceyConfig {
     href?: string;
   };
   favicon?: string;
-  /** GitHub repo URL (e.g. "https://github.com/user/repo"). Enables "Edit this page" links. */
+  /** GitHub repo URL (e.g. "https://github.com/user/repo"). */
   repo?: string;
+  /** Branch name for "Edit this page" links (e.g. "main", "master"). When set, enables edit links on markdown pages. */
+  editBranch?: string;
   /**
    * Which languages to auto-generate code samples for.
    * Available: "curl", "javascript", "typescript", "python", "go", "ruby", "java", "php", "rust", "csharp"
@@ -107,6 +109,7 @@ export interface ResolvedConfig {
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
   repo?: string;
+  editBranch?: string;
   codeSamples: string[];
   tabs: ResolvedTab[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
@@ -214,6 +217,7 @@ async function resolveConfig(raw: SourceyConfig, configDir: string): Promise<Res
     logo,
     favicon: raw.favicon,
     repo: raw.repo,
+    editBranch: raw.editBranch,
     codeSamples: raw.codeSamples ?? ["curl", "javascript", "python"],
     tabs,
     navbar: {

@@ -4,6 +4,7 @@
 // on the matching #nav .nav-link. All visual styling is in sourcey.css;
 // this file only manages the class.
 (function () {
+  var navbar = document.getElementById('navbar');
   var navLinks = document.querySelectorAll('#nav .nav-link');
   var targets = document.querySelectorAll('[data-traverse-target]');
 
@@ -88,8 +89,7 @@
 
     var el = document.getElementById(id);
     if (el) {
-      var header = document.getElementById('header');
-      var offset = (header ? header.offsetHeight : 112) + 16;
+      var offset = (navbar ? navbar.offsetHeight : 0) - 1;
       window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
       history.replaceState(null, '', '#' + id);
     }
@@ -109,9 +109,7 @@
     // If a nav link was just clicked, don't override it until scroll settles
     if (clickedId) return;
 
-    // Measure the actual header element to handle any template/theme height
-    var header = document.getElementById('header');
-    var threshold = (header ? header.offsetHeight : 112) + 20;
+    var threshold = (navbar ? navbar.offsetHeight : 0) + 20;
     var best = null;
 
     // Check API traverse targets

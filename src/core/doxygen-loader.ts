@@ -53,8 +53,15 @@ export async function loadDoxygenTab(
   // Build navigation: namespace index pages first, then classes alphabetically
   const groups: SiteNavGroup[] = [];
 
-  for (const [label, items] of groupMap) {
+  for (const [key, items] of groupMap) {
+    // Use the group overview page's title as the sidebar label if available
+    const groupPage = items.find((i) => i.kind === "group");
+    const label = groupPage?.title ?? key;
     const sorted = items.sort((a, b) => {
+      // Group overview page always first
+      if (a.kind === "group" && b.kind !== "group") return -1;
+      if (a.kind !== "group" && b.kind === "group") return 1;
+      // Then namespace index pages
       if (a.kind === "namespace" && b.kind !== "namespace") return -1;
       if (a.kind !== "namespace" && b.kind === "namespace") return 1;
       return a.title.localeCompare(b.title);
@@ -63,7 +70,7 @@ export async function loadDoxygenTab(
     groups.push({
       label,
       items: sorted.map((p): SiteNavItem => ({
-        label: p.title,
+        label: p.kind === "group" ? "Overview" : p.title,
         href: `${tabSlug}/${p.slug}.html`,
         id: p.slug,
       })),

@@ -1,7 +1,9 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
-import { resolve, dirname, join } from "node:path";
+import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as viteBuild } from "vite";
+import tailwindcss from "@tailwindcss/vite";
+import preact from "@preact/preset-vite";
 import { renderPage } from "./static-renderer.js";
 import type { NormalizedSpec } from "../core/types.js";
 import type { RenderOptions, CurrentPage, SiteConfig } from "./context.js";
@@ -9,6 +11,7 @@ import type { SiteNavigation } from "../core/navigation.js";
 import { withActivePage } from "../core/navigation.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = resolve(__dirname, "../..");
 
 export interface BuildOutput {
   htmlPath: string;
@@ -25,8 +28,6 @@ export interface SitePage {
 
 /**
  * Build a documentation site.
- * Renders each page as a standalone HTML file with shared navigation,
- * plus shared CSS, JS, and search index.
  */
 export async function buildSite(
   pages: SitePage[],
@@ -55,15 +56,13 @@ export async function buildSite(
     await writeFile(resolve(resolvedDir, page.outputPath), html, "utf-8");
   }
 
-  // Redirect index.html → first page
   if (pages.length > 0) {
     const firstPage = pages[0].outputPath;
     const redirectHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${firstPage}"><title>Redirecting…</title></head><body><a href="${firstPage}">Redirecting…</a></body></html>`;
     await writeFile(resolve(resolvedDir, "index.html"), redirectHtml, "utf-8");
   }
 
-  await writeThemeCSS(resolvedDir);
-  await bundleClientJS(resolvedDir);
+  await buildAssets(resolvedDir);
 
   if (options?.searchIndex) {
     await writeFile(resolve(resolvedDir, "search-index.json"), options.searchIndex, "utf-8");
@@ -72,25 +71,23 @@ export async function buildSite(
   return { htmlPath: resolve(resolvedDir, "index.html"), outputDir: resolvedDir };
 }
 
-// ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-async function writeThemeCSS(outputDir: string): Promise<void> {
-  const cssPath = resolve(__dirname, "../themes/default/sourcey.css");
-  const css = await readFile(cssPath, "utf-8");
-  await writeFile(resolve(outputDir, "sourcey.css"), css, "utf-8");
-}
-
-async function bundleClientJS(outputDir: string): Promise<void> {
-  const clientEntry = resolve(__dirname, "../client/index.js");
+/**
+ * Build client JS + Tailwind CSS via Vite.
+ * Same plugins as the dev server — preact() + tailwindcss().
+ */
+async function buildAssets(outputDir: string): Promise<void> {
+  const clientEntry = resolve(projectRoot, "src/client/index.ts");
+  const sourceyCssPath = resolve(projectRoot, "src/themes/default/sourcey.css");
 
   await viteBuild({
-    root: process.cwd(),
+    root: projectRoot,
     logLevel: "silent",
+    plugins: [preact(), tailwindcss()],
     build: {
       outDir: outputDir,
       emptyOutDir: false,
+      cssMinify: true,
+      minify: true,
       lib: {
         entry: clientEntry,
         formats: ["iife"],
@@ -100,9 +97,14 @@ async function bundleClientJS(outputDir: string): Promise<void> {
       rollupOptions: {
         output: {
           entryFileNames: "sourcey.js",
+          assetFileNames: "sourcey.[ext]",
         },
       },
-      minify: true,
     },
   });
+
+  // Append component CSS
+  const componentCSS = await readFile(sourceyCssPath, "utf-8");
+  const builtCSS = await readFile(resolve(outputDir, "sourcey.css"), "utf-8").catch(() => "");
+  await writeFile(resolve(outputDir, "sourcey.css"), builtCSS + "\n" + componentCSS, "utf-8");
 }

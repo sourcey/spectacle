@@ -323,6 +323,12 @@ ${content.trim()}
     },
   );
 
+  // Auto-wrap consecutive accordion items in an accordion-group
+  html = html.replace(
+    /(<details class="accordion-item">[\s\S]*?<\/details>\s*){2,}/g,
+    (match) => `<div class="accordion-group not-prose">\n${match.trim()}\n</div>`,
+  );
+
   return html;
 }
 

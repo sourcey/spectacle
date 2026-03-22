@@ -104,8 +104,19 @@ export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
           res.end(html);
         } catch (e) {
           server.ssrFixStacktrace(e as Error);
-          console.error(`  SSR error for ${url}:`, (e as Error).message);
-          return next();
+          const err = e as Error;
+          console.error(`  SSR error for ${url}:`, err.message);
+
+          // Send error to Vite's native overlay via websocket
+          server.ws.send({ type: "error", err: { message: err.message, stack: err.stack ?? "" } });
+
+          // Return a minimal page with just the HMR client so
+          // the error overlay renders and livereload can recover.
+          res.writeHead(500, {
+            "Content-Type": "text/html; charset=utf-8",
+            "Cache-Control": "no-cache",
+          });
+          res.end(`<!DOCTYPE html><html><head><script type="module" src="/@vite/client"></script></head><body></body></html>`);
         }
       });
     },

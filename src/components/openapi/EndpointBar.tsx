@@ -39,11 +39,7 @@ export function EndpointBar({ method, path, serverUrl }: EndpointBarProps) {
         {segments.map((seg, i) => (
           <span key={i} class="flex items-center shrink-0">
             <span class="text-sm text-[rgb(var(--color-gray-400))]">/</span>
-            <span class={`text-sm font-medium ${
-              seg.startsWith("{")
-                ? "text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))]"
-                : "text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-50))]"
-            }`}>
+            <span class="text-sm font-medium text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-50))]">
               {seg}
             </span>
           </span>
