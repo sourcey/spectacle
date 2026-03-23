@@ -53,14 +53,14 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .prose-code-block {
   position: relative;
   border-radius: var(--radius);
-  border: 1px solid rgb(var(--color-gray-950) / 0.1);
+  border: 1px solid rgb(var(--color-stone-950) / 0.1);
   margin: 1.25rem 0 2rem;
   overflow: hidden;
-  color: rgb(var(--color-gray-950));
+  color: rgb(var(--color-stone-950));
 }
 .dark #sourcey .prose-code-block {
   border-color: rgb(255 255 255 / 0.1);
-  color: rgb(var(--color-gray-50));
+  color: rgb(var(--color-stone-50));
 }
 
 #sourcey .prose-code-copy {
@@ -80,11 +80,11 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: rgb(var(--color-gray-400));
+  color: rgb(var(--color-stone-400));
   transition: color 0.15s;
 }
 #sourcey .prose-code-copy .copy-btn:hover {
-  color: rgb(var(--color-gray-500));
+  color: rgb(var(--color-stone-500));
 }
 .dark #sourcey .prose-code-copy .copy-btn {
   color: rgb(255 255 255 / 0.4);
@@ -195,11 +195,11 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 /* ── Response Tabs (status code tabs on code block) ───────────────── */
 
 #sourcey .response-tab {
-  color: rgb(var(--color-stone-500));
+  color: rgb(var(--color-gray-500));
   transition: color 0.15s;
 }
 .dark #sourcey .response-tab {
-  color: rgb(var(--color-stone-400));
+  color: rgb(var(--color-gray-400));
 }
 
 #sourcey .response-tab.active {
@@ -775,23 +775,23 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 #sourcey .directive-tabs {
   margin: 1.25rem 0;
-  border: 1px solid rgb(var(--color-gray-200) / 0.7);
+  border: 1px solid rgb(var(--color-stone-950) / 0.1);
   border-radius: var(--radius);
   overflow: hidden;
 }
 .dark #sourcey .directive-tabs {
-  border-color: rgb(var(--color-gray-800) / 0.5);
+  border-color: rgb(255 255 255 / 0.1);
 }
 
 #sourcey .directive-tab-bar {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid rgb(var(--color-gray-200) / 0.7);
-  background: rgb(var(--color-gray-50));
+  border-bottom: 1px solid rgb(var(--color-stone-200));
+  background: rgb(var(--color-stone-50));
   padding: 0 0.25rem;
 }
 .dark #sourcey .directive-tab-bar {
-  border-bottom-color: rgb(var(--color-gray-800) / 0.5);
+  border-bottom-color: rgb(255 255 255 / 0.06);
   background: rgb(var(--color-code-block-dark));
 }
 
@@ -800,7 +800,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   padding: 0.625rem 1rem;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: rgb(var(--color-gray-500));
+  color: rgb(var(--color-stone-500));
   background: transparent;
   border: none;
   cursor: pointer;
@@ -862,6 +862,27 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 #sourcey .directive-tabs .prose-code-block .prose-code-copy {
   display: none;
+}
+
+/* ── Code group cards (API right-hand panels) ─────────────────────── */
+
+#sourcey .code-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid rgb(var(--color-stone-950) / 0.1);
+}
+.dark #sourcey .code-group {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+#sourcey .code-group > div:first-child {
+  background: rgb(var(--color-stone-50));
+}
+.dark #sourcey .code-group > div:first-child {
+  background: rgb(255 255 255 / 0.03);
 }
 
 /* ── Selection ─────────────────────────────────────────────────────── */

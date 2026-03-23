@@ -83,7 +83,7 @@ export function ResponsesExamples({ responses }: ResponsesProps) {
 
   // Multiple responses: tabbed code block with status code tabs in the header
   return (
-    <div class="response-tabs code-group not-prose relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[rgb(var(--color-stone-950)/0.1)] dark:border-[rgb(255_255_255/0.1)]">
+    <div class="response-tabs code-group not-prose">
       {/* Tab bar with status code tabs */}
       <div class="relative flex items-center justify-between gap-2 px-3">
         <div class="response-tab-list flex gap-1 overflow-x-auto text-xs leading-6" role="tablist">

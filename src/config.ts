@@ -69,6 +69,8 @@ export interface DoxygenConfig {
 
 export interface TabConfig {
   tab: string;
+  /** Custom URL slug for this tab. Defaults to slugified tab name. */
+  slug?: string;
   openapi?: string;
   groups?: GroupConfig[];
   doxygen?: DoxygenConfig;
@@ -282,7 +284,7 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
   for (const tab of tabs) {
     if (!tab.tab) throw new Error("Tab missing \"tab\" name");
 
-    const slug = slugify(tab.tab);
+    const slug = tab.slug !== undefined ? tab.slug : slugify(tab.tab);
     if (slugs.has(slug)) throw new Error(`Duplicate tab slug "${slug}" (from "${tab.tab}")`);
     slugs.add(slug);
 
@@ -394,6 +396,11 @@ async function resolvePagePath(slug: string, configDir: string): Promise<string>
 
 export function slugify(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+/** Build a path under a tab, handling empty slugs (root-level tabs). */
+export function tabPath(tabSlug: string, file: string): string {
+  return tabSlug ? `${tabSlug}/${file}` : file;
 }
 
 export function hexToRgb(hex: string): string {

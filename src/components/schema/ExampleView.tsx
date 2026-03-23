@@ -18,7 +18,7 @@ export function ExampleView({ schema, title }: ExampleViewProps) {
   const json = JSON.stringify(example, null, 2);
   const html = highlightCode(json, "json");
   return (
-    <div class="code-group not-prose relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[rgb(var(--color-stone-950)/0.1)] dark:border-[rgb(255_255_255/0.1)]">
+    <div class="code-group not-prose">
       {title && (
         <div class="relative flex items-center justify-between gap-2 px-3">
           <div class="flex min-w-0 items-center gap-1.5 font-medium text-xs leading-6 my-1 mb-1.5">

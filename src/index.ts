@@ -7,6 +7,7 @@ import { normalizeSpec } from "./core/normalizer.js";
 import { buildSite as buildSiteHtml } from "./renderer/html-builder.js";
 import type { SitePage } from "./renderer/html-builder.js";
 import type { NormalizedSpec } from "./core/types.js";
+import { tabPath } from "./config.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadConfig, configFromSpec } from "./config.js";
 import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
@@ -106,7 +107,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
       siteTabs.push(navTab);
 
       sitePages.push({
-        outputPath: `${tab.slug}/index.html`,
+        outputPath: tabPath(tab.slug, "index.html"),
         currentPage: { kind: "spec", spec },
         spec,
         tabSlug: tab.slug,
@@ -117,7 +118,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
 
       for (const [slug, page] of pages) {
         sitePages.push({
-          outputPath: `${tab.slug}/${slug}.html`,
+          outputPath: tabPath(tab.slug, `${slug}.html`),
           currentPage: { kind: "markdown", markdown: page },
           spec: primarySpec,
           tabSlug: tab.slug,
@@ -136,7 +137,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
           pagesByPath.set(pagePath, page);
 
           sitePages.push({
-            outputPath: `${tab.slug}/${slug}.html`,
+            outputPath: tabPath(tab.slug, `${slug}.html`),
             currentPage: { kind: "markdown", markdown: page },
             spec: primarySpec,
             tabSlug: tab.slug,
@@ -243,6 +244,8 @@ async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
   const data = await readFile(abs);
   return `data:${mime};base64,${data.toString("base64")}`;
 }
+
+export { defineConfig } from "./config.js";
 
 // Re-export types for consumers
 export type {

@@ -76,9 +76,9 @@
     options.forEach(function (opt) {
       var isActive = opt.getAttribute('data-lang-index') === index;
       opt.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      opt.className = opt.className.replace(/text-\[rgb\([^\)]+\)\]/g, '');
+      opt.className = opt.className.replace(/(dark:)?text-\[rgb\([^\]]+\)\]/g, '').trim();
       if (isActive) {
-        opt.classList.add('text-[rgb(var(--color-primary))]');
+        opt.classList.add('text-[rgb(var(--color-primary))]', 'dark:text-[rgb(var(--color-primary-light))]');
         if (label) label.textContent = opt.textContent.trim();
         // Update trigger icon to match selected language
         var triggerIcon = container.querySelector('.code-lang-trigger .code-lang-icon');
@@ -87,7 +87,7 @@
           triggerIcon.innerHTML = optIcon.outerHTML;
         }
       } else {
-        opt.classList.add('text-[rgb(var(--color-stone-600))]');
+        opt.classList.add('text-[rgb(var(--color-stone-600))]', 'dark:text-[rgb(var(--color-stone-400))]');
       }
     });
 
