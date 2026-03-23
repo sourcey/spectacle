@@ -2,7 +2,7 @@ import { createServer as createViteServer, type InlineConfig, type ViteDevServer
 import { resolve, dirname, extname } from "node:path";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { loadConfig, resolveConfigFromRaw } from "./config.js";
+import { loadConfig, resolveConfigFromRaw, tabPath } from "./config.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
@@ -188,7 +188,7 @@ async function loadSiteData(
       navTab.label = tab.label;
       siteTabs.push(navTab);
 
-      pageMap.set(`${tab.slug}/index.html`, {
+      pageMap.set(tabPath(tab.slug, "index.html"), {
         spec,
         currentPage: { kind: "spec", spec },
         tabSlug: tab.slug,
@@ -198,7 +198,7 @@ async function loadSiteData(
       const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
 
       for (const [slug, page] of pages) {
-        pageMap.set(`${tab.slug}/${slug}.html`, {
+        pageMap.set(tabPath(tab.slug, `${slug}.html`), {
           spec: primarySpec,
           currentPage: { kind: "markdown", markdown: page },
           tabSlug: tab.slug,
@@ -216,7 +216,7 @@ async function loadSiteData(
           const page = await loadMarkdownPageFn(pagePath, slug);
           pagesByPath.set(pagePath, page);
 
-          pageMap.set(`${tab.slug}/${slug}.html`, {
+          pageMap.set(tabPath(tab.slug, `${slug}.html`), {
             spec: primarySpec,
             currentPage: { kind: "markdown", markdown: page },
             tabSlug: tab.slug,

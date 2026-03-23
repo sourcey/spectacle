@@ -1,4 +1,5 @@
 import type { NormalizedSpec } from "./types.js";
+import { tabPath } from "../config.js";
 import type { ResolvedTab } from "../config.js";
 import type { MarkdownPage } from "./markdown-loader.js";
 import { htmlId } from "../utils/html-id.js";
@@ -51,7 +52,7 @@ export function buildNavFromSpec(
   spec: NormalizedSpec,
   tabSlug: string,
 ): SiteTab {
-  const basePath = `${tabSlug}/index.html`;
+  const basePath = tabPath(tabSlug, "index.html");
   const groups: SiteNavGroup[] = [];
 
   // Intro group
@@ -117,7 +118,7 @@ export function buildNavFromPages(
         if (!page) continue;
         items.push({
           label: page.title,
-          href: `${tab.slug}/${page.slug}.html`,
+          href: tabPath(tab.slug, `${page.slug}.html`),
           id: page.slug,
         });
       }
@@ -126,7 +127,7 @@ export function buildNavFromPages(
   }
 
   const firstItem = groups[0]?.items[0];
-  const href = firstItem?.href ?? `${tab.slug}/`;
+  const href = firstItem?.href ?? (tab.slug ? `${tab.slug}/` : "");
 
   return {
     label: tab.label,

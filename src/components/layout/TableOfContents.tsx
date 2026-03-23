@@ -5,6 +5,39 @@ import type { PageHeading } from "../../core/markdown-loader.js";
  * TOC layout: w-[19rem] outer, w-[16.5rem] inner,
  * sticky at 9.5rem, "On this page" with icon.
  */
+const tocLink = "toc-item break-words block hover:text-[rgb(var(--color-gray-900))] dark:hover:text-[rgb(var(--color-gray-300))] dark:text-[rgb(var(--color-gray-400))] transition-colors";
+
+function TocList({ headings }: { headings: PageHeading[] }) {
+  // Group: each root heading (level 2) followed by its sub-headings (level 3+)
+  const groups: { root: PageHeading; children: PageHeading[] }[] = [];
+  for (const h of headings) {
+    if (h.level < 3) {
+      groups.push({ root: h, children: [] });
+    } else if (groups.length) {
+      groups[groups.length - 1].children.push(h);
+    }
+  }
+
+  return (
+    <ul class="space-y-0.5">
+      {groups.map((g) => (
+        <li key={g.root.id}>
+          <a href={`#${g.root.id}`} class={`${tocLink} py-1`}>{g.root.text}</a>
+          {g.children.length > 0 && (
+            <ul class="mb-1.5">
+              {g.children.map((c) => (
+                <li key={c.id}>
+                  <a href={`#${c.id}`} class={`${tocLink} pl-3 text-[13px] py-0.5`}>{c.text}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function TableOfContents({ headings }: { headings: PageHeading[] }) {
   if (headings.length === 0) return null;
 
@@ -19,20 +52,7 @@ export function TableOfContents({ headings }: { headings: PageHeading[] }) {
           <h5 class="font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">On this page</h5>
 
           <nav>
-            <ul class="space-y-0.5">
-              {headings.map((h) => (
-                <li key={h.id} class="relative">
-                  <a
-                    href={`#${h.id}`}
-                    class={`toc-item break-words py-1 block hover:text-[rgb(var(--color-gray-900))] dark:hover:text-[rgb(var(--color-gray-300))] dark:text-[rgb(var(--color-gray-400))] transition-colors ${
-                      h.level >= 3 ? "pl-3 text-[13px]" : ""
-                    }`}
-                  >
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <TocList headings={headings} />
           </nav>
         </div>
       </div>
