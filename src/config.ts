@@ -147,7 +147,7 @@ const DEFAULT_COLORS = {
 
 const DEFAULT_FONTS = {
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-  mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
+  mono: "'Geist Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
 };
 
 const DEFAULT_LAYOUT = {
@@ -178,7 +178,7 @@ export async function loadConfig(cwd?: string): Promise<ResolvedConfig> {
     throw new Error("sourcey.config.ts must export default defineConfig({ navigation: { tabs: [...] } })");
   }
 
-  return resolveConfig(raw, dirname(configPath));
+  return resolveConfigFromRaw(raw, dirname(configPath));
 }
 
 /**
@@ -206,7 +206,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
 // Resolution + validation
 // ---------------------------------------------------------------------------
 
-async function resolveConfig(raw: SourceyConfig, configDir: string): Promise<ResolvedConfig> {
+export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string): Promise<ResolvedConfig> {
   const theme = resolveTheme(raw, configDir);
   const logo = resolveLogo(raw.logo);
   const tabs = await resolveTabs(raw.navigation.tabs, configDir);

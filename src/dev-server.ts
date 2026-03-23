@@ -2,7 +2,7 @@ import { createServer as createViteServer, type InlineConfig, type ViteDevServer
 import { resolve, dirname, extname } from "node:path";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { loadConfig } from "./config.js";
+import { loadConfig, resolveConfigFromRaw } from "./config.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
@@ -28,13 +28,12 @@ export interface DevServerOptions {
 
 export async function startDevServer(options: DevServerOptions): Promise<void> {
   const { port } = options;
-  const config = await loadConfig();
-
-  const tabs = config.tabs;
+  const configPath = resolve(process.cwd(), "sourcey.config.ts");
+  let config = await loadConfig();
 
   // Collect watch paths
-  const watchPaths: string[] = [];
-  for (const tab of tabs) {
+  const watchPaths: string[] = [configPath];
+  for (const tab of config.tabs) {
     if (tab.openapi) watchPaths.push(tab.openapi);
     if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
     if (tab.groups) {
@@ -55,6 +54,12 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
   let vite: ViteDevServer;
 
+  // Reload config through Vite SSR (bypasses Node's module cache)
+  async function reloadConfig(): Promise<ResolvedConfig> {
+    const configMod = await vite.ssrLoadModule(configPath);
+    return resolveConfigFromRaw(configMod.default, process.cwd());
+  }
+
   async function render(url: string): Promise<string | null> {
     // Load render-path modules through Vite's SSR graph so invalidateAll() works.
     // Static imports would survive invalidation and serve stale output.
@@ -65,7 +70,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       resolve(projectRoot, "src/core/markdown-loader.ts")
     ) as typeof import("./core/markdown-loader.js");
 
-    const { siteTabs, primarySpec, pageMap } = await loadSiteData(tabs, mdLoader.loadMarkdownPage);
+    const { siteTabs, primarySpec, pageMap } = await loadSiteData(config.tabs, mdLoader.loadMarkdownPage);
     const navigation = buildSiteNavigation(siteTabs);
     const site = await buildSiteConfig(config);
 
@@ -128,6 +133,14 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   };
 
   vite = await createViteServer(viteConfig);
+
+  // Reload config when sourcey.config.ts changes
+  vite.watcher.on("change", async (file) => {
+    if (file === configPath) {
+      config = await reloadConfig();
+    }
+  });
+
   await vite.listen();
 
   console.log(`\n  Sourcey dev server running at http://localhost:${port}`);

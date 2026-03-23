@@ -30,7 +30,7 @@ export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
       }
 
       // Trigger full reload when watched files or source components change
-      server.watcher.on("change", (file) => {
+      server.watcher.on("change", async (file) => {
         const ext = extname(file);
         if (
           watchSet.has(file) ||
