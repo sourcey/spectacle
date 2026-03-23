@@ -74,6 +74,14 @@
     }
   }
 
+  // Scroll to element with header offset
+  function scrollToId(id, behavior) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var offset = (navbar ? navbar.offsetHeight : 0) - 1;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: behavior });
+  }
+
   // Handle anchor clicks: activate highlight, scroll with header offset, lock scroll tracker.
   function handleAnchorClick(e, selector) {
     var link = e.target.closest(selector);
@@ -86,13 +94,8 @@
     e.preventDefault();
     clickedId = id;
     activate(id, true);
-
-    var el = document.getElementById(id);
-    if (el) {
-      var offset = (navbar ? navbar.offsetHeight : 0) - 1;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-      history.replaceState(null, '', '#' + id);
-    }
+    scrollToId(id, 'smooth');
+    history.replaceState(null, '', '#' + id);
 
     clearTimeout(clickTimer);
     clickTimer = setTimeout(function () { clickedId = null; }, 800);
@@ -161,11 +164,24 @@
     }
   }, { passive: true });
 
-  // Activate on initial load based on URL hash or scroll position
+  // Activate on initial load based on URL hash or scroll position.
+  // Always use JS scroll to override the browser's native hash scroll,
+  // which uses CSS scroll-margin-top and may not match the actual navbar height.
   var hash = window.location.hash.slice(1);
-  if (hash && linkMap[hash]) {
+  if (hash && document.getElementById(hash)) {
     activate(hash);
+    // Defer to next frame so browser's native hash scroll completes first
+    requestAnimationFrame(function () { scrollToId(hash, 'instant'); });
   } else {
     onScroll();
   }
+
+  // Handle hash changes (back/forward navigation)
+  window.addEventListener('hashchange', function () {
+    var id = window.location.hash.slice(1);
+    if (id) {
+      activate(id, true);
+      scrollToId(id, 'smooth');
+    }
+  });
 })();
