@@ -19,7 +19,10 @@ export function Head() {
 
   const nav = useContext(NavigationContext);
   const { colors, fonts, layout } = site.theme;
+  // Desktop: h-16 row + h-12 tabs (when multi-tab) = 7rem, or h-16 alone = 4rem.
+  // Mobile: h-16 row + h-14 breadcrumb = 7.5rem (always).
   const headerHeight = nav.tabs.length > 1 ? "7rem" : "4rem";
+  const headerHeightMobile = "7.5rem";
 
   // Extract font family names for Google Fonts loading
   const systemFonts = new Set(["system-ui", "sans-serif", "serif", "monospace", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Consolas", "SF Mono", "Fira Code", "Cascadia Code"]);
@@ -44,9 +47,12 @@ export function Head() {
       --sidebar-width: ${layout.sidebar};
       --toc-width: ${layout.toc};
       --content-max-width: ${layout.content};
-      --header-height: ${headerHeight};
+      --header-height: ${headerHeightMobile};
     }
-    html { scroll-padding-top: ${headerHeight}; }
+    html { scroll-padding-top: var(--header-height); }
+    @media (min-width: 1024px) {
+      :root { --header-height: ${headerHeight}; }
+    }
     body { margin: 0; background: rgb(var(--color-background-light)); }
     .dark body { background: rgb(var(--color-background-dark)); }
   `;

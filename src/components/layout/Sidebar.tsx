@@ -1,15 +1,16 @@
 import { useContext } from "preact/hooks";
-import { NavigationContext, OptionsContext } from "../../renderer/context.js";
+import { NavigationContext, OptionsContext, SiteContext } from "../../renderer/context.js";
+import { SocialIcon, socialLabels } from "../ui/SocialIcon.js";
+import { Logo } from "../ui/Logo.js";
+import type { SiteNavGroup } from "../../core/navigation.js";
 
 /**
- * Method pill for API sidebar navigation items.
- * Colored method badges.
+ * Colored method badges for API sidebar items.
  */
 function MethodPill({ method }: { method: string }) {
   const m = method.toUpperCase();
   const label = m === "DELETE" ? "DEL" : m;
 
-  // Method pill colors
   const colors: Record<string, string> = {
     GET: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
     POST: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
@@ -29,60 +30,157 @@ function MethodPill({ method }: { method: string }) {
 }
 
 /**
- * Sidebar clean design:
- * - No border-right
- * - Bold group headers (not uppercase)
- * - Method pills for API operations
- * - Active item with primary bg/text and text-shadow trick
+ * Shared nav group rendering used by both desktop sidebar and mobile drawer.
+ */
+function NavGroups({ groups, activePageSlug, base }: {
+  groups: SiteNavGroup[];
+  activePageSlug: string | null;
+  base: string;
+}) {
+  return (
+    <>
+      {groups.map((group, gi) => (
+        <div key={group.label} class={gi > 0 ? "mt-5" : ""}>
+          {group.label && (
+            <h5 class="nav-group-label">{group.label}</h5>
+          )}
+          <ul>
+            {group.items.map((item) => {
+              const isActive = item.id === activePageSlug;
+              return (
+                <li key={item.id}>
+                  <a
+                    href={`${base}${item.href}`}
+                    class={`nav-link${isActive ? " active" : ""}`}
+                  >
+                    {item.method && <MethodPill method={item.method} />}
+                    <span class="flex-1 break-words [word-break:break-word]">{item.label}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </>
+  );
+}
+
+/**
+ * Chevron icon for the group dropdown trigger.
+ */
+function DropdownChevron() {
+  return (
+    <svg class="drawer-dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Desktop sidebar (hidden on mobile) + mobile drawer (dialog element).
  */
 export function Sidebar() {
   const nav = useContext(NavigationContext);
   const options = useContext(OptionsContext);
+  const site = useContext(SiteContext);
   const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
   if (!activeTab) return null;
 
   const base = options.assetBase;
+  const { links } = site.navbar;
+  const primaryAction = site.navbar.primary;
+  const groups = activeTab.groups;
+  const logoHref = site.logo?.href ?? `${base}${nav.tabs[0]?.href ?? ""}`;
 
   return (
-    <div
-      id="sidebar"
-      class="z-20 hidden lg:block fixed bottom-0 right-auto w-[18rem]"
-      style="top: var(--header-height)"
-    >
-      <div class="absolute inset-0 z-10 overflow-auto pr-8 pb-10" id="sidebar-content">
-        <div class="relative lg:text-sm lg:leading-6">
-          {/* Gradient fade at top */}
-          <div class="sticky top-0 h-8 z-10 bg-gradient-to-b from-[rgb(var(--color-background-light))] dark:from-[rgb(var(--color-background-dark))]" />
-
-          <nav id="nav" role="navigation">
-            {activeTab.groups.map((group, gi) => (
-              <div key={group.label} class={gi > 0 ? "mt-6 lg:mt-8" : ""}>
-                {group.label && (
-                  <div class="flex items-center gap-2.5 pl-4 mb-3.5 lg:mb-2.5 font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">
-                    <h5>{group.label}</h5>
-                  </div>
-                )}
-                <ul class="space-y-px">
-                  {group.items.map((item) => {
-                    const isActive = item.id === nav.activePageSlug;
-                    return (
-                      <li key={item.id} class="relative">
-                        <a
-                          href={`${base}${item.href}`}
-                          class={`nav-link${isActive ? " active" : ""}`}
-                        >
-                          {item.method && <MethodPill method={item.method} />}
-                          <div class="flex-1 break-words [word-break:break-word]">{item.label}</div>
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
-          </nav>
+    <>
+      {/* Desktop sidebar — fixed, shows active tab only */}
+      <div
+        id="sidebar"
+        class="z-20 hidden lg:block fixed bottom-0 right-auto w-[18rem]"
+        style="top: var(--header-height)"
+      >
+        <div class="absolute inset-0 z-10 overflow-auto pr-8 pb-10">
+          <div class="relative text-sm leading-6">
+            <div class="sticky top-0 h-8 z-10 bg-gradient-to-b from-[rgb(var(--color-background-light))] dark:from-[rgb(var(--color-background-dark))]" />
+            <nav id="nav" role="navigation">
+              <NavGroups groups={groups} activePageSlug={nav.activePageSlug} base={base} />
+            </nav>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile drawer */}
+      <dialog id="mobile-nav" class="mobile-nav-dialog">
+        {/* Drawer header: logo (hidden when no logo configured) */}
+        {site.logo?.light && (
+          <div class="px-4 py-4 border-b border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] shrink-0">
+            <Logo href={logoHref} logo={site.logo} height="h-6" />
+          </div>
+        )}
+
+        {/* Tab dropdown — only when multiple tabs */}
+        {nav.tabs.length > 1 && (
+          <div class="pt-5 px-4 shrink-0">
+            <div class="drawer-dropdown">
+              <button
+                id="drawer-group-toggle"
+                type="button"
+                class="drawer-dropdown-trigger"
+                aria-expanded="false"
+              >
+                <span class="drawer-dropdown-label">{activeTab.label}</span>
+                <DropdownChevron />
+              </button>
+              <ul id="drawer-group-list" class="drawer-dropdown-list" style="display:none">
+                {nav.tabs.map((tab) => (
+                  <li key={tab.slug}>
+                    <a
+                      href={`${base}${tab.href}`}
+                      class={`drawer-dropdown-item${tab.slug === nav.activeTabSlug ? " active" : ""}`}
+                    >
+                      {tab.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Sidebar content for the active tab */}
+        <nav class="pt-5 pb-3 px-4 flex-1 overflow-y-auto">
+          <NavGroups groups={groups} activePageSlug={nav.activePageSlug} base={base} />
+        </nav>
+
+        {/* Navbar links + CTA */}
+        {(links.length > 0 || primaryAction) && (
+          <div class="px-4 py-3 border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] shrink-0">
+            <ul class="space-y-3">
+              {links.map((link) => {
+                const label = link.label ?? socialLabels[link.type] ?? link.href;
+                return (
+                  <li key={link.href}>
+                    <a href={link.href} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 text-[rgb(var(--color-gray-600))] hover:text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-400))] dark:hover:text-[rgb(var(--color-gray-200))]">
+                      {link.type !== "link" && <SocialIcon type={link.type} />}
+                      <span>{label}</span>
+                    </a>
+                  </li>
+                );
+              })}
+              {primaryAction && (
+                <li>
+                  <a href={primaryAction.href} target="_blank" class="group relative flex items-center justify-center px-4 py-2 text-sm font-medium">
+                    <span class="absolute inset-0 bg-[rgb(var(--color-primary-dark))] rounded-lg group-hover:opacity-90" />
+                    <span class="z-10 text-white">{primaryAction.label}</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+      </dialog>
+    </>
   );
 }

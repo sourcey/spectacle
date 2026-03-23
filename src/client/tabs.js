@@ -128,14 +128,14 @@
     var btn = e.target.closest('.copy-btn');
     if (!btn) return;
 
-    var container = btn.closest('.code-group') || btn.closest('.code-block-wrapper');
+    var container = btn.closest('.code-group') || btn.closest('.prose-code-block');
     if (!container) return;
 
-    // Find the active panel's code, or the nearest code block
+    // Find the active panel's code, or the nearest code element
     var activePanel = container.querySelector('.code-lang-panel.active, .response-panel.active');
     var codeEl = activePanel
-      ? activePanel.querySelector('.code-block, .font-mono')
-      : container.querySelector('.code-block, .font-mono');
+      ? activePanel.querySelector('code, .code-block, .font-mono')
+      : container.querySelector('code, .code-block, .font-mono');
 
     if (!codeEl) return;
 
