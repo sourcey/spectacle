@@ -25,7 +25,7 @@ function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; cla
   const eyebrow = activeGroup?.label;
 
   return (
-    <div class={`relative grow box-border flex-col w-full mx-auto px-1 ${className}`} id="content-area">
+    <div class={`relative grow box-border flex-col w-full mx-auto px-1 min-w-0 ${className}`} id="content-area">
       <header class="relative leading-none">
         <div class="mt-0.5 space-y-2.5">
           {eyebrow && (
@@ -55,7 +55,7 @@ function SpecPageContent({ className = "" }: { className?: string }) {
   const serverUrl = spec.servers[0]?.url ?? "/";
 
   return (
-    <div class={`relative grow box-border flex-col w-full mx-auto px-1 ${className}`} id="content-area">
+    <div class={`relative grow box-border flex-col w-full mx-auto px-1 min-w-0 ${className}`} id="content-area">
       <article>
         <header class="mb-8">
           <div class="flex items-baseline gap-3">
@@ -141,7 +141,7 @@ function DefaultLayout() {
   return (
     <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
       <Sidebar />
-      <div id="docs" class="pt-40 lg:pt-10">
+      <div id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
@@ -160,7 +160,7 @@ function MinimalLayout() {
 
   return (
     <div class="max-w-3xl mx-auto relative px-4 lg:px-8">
-      <div id="docs" class="pt-40 lg:pt-10">
+      <div id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <MarkdownPageContent page={page.markdown!} />
         ) : (
@@ -177,7 +177,7 @@ function ApiFirstLayout() {
   return (
     <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
       <Sidebar />
-      <div id="docs" class="pt-40 lg:pt-10">
+      <div id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />

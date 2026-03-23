@@ -29,7 +29,7 @@ export function Introduction() {
       )}
 
       {servers.length > 0 && (
-        <div class="mt-6 rounded-[var(--radius)] border border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-border-dark-subtle)/0.1)] overflow-hidden">
+        <div class="mt-6 rounded-[var(--radius)] border border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-border-dark-subtle)/0.1)] overflow-x-auto">
           <div class="px-4 py-2.5 text-xs font-semibold text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-300))] border-b border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-border-dark-subtle)/0.1)]">
             Base URL{servers.length > 1 ? "s" : ""}
           </div>

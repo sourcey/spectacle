@@ -36,6 +36,13 @@ const marked = new Marked({
       const id = htmlId(text);
       return `<h${depth} id="${id}">${this.parser.parseInline(tokens)}</h${depth}>\n`;
     },
+    table(token: Tokens.Table): string {
+      const header = token.header.map((cell) => `<th>${this.parser.parseInline(cell.tokens)}</th>`).join("");
+      const body = token.rows.map((row) =>
+        `<tr>${row.map((cell) => `<td>${this.parser.parseInline(cell.tokens)}</td>`).join("")}</tr>`
+      ).join("\n");
+      return `<div class="table-wrap"><table><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table></div>`;
+    },
     link({ href, title, tokens }: Tokens.Link): string {
       const text = this.parser.parseInline(tokens);
       const titleAttr = title ? ` title="${title}"` : "";
