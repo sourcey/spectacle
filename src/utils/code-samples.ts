@@ -23,7 +23,7 @@ const generators: Record<string, CodeSampleGenerator> = {
   curl({ url, method, contentType, body }: RequestInfo): CodeSample {
     const parts = [`curl -X ${method} '${url}'`];
     if (contentType) parts.push(`  -H 'Content-Type: ${contentType}'`);
-    if (body) parts.push(`  -d '${body}'`);
+    if (body) parts.push(`  -d '${indent(body, 2)}'`);
     return { lang: "bash", label: "cURL", source: parts.join(" \\\n") };
   },
 
@@ -33,7 +33,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     if (contentType) {
       lines.push(`  headers: {`, `    'Content-Type': '${contentType}',`, `  },`);
     }
-    if (body) lines.push(`  body: JSON.stringify(${body}),`);
+    if (body) lines.push(`  body: JSON.stringify(${indent(body, 4)}),`);
     lines.push(`});`, ``, `const data = await response.json();`);
     return { lang: "javascript", label: "JavaScript", source: lines.join("\n") };
   },
@@ -44,7 +44,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     if (contentType) {
       lines.push(`  headers: {`, `    'Content-Type': '${contentType}',`, `  },`);
     }
-    if (body) lines.push(`  body: JSON.stringify(${body}),`);
+    if (body) lines.push(`  body: JSON.stringify(${indent(body, 4)}),`);
     lines.push(`});`, ``, `const data: Record<string, unknown> = await response.json();`);
     return { lang: "typescript", label: "TypeScript", source: lines.join("\n") };
   },
@@ -69,7 +69,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     lines.push(")", "");
     lines.push("func main() {");
     if (body) {
-      lines.push(`  body := strings.NewReader(\`${body}\`)`);
+      lines.push(`  body := strings.NewReader(\`${indent(body, 2)}\`)`);
       lines.push(`  req, _ := http.NewRequest("${method}", "${url}", body)`);
     } else {
       lines.push(`  req, _ := http.NewRequest("${method}", "${url}", nil)`);
@@ -93,7 +93,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     const methodClass = method === "GET" ? "Get" : method === "POST" ? "Post" : method === "PUT" ? "Put" : method === "DELETE" ? "Delete" : method === "PATCH" ? "Patch" : "Post";
     lines.push(`request = Net::HTTP::${methodClass}.new(uri)`);
     if (contentType) lines.push(`request['Content-Type'] = '${contentType}'`);
-    if (body) lines.push(`request.body = '${body}'`);
+    if (body) lines.push(`request.body = '${indent(body, 2)}'`);
     lines.push(``, `response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }`);
     lines.push(`data = JSON.parse(response.body)`);
     return { lang: "ruby", label: "Ruby", source: lines.join("\n") };
@@ -107,7 +107,7 @@ const generators: Record<string, CodeSampleGenerator> = {
       `HttpClient client = HttpClient.newHttpClient();`,
     ];
     if (body) {
-      lines.push(`String body = """`, `${body}""";`, ``);
+      lines.push(`String body = """`, `    ${indent(body, 4)}""";`, ``);
       lines.push(`HttpRequest request = HttpRequest.newBuilder()`);
       lines.push(`    .uri(URI.create("${url}"))`);
       lines.push(`    .header("Content-Type", "application/json")`);
@@ -133,7 +133,7 @@ const generators: Record<string, CodeSampleGenerator> = {
       lines.push(`curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: ${contentType}']);`);
     }
     if (body) {
-      lines.push(`curl_setopt($ch, CURLOPT_POSTFIELDS, '${body}');`);
+      lines.push(`curl_setopt($ch, CURLOPT_POSTFIELDS, '${indent(body, 2)}');`);
     }
     lines.push(``, `$response = curl_exec($ch);`, `curl_close($ch);`);
     lines.push(`$data = json_decode($response, true);`);
@@ -150,7 +150,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     ];
     const m = method.toLowerCase();
     if (body) {
-      lines.push(`    let body = serde_json::json!(${body});`);
+      lines.push(`    let body = serde_json::json!(${indent(body, 4)});`);
       lines.push(`    let response = client.${m}("${url}")`);
       lines.push(`        .json(&body)`);
     } else {
@@ -172,7 +172,7 @@ const generators: Record<string, CodeSampleGenerator> = {
       ``,
     ];
     if (body) {
-      lines.push(`var content = new StringContent("""`, `${body}""", System.Text.Encoding.UTF8, "application/json");`);
+      lines.push(`var content = new StringContent("""`, `    ${indent(body, 4)}""", System.Text.Encoding.UTF8, "application/json");`);
       lines.push(`var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.${method[0] + method.slice(1).toLowerCase()}, "${url}") { Content = content });`);
     } else {
       lines.push(`var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.${method[0] + method.slice(1).toLowerCase()}, "${url}"));`);
@@ -242,4 +242,10 @@ function pythonDict(jsonStr: string): string {
     .replace(/: true/g, ": True")
     .replace(/: false/g, ": False")
     .replace(/: null/g, ": None");
+}
+
+/** Indent all lines of a multi-line string except the first. */
+function indent(str: string, spaces: number): string {
+  const pad = " ".repeat(spaces);
+  return str.replace(/\n/g, "\n" + pad);
 }

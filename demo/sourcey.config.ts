@@ -1,4 +1,4 @@
-import { defineConfig } from "../src/config.js";
+import { defineConfig } from "sourcey";
 
 export default defineConfig({
   name: "Cheese Store",
@@ -6,7 +6,7 @@ export default defineConfig({
     colors: {
       primary: "#d97706",
       light: "#d97706",
-      dark: "#f59e0b",
+      dark: "#ca6d06",
     },
   },
   logo: "../test/fixtures/cheese.png",
@@ -17,6 +17,7 @@ export default defineConfig({
     tabs: [
       {
         tab: "Documentation",
+        slug: "",
         groups: [
           {
             group: "Getting Started",
@@ -43,6 +44,7 @@ export default defineConfig({
       },
       {
         tab: "API Reference",
+        slug: "api",
         openapi: "../test/fixtures/cheese.yml",
       },
       {

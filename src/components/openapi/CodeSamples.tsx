@@ -21,7 +21,7 @@ export function CodeSamplesExamples({ operation, serverUrl, codeSampleLangs }: C
   const title = operation.summary ?? `${operation.method.toUpperCase()} ${operation.path}`;
 
   return (
-    <div class="code-group not-prose relative flex flex-col rounded-[var(--radius)] border border-[rgb(var(--color-stone-950)/0.1)] dark:border-[rgb(255_255_255/0.1)]">
+    <div class="code-group not-prose">
       {/* Header bar */}
       <div class="relative flex items-center justify-between gap-2 px-3">
         {/* Title */}
@@ -49,7 +49,7 @@ export function CodeSamplesExamples({ operation, serverUrl, codeSampleLangs }: C
               </div>
             </button>
             {/* Dropdown menu (hidden by default, toggled by JS) */}
-            <div class="code-lang-menu hidden absolute right-0 top-full mt-1 z-20 min-w-[120px] rounded-lg border border-[rgb(var(--color-stone-200))] dark:border-[rgb(255_255_255/0.1)] bg-[rgb(var(--color-background-light))] dark:bg-[rgb(var(--color-gray-900))] shadow-lg py-1" role="listbox">
+            <div class="code-lang-menu hidden absolute right-0 top-full mt-1 z-20 min-w-[120px] rounded-lg border border-[rgb(var(--color-stone-200))] dark:border-[rgb(255_255_255/0.1)] bg-[rgb(var(--color-background-light))] dark:bg-[rgb(var(--color-stone-900))] shadow-lg py-1" role="listbox">
               {samples.map((sample, i) => (
                 <button
                   key={i}
