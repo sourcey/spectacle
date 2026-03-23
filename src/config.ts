@@ -210,7 +210,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
 
 export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string): Promise<ResolvedConfig> {
   const theme = resolveTheme(raw, configDir);
-  const logo = resolveLogo(raw.logo);
+  const logo = resolveLogo(raw.logo, configDir);
   const tabs = await resolveTabs(raw.navigation.tabs, configDir);
 
   return {
@@ -271,10 +271,11 @@ function resolveTheme(raw: SourceyConfig, configDir: string): ResolvedTheme {
   return { preset, colors, fonts, layout, css };
 }
 
-function resolveLogo(logo?: SourceyConfig["logo"]): ResolvedConfig["logo"] {
+function resolveLogo(logo: SourceyConfig["logo"], configDir: string): ResolvedConfig["logo"] {
   if (!logo) return undefined;
-  if (typeof logo === "string") return { light: logo };
-  return { light: logo.light, dark: logo.dark, href: logo.href };
+  const resolvePath = (p?: string) => p && !p.startsWith("http") && !p.startsWith("data:") ? resolve(configDir, p) : p;
+  if (typeof logo === "string") return { light: resolvePath(logo) };
+  return { light: resolvePath(logo.light), dark: resolvePath(logo.dark), href: logo.href };
 }
 
 async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<ResolvedTab[]> {
