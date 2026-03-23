@@ -1,54 +1,66 @@
-// Mobile sidebar drawer — toggle visibility on small screens.
+// Mobile navigation drawer using native <dialog>.
 //
-// The sidebar is CSS-hidden on mobile (hidden lg:block). This script
-// overrides inline styles to show it as a fullscreen overlay when the
-// hamburger menu is tapped. Escape key and nav link clicks close it.
+// Opens as a modal dialog with backdrop. Closes on:
+// backdrop click, nav link click, Escape (native dialog behavior).
+// Dropdown toggles list visibility for tab selection.
 (function () {
-  var sidebar = document.getElementById('sidebar');
+  var dialog = document.getElementById('mobile-nav');
   var openBtns = document.querySelectorAll('[data-drawer-slide]');
-  if (!sidebar) return;
+  if (!dialog) return;
 
-  function open() {
-    var isDark = document.documentElement.classList.contains('dark');
-    sidebar.style.display = 'block';
-    sidebar.style.position = 'fixed';
-    sidebar.style.inset = '0';
-    sidebar.style.zIndex = '50';
-    sidebar.style.background = isDark
-      ? 'rgb(var(--color-background-dark))'
-      : 'rgb(var(--color-background-light))';
-    document.addEventListener('keydown', onKey);
-  }
+  // Sync active state from desktop sidebar to drawer on open
+  function syncActiveState() {
+    var activeDesktop = document.querySelector('#nav .nav-link.active');
+    if (!activeDesktop) return;
+    var activeHref = activeDesktop.getAttribute('href');
+    if (!activeHref) return;
 
-  function close() {
-    sidebar.style.display = '';
-    sidebar.style.position = '';
-    sidebar.style.inset = '';
-    sidebar.style.zIndex = '';
-    sidebar.style.background = '';
-    document.removeEventListener('keydown', onKey);
-  }
-
-  function isOpen() {
-    return sidebar.style.display === 'block';
-  }
-
-  function onKey(e) {
-    if (e.key === 'Escape') close();
+    dialog.querySelectorAll('.nav-link').forEach(function (link) {
+      link.classList.toggle('active', link.getAttribute('href') === activeHref);
+    });
   }
 
   openBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      if (isOpen()) {
-        close();
-      } else {
-        open();
-      }
+      syncActiveState();
+      dialog.showModal();
     });
   });
 
-  // Close drawer on nav link click (mobile)
-  sidebar.addEventListener('click', function (e) {
-    if (e.target.closest('#nav a') && isOpen()) close();
+  // Close on backdrop click (click on dialog element itself, not its children)
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+
+  // Close on nav link or close button click
+  dialog.addEventListener('click', function (e) {
+    if (e.target.closest('a') || e.target.closest('[data-close-drawer]')) dialog.close();
+  });
+
+  // Dropdown: toggle list visibility
+  var toggle = document.getElementById('drawer-group-toggle');
+  var list = document.getElementById('drawer-group-list');
+  if (!toggle || !list) return;
+
+  function closeDropdown() {
+    list.style.display = 'none';
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle.addEventListener('click', function () {
+    var open = list.style.display !== 'none';
+    if (open) {
+      closeDropdown();
+    } else {
+      list.style.display = '';
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  // Close dropdown when clicking outside it
+  dialog.addEventListener('click', function (e) {
+    if (list.style.display !== 'none' && !e.target.closest('.drawer-dropdown')) {
+      closeDropdown();
+    }
   });
 })();

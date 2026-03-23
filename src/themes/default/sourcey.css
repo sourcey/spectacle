@@ -48,6 +48,13 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   padding: 0;
 }
 
+/* ── Responsive Tables ────────────────────────────────────────────── */
+
+#sourcey .table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ── Prose Code Block (fenced code in markdown pages) ─────────────── */
 
 #sourcey .prose-code-block {
@@ -101,7 +108,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .prose-code-content {
   padding: 0.875rem 1rem;
   border-radius: var(--radius);
-  background: #fff;
+  background: rgb(var(--color-code-block-light));
   overflow-x: auto;
   font-variant-ligatures: none;
 }
@@ -117,9 +124,33 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   white-space: pre;
 }
 
-/* ── Sidebar Nav Links (state managed by scroll-tracker + SSR) ────── */
+/* ── Nav Links ────────────────────────────────────────────────────── */
 
-#sourcey #nav .nav-link {
+#sourcey .nav-group-label {
+  padding: 0.25rem 0.75rem 0.25rem 1rem;
+  margin-bottom: 0.25rem;
+  font-size: inherit;
+  font-weight: 600;
+  color: rgb(var(--color-gray-900));
+}
+.dark #sourcey .nav-group-label {
+  color: rgb(var(--color-gray-200));
+}
+
+#sourcey .nav-tab-label {
+  display: block;
+  padding: 0.5rem 0.75rem 0.25rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--color-gray-400));
+}
+.dark #sourcey .nav-tab-label {
+  color: rgb(var(--color-gray-500));
+}
+
+#sourcey .nav-link {
   display: flex;
   align-items: flex-start;
   padding: 0.25rem 0.75rem 0.25rem 1rem;
@@ -128,31 +159,28 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   text-align: left;
   overflow-wrap: break-word;
   hyphens: auto;
-  border-radius: 0;
   border-left: 2px solid transparent;
   width: 100%;
   color: rgb(var(--color-gray-700));
   transition: color 0.15s, border-color 0.15s;
 }
-.dark #sourcey #nav .nav-link {
+.dark #sourcey .nav-link {
   color: rgb(var(--color-gray-400));
 }
-
-#sourcey #nav .nav-link:hover {
+#sourcey .nav-link:hover {
   color: rgb(var(--color-gray-900));
   border-left-color: rgb(var(--color-gray-300));
 }
-.dark #sourcey #nav .nav-link:hover {
+.dark #sourcey .nav-link:hover {
   color: rgb(var(--color-gray-300));
   border-left-color: rgb(var(--color-gray-600));
 }
-
-#sourcey #nav .nav-link.active {
+#sourcey .nav-link.active {
   color: rgb(var(--color-primary));
   border-left-color: rgb(var(--color-primary));
   font-weight: 500;
 }
-.dark #sourcey #nav .nav-link.active {
+.dark #sourcey .nav-link.active {
   color: rgb(var(--color-primary-light));
   border-left-color: rgb(var(--color-primary-light));
 }
@@ -862,6 +890,162 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 #sourcey .directive-tabs .prose-code-block .prose-code-copy {
   display: none;
+}
+
+/* ── Mobile navigation drawer (dialog) ────────────────────────────── */
+
+.mobile-nav-dialog {
+  padding: 0;
+  border: none;
+  max-width: 20rem;
+  width: 80%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  overflow-y: auto;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  background: rgb(var(--color-background-light));
+  color: rgb(var(--color-gray-500));
+}
+.mobile-nav-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.dark .mobile-nav-dialog {
+  background: rgb(var(--color-background-dark));
+  color: rgb(var(--color-gray-400));
+}
+.mobile-nav-dialog::backdrop {
+  background: rgb(0 0 0 / 0.25);
+  backdrop-filter: blur(2px);
+}
+.mobile-nav-dialog[open] {
+  animation: drawer-slide-in 0.2s ease-out;
+}
+.mobile-nav-dialog[open]::backdrop {
+  animation: drawer-fade-in 0.2s ease-out;
+}
+
+/* ── Drawer group dropdown ─────────────────────────────────────────── */
+
+.drawer-dropdown {
+  position: relative;
+}
+
+.drawer-dropdown-trigger {
+  position: relative;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--radius, 0.5rem);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: rgb(var(--color-gray-900));
+  background: rgb(var(--color-background-light));
+  border: none;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-gray-200));
+  cursor: pointer;
+  text-align: left;
+}
+.dark .drawer-dropdown-trigger {
+  color: rgb(var(--color-gray-200));
+  background: rgb(var(--color-background-dark));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-gray-600));
+}
+.drawer-dropdown-trigger[aria-expanded="true"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: inset 1px 0 0 rgb(var(--color-gray-200)), inset -1px 0 0 rgb(var(--color-gray-200)), inset 0 1px 0 rgb(var(--color-gray-200));
+}
+.dark .drawer-dropdown-trigger[aria-expanded="true"] {
+  box-shadow: inset 1px 0 0 rgb(var(--color-gray-600)), inset -1px 0 0 rgb(var(--color-gray-600)), inset 0 1px 0 rgb(var(--color-gray-600));
+}
+
+.drawer-dropdown-chevron {
+  color: rgb(var(--color-gray-400));
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+.drawer-dropdown-trigger[aria-expanded="true"] .drawer-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.drawer-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem 0;
+  border-radius: 0 0 var(--radius, 0.5rem) var(--radius, 0.5rem);
+  background: rgb(var(--color-background-light));
+  border: none;
+  box-shadow: inset 1px 0 0 rgb(var(--color-gray-200)), inset -1px 0 0 rgb(var(--color-gray-200)), inset 0 -1px 0 rgb(var(--color-gray-200)), 0 6px 16px rgb(0 0 0 / 0.08);
+}
+.dark .drawer-dropdown-list {
+  background: rgb(var(--color-background-dark));
+  box-shadow: inset 1px 0 0 rgb(var(--color-gray-600)), inset -1px 0 0 rgb(var(--color-gray-600)), inset 0 -1px 0 rgb(var(--color-gray-600)), 0 6px 16px rgb(0 0 0 / 0.3);
+}
+
+.drawer-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1.125rem;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  text-align: left;
+  color: rgb(var(--color-gray-600));
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.drawer-dropdown-item:hover {
+  background: rgb(var(--color-gray-50));
+}
+.dark .drawer-dropdown-item {
+  color: rgb(var(--color-gray-400));
+}
+.dark .drawer-dropdown-item:hover {
+  background: rgb(var(--color-gray-800));
+}
+.drawer-dropdown-item.active {
+  color: rgb(var(--color-primary));
+  font-weight: 500;
+}
+.dark .drawer-dropdown-item.active {
+  color: rgb(var(--color-primary-light));
+}
+
+/* Drawer nav items — larger touch targets, no border indicator */
+#sourcey .mobile-nav-dialog .nav-link,
+#sourcey .mobile-nav-dialog .nav-link:hover,
+#sourcey .mobile-nav-dialog .nav-link.active {
+  border-left: none;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.mobile-nav-dialog ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes drawer-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ── Code group cards (API right-hand panels) ─────────────────────── */

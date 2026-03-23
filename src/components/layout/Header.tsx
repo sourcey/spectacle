@@ -1,6 +1,8 @@
 import { useContext } from "preact/hooks";
 import { NavigationContext, OptionsContext, SiteContext } from "../../renderer/context.js";
 import { SocialIcon } from "../ui/SocialIcon.js";
+import { Logo } from "../ui/Logo.js";
+import type { SiteNavigation } from "../../core/navigation.js";
 
 function SearchIcon() {
   return (
@@ -37,11 +39,47 @@ function MoonIcon() {
   );
 }
 
+function BreadcrumbChevron() {
+  return (
+    <svg width="3" height="24" viewBox="0 -9 3 24" class="h-5 overflow-visible shrink-0">
+      <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /**
- * Two-row site header.
- * Row 1 (h-16): logo, search, navbar links, theme toggle
- * Row 2 (h-12): navigation tabs
- * Total: 7rem (header-height)
+ * Mobile breadcrumb bar below the logo row — shows group > page.
+ */
+function MobileBreadcrumbs({ nav }: { nav: SiteNavigation }) {
+  const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
+  const activePage = activeTab?.groups
+    .flatMap((g) => g.items)
+    .find((item) => item.id === nav.activePageSlug);
+
+  return (
+    <div class="flex lg:hidden items-center h-14 px-5 text-sm overflow-hidden">
+      <div class="flex items-center min-w-0 space-x-3 leading-6 whitespace-nowrap">
+        {nav.tabs.length > 1 && activeTab && activePage?.label !== activeTab.label && (
+          <div class="flex items-center space-x-3 shrink-0 text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">
+            <span>{activeTab.label}</span>
+            <BreadcrumbChevron />
+          </div>
+        )}
+        {activePage && (
+          <span class="font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] truncate min-w-0">
+            {activePage.label}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Site header.
+ * Row 1 (h-16): logo, search (desktop), navbar links (desktop), theme toggle (desktop), search + hamburger (mobile)
+ * Row 2 mobile (h-14): breadcrumbs (group > page)
+ * Row 2 desktop (h-12): navigation tabs (when multiple tabs)
  */
 export function Header() {
   const nav = useContext(NavigationContext);
@@ -57,33 +95,12 @@ export function Header() {
 
       <div class="max-w-[92rem] mx-auto relative">
         {/* Row 1: Logo + Search + Actions */}
-        <div class="relative">
+        <div class="relative border-b border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-700)/0.5)]">
           <div class="flex items-center lg:px-12 h-16 min-w-0 mx-4 lg:mx-0">
-            <div class="h-full relative flex-1 flex items-center gap-x-4 min-w-0 border-b border-[rgb(var(--color-gray-500)/0.05)] dark:border-[rgb(var(--color-gray-300)/0.06)]">
+            <div class="h-full relative flex-1 flex items-center gap-x-4 min-w-0">
               {/* Logo */}
               <div class="flex-1 flex items-center gap-x-4">
-                {site.logo?.light && (
-                  <a href={logoHref} class="select-none">
-                    <img
-                      src={site.logo.light}
-                      alt={site.name || "Home"}
-                      class="w-auto h-7 relative object-contain shrink-0 block dark:hidden"
-                    />
-                    {site.logo.dark ? (
-                      <img
-                        src={site.logo.dark}
-                        alt={site.name || "Home"}
-                        class="w-auto h-7 relative object-contain shrink-0 hidden dark:block"
-                      />
-                    ) : (
-                      <img
-                        src={site.logo.light}
-                        alt={site.name || "Home"}
-                        class="w-auto h-7 relative object-contain shrink-0 hidden dark:block"
-                      />
-                    )}
-                  </a>
-                )}
+                <Logo href={logoHref} logo={site.logo} name={site.name} />
               </div>
 
               {/* Search bar (desktop) */}
@@ -106,7 +123,6 @@ export function Header() {
               <div class="flex-1 relative hidden lg:flex items-center ml-auto justify-end space-x-4">
                 <nav class="text-sm">
                   <ul class="flex space-x-6 items-center">
-                    {/* Navbar links */}
                     {site.navbar.links.map((link) => (
                       <li key={link.href}>
                         <a
@@ -121,7 +137,6 @@ export function Header() {
                         </a>
                       </li>
                     ))}
-                    {/* CTA button */}
                     {site.navbar.primary && (
                       <li>
                         <a
@@ -149,31 +164,25 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Mobile actions */}
+              {/* Mobile actions: search + hamburger */}
               <div class="flex lg:hidden items-center gap-3">
+                <button id="search-open-mobile" type="button" aria-label="Search" class="text-[rgb(var(--color-gray-500))] w-8 h-8 flex items-center justify-center">
+                  <SearchIcon />
+                </button>
                 <button type="button" data-drawer-slide="right" aria-label="Open menu" class="text-[rgb(var(--color-gray-500))] w-8 h-8 flex items-center justify-center hover:text-[rgb(var(--color-gray-600))]">
                   <svg class="h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
                   </svg>
                 </button>
-                <button id="search-open-mobile" type="button" aria-label="Search" class="text-[rgb(var(--color-gray-500))] w-8 h-8 flex items-center justify-center">
-                  <SearchIcon />
-                </button>
               </div>
             </div>
           </div>
-
-          {/* Mobile breadcrumb bar */}
-          <button type="button" class="flex items-center h-14 py-4 px-5 lg:hidden focus:outline-0 w-full text-left" data-drawer-slide="right">
-            <div class="text-[rgb(var(--color-gray-500))]">
-              <svg class="h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
-              </svg>
-            </div>
-          </button>
         </div>
 
-        {/* Row 2: Navigation tabs (desktop only, hidden when single tab) */}
+        {/* Mobile breadcrumb bar: group > page */}
+        <MobileBreadcrumbs nav={nav} />
+
+        {/* Desktop: Navigation tabs (hidden when single tab) */}
         {nav.tabs.length > 1 && (
         <div class="hidden lg:flex px-12 h-12">
           <div class="h-full flex text-sm gap-x-6">
