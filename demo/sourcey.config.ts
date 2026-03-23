@@ -4,9 +4,9 @@ export default defineConfig({
   name: "Cheese Store",
   theme: {
     colors: {
-      primary: "#f59e0b",
-      light: "#fbbf24",
-      dark: "#d97706",
+      primary: "#d97706",
+      light: "#d97706",
+      dark: "#f59e0b",
     },
   },
   logo: "../test/fixtures/cheese.png",
