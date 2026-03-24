@@ -1,6 +1,6 @@
 import { createServer as createViteServer, type InlineConfig, type ViteDevServer } from "vite";
 import { resolve, dirname, extname } from "node:path";
-import { readFile } from "node:fs/promises";
+import { readFile, access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { loadConfig, resolveConfigFromRaw, tabPath } from "./config.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
@@ -21,6 +21,10 @@ import tailwindcss from "@tailwindcss/vite";
 import preact from "@preact/preset-vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+async function exists(path: string): Promise<boolean> {
+  try { await access(path); return true; } catch { return false; }
+}
 
 export interface DevServerOptions {
   port: number;
@@ -45,12 +49,14 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     }
   }
 
-  // Resolve source paths for Vite dev serving
+  // Resolve source paths for Vite dev serving.
+  // Prefer src/ (local dev) but fall back to dist/ (npm install).
   const projectRoot = resolve(__dirname, "..");
-  const tailwindCssPath = resolve(projectRoot, "src/themes/default/main.css");
-  const sourceyCssPath = resolve(projectRoot, "src/themes/default/sourcey.css");
-  const clientEntry = resolve(projectRoot, "src/client/index.ts");
-  const ssrRendererPath = resolve(projectRoot, "src/renderer/static-renderer.ts");
+  const hasSrc = await exists(resolve(projectRoot, "src/client/index.ts"));
+  const tailwindCssPath = resolve(projectRoot, hasSrc ? "src/themes/default/main.css" : "dist/themes/default/main.css");
+  const sourceyCssPath = resolve(projectRoot, hasSrc ? "src/themes/default/sourcey.css" : "dist/themes/default/sourcey.css");
+  const clientEntry = resolve(projectRoot, hasSrc ? "src/client/index.ts" : "dist/client/index.js");
+  const ssrRendererPath = resolve(projectRoot, hasSrc ? "src/renderer/static-renderer.ts" : "dist/renderer/static-renderer.js");
 
   let vite: ViteDevServer;
 
@@ -67,7 +73,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       renderPage: typeof import("./renderer/static-renderer.js").renderPage;
     };
     const mdLoader = await vite.ssrLoadModule(
-      resolve(projectRoot, "src/core/markdown-loader.ts")
+      resolve(projectRoot, hasSrc ? "src/core/markdown-loader.ts" : "dist/core/markdown-loader.js")
     ) as typeof import("./core/markdown-loader.js");
 
     const { siteTabs, primarySpec, pageMap } = await loadSiteData(config.tabs, mdLoader.loadMarkdownPage);
@@ -251,6 +257,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     favicon: config.favicon,
     repo: config.repo,
     editBranch: config.editBranch,
+    editBasePath: config.editBasePath,
     codeSamples: config.codeSamples,
     navbar: config.navbar,
     footer: config.footer,
