@@ -6,7 +6,7 @@ Sourcey is an open source documentation platform. Point it at an OpenAPI spec, a
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
 [![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
-[![License: AGPL-3.0](https://img.shields.io/npm/l/sourcey)](LICENSE)
+[![node](https://img.shields.io/node/v/sourcey)](https://nodejs.org)
 
 ```bash
 npx sourcey dev
