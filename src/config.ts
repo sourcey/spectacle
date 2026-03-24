@@ -40,6 +40,8 @@ export interface SourceyConfig {
   repo?: string;
   /** Branch name for "Edit this page" links (e.g. "main", "master"). When set, enables edit links on markdown pages. */
   editBranch?: string;
+  /** Base path prepended to source file paths in "Edit this page" URLs. Use when docs source lives in a subdirectory of the repo (e.g. "docs"). */
+  editBasePath?: string;
   /**
    * Which languages to auto-generate code samples for.
    * Available: "curl", "javascript", "typescript", "python", "go", "ruby", "java", "php", "rust", "csharp"
@@ -112,6 +114,7 @@ export interface ResolvedConfig {
   favicon?: string;
   repo?: string;
   editBranch?: string;
+  editBasePath?: string;
   codeSamples: string[];
   tabs: ResolvedTab[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
@@ -220,6 +223,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     favicon: raw.favicon,
     repo: raw.repo,
     editBranch: raw.editBranch,
+    editBasePath: raw.editBasePath,
     codeSamples: raw.codeSamples ?? ["curl", "javascript", "python"],
     tabs,
     navbar: {

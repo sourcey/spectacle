@@ -64,6 +64,7 @@ export interface SiteConfig {
   favicon?: string;
   repo?: string;
   editBranch?: string;
+  editBasePath?: string;
   codeSamples: string[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
   footer: { links: NavbarLink[] };

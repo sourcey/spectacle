@@ -153,6 +153,11 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
 
   const navigation = buildSiteNavigation(siteTabs);
 
+  // Resolve internal links in markdown pages.
+  // Builds a map from every plausible href to the correct output path,
+  // then rewrites matching href attributes in each page's HTML.
+  resolveInternalLinks(sitePages);
+
   // Build search index
   const markdownPagesByTab = new Map<string, MarkdownPage[]>();
   for (const tab of tabs) {
@@ -209,6 +214,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     favicon: config.favicon,
     repo: config.repo,
     editBranch: config.editBranch,
+    editBasePath: config.editBasePath,
     codeSamples: config.codeSamples,
     navbar: config.navbar,
     footer: config.footer,
@@ -243,6 +249,72 @@ async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
   const mime = MIME_TYPES[ext] ?? "application/octet-stream";
   const data = await readFile(abs);
   return `data:${mime};base64,${data.toString("base64")}`;
+}
+
+// ---------------------------------------------------------------------------
+// Internal link resolution
+// ---------------------------------------------------------------------------
+
+/**
+ * Rewrite internal links in markdown page HTML to correct relative .html paths.
+ *
+ * Authors write links like [Page](/slug) or [Page](/tab/slug). This pass
+ * rewrites matching href values so they resolve on static file servers
+ * that don't support extensionless URLs.
+ */
+function resolveInternalLinks(pages: SitePage[]): void {
+  // Build a map from every plausible clean path to the output path.
+  // e.g. "components" -> "components.html", "config/ref-theme-tokens" -> "config/ref-theme-tokens.html"
+  const pathMap = new Map<string, string>();
+  for (const page of pages) {
+    const out = page.outputPath; // e.g. "components.html" or "config/ref-theme-tokens.html"
+    const clean = out.replace(/\.html$/, ""); // "components" or "config/ref-theme-tokens"
+    pathMap.set(clean, out);
+  }
+
+  for (const page of pages) {
+    if (page.currentPage.kind !== "markdown" || !page.currentPage.markdown) continue;
+    const md = page.currentPage.markdown;
+    const pageDir = page.outputPath.includes("/")
+      ? page.outputPath.substring(0, page.outputPath.lastIndexOf("/"))
+      : "";
+    const depth = pageDir ? pageDir.split("/").length : 0;
+    const toRoot = depth > 0 ? "../".repeat(depth) : "";
+
+    md.html = md.html.replace(/href="([^"]+)"/g, (_match, href: string) => {
+      // Only rewrite internal non-anchor, non-protocol links
+      if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("mailto:")) {
+        return _match;
+      }
+
+      // Split off hash fragment
+      const [path, hash] = href.split("#", 2);
+      const hashSuffix = hash ? `#${hash}` : "";
+
+      // Normalize: strip leading slash, trailing slash
+      const clean = path.replace(/^\/+/, "").replace(/\/+$/, "");
+
+      // Skip if already has .html extension
+      if (clean.endsWith(".html")) return _match;
+
+      // Look up in path map — try the full clean path first, then
+      // progressively strip leading segments to handle deployment prefixes
+      // (e.g. "/docs/components" → "docs/components" → "components")
+      let target: string | undefined;
+      let candidate = clean;
+      while (!target && candidate) {
+        target = pathMap.get(candidate);
+        const slash = candidate.indexOf("/");
+        if (slash === -1) break;
+        candidate = candidate.substring(slash + 1);
+      }
+      if (!target) return _match;
+
+      // Build relative path from this page to the target
+      const relativePath = toRoot + target;
+      return `href="${relativePath}${hashSuffix}"`;
+    });
+  }
 }
 
 export { defineConfig } from "./config.js";
