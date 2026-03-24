@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolve } from "node:path";
+import { resolve, relative } from "node:path";
 import { loadMarkdownPage, slugFromPath } from "../../src/core/markdown-loader.js";
 
 const FIXTURE_DIR = resolve(import.meta.dirname, "../fixtures");
@@ -62,7 +62,7 @@ describe("loadMarkdownPage", { timeout: 30_000 }, () => {
   it("preserves source path", async () => {
     const filePath = resolve(FIXTURE_DIR, "test-page.md");
     const page = await loadMarkdownPage(filePath, "test-page");
-    expect(page.sourcePath).toBe(filePath);
+    expect(page.sourcePath).toBe(relative(process.cwd(), filePath));
   });
 });
 
