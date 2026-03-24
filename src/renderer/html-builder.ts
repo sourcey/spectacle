@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, access } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as viteBuild } from "vite";
@@ -12,6 +12,26 @@ import { withActivePage } from "../core/navigation.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../..");
+
+async function exists(path: string): Promise<boolean> {
+  try { await access(path); return true; } catch { return false; }
+}
+
+/**
+ * Resolve client entry and CSS paths. Works from both source tree (dev) and
+ * published npm package (dist-only) by checking which paths exist.
+ */
+async function resolveAssetPaths(): Promise<{ clientEntry: string; sourceyCssPath: string }> {
+  const srcClient = resolve(projectRoot, "src/client/index.ts");
+  const distClient = resolve(projectRoot, "dist/client/index.js");
+  const srcCss = resolve(projectRoot, "src/themes/default/sourcey.css");
+  const distCss = resolve(projectRoot, "dist/themes/default/sourcey.css");
+
+  const clientEntry = await exists(srcClient) ? srcClient : distClient;
+  const sourceyCssPath = await exists(srcCss) ? srcCss : distCss;
+
+  return { clientEntry, sourceyCssPath };
+}
 
 export interface BuildOutput {
   htmlPath: string;
@@ -76,8 +96,7 @@ export async function buildSite(
  * Same plugins as the dev server — preact() + tailwindcss().
  */
 async function buildAssets(outputDir: string): Promise<void> {
-  const clientEntry = resolve(projectRoot, "src/client/index.ts");
-  const sourceyCssPath = resolve(projectRoot, "src/themes/default/sourcey.css");
+  const { clientEntry, sourceyCssPath } = await resolveAssetPaths();
 
   await viteBuild({
     root: projectRoot,

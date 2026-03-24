@@ -42,6 +42,7 @@ function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; cla
         )}
       </header>
       <div class="prose prose-gray dark:prose-invert relative mt-8 mb-14 max-w-none" dangerouslySetInnerHTML={{ __html: page.html }} />
+      <PageNavigation />
       <ContentFooter />
     </div>
   );
@@ -84,6 +85,45 @@ function SpecPageContent({ className = "" }: { className?: string }) {
   );
 }
 
+function PageNavigation() {
+  const nav = useContext(NavigationContext);
+  const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
+  if (!activeTab) return null;
+
+  // Flatten all nav items in the active tab
+  const allItems = activeTab.groups.flatMap((g) => g.items);
+  const idx = allItems.findIndex((item) => item.id === nav.activePageSlug);
+  if (idx === -1) return null;
+
+  const prev = idx > 0 ? allItems[idx - 1] : null;
+  const next = idx < allItems.length - 1 ? allItems[idx + 1] : null;
+  if (!prev && !next) return null;
+
+  const linkClass =
+    "group flex flex-col gap-1 px-4 py-3 rounded-lg border border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] hover:border-[rgb(var(--color-primary)/0.4)] dark:hover:border-[rgb(var(--color-primary-light)/0.3)] transition-colors no-underline";
+  const labelClass =
+    "text-xs text-[rgb(var(--color-gray-400))]";
+  const titleClass =
+    "text-sm font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))] group-hover:text-[rgb(var(--color-primary))] dark:group-hover:text-[rgb(var(--color-primary-light))] transition-colors";
+
+  return (
+    <nav class="mt-12 flex items-stretch justify-between gap-4">
+      {prev ? (
+        <a href={prev.href} class={linkClass}>
+          <span class={labelClass}>← Previous</span>
+          <span class={titleClass}>{prev.label}</span>
+        </a>
+      ) : <span />}
+      {next ? (
+        <a href={next.href} class={`${linkClass} text-right ml-auto`}>
+          <span class={labelClass}>Next →</span>
+          <span class={titleClass}>{next.label}</span>
+        </a>
+      ) : null}
+    </nav>
+  );
+}
+
 function ContentFooter() {
   const site = useContext(SiteContext);
   const page = useContext(PageContext);
@@ -93,7 +133,8 @@ function ContentFooter() {
   let editUrl: string | undefined;
   if (site.repo && site.editBranch && page.kind === "markdown" && page.markdown?.sourcePath) {
     const repoBase = site.repo.replace(/\/$/, "");
-    editUrl = `${repoBase}/edit/${site.editBranch}/${page.markdown.sourcePath}`;
+    const basePath = site.editBasePath ? `${site.editBasePath.replace(/^\/|\/$/g, "")}/` : "";
+    editUrl = `${repoBase}/edit/${site.editBranch}/${basePath}${page.markdown.sourcePath}`;
   }
 
   const linkStyle = "hover:text-[rgb(var(--color-gray-600))] dark:hover:text-[rgb(var(--color-gray-300))] transition-colors";

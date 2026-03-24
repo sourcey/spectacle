@@ -95,9 +95,9 @@ export function Header() {
 
       <div class="max-w-[92rem] mx-auto relative">
         {/* Row 1: Logo + Search + Actions */}
-        <div class="relative border-b border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-700)/0.5)]">
+        <div class="relative">
           <div class="flex items-center lg:px-12 h-16 min-w-0 mx-4 lg:mx-0">
-            <div class="h-full relative flex-1 flex items-center gap-x-4 min-w-0">
+            <div class="h-full relative flex-1 flex items-center gap-x-4 min-w-0 border-b border-[rgb(var(--color-gray-500)/0.08)] dark:border-[rgb(var(--color-gray-300)/0.08)]">
               {/* Logo */}
               <div class="flex-1 flex items-center gap-x-4">
                 <Logo href={logoHref} logo={site.logo} name={site.name} />
