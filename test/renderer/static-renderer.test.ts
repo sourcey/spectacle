@@ -38,8 +38,9 @@ const defaultSite: SiteConfig = {
     layout: { sidebar: "18rem", toc: "19rem", content: "44rem" },
     css: [],
   },
+  codeSamples: ["curl", "javascript", "python"],
   navbar: { links: [] },
-  footer: { socials: {} },
+  footer: { links: [] },
 };
 
 function renderSpec(spec: NormalizedSpec, options: RenderOptions): string {
