@@ -277,7 +277,7 @@ import { myFunction } from "my-package";
             build: "sourcey build",
           },
           dependencies: {
-            sourcey: "^3.3.0",
+            sourcey: "^3.3.2",
           },
         },
         null,
