@@ -77,9 +77,11 @@ export async function buildSite(
   }
 
   if (pages.length > 0 && pages[0].outputPath !== "index.html") {
-    const firstPage = pages[0].outputPath;
-    const redirectHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${firstPage}"><title>Redirecting…</title></head><body><a href="${firstPage}">Redirecting…</a></body></html>`;
-    await writeFile(resolve(resolvedDir, "index.html"), redirectHtml, "utf-8");
+    const first = pages[0];
+    const activeNav = withActivePage(navigation, first.tabSlug, first.pageSlug);
+    const renderOptions: RenderOptions = { embeddable: options?.embeddable ?? false, assetBase: "" };
+    const html = renderPage(first.spec, renderOptions, activeNav, first.currentPage, site);
+    await writeFile(resolve(resolvedDir, "index.html"), html, "utf-8");
   }
 
   await buildAssets(resolvedDir);
