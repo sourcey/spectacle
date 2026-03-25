@@ -103,9 +103,10 @@ describe("buildDocs (integration)", () => {
 
       expect(result.pageCount).toBeGreaterThan(0);
 
-      // Site writes a redirect index.html and api/index.html
+      // Root index.html renders the first page directly (no redirect)
       const indexHtml = await readFile(resolve(outputDir, "index.html"), "utf-8");
-      expect(indexHtml).toContain("Redirecting");
+      expect(indexHtml).toContain("<!DOCTYPE html>");
+      expect(indexHtml).not.toContain("Redirecting");
 
       const apiHtml = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
       expect(apiHtml).toContain("<!DOCTYPE html>");
