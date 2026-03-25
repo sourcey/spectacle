@@ -1,6 +1,6 @@
 import { access, readdir } from "node:fs/promises";
 import { resolve, dirname, basename, extname } from "node:path";
-import { pathToFileURL } from "node:url";
+import { createJiti } from "jiti";
 
 // ---------------------------------------------------------------------------
 // User-facing config types (used in sourcey.config.ts)
@@ -176,8 +176,9 @@ export async function loadConfig(cwd?: string): Promise<ResolvedConfig> {
     );
   }
 
-  const mod = await import(pathToFileURL(configPath).href);
-  const raw: SourceyConfig = mod.default;
+  const jiti = createJiti(import.meta.url);
+  const mod = await jiti.import(configPath) as { default: SourceyConfig };
+  const raw = mod.default;
 
   if (!raw?.navigation?.tabs) {
     throw new Error("sourcey.config.ts must export default defineConfig({ navigation: { tabs: [...] } })");
