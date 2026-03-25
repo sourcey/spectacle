@@ -2,6 +2,7 @@
 import { defineCommand, runMain } from "citty";
 import { buildDocs, buildSiteDocs } from "./index.js";
 import { loadConfig } from "./config.js";
+import { init } from "./init.js";
 
 const build = defineCommand({
   meta: {
@@ -136,6 +137,7 @@ const main = defineCommand({
     description: "Open source documentation platform for OpenAPI specs and markdown guides",
   },
   subCommands: {
+    init,
     build,
     dev,
     validate,
@@ -148,7 +150,7 @@ const main = defineCommand({
     },
   },
   async run({ args, rawArgs }) {
-    if (rawArgs.includes("build") || rawArgs.includes("dev") || rawArgs.includes("validate")) return;
+    if (rawArgs.includes("init") || rawArgs.includes("build") || rawArgs.includes("dev") || rawArgs.includes("validate")) return;
 
     if (args.spec) {
       await build.run!({

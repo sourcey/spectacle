@@ -167,7 +167,8 @@
   // Activate on initial load based on URL hash or scroll position.
   // Always use JS scroll to override the browser's native hash scroll,
   // which uses CSS scroll-margin-top and may not match the actual navbar height.
-  var hash = window.location.hash.slice(1);
+  var hash = window.location.hash.slice(1)
+    || new URLSearchParams(window.location.search).get('target');
   if (hash && document.getElementById(hash)) {
     activate(hash);
     // Defer to next frame so browser's native hash scroll completes first
