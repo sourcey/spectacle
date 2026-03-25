@@ -9,7 +9,7 @@ Sourcey is an open source documentation platform. Point it at an OpenAPI spec, a
 [![node](https://img.shields.io/node/v/sourcey)](https://nodejs.org)
 
 ```bash
-npx sourcey dev
+npx sourcey init
 ```
 
 ![Sourcey](assets/screenshot.jpg)
