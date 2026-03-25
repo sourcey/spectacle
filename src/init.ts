@@ -145,7 +145,8 @@ export const init = defineCommand({
 
       if (useDoxygen) {
         const doxyfilePath = resolve(cwd, doxyfile);
-        const xmlDir = parseDoxyfileValue(doxyfilePath, "OUTPUT_DIRECTORY") || "./xml";
+        const outputDir = parseDoxyfileValue(doxyfilePath, "OUTPUT_DIRECTORY") || ".";
+        const xmlOutput = parseDoxyfileValue(doxyfilePath, "XML_OUTPUT") || "xml";
         const genXml = parseDoxyfileValue(doxyfilePath, "GENERATE_XML");
 
         if (genXml && genXml.toUpperCase() !== "YES") {
@@ -154,7 +155,7 @@ export const init = defineCommand({
 
         addDoxygen = {
           doxyfile,
-          xmlDir: xmlDir.endsWith("/xml") ? xmlDir : xmlDir + "/xml",
+          xmlDir: outputDir + "/" + xmlOutput,
         };
       }
     }
@@ -175,9 +176,12 @@ export const init = defineCommand({
       ? `["introduction", "quickstart"]`
       : `["introduction"]`;
 
-    // Build tabs array
-    const relPath = (file: string) =>
-      targetDir === cwd ? `./${file}` : `../${file}`;
+    // Build tabs array — paths relative from targetDir to cwd
+    const relPath = (file: string) => {
+      const abs = resolve(cwd, file);
+      const rel = relative(targetDir, abs);
+      return rel.startsWith(".") ? rel : "./" + rel;
+    };
 
     let tabs = `      {
         tab: "Documentation",
