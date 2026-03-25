@@ -1,30 +1,110 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { existsSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
+import { resolve, basename, relative } from "node:path";
+
+// ---------------------------------------------------------------------------
+// Auto-detection helpers
+// ---------------------------------------------------------------------------
+
+function findDoxyfile(dir: string): string | null {
+  for (const name of ["Doxyfile", "doxyfile", "Doxyfile.in"]) {
+    if (existsSync(resolve(dir, name))) return name;
+  }
+  return null;
+}
+
+function parseDoxyfileValue(doxyfile: string, key: string): string | null {
+  const content = readFileSync(doxyfile, "utf-8");
+  const match = content.match(new RegExp(`^\\s*${key}\\s*=\\s*(.+)`, "m"));
+  return match ? match[1].trim() : null;
+}
+
+function findOpenAPISpecs(dir: string): string[] {
+  const specs: string[] = [];
+  const exts = [".yaml", ".yml", ".json"];
+  try {
+    for (const file of readdirSync(dir)) {
+      if (!exts.some((e) => file.endsWith(e))) continue;
+      try {
+        const content = readFileSync(resolve(dir, file), "utf-8");
+        if (content.includes("openapi:") || content.includes('"openapi"')) {
+          specs.push(file);
+        }
+      } catch {}
+    }
+  } catch {}
+  return specs;
+}
+
+function isExistingProject(dir: string): boolean {
+  // Has source files, package.json, or git — not an empty directory
+  return (
+    existsSync(resolve(dir, "package.json")) ||
+    existsSync(resolve(dir, ".git")) ||
+    existsSync(resolve(dir, "src"))
+  );
+}
+
+function suggestDocsDir(dir: string): string {
+  // Common docs directory names — suggest first one that doesn't exist
+  for (const name of ["docs", "documentation"]) {
+    if (!existsSync(resolve(dir, name))) return name;
+  }
+  return "docs";
+}
 
 export const init = defineCommand({
   meta: {
     name: "init",
-    description: "Scaffold a new Sourcey docs project in the current directory",
+    description: "Scaffold a new Sourcey docs project",
   },
   async run() {
     const cwd = process.cwd();
 
-    if (existsSync(resolve(cwd, "sourcey.config.ts"))) {
-      consola.error("sourcey.config.ts already exists in this directory.");
+    consola.log("");
+
+    // -- Directory selection --
+    let targetDir = cwd;
+
+    if (isExistingProject(cwd)) {
+      const suggested = suggestDocsDir(cwd);
+      const dir = (await consola.prompt("Docs directory:", {
+        type: "text",
+        default: suggested,
+        placeholder: suggested,
+      })) as string;
+
+      if (typeof dir === "symbol") process.exit(0);
+
+      targetDir = resolve(cwd, dir);
+      if (!existsSync(targetDir)) {
+        mkdirSync(targetDir, { recursive: true });
+      }
+    }
+
+    if (existsSync(resolve(targetDir, "sourcey.config.ts"))) {
+      consola.error("sourcey.config.ts already exists in " + (targetDir === cwd ? "this directory" : relative(cwd, targetDir)) + ".");
       process.exit(1);
     }
 
-    consola.log("");
+    // -- Auto-detect sources --
+    const doxyfile = findDoxyfile(cwd);
+    const openapiSpecs = findOpenAPISpecs(cwd);
+
+    // -- Project name --
+    const defaultName = basename(cwd)
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
     const name = (await consola.prompt("Project name:", {
       type: "text",
-      default: "My Docs",
+      default: defaultName,
     })) as string;
 
     if (typeof name === "symbol") process.exit(0);
 
+    // -- Theme preset --
     const preset = (await consola.prompt("Theme preset:", {
       type: "select",
       options: ["default", "minimal", "api-first"],
@@ -32,18 +112,101 @@ export const init = defineCommand({
 
     if (typeof preset === "symbol") process.exit(0);
 
-    const withExample = (await consola.prompt("Include example content?", {
-      type: "confirm",
-      initial: true,
-    })) as boolean;
+    // -- Detected sources --
+    let addOpenAPI: string | null = null;
+    let addDoxygen: { doxyfile: string; xmlDir: string } | null = null;
 
-    if (typeof withExample === "symbol") process.exit(0);
+    if (openapiSpecs.length > 0) {
+      const spec = openapiSpecs.length === 1
+        ? openapiSpecs[0]
+        : (await consola.prompt("Which OpenAPI spec?", {
+            type: "select",
+            options: openapiSpecs,
+          })) as string;
+
+      if (typeof spec === "symbol") process.exit(0);
+
+      const useSpec = (await consola.prompt(`Add API reference from ${spec}?`, {
+        type: "confirm",
+        initial: true,
+      })) as boolean;
+
+      if (typeof useSpec === "symbol") process.exit(0);
+      if (useSpec) addOpenAPI = spec;
+    }
+
+    if (doxyfile) {
+      const useDoxygen = (await consola.prompt(`Found ${doxyfile} — add Doxygen API reference?`, {
+        type: "confirm",
+        initial: true,
+      })) as boolean;
+
+      if (typeof useDoxygen === "symbol") process.exit(0);
+
+      if (useDoxygen) {
+        const doxyfilePath = resolve(cwd, doxyfile);
+        const xmlDir = parseDoxyfileValue(doxyfilePath, "OUTPUT_DIRECTORY") || "./xml";
+        const genXml = parseDoxyfileValue(doxyfilePath, "GENERATE_XML");
+
+        if (genXml && genXml.toUpperCase() !== "YES") {
+          consola.warn(`${doxyfile} has GENERATE_XML = ${genXml}. Set it to YES and run doxygen first.`);
+        }
+
+        addDoxygen = {
+          doxyfile,
+          xmlDir: xmlDir.endsWith("/xml") ? xmlDir : xmlDir + "/xml",
+        };
+      }
+    }
+
+    // -- Example content (only if no sources detected) --
+    let withExample = false;
+    if (!addOpenAPI && !addDoxygen) {
+      withExample = (await consola.prompt("Include example content?", {
+        type: "confirm",
+        initial: true,
+      })) as boolean;
+
+      if (typeof withExample === "symbol") process.exit(0);
+    }
 
     // -- Generate files --
-
     const pages = withExample
       ? `["introduction", "quickstart"]`
       : `["introduction"]`;
+
+    // Build tabs array
+    const relPath = (file: string) =>
+      targetDir === cwd ? `./${file}` : `../${file}`;
+
+    let tabs = `      {
+        tab: "Documentation",
+        slug: "",
+        groups: [
+          {
+            group: "Getting Started",
+            pages: ${pages},
+          },
+        ],
+      },`;
+
+    if (addOpenAPI) {
+      tabs += `
+      {
+        tab: "API Reference",
+        slug: "api",
+        openapi: "${relPath(addOpenAPI)}",
+      },`;
+    }
+
+    if (addDoxygen) {
+      tabs += `
+      {
+        tab: "API Reference",
+        slug: "api",
+        doxygen: { xml: "${relPath(addDoxygen.xmlDir)}" },
+      },`;
+    }
 
     const config = `import { defineConfig } from "sourcey";
 
@@ -54,16 +217,7 @@ export default defineConfig({
   },
   navigation: {
     tabs: [
-      {
-        tab: "Documentation",
-        slug: "",
-        groups: [
-          {
-            group: "Getting Started",
-            pages: ${pages},
-          },
-        ],
-      },
+${tabs}
     ],
   },
 });
@@ -95,18 +249,20 @@ import { myFunction } from "my-package";
 \`\`\`
 `;
 
-    writeFileSync(resolve(cwd, "sourcey.config.ts"), config);
-    consola.log("  Created sourcey.config.ts");
+    const rel = targetDir === cwd ? "" : relative(cwd, targetDir) + "/";
 
-    writeFileSync(resolve(cwd, "introduction.md"), intro);
-    consola.log("  Created introduction.md");
+    writeFileSync(resolve(targetDir, "sourcey.config.ts"), config);
+    consola.log(`  Created ${rel}sourcey.config.ts`);
+
+    writeFileSync(resolve(targetDir, "introduction.md"), intro);
+    consola.log(`  Created ${rel}introduction.md`);
 
     if (withExample) {
-      writeFileSync(resolve(cwd, "quickstart.md"), quickstart);
-      consola.log("  Created quickstart.md");
+      writeFileSync(resolve(targetDir, "quickstart.md"), quickstart);
+      consola.log(`  Created ${rel}quickstart.md`);
     }
 
-    if (!existsSync(resolve(cwd, "package.json"))) {
+    if (!existsSync(resolve(targetDir, "package.json"))) {
       const pkg = JSON.stringify(
         {
           name: name.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
@@ -123,23 +279,24 @@ import { myFunction } from "my-package";
         null,
         2,
       );
-      writeFileSync(resolve(cwd, "package.json"), pkg + "\n");
-      consola.log("  Created package.json");
+      writeFileSync(resolve(targetDir, "package.json"), pkg + "\n");
+      consola.log(`  Created ${rel}package.json`);
     } else {
-      consola.log("  Skipped package.json (already exists)");
+      consola.log(`  Skipped ${rel}package.json (already exists)`);
     }
 
-    if (!existsSync(resolve(cwd, ".gitignore"))) {
-      writeFileSync(resolve(cwd, ".gitignore"), "node_modules\ndist\n");
-      consola.log("  Created .gitignore");
+    if (!existsSync(resolve(targetDir, ".gitignore"))) {
+      writeFileSync(resolve(targetDir, ".gitignore"), "node_modules\ndist\n");
+      consola.log(`  Created ${rel}.gitignore`);
     }
 
     consola.log("");
-    consola.success("Created sourcey project in ./");
+    consola.success(`Created sourcey project in ${rel || "./"}`);
     consola.log("");
-    consola.log("  Next steps:");
-    consola.log("    npm install");
-    consola.log("    npx sourcey dev");
+    consola.log(`  Next steps:`);
+    if (rel) consola.log(`    cd ${relative(cwd, targetDir)}`);
+    consola.log(`    npm install`);
+    consola.log(`    npx sourcey dev`);
     consola.log("");
   },
 });
