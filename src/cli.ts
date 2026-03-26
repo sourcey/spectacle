@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { buildDocs, buildSiteDocs } from "./index.js";
 import { loadConfig } from "./config.js";
 import { init } from "./init.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf8")) as { version: string };
 
 const build = defineCommand({
   meta: {
@@ -133,7 +139,7 @@ const validate = defineCommand({
 const main = defineCommand({
   meta: {
     name: "sourcey",
-    version: "2.0.0",
+    version: pkg.version,
     description: "Open source documentation platform for OpenAPI specs and markdown guides",
   },
   subCommands: {

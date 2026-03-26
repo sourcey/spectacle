@@ -7,6 +7,17 @@ All notable changes to Sourcey (formerly Spectacle).
 - MDX support for custom component imports
 - Directive components (`:::note`, `:::warning`, `:::code-group`, etc.)
 
+## 3.3.5 — 2026-03-26
+
+- Report the actual package version in the `sourcey` CLI help output
+- Scaffold new projects with the latest published `sourcey` version
+
+## 3.3.4 — 2026-03-26
+
+- Publish the current release line to npm with the first-page render fix
+- Scaffold new projects with the latest `sourcey` dependency
+- Track the latest published `moxygen` release
+
 ## 3.0.0 — 2026-03-20
 
 Rebrand to Sourcey with redesigned theme.
