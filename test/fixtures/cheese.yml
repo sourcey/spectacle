@@ -3,13 +3,13 @@ info:
   title: Cheese Store
   version: 2.0.0
   description: |
-    Welcome to the **Cheese Store API** reference. This is a live example of how you can use [Sourcey](https://github.com/sourcey/sourcey) to generate beautiful static documentation for your APIs.
+    Welcome to the **Cheese Store API** reference. This is a live example of how you can use [Sourcey](https://github.com/nilstate/sourcey) to generate beautiful static documentation for your APIs.
 
     The Cheese Store API is organized around [REST](https://en.wikipedia.org/wiki/Representational_state_transfer). It uses resource-oriented URLs, standard HTTP methods, and returns JSON responses. All requests are authenticated using an API key or OAuth2 token.
 
     ## Getting Started
 
-    1. Sign up for a developer account at [cheesy.sourcey.com](http://cheesy.sourcey.com)
+    1. Sign up for a developer account at [cheese.sourcey.com](http://cheese.sourcey.com)
     2. Generate an API key from your dashboard
     3. Include the key in your requests as `X-API-Key` header
 
@@ -36,20 +36,20 @@ info:
     ```
 
     Hard cheese gouda say cheese. Ricotta cauliflower cheese cheesecake bocconcini edam bocconcini fromage feta. Who moved my cheese bocconcini cheese and wine cottage cheese cheese on toast who moved my cheese caerphilly stinking bishop. Bocconcini cheesy feet the big cheese macaroni cheese cheesy feet mascarpone.
-  termsOfService: http://cheesy.sourcey.com/terms
+  termsOfService: http://cheese.sourcey.com/terms
   contact:
     name: Cheese Store Support
     email: cheesy@sourcey.com
-    url: http://cheesy.sourcey.com/support
+    url: http://cheese.sourcey.com/support
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
     identifier: Apache-2.0
 
 servers:
-  - url: https://cheesy.sourcey.com/v2
+  - url: https://cheese.sourcey.com/v2
     description: Production
-  - url: https://sandbox.cheesy.sourcey.com/v2
+  - url: https://sandbox.cheese.sourcey.com/v2
     description: Sandbox (test data, rate limits relaxed)
   - url: http://localhost:3000/v2
     description: Local development
@@ -62,7 +62,7 @@ tags:
       Cheeses can be filtered by status, tags, and category. Each cheese has a unique ID, name, category, and availability status.
     externalDocs:
       description: Cheese Wiki
-      url: http://cheesy.sourcey.com/wiki/cheese
+      url: http://cheese.sourcey.com/wiki/cheese
   - name: Store
     description: Store endpoints provide access to cheese store orders and inventory management. Orders track the purchase lifecycle from placement through delivery.
   - name: Customer
@@ -72,7 +72,7 @@ tags:
       Customer accounts support OAuth2 login and API key authentication.
     externalDocs:
       description: Customer Portal
-      url: http://cheesy.sourcey.com/portal
+      url: http://cheese.sourcey.com/portal
 
 paths:
   /cheeses:
@@ -1386,22 +1386,22 @@ components:
       description: |
         API key authentication. Include your API key in the `X-API-Key` header.
 
-        Get your key from the [developer dashboard](http://cheesy.sourcey.com/dashboard).
+        Get your key from the [developer dashboard](http://cheese.sourcey.com/dashboard).
 
     cheesy_oauth:
       type: oauth2
       description: OAuth2 authentication for full API access
       flows:
         implicit:
-          authorizationUrl: https://cheesy.sourcey.com/oauth/authorize
+          authorizationUrl: https://cheese.sourcey.com/oauth/authorize
           scopes:
             'read:cheeses': Read cheese data
             'write:cheeses': Create and update cheeses
             'read:orders': View order history
             'write:orders': Place and manage orders
         authorizationCode:
-          authorizationUrl: https://cheesy.sourcey.com/oauth/authorize
-          tokenUrl: https://cheesy.sourcey.com/oauth/token
+          authorizationUrl: https://cheese.sourcey.com/oauth/authorize
+          tokenUrl: https://cheese.sourcey.com/oauth/token
           scopes:
             'read:cheeses': Read cheese data
             'write:cheeses': Create and update cheeses
@@ -1416,4 +1416,4 @@ components:
 
 externalDocs:
   description: Full Cheese Store documentation
-  url: http://cheesy.sourcey.com/docs
+  url: http://cheese.sourcey.com/docs

@@ -12,7 +12,7 @@ Install via CMake FetchContent:
 ```cmake
 include(FetchContent)
 FetchContent_Declare(libsourcey
-  GIT_REPOSITORY https://github.com/sourcey/libsourcey.git
+  GIT_REPOSITORY https://github.com/nilstate/libsourcey.git
   GIT_TAG v2.1.0
 )
 FetchContent_MakeAvailable(libsourcey)

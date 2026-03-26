@@ -69,10 +69,10 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sourcey/sourcey.git"
+    "url": "git+https://github.com/nilstate/sourcey.git"
   },
   "bugs": {
-    "url": "https://github.com/sourcey/sourcey/issues"
+    "url": "https://github.com/nilstate/sourcey/issues"
   },
-  "homepage": "https://github.com/sourcey/sourcey#readme"
+  "homepage": "https://github.com/nilstate/sourcey#readme"
 }
