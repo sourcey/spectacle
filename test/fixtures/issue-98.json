@@ -4,7 +4,7 @@
     "info": {
         "version": "1.0.0",
         "title": "ChaiPCR (issue 98)",
-        "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification (Taken from https://github.com/sourcey/sourcey/files/1678647/swagger.json.zip for https://github.com/sourcey/sourcey/issues/98",
+        "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification (Taken from https://github.com/nilstate/sourcey/files/1678647/swagger.json.zip for https://github.com/nilstate/sourcey/issues/98",
         "termsOfService": "http://helloreverb.com/terms/",
         "contact": {
             "name": "Wordnik API Team"

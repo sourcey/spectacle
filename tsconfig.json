@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "jsx": "react-jsx",

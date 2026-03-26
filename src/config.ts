@@ -60,6 +60,8 @@ export interface SourceyConfig {
   };
 }
 
+export type DoxygenIndexStyle = "auto" | "rich" | "structured" | "flat" | "none";
+
 export interface DoxygenConfig {
   /** Path to Doxygen XML output directory */
   xml: string;
@@ -67,6 +69,15 @@ export interface DoxygenConfig {
   language?: string;
   /** Use Doxygen groups for navigation grouping */
   groups?: boolean;
+  /**
+   * Index page style for the API reference landing page.
+   * - "auto": pick the best format based on available data (default)
+   * - "rich": card grid with module descriptions (requires groups with descriptions)
+   * - "structured": grouped list of types by module/namespace
+   * - "flat": alphabetical list categorized by kind (classes, structs, etc.)
+   * - "none" or false: no index page, land on the first API page
+   */
+  index?: DoxygenIndexStyle | false;
 }
 
 export interface TabConfig {
@@ -125,6 +136,7 @@ export interface ResolvedDoxygenConfig {
   xml: string;
   language: string;
   groups: boolean;
+  index: DoxygenIndexStyle;
 }
 
 export interface ResolvedTab {
@@ -316,6 +328,7 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
           xml: absXml,
           language: tab.doxygen.language ?? "cpp",
           groups: tab.doxygen.groups ?? false,
+          index: tab.doxygen.index === false ? "none" : (tab.doxygen.index ?? "auto"),
         },
       });
     } else {

@@ -1,5 +1,5 @@
 import { generate } from "moxygen";
-import type { ResolvedDoxygenConfig } from "../config.js";
+import type { DoxygenIndexStyle, ResolvedDoxygenConfig } from "../config.js";
 import { renderMarkdown, extractHeadings } from "../utils/markdown.js";
 import type { MarkdownPage } from "./markdown-loader.js";
 import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
@@ -25,7 +25,7 @@ export async function loadDoxygenTab(
   });
 
   const pages = new Map<string, MarkdownPage>();
-  const groupMap = new Map<string, { slug: string; title: string; kind: string }[]>();
+  const groupMap = new Map<string, GroupEntry[]>();
 
   for (const page of generated) {
     if (!page.markdown.trim()) continue;
@@ -54,14 +54,11 @@ export async function loadDoxygenTab(
   const groups: SiteNavGroup[] = [];
 
   for (const [key, items] of groupMap) {
-    // Use the group overview page's title as the sidebar label if available
     const groupPage = items.find((i) => i.kind === "group");
     const label = groupPage?.title ?? key;
     const sorted = items.sort((a, b) => {
-      // Group overview page always first
       if (a.kind === "group" && b.kind !== "group") return -1;
       if (a.kind !== "group" && b.kind === "group") return 1;
-      // Then namespace index pages
       if (a.kind === "namespace" && b.kind !== "namespace") return -1;
       if (a.kind !== "namespace" && b.kind === "namespace") return 1;
       return a.title.localeCompare(b.title);
@@ -74,6 +71,29 @@ export async function loadDoxygenTab(
         href: `${tabSlug}/${p.slug}.html`,
         id: p.slug,
       })),
+    });
+  }
+
+  // Generate index page
+  const indexStyle = resolveIndexStyle(config.index, groupMap, pages);
+
+  if (indexStyle !== "none") {
+    const indexSlug = "index";
+    const indexHtml = buildIndexHtml(indexStyle, tabSlug, tabLabel, groupMap, pages);
+    const indexHeadings = indexStyle === "rich" ? [] : extractHeadings(indexHtml);
+
+    pages.set(indexSlug, {
+      title: tabLabel,
+      description: "",
+      slug: indexSlug,
+      html: indexHtml,
+      headings: indexHeadings,
+      sourcePath: config.xml,
+    });
+
+    groups.unshift({
+      label: tabLabel,
+      items: [{ label: "Overview", href: `${tabSlug}/${indexSlug}.html`, id: indexSlug }],
     });
   }
 
@@ -91,8 +111,197 @@ export async function loadDoxygenTab(
   };
 }
 
+// ---------------------------------------------------------------------------
+// Index page generation
+// ---------------------------------------------------------------------------
+
+interface GroupEntry {
+  slug: string;
+  title: string;
+  kind: string;
+}
+
+/**
+ * Resolve "auto" to a concrete style based on the data we have.
+ */
+function resolveIndexStyle(
+  configured: DoxygenIndexStyle,
+  groupMap: Map<string, GroupEntry[]>,
+  pages: Map<string, MarkdownPage>,
+): Exclude<DoxygenIndexStyle, "auto"> {
+  if (configured !== "auto") return configured;
+
+  // Tiny projects — no index needed
+  if (pages.size < 5) return "none";
+
+  // Check if we have groups with descriptions
+  const groupsWithDesc = [...groupMap.values()]
+    .map((items) => items.find((i) => i.kind === "group"))
+    .filter((g): g is GroupEntry => !!g)
+    .filter((g) => pages.get(g.slug)?.description);
+
+  if (groupsWithDesc.length >= 2) return "rich";
+
+  // Check if we have meaningful grouping (multiple groups/namespaces)
+  if (groupMap.size >= 2) return "structured";
+
+  return "flat";
+}
+
+/**
+ * Build index page HTML using sourcey's existing component markup.
+ */
+function buildIndexHtml(
+  style: "rich" | "structured" | "flat",
+  tabSlug: string,
+  _tabLabel: string,
+  groupMap: Map<string, GroupEntry[]>,
+  pages: Map<string, MarkdownPage>,
+): string {
+  if (style === "rich") return buildRichIndex(tabSlug, groupMap, pages);
+  if (style === "structured") return buildStructuredIndex(tabSlug, groupMap, pages);
+  return buildFlatIndex(tabSlug, groupMap);
+}
+
+/**
+ * Rich: card grid with module name, description, and type count.
+ * Uses sourcey's card-group/card-item CSS.
+ */
+function buildRichIndex(
+  tabSlug: string,
+  groupMap: Map<string, GroupEntry[]>,
+  pages: Map<string, MarkdownPage>,
+): string {
+  const cards: string[] = [];
+
+  for (const [, items] of groupMap) {
+    const groupEntry = items.find((i) => i.kind === "group");
+    if (!groupEntry) continue;
+
+    const page = pages.get(groupEntry.slug);
+    if (!page) continue;
+
+    const typeCount = items.filter((i) => i.kind !== "group" && i.kind !== "namespace").length;
+    const href = `${tabSlug}/${groupEntry.slug}.html`;
+    const desc = page.description || "";
+    const meta = typeCount > 0
+      ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p>`
+      : "";
+
+    cards.push(
+      `<a href="${href}" class="card-item">` +
+      `<div class="card-item-inner">` +
+      `<h3 class="card-item-title">${escHtml(page.title)}</h3>` +
+      (desc ? `<div class="card-item-content"><p>${escHtml(desc)}</p>${meta}</div>` : `<div class="card-item-content">${meta}</div>`) +
+      `</div></a>`,
+    );
+  }
+
+  // Also include groups without a group page (orphan namespaces)
+  for (const [key, items] of groupMap) {
+    const hasGroup = items.some((i) => i.kind === "group");
+    if (hasGroup) continue;
+
+    const typeCount = items.filter((i) => i.kind !== "namespace").length;
+    if (typeCount === 0) continue;
+    const firstItem = items[0];
+    const href = `${tabSlug}/${firstItem.slug}.html`;
+
+    cards.push(
+      `<a href="${href}" class="card-item">` +
+      `<div class="card-item-inner">` +
+      `<h3 class="card-item-title">${escHtml(key)}</h3>` +
+      `<div class="card-item-content"><p style="margin:0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p></div>` +
+      `</div></a>`,
+    );
+  }
+
+  if (cards.length === 0) return "";
+
+  const cols = cards.length <= 2 ? "2" : "3";
+  return `<div class="card-group not-prose" data-cols="${cols}">\n${cards.join("\n")}\n</div>`;
+}
+
+/**
+ * Structured: grouped list of types by module/namespace.
+ * Rendered as markdown headings with link lists.
+ */
+function buildStructuredIndex(
+  tabSlug: string,
+  groupMap: Map<string, GroupEntry[]>,
+  pages: Map<string, MarkdownPage>,
+): string {
+  const sections: string[] = [];
+
+  for (const [key, items] of groupMap) {
+    const groupEntry = items.find((i) => i.kind === "group");
+    const title = groupEntry ? (pages.get(groupEntry.slug)?.title ?? key) : key;
+    const types = items.filter((i) => i.kind !== "group" && i.kind !== "namespace");
+    if (types.length === 0 && !groupEntry) continue;
+
+    const links: string[] = [];
+    if (groupEntry) {
+      links.push(`- [Overview](${tabSlug}/${groupEntry.slug}.html)`);
+    }
+    for (const t of types) {
+      links.push(`- [${t.title}](${tabSlug}/${t.slug}.html)`);
+    }
+
+    sections.push(`### ${title}\n\n${links.join("\n")}`);
+  }
+
+  return renderMarkdown(sections.join("\n\n"));
+}
+
+/**
+ * Flat: alphabetical list categorized by kind.
+ */
+function buildFlatIndex(
+  tabSlug: string,
+  groupMap: Map<string, GroupEntry[]>,
+): string {
+  const byKind = new Map<string, GroupEntry[]>();
+
+  for (const [, items] of groupMap) {
+    for (const item of items) {
+      if (item.kind === "group" || item.kind === "namespace") continue;
+      const label = kindLabel(item.kind);
+      if (!byKind.has(label)) byKind.set(label, []);
+      byKind.get(label)!.push(item);
+    }
+  }
+
+  const sections: string[] = [];
+  for (const [label, items] of byKind) {
+    const sorted = items.sort((a, b) => a.title.localeCompare(b.title));
+    const links = sorted.map((i) => `- [${i.title}](${tabSlug}/${i.slug}.html)`).join("\n");
+    sections.push(`### ${label}\n\n${links}`);
+  }
+
+  return renderMarkdown(sections.join("\n\n"));
+}
+
+// ---------------------------------------------------------------------------
+// Utilities
+// ---------------------------------------------------------------------------
+
 function lastSegment(name?: string): string | undefined {
   if (!name) return undefined;
   const parts = name.split("::");
   return parts[parts.length - 1] || name;
+}
+
+function escHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function kindLabel(kind: string): string {
+  switch (kind) {
+    case "class": return "Classes";
+    case "struct": return "Structs";
+    case "enum": return "Enums";
+    case "union": return "Unions";
+    case "typedef": return "Type Aliases";
+    default: return kind.charAt(0).toUpperCase() + kind.slice(1) + "s";
+  }
 }
