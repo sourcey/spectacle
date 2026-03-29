@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { resolve, extname } from "node:path";
+import { resolve, extname, posix } from "node:path";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
@@ -156,7 +156,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   // Resolve internal links in markdown pages.
   // Builds a map from every plausible href to the correct output path,
   // then rewrites matching href attributes in each page's HTML.
-  resolveInternalLinks(sitePages);
+  resolveInternalLinks(sitePages, config);
 
   // Build search index
   const markdownPagesByTab = new Map<string, MarkdownPage[]>();
@@ -262,7 +262,7 @@ async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
  * rewrites matching href values so they resolve on static file servers
  * that don't support extensionless URLs.
  */
-function resolveInternalLinks(pages: SitePage[]): void {
+function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
   // Build a map from every plausible clean path to the output path.
   // e.g. "components" -> "components.html", "config/ref-theme-tokens" -> "config/ref-theme-tokens.html"
   const pathMap = new Map<string, string>();
@@ -271,6 +271,11 @@ function resolveInternalLinks(pages: SitePage[]): void {
     const clean = out.replace(/\.html$/, ""); // "components" or "config/ref-theme-tokens"
     pathMap.set(clean, out);
   }
+
+  // Repo source link base: e.g. "https://github.com/user/repo/tree/main"
+  const repoBase = config.repo?.replace(/\/$/, "");
+  const branch = config.editBranch;
+  const sourceBase = repoBase && branch ? `${repoBase}/tree/${branch}` : undefined;
 
   for (const page of pages) {
     if (page.currentPage.kind !== "markdown" || !page.currentPage.markdown) continue;
@@ -291,8 +296,8 @@ function resolveInternalLinks(pages: SitePage[]): void {
       const [path, hash] = href.split("#", 2);
       const hashSuffix = hash ? `#${hash}` : "";
 
-      // Normalize: strip leading slash, trailing slash
-      const clean = path.replace(/^\/+/, "").replace(/\/+$/, "");
+      // Normalize: strip leading slash, trailing slash, and .md extension
+      const clean = path.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.md$/, "");
 
       // Skip if already has .html extension
       if (clean.endsWith(".html")) return _match;
@@ -308,11 +313,27 @@ function resolveInternalLinks(pages: SitePage[]): void {
         if (slash === -1) break;
         candidate = candidate.substring(slash + 1);
       }
-      if (!target) return _match;
+      if (target) {
+        // Build relative path from this page to the target
+        const relativePath = toRoot + target;
+        return `href="${relativePath}${hashSuffix}"`;
+      }
 
-      // Build relative path from this page to the target
-      const relativePath = toRoot + target;
-      return `href="${relativePath}${hashSuffix}"`;
+      // If the link contains ../ and we have a repo URL configured,
+      // resolve it relative to the markdown source file. Links to docs
+      // pages are already handled above (pathMap lookup catches them after
+      // .md stripping and prefix stripping). What remains are links to
+      // repo source code outside the docs directory.
+      if (sourceBase && href.includes("../") && md.sourcePath) {
+        const sourceDir = posix.dirname(md.sourcePath);
+        const resolved = posix.normalize(posix.join(sourceDir, path));
+        // Only rewrite if the path stays inside the repo root
+        if (!resolved.startsWith("..")) {
+          return `href="${sourceBase}/${resolved}${hashSuffix}"`;
+        }
+      }
+
+      return _match;
     });
   }
 }
