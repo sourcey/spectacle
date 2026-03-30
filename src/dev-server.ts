@@ -51,8 +51,8 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
     if (tab.groups) {
       for (const group of tab.groups) {
-        for (const pagePath of group.pages) {
-          watchPaths.push(pagePath);
+        for (const rp of group.pages) {
+          watchPaths.push(rp.file);
         }
       }
     }
@@ -62,7 +62,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   // route file changes to the correct incremental rebuild. Rebuilt when config
   // changes so newly added pages/specs/doxygen tabs are picked up.
   type ContentKind =
-    | { kind: "markdown"; tabSlug: string; pagePath: string }
+    | { kind: "markdown"; tabSlug: string; pagePath: string; pageSlug: string }
     | { kind: "doxygen"; tabSlug: string; xmlDir: string }
     | { kind: "openapi"; tabSlug: string; specPath: string }
     | { kind: "config" };
@@ -79,8 +79,8 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       }
       if (tab.groups) {
         for (const group of tab.groups) {
-          for (const pagePath of group.pages) {
-            map.set(resolve(pagePath), { kind: "markdown", tabSlug: tab.slug, pagePath });
+          for (const rp of group.pages) {
+            map.set(resolve(rp.file), { kind: "markdown", tabSlug: tab.slug, pagePath: rp.file, pageSlug: rp.slug });
           }
         }
       }
@@ -163,7 +163,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     const start = performance.now();
 
     if (content.kind === "markdown") {
-      const slug = slugFromPath(content.pagePath);
+      const slug = slugFromPath(content.pageSlug);
       log(`reloading ${shortPath(content.pagePath)}`);
       const page = await loadMarkdownPage(content.pagePath, slug);
       if (cache !== snapshot) return;
@@ -236,12 +236,12 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
     const pagesByPath = new Map<string, MarkdownPage>();
     for (const group of tab.groups) {
-      for (const pagePath of group.pages) {
-        const slug = slugFromPath(pagePath);
+      for (const rp of group.pages) {
+        const slug = slugFromPath(rp.slug);
         const pageKey = tabPath(tab.slug, `${slug}.html`);
         const entry = data.pageMap.get(pageKey);
         if (entry?.currentPage.kind === "markdown") {
-          pagesByPath.set(pagePath, entry.currentPage.markdown!);
+          pagesByPath.set(rp.slug, entry.currentPage.markdown!);
         }
       }
     }
@@ -457,10 +457,10 @@ async function loadSiteData(tabs: ResolvedTab[]) {
       const pagesByPath = new Map<string, MarkdownPage>();
 
       for (const group of tab.groups) {
-        for (const pagePath of group.pages) {
-          const slug = slugFromPath(pagePath);
-          const page = await loadMarkdownPage(pagePath, slug);
-          pagesByPath.set(pagePath, page);
+        for (const rp of group.pages) {
+          const slug = slugFromPath(rp.slug);
+          const page = await loadMarkdownPage(rp.file, slug);
+          pagesByPath.set(rp.slug, page);
 
           pageMap.set(tabPath(tab.slug, `${slug}.html`), {
             spec: primarySpec,

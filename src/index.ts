@@ -131,10 +131,10 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
       const pagesByPath = new Map<string, MarkdownPage>();
 
       for (const group of tab.groups) {
-        for (const pagePath of group.pages) {
-          const slug = slugFromPath(pagePath);
-          const page = await loadMarkdownPage(pagePath, slug);
-          pagesByPath.set(pagePath, page);
+        for (const rp of group.pages) {
+          const slug = slugFromPath(rp.slug);
+          const page = await loadMarkdownPage(rp.file, slug);
+          pagesByPath.set(rp.slug, page);
 
           sitePages.push({
             outputPath: tabPath(tab.slug, `${slug}.html`),

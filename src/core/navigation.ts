@@ -113,8 +113,8 @@ export function buildNavFromPages(
   if (tab.groups) {
     for (const group of tab.groups) {
       const items: SiteNavItem[] = [];
-      for (const pagePath of group.pages) {
-        const page = pagesByPath.get(pagePath);
+      for (const rp of group.pages) {
+        const page = pagesByPath.get(rp.slug);
         if (!page) continue;
         items.push({
           label: page.title,
