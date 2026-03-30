@@ -1,6 +1,7 @@
 import { useContext } from "preact/hooks";
 import { SpecContext, OptionsContext, PageContext, SiteContext, NavigationContext } from "../../renderer/context.js";
 import { langIconCSS } from "../../utils/lang-icons.js";
+import pkg from "../../../package.json" with { type: "json" };
 
 export function Head() {
   const site = useContext(SiteContext);
@@ -63,6 +64,7 @@ export function Head() {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
+      <meta name="generator" content={`Sourcey ${pkg.version}`} />
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
       <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       <style dangerouslySetInnerHTML={{ __html: langIconCSS() }} />

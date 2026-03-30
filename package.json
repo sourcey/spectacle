@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.3.9",
+  "version": "3.3.10",
   "description": "Open source documentation platform. API references, guides, static output.",
   "type": "module",
   "engines": {
@@ -63,16 +63,20 @@
     "api",
     "documentation",
     "static-site-generator",
-    "docs"
+    "docs",
+    "markdown",
+    "api-docs",
+    "developer-documentation",
+    "doxygen"
   ],
-  "author": "Kam Low <auscaster@gmail.com> (https://sourcey.com)",
+  "author": "Kam Low <oss@0state.com> (https://sourcey.com)",
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nilstate/sourcey.git"
+    "url": "git+https://github.com/sourcey/sourcey.git"
   },
   "bugs": {
-    "url": "https://github.com/nilstate/sourcey/issues"
+    "url": "https://github.com/sourcey/sourcey/issues"
   },
-  "homepage": "https://github.com/nilstate/sourcey#readme"
+  "homepage": "https://sourcey.com"
 }
