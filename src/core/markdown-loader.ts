@@ -373,8 +373,13 @@ function extractFirstHeading(md: string): string | undefined {
 
 /**
  * Derive a URL slug from a file path.
- * "docs/getting-started.md" → "getting-started"
+ * Preserves directory structure to avoid collisions:
+ * "getting-started.md" → "getting-started"
+ * "run/index.md"       → "run/index"
+ * "run/install.md"     → "run/install"
  */
 export function slugFromPath(filePath: string): string {
-  return htmlId(basename(filePath, extname(filePath)));
+  const ext = extname(filePath);
+  const stripped = ext ? filePath.slice(0, -ext.length) : filePath;
+  return stripped.split("/").map((s) => htmlId(s)).join("/");
 }
