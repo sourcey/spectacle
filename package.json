@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.3.8",
+  "version": "3.3.9",
   "description": "Open source documentation platform. API references, guides, static output.",
   "type": "module",
   "engines": {
