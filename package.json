@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/",
-    "dev": "tsc --watch",
+    "watch": "npm run build && tsc --watch --preserveWatchOutput",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/ test/",
@@ -69,6 +69,9 @@
     "developer-documentation",
     "doxygen"
   ],
+  "funding": {
+    "url": "https://sourcey.com"
+  },
   "author": "Kam Low <oss@0state.com> (https://sourcey.com)",
   "license": "AGPL-3.0-only",
   "repository": {

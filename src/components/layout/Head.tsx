@@ -65,6 +65,13 @@ export function Head() {
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="generator" content={`Sourcey ${pkg.version}`} />
+      <meta property="og:title" content={pageTitle} />
+      <meta property="og:description" content={pageDescription} />
+      <meta property="og:type" content="website" />
+      {siteName && <meta property="og:site_name" content={siteName} />}
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content={pageTitle} />
+      <meta name="twitter:description" content={pageDescription} />
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
       <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       <style dangerouslySetInnerHTML={{ __html: langIconCSS() }} />
