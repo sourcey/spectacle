@@ -67,9 +67,11 @@ describe("loadMarkdownPage", { timeout: 30_000 }, () => {
 });
 
 describe("slugFromPath", () => {
-  it("derives slug from filename", () => {
-    expect(slugFromPath("docs/getting-started.md")).toBe("getting-started");
-    expect(slugFromPath("api/PacketStream.md")).toBe("packetstream");
+  it("preserves directory structure in slug", () => {
+    expect(slugFromPath("docs/getting-started.md")).toBe("docs/getting-started");
+    expect(slugFromPath("api/PacketStream.md")).toBe("api/packetstream");
     expect(slugFromPath("intro.md")).toBe("intro");
+    expect(slugFromPath("run/index")).toBe("run/index");
+    expect(slugFromPath("index")).toBe("index");
   });
 });
