@@ -1,5 +1,5 @@
 import { access, readdir } from "node:fs/promises";
-import { resolve, dirname, basename, extname } from "node:path";
+import { resolve, relative, dirname, basename, extname } from "node:path";
 import { createJiti } from "jiti";
 
 // ---------------------------------------------------------------------------
@@ -147,9 +147,16 @@ export interface ResolvedTab {
   doxygen?: ResolvedDoxygenConfig;
 }
 
+export interface ResolvedPage {
+  /** Original config slug (e.g. "run/index") */
+  slug: string;
+  /** Absolute filesystem path to the .md/.mdx file */
+  file: string;
+}
+
 export interface ResolvedGroup {
   label: string;
-  pages: string[];
+  pages: ResolvedPage[];
 }
 
 // ---------------------------------------------------------------------------
@@ -347,14 +354,17 @@ async function resolveGroups(groups: GroupConfig[], tabName: string, configDir: 
     if (!group.group) throw new Error(`Group missing "group" name in tab "${tabName}"`);
     if (!group.pages?.length) throw new Error(`Group "${group.group}" in tab "${tabName}" has no pages`);
 
-    const pages: string[] = [];
+    const pages: ResolvedPage[] = [];
     for (const pageSlug of group.pages) {
       if (pageSlug.includes("*")) {
         const expanded = await expandGlob(pageSlug, configDir);
-        pages.push(...expanded);
+        for (const file of expanded) {
+          const rel = relative(configDir, file).replace(/\.[^.]+$/, "");
+          pages.push({ slug: rel, file });
+        }
       } else {
         const absPath = await resolvePagePath(pageSlug, configDir);
-        pages.push(absPath);
+        pages.push({ slug: pageSlug, file: absPath });
       }
     }
 

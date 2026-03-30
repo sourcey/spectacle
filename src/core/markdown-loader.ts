@@ -372,10 +372,10 @@ function extractFirstHeading(md: string): string | undefined {
 }
 
 /**
- * Derive a URL slug from a file path.
+ * Derive a URL slug from a page path.
  * Preserves directory structure to avoid collisions:
  * "getting-started.md" → "getting-started"
- * "run/index.md"       → "run/index"
+ * "run/index"          → "run/index"
  * "run/install.md"     → "run/install"
  */
 export function slugFromPath(filePath: string): string {
