@@ -153,14 +153,14 @@ function resolveIndexStyle(
  */
 function buildIndexHtml(
   style: "rich" | "structured" | "flat",
-  tabSlug: string,
+  _tabSlug: string,
   _tabLabel: string,
   groupMap: Map<string, GroupEntry[]>,
   pages: Map<string, MarkdownPage>,
 ): string {
-  if (style === "rich") return buildRichIndex(tabSlug, groupMap, pages);
-  if (style === "structured") return buildStructuredIndex(tabSlug, groupMap, pages);
-  return buildFlatIndex(tabSlug, groupMap);
+  if (style === "rich") return buildRichIndex(groupMap, pages);
+  if (style === "structured") return buildStructuredIndex(groupMap, pages);
+  return buildFlatIndex(groupMap);
 }
 
 /**
@@ -168,7 +168,6 @@ function buildIndexHtml(
  * Uses sourcey's card-group/card-item CSS.
  */
 function buildRichIndex(
-  tabSlug: string,
   groupMap: Map<string, GroupEntry[]>,
   pages: Map<string, MarkdownPage>,
 ): string {
@@ -182,7 +181,7 @@ function buildRichIndex(
     if (!page) continue;
 
     const typeCount = items.filter((i) => i.kind !== "group" && i.kind !== "namespace").length;
-    const href = `${tabSlug}/${groupEntry.slug}.html`;
+    const href = `${groupEntry.slug}.html`;
     const desc = page.description || "";
     const meta = typeCount > 0
       ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p>`
@@ -205,7 +204,7 @@ function buildRichIndex(
     const typeCount = items.filter((i) => i.kind !== "namespace").length;
     if (typeCount === 0) continue;
     const firstItem = items[0];
-    const href = `${tabSlug}/${firstItem.slug}.html`;
+    const href = `${firstItem.slug}.html`;
 
     cards.push(
       `<a href="${href}" class="card-item">` +
@@ -227,7 +226,6 @@ function buildRichIndex(
  * Rendered as markdown headings with link lists.
  */
 function buildStructuredIndex(
-  tabSlug: string,
   groupMap: Map<string, GroupEntry[]>,
   pages: Map<string, MarkdownPage>,
 ): string {
@@ -241,10 +239,10 @@ function buildStructuredIndex(
 
     const links: string[] = [];
     if (groupEntry) {
-      links.push(`- [Overview](${tabSlug}/${groupEntry.slug}.html)`);
+      links.push(`- [Overview](${groupEntry.slug}.html)`);
     }
     for (const t of types) {
-      links.push(`- [${t.title}](${tabSlug}/${t.slug}.html)`);
+      links.push(`- [${t.title}](${t.slug}.html)`);
     }
 
     sections.push(`### ${title}\n\n${links.join("\n")}`);
@@ -257,7 +255,6 @@ function buildStructuredIndex(
  * Flat: alphabetical list categorized by kind.
  */
 function buildFlatIndex(
-  tabSlug: string,
   groupMap: Map<string, GroupEntry[]>,
 ): string {
   const byKind = new Map<string, GroupEntry[]>();
@@ -274,7 +271,7 @@ function buildFlatIndex(
   const sections: string[] = [];
   for (const [label, items] of byKind) {
     const sorted = items.sort((a, b) => a.title.localeCompare(b.title));
-    const links = sorted.map((i) => `- [${i.title}](${tabSlug}/${i.slug}.html)`).join("\n");
+    const links = sorted.map((i) => `- [${i.title}](${i.slug}.html)`).join("\n");
     sections.push(`### ${label}\n\n${links}`);
   }
 

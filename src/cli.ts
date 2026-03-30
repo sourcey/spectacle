@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { buildDocs, buildSiteDocs } from "./index.js";
 import { loadConfig } from "./config.js";
 import { init } from "./init.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf8")) as { version: string };
+import pkg from "../package.json" with { type: "json" };
 
 const build = defineCommand({
   meta: {
