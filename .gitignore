@@ -4,6 +4,5 @@ coverage/
 *.tsbuildinfo
 .DS_Store
 .preview/
-plan.md
 .plans/
 result

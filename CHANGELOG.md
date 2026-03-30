@@ -1,22 +1,95 @@
 # Changelog
 
-All notable changes to Sourcey (formerly Spectacle).
+All notable changes to Sourcey.
 
 ## Unreleased
 
-- MDX support for custom component imports
-- Directive components (`:::note`, `:::warning`, `:::code-group`, etc.)
+- Sitemap generation
+- OpenGraph and Twitter Card meta tags in generated output
+- Dockerfile for `sourcey/sourcey` on Docker Hub
+- Nix flake (`nix build github:sourcey/sourcey`)
+- npm homepage, keywords, and funding field updated
+
+## 3.3.10 — 2026-03-30
+
+- Package metadata: homepage → sourcey.com, repo → sourcey/sourcey org
+- Node 24 JSON import compatibility (import attributes)
+
+## 3.3.9 — 2026-03-28
+
+- Fix directory structure preserved in page slugs to avoid nav collisions
+
+## 3.3.8 — 2026-03-28
+
+- Fix slugFromPath to preserve directory structure
+
+## 3.3.7 — 2026-03-27
+
+- Rewrite relative source links to repo URLs at build time
+
+## 3.3.6 — 2026-03-27
+
+- Doxygen index page generation
+- Fix doxygen index content links
 
 ## 3.3.5 — 2026-03-26
 
-- Report the actual package version in the `sourcey` CLI help output
-- Scaffold new projects with the latest published `sourcey` version
+- Report the actual package version in CLI help output
+- Scaffold new projects with latest published sourcey version
 
 ## 3.3.4 — 2026-03-26
 
-- Publish the current release line to npm with the first-page render fix
-- Scaffold new projects with the latest `sourcey` dependency
-- Track the latest published `moxygen` release
+- Render first page directly instead of meta-refresh redirect
+
+## 3.3.2 — 2026-03-25
+
+- Smarter init with auto-detection and directory selection
+- Init reads Doxygen XML_OUTPUT, proper relPath resolution
+
+## 3.3.1 — 2026-03-25
+
+- Fix: use jiti for TS config loading, resolve moxygen from npm registry
+
+## 3.3.0 — 2026-03-25
+
+- `sourcey init` command
+- Scroll tracker `?target` param
+- Node 24 added to CI test matrix
+
+## 3.2.1 — 2026-03-24
+
+- Fix dev-server asset path resolution for npm installs
+
+## 3.2.0 — 2026-03-23
+
+- Internal link resolution between pages
+- `editBasePath` config option
+- Page navigation (prev/next)
+- Brand icons (GitHub, npm, etc.) in navbar and footer
+
+## 3.1.0 — 2026-03-22
+
+- Mobile navigation drawer with breadcrumbs
+- Responsive layout fixes
+- Configurable tab slugs
+- Stone code surfaces, TOC nesting, code indent fix
+- Collapsible schemas, edit page links, dev error recovery
+- Auto Google Fonts loading from config
+- Fix sidebar active state on prose pages, dedupe h1
+- Fix: resolve logo paths relative to config dir
+
+## 3.0.2 — 2026-03-21
+
+- Config live reload, scroll offset fix
+- Geist Mono default font
+- Style improvements
+
+## 3.0.1 — 2026-03-21
+
+- Doxygen integration via Moxygen with glob pages and auto-title
+- TOC scroll tracking, command palette search (Cmd+K), heading scroll offset
+- Google Fonts loading and font stack wrapping
+- Fix: use moxygen from npm registry
 
 ## 3.0.0 — 2026-03-20
 
@@ -49,6 +122,10 @@ Multi-page documentation platform with markdown guides alongside API reference.
 - Footer with social links
 - Cross-page navigation link resolution
 - Hide dark example panel on prose-only pages
+
+## 2.0.2 — 2026-03-19
+
+- Vite dev server with header/TOC components and layout system
 
 ## 2.0.0 — 2026-03-10
 

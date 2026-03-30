@@ -5,7 +5,7 @@
 Sourcey is an open source documentation platform. Point it at an OpenAPI spec, add markdown guides, get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
-[![build](https://img.shields.io/github/actions/workflow/status/nilstate/sourcey/ci.yml?branch=master)](https://github.com/nilstate/sourcey/actions)
+[![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
 [![node](https://img.shields.io/node/v/sourcey)](https://nodejs.org)
 
 ```bash
@@ -14,7 +14,7 @@ npx sourcey init
 
 ![Sourcey](assets/screenshot.jpg)
 
-**[Live demo](https://cheesestore.github.io/)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/nilstate/sourcey)
+**[Live demo](https://cheesestore.github.io/)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/sourcey/sourcey)
 
 ## Features
 
@@ -42,6 +42,22 @@ npx sourcey init
 | Theme presets | Yes | No | No | No | No | Yes |
 | Self-hosted | Yes | No | No | No | Yes | Yes |
 | Pricing | Free / AGPL | $150+/mo | Free / paid | Paid | Free / paid | Free |
+
+## Install
+
+```bash
+# npm (recommended)
+npx sourcey init
+
+# Homebrew
+brew tap sourcey/sourcey && brew install sourcey
+
+# Docker
+docker run -v $(pwd):/docs sourcey/sourcey build
+
+# Nix
+nix run github:sourcey/sourcey
+```
 
 ## Quick start
 
@@ -159,7 +175,7 @@ sourcey validate api.yaml         Validate a spec file
 ## Development
 
 ```bash
-git clone https://github.com/nilstate/sourcey.git
+git clone https://github.com/sourcey/sourcey.git
 cd sourcey && npm install
 npm run build && npm test
 
