@@ -86,6 +86,13 @@ const icons: Record<string, string> = {
 };
 
 /**
+ * Return raw inner SVG content for a named icon, or undefined.
+ */
+export function iconPath(name: string): string | undefined {
+  return icons[name];
+}
+
+/**
  * Render a Heroicon as an inline SVG string.
  * Returns empty string if the icon name is not found.
  */

@@ -7,6 +7,38 @@
  * utilities in generated HTML.
  */
 
+/* ── Page Description (display font) ─────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
+
+#sourcey .page-description {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.375rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: rgb(var(--color-gray-600));
+}
+.dark #sourcey .page-description {
+  color: rgb(var(--color-gray-400));
+}
+
+/* ── Page Top Gradient ────────────────────────────────────────────── */
+
+#sourcey #page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: linear-gradient(to bottom, rgb(var(--color-primary) / 0.03), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+.dark #sourcey #page::before {
+  background: none;
+}
+
 /* ── Scroll Offset (clears fixed navbar on anchor clicks) ──────────── */
 
 [data-traverse-target],
@@ -72,6 +104,24 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+/* ── Prose Iframe (::iframe directive) ────────────────────────────── */
+
+#sourcey .prose-iframe {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgb(var(--color-stone-950) / 0.1);
+}
+.dark #sourcey .prose-iframe {
+  border-color: rgb(255 255 255 / 0.1);
+}
+#sourcey .prose-iframe iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* ── Prose Code Block (fenced code in markdown pages) ─────────────── */
@@ -509,7 +559,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 
 #sourcey .steps {
   margin-left: 0.875rem;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -1108,30 +1158,25 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgb(var(--color-overlay) / 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 15vh;
+  background: transparent;
 }
 
 #sourcey #search-dialog.open {
-  display: flex;
+  display: block;
 }
 
 #sourcey .search-dialog-inner {
-  width: 100%;
-  max-width: 540px;
+  position: absolute;
   background: rgb(var(--color-background-light));
   border-radius: var(--radius);
-  box-shadow: 0 16px 48px rgb(var(--color-overlay) / 0.2);
+  border: 1px solid rgb(var(--color-gray-200) / 0.7);
+  box-shadow: 0 8px 32px rgb(var(--color-overlay) / 0.12);
   overflow: hidden;
-  margin: 0 1rem;
 }
 .dark #sourcey .search-dialog-inner {
   background: rgb(var(--color-gray-900));
-  box-shadow: 0 16px 48px rgb(var(--color-overlay) / 0.5);
+  border-color: rgb(var(--color-gray-700) / 0.5);
+  box-shadow: 0 8px 32px rgb(var(--color-overlay) / 0.4);
 }
 
 #sourcey .search-input-row {
@@ -1201,7 +1246,8 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   gap: 0.25rem;
 }
 
-#sourcey .search-footer kbd {
+#sourcey .search-footer kbd,
+#sourcey #search-open kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1216,7 +1262,8 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   background: rgb(var(--color-gray-50));
   color: rgb(var(--color-gray-500));
 }
-.dark #sourcey .search-footer kbd {
+.dark #sourcey .search-footer kbd,
+.dark #sourcey #search-open kbd {
   border-color: rgb(var(--color-gray-700));
   background: rgb(var(--color-gray-800));
   color: rgb(var(--color-gray-400));
@@ -1277,6 +1324,9 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .search-result-method.method-put { background: var(--method-put); }
 #sourcey .search-result-method.method-delete { background: var(--method-delete); }
 #sourcey .search-result-method.method-patch { background: var(--method-patch); }
+#sourcey .search-result-method.method-tool { background: var(--method-tool); }
+#sourcey .search-result-method.method-resource { background: var(--method-resource); }
+#sourcey .search-result-method.method-prompt { background: var(--method-prompt); }
 
 #sourcey .search-result-path {
   font-family: var(--font-mono);

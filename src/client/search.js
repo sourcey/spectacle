@@ -28,6 +28,7 @@
           tag: e.tab || '',
           content: e.content || '',
           category: e.category || '',
+          featured: !!e.featured,
           searchText: [e.method || '', e.path || '', e.title || '', e.content || '', e.tab || ''].join(' ').toLowerCase()
         };
       });
@@ -39,7 +40,23 @@
     });
   }
 
+  var dialogInner = dialog.querySelector('.search-dialog-inner');
+
+  function positionDialog() {
+    if (!openBtn || !dialogInner) return;
+    var rect = openBtn.getBoundingClientRect();
+    dialogInner.style.position = 'absolute';
+    dialogInner.style.top = (rect.top - 4) + 'px';
+    var extraWidth = Math.min(rect.width * 0.5, 200);
+    dialogInner.style.left = (rect.left - extraWidth / 2) + 'px';
+    dialogInner.style.width = (rect.width + extraWidth) + 'px';
+    dialogInner.style.maxWidth = 'none';
+    dialogInner.style.transform = 'none';
+    dialogInner.style.margin = '0';
+  }
+
   function open() {
+    positionDialog();
     dialog.classList.add('open');
     input.value = '';
     input.focus();
@@ -60,19 +77,21 @@
   function showResults(query) {
     var q = query.toLowerCase().trim();
     if (!q) {
-      filtered = entries.slice(0, 20);
+      // Show featured pages first, then endpoints
+      var featured = entries.filter(function (e) { return e.featured; });
+      var rest = entries.filter(function (e) { return !e.featured && e.category !== 'Sections'; });
+      filtered = featured.concat(rest).slice(0, 30);
     } else {
       var terms = q.split(/\s+/);
       filtered = entries.filter(function (e) {
         return terms.every(function (t) { return e.searchText.indexOf(t) !== -1; });
       });
+      // Sort by category so groups stay together (only for search results)
+      var categoryOrder = { Pages: 0, Sections: 1, Endpoints: 2, Models: 3 };
+      filtered.sort(function (a, b) {
+        return (categoryOrder[a.category] || 9) - (categoryOrder[b.category] || 9);
+      });
     }
-
-    // Sort by category so groups stay together
-    var categoryOrder = { Pages: 0, Sections: 1, Endpoints: 2, Models: 3 };
-    filtered.sort(function (a, b) {
-      return (categoryOrder[a.category] || 9) - (categoryOrder[b.category] || 9);
-    });
 
     activeIndex = filtered.length ? 0 : -1;
     render();

@@ -37,7 +37,7 @@ function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; cla
           </div>
         </div>
         {page.description && (
-          <div class="mt-2 text-lg prose prose-gray dark:prose-invert" style="overflow-wrap: anywhere">
+          <div class="page-description mt-2 text-lg prose prose-gray dark:prose-invert" style="overflow-wrap: anywhere">
             <Markdown content={page.description} inline />
           </div>
         )}
@@ -145,12 +145,10 @@ function ContentFooter() {
 
   return (
     <div class="mt-16 mb-8 flex items-center justify-between border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] pt-6 text-xs text-[rgb(var(--color-gray-400))]">
-      <span>
-        Built with{" "}
-        <a href="https://sourcey.com" target="_blank" rel="noopener noreferrer" class={linkStyle}>
-          Sourcey
-        </a>
-      </span>
+      <a href="https://sourcey.com" target="_blank" rel="noopener noreferrer" class={`flex items-center gap-1.5 ${linkStyle}`}>
+        Built with
+        <img src="https://sourcey.com/sourcey-logo.png" alt="Sourcey" class="h-4 w-4" />
+      </a>
       <div class="flex items-center gap-4">
         {editUrl && (
           <a href={editUrl} target="_blank" rel="noopener noreferrer" class={`${linkStyle} flex items-center gap-1`}>
@@ -184,7 +182,7 @@ function DefaultLayout() {
   const page = useContext(PageContext);
 
   return (
-    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
       <Sidebar />
       <div id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
@@ -220,7 +218,7 @@ function ApiFirstLayout() {
   const page = useContext(PageContext);
 
   return (
-    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
       <Sidebar />
       <div id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (

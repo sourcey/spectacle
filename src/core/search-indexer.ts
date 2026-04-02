@@ -22,6 +22,8 @@ export interface SearchEntry {
   tab: string;
   /** Category for grouping results */
   category: string;
+  /** Featured in default search results */
+  featured?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -37,8 +39,10 @@ export function buildSearchIndex(
   pages: Map<string, MarkdownPage[]>,
   navigation: SiteNavigation,
   assetBase = "/",
+  featuredSlugs: string[] = [],
 ): string {
   const base = assetBase.endsWith("/") ? assetBase : assetBase + "/";
+  const featuredSet = new Set(featuredSlugs);
   const entries: SearchEntry[] = [];
 
   // Index OpenAPI specs
@@ -79,12 +83,15 @@ export function buildSearchIndex(
 
     for (const page of tabPages) {
       // Page itself
+      const pageBase = tabSlug ? `${base}${tabSlug}/` : base;
+      const isFeatured = featuredSet.has(page.slug);
       entries.push({
         title: page.title,
         content: page.description || stripHtml(page.html).slice(0, 200),
-        url: `${base}${tabSlug}/${page.slug}.html`,
+        url: `${pageBase}${page.slug}.html`,
         tab: tabLabel,
         category: "Pages",
+        ...(isFeatured && { featured: true }),
       });
 
       // Headings within page
@@ -92,7 +99,7 @@ export function buildSearchIndex(
         entries.push({
           title: heading.text,
           content: `${page.title} — ${heading.text}`,
-          url: `${base}${tabSlug}/${page.slug}.html#${heading.id}`,
+          url: `${pageBase}${page.slug}.html#${heading.id}`,
           tab: tabLabel,
           category: "Sections",
         });

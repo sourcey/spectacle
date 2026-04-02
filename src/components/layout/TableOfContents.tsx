@@ -1,4 +1,5 @@
 import type { PageHeading } from "../../core/markdown-loader.js";
+import { iconPath } from "../../utils/icons.js";
 
 /**
  * Right-sidebar table of contents for prose pages.
@@ -49,7 +50,10 @@ export function TableOfContents({ headings }: { headings: PageHeading[] }) {
     >
       <div class="z-10 hidden xl:flex box-border max-h-full pl-10 w-[19rem]">
         <div class="text-[rgb(var(--color-gray-600))] text-sm leading-6 w-[16.5rem] overflow-y-auto space-y-2 pb-4 -mt-10 pt-10">
-          <h5 class="font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">On this page</h5>
+          <h5 class="font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] flex items-center gap-1.5">
+            <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" dangerouslySetInnerHTML={{ __html: iconPath("book") ?? "" }} />
+            On this page
+          </h5>
 
           <nav>
             <TocList headings={headings} />

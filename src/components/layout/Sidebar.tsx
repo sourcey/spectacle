@@ -5,11 +5,27 @@ import { Logo } from "../ui/Logo.js";
 import type { SiteNavGroup } from "../../core/navigation.js";
 
 /**
- * Colored method badges for API sidebar items.
+ * Colored method indicator for API sidebar items.
+ * HTTP methods render as text pills. MCP methods render as coloured dots.
  */
 function MethodPill({ method }: { method: string }) {
   const m = method.toUpperCase();
-  const label = m === "DELETE" ? "DEL" : m === "RESOURCE" ? "RES" : m === "PROMPT" ? "PRMT" : m;
+
+  const dotColors: Record<string, string> = {
+    TOOL: "bg-purple-500 dark:bg-purple-400",
+    RESOURCE: "bg-green-500 dark:bg-green-400",
+    PROMPT: "bg-blue-500 dark:bg-blue-400",
+  };
+
+  if (dotColors[m]) {
+    return (
+      <span class="flex items-center w-4 h-[1lh] shrink-0 justify-center">
+        <span class={`w-1.5 h-1.5 rounded-full ${dotColors[m]}`} />
+      </span>
+    );
+  }
+
+  const label = m === "DELETE" ? "DEL" : m;
 
   const colors: Record<string, string> = {
     GET: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
@@ -18,11 +34,6 @@ function MethodPill({ method }: { method: string }) {
     DELETE: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
     DEL: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
     PATCH: "bg-orange-400/20 dark:bg-orange-400/20 text-orange-700 dark:text-orange-400",
-    TOOL: "bg-purple-400/20 dark:bg-purple-400/20 text-purple-700 dark:text-purple-400",
-    RESOURCE: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
-    RES: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
-    PROMPT: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
-    PRMT: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
   };
 
   return (
@@ -49,7 +60,7 @@ function NavGroups({ groups, activePageSlug, base }: {
           {group.label && (
             <h5 class="nav-group-label">{group.label}</h5>
           )}
-          <ul>
+          <ul class="space-y-0.5">
             {group.items.map((item) => {
               const isActive = item.id === activePageSlug;
               return (

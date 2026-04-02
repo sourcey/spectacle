@@ -349,7 +349,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       }
     }
 
-    return buildSearchIndex(specsBySlug, markdownPagesByTab, navigation);
+    return buildSearchIndex(specsBySlug, markdownPagesByTab, navigation, "/", config.search.featured);
   }
 
   const viteConfig: InlineConfig = {

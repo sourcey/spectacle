@@ -18,6 +18,7 @@ import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation } from "./core
 import type { SiteTab } from "./core/navigation.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import type { SiteConfig } from "./renderer/context.js";
+import { generateLlmsTxt, generateLlmsFullTxt } from "./renderer/llms.js";
 
 // ---------------------------------------------------------------------------
 // Build options
@@ -175,11 +176,15 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
       markdownPagesByTab.set(tab.slug, tabPages);
     }
   }
-  const searchIndex = buildSearchIndex(specsBySlug, markdownPagesByTab, navigation);
+  const searchIndex = buildSearchIndex(specsBySlug, markdownPagesByTab, navigation, "/", config.search.featured);
+  const llmsTxt = generateLlmsTxt(sitePages, navigation, site);
+  const llmsFullTxt = generateLlmsFullTxt(sitePages, navigation, site);
 
   if (!options.skipWrite) {
     await buildSiteHtml(sitePages, navigation, outputDir, site, {
       searchIndex,
+      llmsTxt,
+      llmsFullTxt,
       embeddable: options.embeddable,
     });
   }

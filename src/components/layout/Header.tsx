@@ -104,7 +104,7 @@ export function Header() {
               </div>
 
               {/* Search bar (desktop) */}
-              <div class="relative hidden lg:flex items-center flex-1 z-20 gap-2.5">
+              <div class="relative hidden lg:flex items-center flex-1 z-20 gap-2">
                 <button
                   id="search-open"
                   type="button"
@@ -113,9 +113,8 @@ export function Header() {
                 >
                   <div class="flex items-center gap-2 min-w-[42px]">
                     <SearchIcon />
-                    <div class="truncate min-w-0">Search docs...</div>
+                    <div class="truncate min-w-0">Type <kbd>/</kbd> to search</div>
                   </div>
-                  <kbd class="flex-none ml-auto size-5 flex items-center justify-center text-xs font-semibold text-[rgb(var(--color-gray-400))] bg-[rgb(var(--color-gray-100)/0.5)] dark:bg-[rgb(var(--color-surface-dark-tint)/0.1)] border border-[rgb(var(--color-gray-200))] dark:border-[rgb(var(--color-border-dark-subtle)/0.1)] rounded-sm">/</kbd>
                 </button>
               </div>
 
@@ -151,17 +150,15 @@ export function Header() {
                     )}
                   </ul>
                 </nav>
-                <div class="flex items-center">
-                  <button
-                    id="theme-toggle"
-                    type="button"
-                    aria-label="Toggle theme"
-                    class="group p-2 flex items-center justify-center cursor-pointer text-[rgb(var(--color-gray-400))] hover:text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-500))] dark:hover:text-[rgb(var(--color-gray-300))]"
-                  >
-                    <SunIcon />
-                    <MoonIcon />
-                  </button>
-                </div>
+                <button
+                  id="theme-toggle"
+                  type="button"
+                  aria-label="Toggle theme"
+                  class="p-2 flex items-center justify-center cursor-pointer text-[rgb(var(--color-gray-400))] hover:text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-500))] dark:hover:text-[rgb(var(--color-gray-300))]"
+                >
+                  <SunIcon />
+                  <MoonIcon />
+                </button>
               </div>
 
               {/* Mobile actions: search + hamburger */}
