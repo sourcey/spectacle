@@ -65,6 +65,9 @@
   --method-put: #d97706;
   --method-delete: #dc2626;
   --method-patch: #9333ea;
+  --method-tool: #9333ea;
+  --method-resource: #16a34a;
+  --method-prompt: #2563eb;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;

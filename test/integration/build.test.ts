@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildDocs } from "../../src/index.js";
+import { buildDocs, buildSiteDocs } from "../../src/index.js";
 import { resolve } from "node:path";
 import { readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -120,6 +120,14 @@ describe("buildDocs (integration)", () => {
 
       const js = await readFile(resolve(outputDir, "sourcey.js"), "utf-8");
       expect(js).toContain("data-traverse-target");
+
+      const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
+      expect(llms).toContain("# Petstore");
+      expect(llms).toContain("List all pets");
+
+      const llmsFull = await readFile(resolve(outputDir, "llms-full.txt"), "utf-8");
+      expect(llmsFull).toContain("Petstore");
+      expect(llmsFull).toContain("GET /pets");
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }
@@ -159,6 +167,32 @@ describe("buildDocs (integration)", () => {
       expect(html).not.toContain("<!DOCTYPE html>");
       expect(html).not.toContain("<html");
       expect(html).toContain("Petstore");
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("generates llms artifacts for mixed sites with markdown, OpenAPI, and MCP tabs", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-llms-site");
+    const configDir = resolve(import.meta.dirname, "../llms-site");
+    try {
+      const result = await buildSiteDocs({
+        configDir,
+        outputDir,
+      });
+
+      expect(result.pageCount).toBeGreaterThan(0);
+
+      const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
+      expect(llms).toContain("# Mixed Docs");
+      expect(llms).toContain("[Welcome to Mixed Docs](introduction.html)");
+      expect(llms).toContain("List all pets");
+      expect(llms).toContain("nitro_get_status");
+
+      const llmsFull = await readFile(resolve(outputDir, "llms-full.txt"), "utf-8");
+      expect(llmsFull).toContain("Welcome to Mixed Docs");
+      expect(llmsFull).toContain("GET /pets");
+      expect(llmsFull).toContain("TOOL nitro_get_status");
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }

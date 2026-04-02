@@ -58,6 +58,11 @@ export interface SourceyConfig {
   footer?: {
     links?: NavbarLink[];
   };
+  /** Search configuration. */
+  search?: {
+    /** Page slugs to feature at the top of search results when no query is entered. */
+    featured?: string[];
+  };
 }
 
 export type DoxygenIndexStyle = "auto" | "rich" | "structured" | "flat" | "none";
@@ -132,6 +137,7 @@ export interface ResolvedConfig {
   tabs: ResolvedTab[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
   footer: { links: NavbarLink[] };
+  search: { featured: string[] };
 }
 
 export interface ResolvedDoxygenConfig {
@@ -227,6 +233,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
     tabs: [{ label: "API Reference", slug: "api", openapi: absSpec }],
     navbar: { links: [] },
     footer: { links: [] },
+    search: { featured: [] },
   };
 }
 
@@ -255,6 +262,9 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     },
     footer: {
       links: raw.footer?.links ?? [],
+    },
+    search: {
+      featured: raw.search?.featured ?? [],
     },
   };
 }

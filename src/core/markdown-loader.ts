@@ -323,10 +323,14 @@ ${content.trim()}
     },
   );
 
-  // Auto-wrap consecutive accordion items in an accordion-group
+  // Auto-wrap consecutive accordion items in an accordion-group (skip already-wrapped)
   html = html.replace(
     /(<details class="accordion-item">[\s\S]*?<\/details>\s*){2,}/g,
-    (match) => `<div class="accordion-group not-prose">\n${match.trim()}\n</div>`,
+    (match, _p1, offset) => {
+      const before = html.slice(Math.max(0, offset - 40), offset);
+      if (before.includes("accordion-group")) return match;
+      return `<div class="accordion-group not-prose">\n${match.trim()}\n</div>`;
+    },
   );
 
   return html;

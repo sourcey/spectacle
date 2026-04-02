@@ -54,7 +54,7 @@ export async function buildSite(
   navigation: SiteNavigation,
   outputDir: string,
   site: SiteConfig,
-  options?: { embeddable?: boolean; searchIndex?: string },
+  options?: { embeddable?: boolean; searchIndex?: string; llmsTxt?: string; llmsFullTxt?: string },
 ): Promise<BuildOutput> {
   const resolvedDir = resolve(outputDir);
   await mkdir(resolvedDir, { recursive: true });
@@ -88,6 +88,14 @@ export async function buildSite(
 
   if (options?.searchIndex) {
     await writeFile(resolve(resolvedDir, "search-index.json"), options.searchIndex, "utf-8");
+  }
+
+  if (options?.llmsTxt) {
+    await writeFile(resolve(resolvedDir, "llms.txt"), options.llmsTxt, "utf-8");
+  }
+
+  if (options?.llmsFullTxt) {
+    await writeFile(resolve(resolvedDir, "llms-full.txt"), options.llmsFullTxt, "utf-8");
   }
 
   const urls = pages.map(p => `  <url><loc>${p.outputPath}</loc></url>`);

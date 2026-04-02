@@ -25,6 +25,28 @@ export interface PageHeading {
   id: string;
 }
 
+/* ── Shared directive helpers ─────────────────────────────────────── */
+
+function parseDirectiveAttrs(raw: string): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  for (const [, k, v] of raw.matchAll(/(\w+)="([^"]*)"/g)) attrs[k] = v;
+  return attrs;
+}
+
+function escAttr(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+function requireHttps(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    return u.href;
+  } catch {
+    return null;
+  }
+}
+
 /* ── Video directive ──────────────────────────────────────────────── */
 
 interface VideoToken extends Tokens.Generic {
@@ -58,15 +80,13 @@ const videoExtension: import("marked").MarkedExtension = {
       tokenizer(src: string): VideoToken | undefined {
         const match = src.match(/^::video\[([^\]]+)\](?:\{([^}]*)\})?/);
         if (!match) return undefined;
-        const url = match[1];
-        const attrs = match[2] ?? "";
-        const titleMatch = attrs.match(/title="([^"]*)"/);
-        return { type: "video", raw: match[0], url, title: titleMatch?.[1] ?? "" };
+        const attrs = parseDirectiveAttrs(match[2] ?? "");
+        return { type: "video", raw: match[0], url: match[1], title: attrs.title ?? "" };
       },
       renderer(token: Tokens.Generic): string {
         const { url, title } = token as VideoToken;
         const parsed = parseVideoUrl(url);
-        const safeTitle = title.replace(/"/g, "&quot;").replace(/</g, "&lt;");
+        const safeTitle = escAttr(title);
         if (parsed.type === "iframe") {
           return `<div class="prose-video not-prose">
 <iframe src="${parsed.src}" title="${safeTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
@@ -82,8 +102,45 @@ const videoExtension: import("marked").MarkedExtension = {
   ],
 };
 
+/* ── Iframe directive ─────────────────────────────────────────────── */
+
+interface IframeToken extends Tokens.Generic {
+  type: "iframe";
+  raw: string;
+  url: string;
+  title: string;
+  height: number;
+}
+
+const iframeExtension: import("marked").MarkedExtension = {
+  extensions: [
+    {
+      name: "iframe",
+      level: "block",
+      start(src: string) {
+        return src.match(/::iframe\[/)?.index;
+      },
+      tokenizer(src: string): IframeToken | undefined {
+        const match = src.match(/^::iframe\[([^\]]+)\](?:\{([^}]*)\})?/);
+        if (!match) return undefined;
+        const attrs = parseDirectiveAttrs(match[2] ?? "");
+        const height = parseInt(attrs.height ?? "", 10);
+        return { type: "iframe", raw: match[0], url: match[1], title: attrs.title ?? "", height: Number.isFinite(height) ? height : 400 };
+      },
+      renderer(token: Tokens.Generic): string {
+        const { url, title, height } = token as IframeToken;
+        const safeUrl = requireHttps(url);
+        if (!safeUrl) return `<p>[iframe: invalid URL]</p>\n`;
+        return `<div class="prose-iframe not-prose" style="height:${height}px">
+<iframe src="${escAttr(safeUrl)}" title="${escAttr(title)}" frameborder="0" loading="lazy" allowfullscreen></iframe>
+</div>\n`;
+      },
+    },
+  ],
+};
+
 /** Singleton Marked instance — code blocks get Shiki + prose wrapper, headings get IDs. */
-const marked = new Marked(videoExtension, {
+const marked = new Marked(videoExtension, iframeExtension, {
   renderer: {
     code({ text, lang }: Tokens.Code): string {
       return renderCodeBlock(text, lang);
