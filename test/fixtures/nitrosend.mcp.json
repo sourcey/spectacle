@@ -1,0 +1,1437 @@
+{
+  "mcpSpec": "0.2.0",
+  "mcpVersion": "2025-11-25",
+  "server": {
+    "name": "nitrosend",
+    "version": "1.0.0"
+  },
+  "description": "Multi-channel marketing automation platform. Use nitro_get_status first to understand account state. Read nitro://guide for vocabulary and workflow.",
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": false
+    },
+    "prompts": {
+      "listChanged": false
+    }
+  },
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://api.nitrosend.com/mcp"
+  },
+  "tools": [
+    {
+      "name": "nitro_get_status",
+      "description": "Get current account health, onboarding status, and recommendations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_query",
+      "description": "Query any Nitrosend entity. Returns paginated results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "string",
+            "enum": [
+              "flows",
+              "campaigns",
+              "templates",
+              "segments",
+              "contacts",
+              "lists",
+              "events",
+              "imports",
+              "messages"
+            ],
+            "description": "Which entity type to query. Use nitro_search_contacts for full-text contact search."
+          },
+          "filters": {
+            "type": "object",
+            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\nflows: status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\ncampaigns: status (draft/active/paused/completed), search (string)\ntemplates: subject (string, ILIKE match on subject line)\nsegments: name (string, ILIKE match)\ncontacts: query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\nlists: name (string, ILIKE match)\nevents: name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\nimports: status (pending/processing/completed/failed)\nmessages: channel (email/sms), status (queued/sent/failed), to (string, recipient address)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default 1)"
+          },
+          "per": {
+            "type": "integer",
+            "description": "Results per page (max 50, default 25)"
+          }
+        },
+        "required": [
+          "entity"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_search_contacts",
+      "description": "Search contacts by email, name, or phone. Returns summary list or full profile.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Email address, name, or phone number"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "profile"
+            ],
+            "description": "summary = list, profile = single contact detail (default: summary)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default 1)"
+          },
+          "per": {
+            "type": "integer",
+            "description": "Results per page (max 50, default 25)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_set_brand",
+      "description": "Set up brand identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). Sync mode (default) returns results immediately — best when you need brand data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Website URL to scrape brand from"
+          },
+          "logo_url": {
+            "type": "string",
+            "description": "Direct URL to a logo image (png/jpg/webp) to attach"
+          },
+          "fields": {
+            "type": "object",
+            "description": "Direct brand field updates",
+            "properties": {
+              "company_name": {
+                "type": "string"
+              },
+              "company_description": {
+                "type": "string"
+              },
+              "brand_color": {
+                "type": "string",
+                "description": "Hex color e.g. #ff0000"
+              },
+              "text_color": {
+                "type": "string",
+                "description": "Hex color"
+              },
+              "bg_color": {
+                "type": "string",
+                "description": "Hex color"
+              },
+              "font_heading": {
+                "type": "string"
+              },
+              "font_body": {
+                "type": "string"
+              },
+              "physical_address": {
+                "type": "string"
+              }
+            }
+          },
+          "document": {
+            "type": "string",
+            "description": "Full brand voice markdown document"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Preview changes without persisting",
+            "default": false
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "sync",
+              "async"
+            ],
+            "description": "sync (default) or async for URL scraping",
+            "default": "sync"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional dedup key"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_manage_audience",
+      "description": "Create contacts, manage subscriptions, lists, events, segments, and tags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "create_contact",
+              "set_subscription",
+              "manage_list",
+              "record_event",
+              "delete_segment",
+              "bulk_tag"
+            ],
+            "description": "Which audience operation to perform. Each operation expects specific params:\n\ncreate_contact — params: {email (string), phone (string), opt_in (boolean, recommended: true), attributes: {first_name, last_name, country_code, source}}\nset_subscription — params: {contact_id (required), kind: \"email\"|\"phone\" (required), opt_in (boolean), opt_out (boolean), unsubscribe_all (boolean)}. Value auto-resolved from contact.\nmanage_list — params: {action: \"create\"|\"rename\"|\"delete\"|\"add_contacts\"|\"remove_contacts\" (required), list_id (integer), name (string), contact_ids (integer[]) or emails (string[])}\nrecord_event — params: {contact_id or contact_email (one required), event (required, custom names allowed e.g. order_confirmed), data (object, max 32KB), resource_uid, resource_name, resource_url, amount}\ndelete_segment — params: {segment_id (required), force (boolean)}. Requires confirm: true.\nbulk_tag — params: {contact_ids (integer[], required), tags (string[], required), tag_action: \"add\"|\"remove\"|\"set\" (default: \"add\")}"
+          },
+          "params": {
+            "type": "object",
+            "description": "Operation-specific parameters. See operation description for required/optional fields."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Preview changes without persisting (default: false)",
+            "default": false
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Required for destructive operations: delete_segment, manage_list with action='delete'",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional deduplication key. Same key returns cached result."
+          }
+        },
+        "required": [
+          "operation",
+          "params"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_define_segment",
+      "description": "Define a contact segment with explicit filters and preview. Defaults to preview_only: true (dry preview without saving). Set preview_only: false and provide a name to persist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Segment name (required when preview_only: false)"
+          },
+          "filters": {
+            "type": "array",
+            "description": "Array of filter objects. Each filter has:\n- name: filter alias from flows.yml (e.g. \"contact_email\", \"contact_first_name\", \"contact_country\", \"contact_subscribed_email\", \"contact_created_at\", \"contact_tag\")\n- predicate: Ransack predicate — eq, not_eq, cont, not_cont, start, end, gt, lt, gteq, lteq, present, blank, true, false, in, not_in\n- value: filter value (string, number, boolean, or array for in/not_in). For present/blank/true/false predicates, pass true.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "enum": [
+                    "contact_first_name",
+                    "contact_last_name",
+                    "contact_phone_number",
+                    "contact_email",
+                    "contact_country",
+                    "contact_subscribed_phone",
+                    "contact_subscribed_email",
+                    "contact_created_at",
+                    "contact_last_interacted_at",
+                    "contact_source",
+                    "contact_tag",
+                    "contact_verified",
+                    "contact_enriched"
+                  ],
+                  "description": "Filter name — read nitro://schema for full details"
+                },
+                "predicate": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "not_eq",
+                    "cont",
+                    "not_cont",
+                    "start",
+                    "end",
+                    "gt",
+                    "lt",
+                    "gteq",
+                    "lteq",
+                    "present",
+                    "blank",
+                    "true",
+                    "false",
+                    "in",
+                    "not_in"
+                  ],
+                  "description": "Ransack predicate"
+                },
+                "value": {
+                  "description": "Filter value — string, number, boolean, or array. For present/blank predicates, pass true."
+                }
+              },
+              "required": [
+                "name",
+                "predicate",
+                "value"
+              ]
+            }
+          },
+          "segment_id": {
+            "type": "integer",
+            "description": "Existing segment ID to update (omit for new segment)"
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "Only preview matching contacts, do not save (default: true). Set to false + provide name to persist.",
+            "default": true
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional deduplication key"
+          }
+        },
+        "required": [
+          "filters"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_import_contacts",
+      "description": "Import contacts from inline records (< 100) or reference a pre-uploaded CSV import. Email contacts are auto-subscribed by default. For SMS-only contacts, set opt_in: true explicitly (TCPA compliance).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "description": "Array of contact objects (max 100): {email, phone, first_name, last_name, country_code, source, opt_in}",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "opt_in": {
+                  "type": "boolean",
+                  "description": "Subscribe contact for delivery. Defaults to true for email contacts. Must be explicitly true for SMS (TCPA). Set false to import without subscribing."
+                }
+              }
+            }
+          },
+          "import_id": {
+            "type": "integer",
+            "description": "Existing Import record ID for CSV processing"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Preview import without persisting (default: false)",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional deduplication key"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_compose_email",
+      "description": "Create, update, or clone an email template. Brand theme applied automatically.\n\nModes (auto-detected):\n- Create: provide sections + subject (required). Sections define the email layout.\n- Update: provide template_id + any fields to change. Use if_version for optimistic concurrency.\n- Clone: provide based_on (source template_id). Optionally override sections/subject/name.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate templates.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "description": "Array of section objects: {type, props, styles?}. Read nitro://schema for full prop specs.\n\nSection types and key props:\n- header: {logo_url, logo_alt, logo_width, background_color}\n- text: {content (HTML string)}\n- image: {src, alt, href, width}\n- button: {text, href, background_color, text_color, align, border_radius}\n- columns: {columns: [{width, sections: [...]}]} — nested sections inside columns\n- product: {name, price, image_url, href, description}\n- social: {links: [{platform, url}], align}\n- divider: {color, width, padding}\n- spacer: {height}\n- footer: {company_name, address, unsubscribe_text}",
+            "items": {
+              "type": "object"
+            }
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line (recommended under 60 chars)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Template display name"
+          },
+          "preheader": {
+            "type": "string",
+            "description": "Email preheader text shown in inbox preview"
+          },
+          "from_name": {
+            "type": "string",
+            "description": "Sender name (falls back to account default)"
+          },
+          "from_email": {
+            "type": "string",
+            "description": "Sender email (falls back to account default)"
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "Reply-to email address"
+          },
+          "theme": {
+            "type": "object",
+            "description": "Theme overrides merged on top of brand theme. Keys: brand_color (hex), bg_color (hex), text_color (hex), font_body (string), font_heading (string), logo_url (URL)"
+          },
+          "template_id": {
+            "type": "integer",
+            "description": "Template ID for update mode — provide with fields to change"
+          },
+          "based_on": {
+            "type": "integer",
+            "description": "Source template ID for clone mode — creates a copy"
+          },
+          "if_version": {
+            "type": "integer",
+            "description": "Optimistic concurrency — rejects update if template version mismatches"
+          },
+          "goal": {
+            "type": "string",
+            "description": "Goal-driven composition (Phase 5 — not yet available)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Validate and preview without persisting",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Dedup key — same key returns cached result"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_compose_flow",
+      "description": "Create or replace an automation flow from trigger + steps array.\nCreates a draft — use nitro_control_delivery to approve and activate.\n\nModes: create (new flow), replace (rebuild existing — requires confirm: true + flow_id), patch (rename only — requires flow_id).\nStep types: email (subject + design or body), sms (body), wait (duration in seconds), split (filters + yes/no branches, no nesting), emit_event (fire event for contact to trigger other flows), webhook (url + optional method/headers/body), subscribe (opt-in contact to channel), unsubscribe (opt-out contact from channel).\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate flows.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Flow name (required for create mode)"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "create",
+              "replace",
+              "patch"
+            ],
+            "default": "create",
+            "description": "create: new flow; replace: rebuild existing flow graph; patch: metadata only"
+          },
+          "flow_id": {
+            "type": "integer",
+            "description": "Required for replace/patch modes"
+          },
+          "goal": {
+            "type": "string",
+            "description": "Goal string for AI generation (Phase 5C — feature gated)"
+          },
+          "trigger": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "type": "string",
+                "description": "Trigger event name. Built-in: contact_add, contact_enriched, keyword, message, list_add, list_remove, product_view, checkout, cart_add, cart_remove, cart_abandoned, browse_abandoned. Custom: any lowercase alphanumeric with underscores (e.g. order_confirmed, password_reset)."
+              },
+              "segment_id": {
+                "type": "integer",
+                "description": "Optional segment filter on trigger"
+              },
+              "contact_list_id": {
+                "type": "integer",
+                "description": "Optional contact list for audience targeting"
+              },
+              "data": {
+                "type": "object",
+                "description": "Event-specific config (e.g. {keywords: ['STOP']})"
+              }
+            }
+          },
+          "steps": {
+            "type": "array",
+            "description": "Ordered array of flow steps. Required props per type:\n- email: subject (required), design ({sections, theme}) or body, preheader, from_name, from_email, reply_to, transactional (boolean), bcc (string, optional BCC email address)\n- sms: body (required)\n- wait: duration (integer, seconds — e.g. 86400 = 1 day)\n- split: filters (required, [{name, predicate, value}]), yes (steps array), no (steps array). NO nested splits.\n- emit_event: event_name (required), event_data (object), forward_event_data (boolean)\n- webhook: url (required), method (POST or PUT, default POST), headers (object), body (template string with merge tags)\n- subscribe: channel (phone, email, or all — default phone). Subscribes the contact.\n- unsubscribe: channel (phone, email, or all — default phone). Unsubscribes the contact.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "email",
+                    "sms",
+                    "wait",
+                    "split",
+                    "emit_event",
+                    "webhook",
+                    "subscribe",
+                    "unsubscribe"
+                  ]
+                },
+                "subject": {
+                  "type": "string",
+                  "description": "Email subject line (email steps)"
+                },
+                "body": {
+                  "type": "string",
+                  "description": "SMS body text (sms steps) or email plain text"
+                },
+                "preheader": {
+                  "type": "string",
+                  "description": "Email preheader (email steps)"
+                },
+                "from_name": {
+                  "type": "string",
+                  "description": "Sender name override (email steps)"
+                },
+                "from_email": {
+                  "type": "string",
+                  "description": "Sender email override (email steps)"
+                },
+                "reply_to": {
+                  "type": "string",
+                  "description": "Reply-to override (email steps)"
+                },
+                "design": {
+                  "type": "object",
+                  "description": "Email design: { sections: [...], theme: {...} }"
+                },
+                "transactional": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Mark email as transactional. Skips subscription check, CAN-SPAM footer, warmup, List-Unsubscribe, and tracking. Use for receipts, password resets, etc."
+                },
+                "bcc": {
+                  "type": "string",
+                  "description": "Optional BCC email address. A copy of each email sent by this step will be blind-copied to this address."
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Wait duration in seconds (wait steps)"
+                },
+                "event_name": {
+                  "type": "string",
+                  "description": "Event name to fire (emit_event steps). Lowercase alphanumeric with underscores."
+                },
+                "event_data": {
+                  "type": "object",
+                  "description": "Static data payload for emitted event (emit_event steps)"
+                },
+                "forward_event_data": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Merge triggering event data into emitted event (emit_event steps)"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Webhook URL (webhook steps). Supports merge tags."
+                },
+                "method": {
+                  "type": "string",
+                  "enum": [
+                    "POST",
+                    "PUT"
+                  ],
+                  "default": "POST",
+                  "description": "HTTP method (webhook steps)"
+                },
+                "headers": {
+                  "type": "object",
+                  "description": "Custom HTTP headers as key-value pairs (webhook steps)"
+                },
+                "filters": {
+                  "type": "array",
+                  "description": "Split condition filters",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "enum": [
+                          "contact_first_name",
+                          "contact_last_name",
+                          "contact_phone_number",
+                          "contact_email",
+                          "contact_country",
+                          "contact_subscribed_phone",
+                          "contact_subscribed_email",
+                          "contact_created_at",
+                          "contact_last_interacted_at",
+                          "contact_source",
+                          "contact_tag",
+                          "contact_verified",
+                          "contact_enriched"
+                        ],
+                        "description": "Filter name — read nitro://schema for full details"
+                      },
+                      "predicate": {
+                        "type": "string",
+                        "enum": [
+                          "eq",
+                          "not_eq",
+                          "cont",
+                          "not_cont",
+                          "start",
+                          "end",
+                          "gt",
+                          "lt",
+                          "gteq",
+                          "lteq",
+                          "present",
+                          "blank",
+                          "true",
+                          "false",
+                          "in",
+                          "not_in"
+                        ],
+                        "description": "Ransack predicate"
+                      },
+                      "value": {
+                        "description": "Filter value. For present/blank/true/false predicates, omit or pass true."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "predicate"
+                    ]
+                  }
+                },
+                "yes": {
+                  "type": "array",
+                  "description": "Steps for yes branch (split steps, NO nested splits)",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "no": {
+                  "type": "array",
+                  "description": "Steps for no branch (split steps, NO nested splits)",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "phone",
+                    "email",
+                    "all"
+                  ],
+                  "default": "phone",
+                  "description": "Channel for subscribe/unsubscribe steps"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false,
+            "description": "Preview graph without persisting"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Deduplication key for retry safety"
+          },
+          "confirm": {
+            "type": "boolean",
+            "default": false,
+            "description": "Required for replace mode"
+          }
+        },
+        "required": [
+          "name",
+          "trigger",
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_compose_campaign",
+      "description": "Create an email or SMS campaign with audience targeting and optional scheduling.\nCreates a draft — use nitro_control_delivery to approve and send.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n- Inline: sections + subject (required) — compose email design directly\n- Clone: template_id — clone design from existing template, optionally override subject\n- Plain text: body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Campaign name"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email",
+              "sms"
+            ],
+            "default": "email",
+            "description": "Auto-detected as 'email' when sections or template_id provided. Set explicitly to 'sms' for SMS campaigns."
+          },
+          "goal": {
+            "type": "string",
+            "description": "Goal string for AI generation (Phase 5C — feature gated)"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line (email campaigns)"
+          },
+          "preheader": {
+            "type": "string",
+            "description": "Email preheader (email campaigns)"
+          },
+          "from_name": {
+            "type": "string",
+            "description": "Sender name override"
+          },
+          "from_email": {
+            "type": "string",
+            "description": "Sender email override"
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "Reply-to email override"
+          },
+          "body": {
+            "type": "string",
+            "description": "SMS body text (sms campaigns) or email plain text"
+          },
+          "sections": {
+            "type": "array",
+            "description": "Email design sections array — same format as nitro_compose_email. Requires subject.",
+            "items": {
+              "type": "object"
+            }
+          },
+          "theme": {
+            "type": "object",
+            "description": "Email theme overrides merged on brand theme: {brand_color, bg_color, text_color, font_body, font_heading, logo_url}"
+          },
+          "template_id": {
+            "type": "integer",
+            "description": "Clone design from existing template (email campaigns)"
+          },
+          "audience": {
+            "type": "object",
+            "description": "Target audience for the campaign",
+            "properties": {
+              "contact_list_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "description": "Send to contacts in these lists (union with dedup)"
+              },
+              "contact_list_id": {
+                "type": "integer",
+                "description": "Deprecated — use contact_list_ids. Send to contacts in this list"
+              },
+              "segment_id": {
+                "type": "integer",
+                "description": "Filter trigger to contacts matching this segment"
+              }
+            }
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 delivery time (e.g. '2026-03-01T10:00:00Z'). Omit for manual send."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Preview campaign without creating (default: false)",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional deduplication key"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_manage_domains",
+      "description": "Manage sending domains — add, verify, list, and remove. Domain verification required before sending email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "add",
+              "verify",
+              "list",
+              "remove"
+            ],
+            "description": "Which domain operation to perform:\n\nadd — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records.\n    The user must add these DNS records at their domain registrar.\n    Idempotent: calling add on a pending domain re-returns the DNS records.\nverify — params: {domain_name (required)}. Checks with the email provider if DNS records have propagated.\n    If verified, completes the domain_verified onboarding step and unlocks sending.\n    If still pending, returns the DNS records again so you can re-show them to the user.\nlist — no params needed. Returns all account domains with their verification status and DNS records.\n    Includes domain_limit (from tier) and domains_used count.\nremove — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
+          },
+          "params": {
+            "type": "object",
+            "description": "Operation-specific parameters.",
+            "properties": {
+              "domain_name": {
+                "type": "string",
+                "description": "Domain to manage (e.g. 'send.acme.com'). Required for add, verify, remove."
+              }
+            },
+            "additionalProperties": false
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Required for remove operation (destructive)",
+            "default": false
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_configure_account",
+      "description": "Configure account sender defaults (from_name, from_email, reply_to) and test email recipients. Call with no fields to read current config. from_email must match a verified domain.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_name": {
+            "type": "string",
+            "description": "Sender display name (e.g. 'Acme Marketing')"
+          },
+          "from_email": {
+            "type": "string",
+            "description": "Sender email address (must match a verified domain)"
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "Reply-to email address"
+          },
+          "test_email_recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "maxItems": 5,
+            "description": "Saved email addresses for test sends (max 5). Pass empty array to clear."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_review_and_test",
+      "description": "Review email content with validation, spam scoring, and preflight checks (review), or send a real test email (send_test). review is read-only analysis; send_test delivers a real email to the specified recipients. For flow targets, review covers every email step. Use template_id with send_test to target a specific email template.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "template",
+              "flow",
+              "campaign"
+            ],
+            "description": "Entity type. Required for review. Optional for send_test when template_id is provided directly."
+          },
+          "target_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Entity ID. Required with target for review. Optional for send_test when template_id is provided directly."
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "review",
+              "send_test"
+            ],
+            "description": "review (read-only analysis of the target) or send_test (send a real test email for one template)"
+          },
+          "template_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Template ID to send a test for directly, or to choose a specific email step in a multi-email flow"
+          },
+          "contact_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Contact ID — uses their email as recipient and their data for merge-tag personalization"
+          },
+          "send_test_to": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "maxItems": 5,
+            "description": "Explicit email recipients (max 5). Omit to use saved recipients or account owner."
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_control_delivery",
+      "description": "Manage delivery lifecycle for flows and campaigns. State: draft -> approve -> live/schedule <> pause, cancel -> archive.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "flow",
+              "campaign"
+            ],
+            "description": "Entity type"
+          },
+          "target_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Entity ID"
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject",
+              "live",
+              "schedule",
+              "pause",
+              "resume",
+              "cancel",
+              "archive",
+              "restore"
+            ],
+            "description": "Lifecycle operation. approve runs preflight. schedule is campaign-only (requires scheduled_at). Most require prior approval."
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Required for schedule operation (ISO 8601 datetime)"
+          }
+        },
+        "required": [
+          "target_type",
+          "target_id",
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_get_insights",
+      "description": "Get email analytics with trends, benchmarks, and recommendations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "account",
+              "flow",
+              "campaign",
+              "message"
+            ],
+            "description": "Scope of insights: account-wide, per flow, per campaign, or per message"
+          },
+          "entity_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Required for flow/campaign/message scope"
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "7d",
+              "30d",
+              "90d"
+            ],
+            "default": "30d",
+            "description": "Time period for metrics (default 30d)"
+          }
+        },
+        "required": [
+          "scope"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_configure_providers",
+      "description": "Configure BYO email provider credentials or check provider status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "configure",
+              "status"
+            ],
+            "description": "configure sets BYO provider credentials; status checks current provider health"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "mailgun",
+              "ses"
+            ],
+            "description": "Email provider (required for configure)"
+          },
+          "api_key": {
+            "type": "string",
+            "description": "Provider API key (required for configure, never returned in responses)"
+          },
+          "api_secret": {
+            "type": "string",
+            "description": "Optional provider secret (never returned in responses)"
+          },
+          "region": {
+            "type": "string",
+            "description": "Optional provider region, e.g. us-east-1"
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_set_memory",
+      "description": "Read or update the AI memory document. Operations: read (get current), update (replace entirely), patch (replace a ## section by heading), append (add text to end).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "read",
+              "update",
+              "patch",
+              "append"
+            ],
+            "description": "read: get current document. update: replace entirely. patch: replace a ## section by heading. append: add text to end."
+          },
+          "document": {
+            "type": "string",
+            "description": "Full markdown document (required for update)."
+          },
+          "heading": {
+            "type": "string",
+            "description": "Section heading to patch (e.g. 'Brand Goals'). Required for patch operation. Matches ## headings."
+          },
+          "content": {
+            "type": "string",
+            "description": "New content for the section (patch) or text to append (append)."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "nitro_manage_billing",
+      "description": "Manage subscription billing — check plan status, start checkout, poll payment, list plans.\n\nOperations:\n- status — no params. Returns current subscription, plan, and account tier.\n- checkout — params: {plan_id (required)}.\n  Creates a Stripe Checkout Session URL for the operator to complete payment.\n  The agent CANNOT pay directly — tell the operator to open the URL.\n- checkout_status — no params. Poll whether subscription is active after checkout.\n- plans — no params. Lists available paid plans with pricing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "status",
+              "checkout",
+              "checkout_status",
+              "plans"
+            ],
+            "description": "Billing operation to perform"
+          },
+          "params": {
+            "type": "object",
+            "description": "Operation-specific parameters.",
+            "properties": {
+              "plan_id": {
+                "type": "integer",
+                "description": "Plan ID (required for checkout)"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_send_message",
+      "description": "Send a transactional email or SMS to a single recipient immediately.\nNo campaign, no audience, no approval required.\nUse for: receipts, password resets, OTPs, order confirmations, system notifications.\nNOT for marketing broadcasts to lists/segments — use nitro_compose_campaign.\nNOT for automated sequences triggered by events — use nitro_compose_flow.\nRetry safety: pass the same idempotency_key on retry to avoid duplicate sends.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email",
+              "sms"
+            ],
+            "description": "Delivery channel"
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient email address or E.164 phone number"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line (required for email)"
+          },
+          "body": {
+            "type": "string",
+            "description": "Message body. Required for SMS. Optional plain text for email."
+          },
+          "template_id": {
+            "type": "integer",
+            "description": "Load email design from an existing template (email only)"
+          },
+          "data": {
+            "type": "object",
+            "description": "Merge variables e.g. { order_id: 123, name: 'Alice' }"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Prevents duplicate sends on retry"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false,
+            "description": "Validate and preview without sending"
+          }
+        },
+        "required": [
+          "channel",
+          "to"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nitro_request_support",
+      "description": "Submit a support request to the Nitrosend team. Only call when the user explicitly asks to contact support or when you have exhausted other options and cannot resolve their issue. Never suggest or mention this tool proactively. Before calling, summarize the issue and attempt to resolve it with available tools first.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Brief summary of the issue"
+          },
+          "message": {
+            "type": "string",
+            "description": "Detailed description of the issue (max 1000 chars)"
+          }
+        },
+        "required": [
+          "subject",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "nitro://guide",
+      "name": "guide",
+      "description": "Platform guide: vocabulary, modes, workflow, constraints"
+    },
+    {
+      "uri": "nitro://account",
+      "name": "account",
+      "description": "Current account state: tier, counts, onboarding, brand status"
+    },
+    {
+      "uri": "nitro://schema",
+      "name": "schema",
+      "description": "Email component types, flow step types, trigger types, filters"
+    },
+    {
+      "uri": "nitro://brand",
+      "name": "brand",
+      "description": "Brand identity: colors, fonts, logo, links"
+    },
+    {
+      "uri": "nitro://providers",
+      "name": "providers",
+      "description": "Email provider status, domain verification, sending mode"
+    },
+    {
+      "uri": "nitro://config",
+      "name": "config",
+      "description": "Account configuration: sender defaults, verified domains"
+    },
+    {
+      "uri": "nitro://examples/email",
+      "name": "example-email",
+      "description": "Comprehensive email reference: every section type (header, hero, text, image, button, columns, product, social, divider, spacer, footer) with all props and styles"
+    },
+    {
+      "uri": "nitro://examples/flow",
+      "name": "example-flow",
+      "description": "Comprehensive flow reference: all step types (email, sms, wait, split, emit_event), triggers, branching, filter syntax, wait durations"
+    },
+    {
+      "uri": "nitro://examples/campaign",
+      "name": "example-campaign",
+      "description": "Comprehensive campaign reference: email + SMS campaigns, audience targeting, scheduling, full design examples"
+    },
+    {
+      "uri": "nitro://knowledge/index",
+      "name": "knowledge-index",
+      "description": "Email marketing knowledge: topic catalog with slugs, titles, descriptions"
+    },
+    {
+      "uri": "nitro://memory",
+      "name": "memory",
+      "description": "Persistent operator preferences, goals, tasks, and notes"
+    }
+  ],
+  "resourceTemplates": [
+    {
+      "uriTemplate": "nitro://knowledge/{slug}",
+      "name": "knowledge-topic",
+      "description": "Individual knowledge topic content — use slug from knowledge index"
+    },
+    {
+      "uriTemplate": "nitro://prompts/{name}",
+      "name": "prompt",
+      "description": "Prompt template by name — returns rendered workflow instructions"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "audience-analysis",
+      "description": "Analyse audience segments and engagement",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What you want to learn or achieve, e.g. 'find disengaged subscribers', 'segment by purchase history', 'identify VIP customers'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "build-email",
+      "description": "Compose a marketing email",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What the email is for, e.g. 'announce our spring sale', 'weekly newsletter', 'event invitation', 'product launch'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "build-flow",
+      "description": "Create an automated email flow from scratch",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What the flow should achieve, e.g. 'welcome series for new signups', 'abandoned cart recovery', 're-engage inactive subscribers'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "diagnose-deliverability",
+      "description": "Diagnose and fix email deliverability issues"
+    },
+    {
+      "name": "flow-review",
+      "description": "Review and optimise an existing flow",
+      "arguments": [
+        {
+          "name": "flow_id",
+          "description": "ID of the flow to review. If omitted, lists active flows for the user to choose.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "onboard-brand",
+      "description": "Set up brand identity for a new account"
+    },
+    {
+      "name": "weekly-report",
+      "description": "Generate a weekly performance report"
+    }
+  ]
+}

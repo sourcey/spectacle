@@ -87,6 +87,8 @@ export interface TabConfig {
   openapi?: string;
   groups?: GroupConfig[];
   doxygen?: DoxygenConfig;
+  /** Path to an mcp.json file (MCP server snapshot). */
+  mcp?: string;
 }
 
 export interface GroupConfig {
@@ -145,6 +147,7 @@ export interface ResolvedTab {
   openapi?: string;
   groups?: ResolvedGroup[];
   doxygen?: ResolvedDoxygenConfig;
+  mcp?: string;
 }
 
 export interface ResolvedPage {
@@ -313,18 +316,22 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
     if (slugs.has(slug)) throw new Error(`Duplicate tab slug "${slug}" (from "${tab.tab}")`);
     slugs.add(slug);
 
-    const sources = [tab.openapi, tab.groups, tab.doxygen].filter(Boolean).length;
+    const sources = [tab.openapi, tab.groups, tab.doxygen, tab.mcp].filter(Boolean).length;
     if (sources > 1) {
-      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", or "doxygen"`);
+      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", "doxygen", or "mcp"`);
     }
     if (sources === 0) {
-      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", or "doxygen"`);
+      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", "doxygen", or "mcp"`);
     }
 
     if (tab.openapi) {
       const absPath = resolve(configDir, tab.openapi);
       await assertExists(absPath, `OpenAPI spec "${tab.openapi}" in tab "${tab.tab}"`);
       resolved.push({ label: tab.tab, slug, openapi: absPath });
+    } else if (tab.mcp) {
+      const absPath = resolve(configDir, tab.mcp);
+      await assertExists(absPath, `MCP spec "${tab.mcp}" in tab "${tab.tab}"`);
+      resolved.push({ label: tab.tab, slug, mcp: absPath });
     } else if (tab.doxygen) {
       const absXml = resolve(configDir, tab.doxygen.xml);
       await assertExists(absXml, `Doxygen XML directory "${tab.doxygen.xml}" in tab "${tab.tab}"`);

@@ -8,6 +8,7 @@ import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
 import { normalizeSpec } from "./core/normalizer.js";
+import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation, withActivePage } from "./core/navigation.js";
 import type { SiteTab } from "./core/navigation.js";
 import type { NormalizedSpec } from "./core/types.js";
@@ -48,6 +49,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   const watchPaths: string[] = [configPath];
   for (const tab of config.tabs) {
     if (tab.openapi) watchPaths.push(tab.openapi);
+    if (tab.mcp) watchPaths.push(tab.mcp);
     if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
     if (tab.groups) {
       for (const group of tab.groups) {
@@ -65,6 +67,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     | { kind: "markdown"; tabSlug: string; pagePath: string; pageSlug: string }
     | { kind: "doxygen"; tabSlug: string; xmlDir: string }
     | { kind: "openapi"; tabSlug: string; specPath: string }
+    | { kind: "mcp"; tabSlug: string; specPath: string }
     | { kind: "config" };
 
   function buildFileToContent(cfg: ResolvedConfig): Map<string, ContentKind> {
@@ -73,6 +76,9 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     for (const tab of cfg.tabs) {
       if (tab.openapi) {
         map.set(resolve(tab.openapi), { kind: "openapi", tabSlug: tab.slug, specPath: tab.openapi });
+      }
+      if (tab.mcp) {
+        map.set(resolve(tab.mcp), { kind: "mcp", tabSlug: tab.slug, specPath: tab.mcp });
       }
       if (tab.doxygen) {
         map.set(resolve(tab.doxygen.xml), { kind: "doxygen", tabSlug: tab.slug, xmlDir: tab.doxygen.xml });
@@ -219,6 +225,28 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
         const idx = data.siteTabs.findIndex((t) => t.slug === content.tabSlug);
         if (idx !== -1) data.siteTabs[idx] = navTab;
       }
+    } else if (content.kind === "mcp") {
+      log(`reparsing mcp spec ${shortPath(content.specPath)}`);
+      const { parse } = await import("mcp-parser");
+      const mcpSpec = await parse(content.specPath);
+      const spec = normalizeMcpSpec(mcpSpec);
+      if (cache !== snapshot) return;
+
+      data.specsBySlug.set(content.tabSlug, spec);
+
+      const pageKey = tabPath(content.tabSlug, "index.html");
+      const existing = data.pageMap.get(pageKey);
+      if (existing) {
+        existing.currentPage = { kind: "spec", spec };
+        existing.spec = spec;
+      }
+      const tab = config.tabs.find((t) => t.slug === content.tabSlug);
+      if (tab) {
+        const navTab = buildNavFromSpec(spec, tab.slug);
+        navTab.label = tab.label;
+        const idx = data.siteTabs.findIndex((t) => t.slug === content.tabSlug);
+        if (idx !== -1) data.siteTabs[idx] = navTab;
+      }
     }
 
     const ms = Math.round(performance.now() - start);
@@ -330,6 +358,9 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       port,
       strictPort: true,
       hmr: true,
+      fs: {
+        allow: [process.cwd(), projectRoot],
+      },
     },
     plugins: [
       preact(),
@@ -414,12 +445,18 @@ async function loadSiteData(tabs: ResolvedTab[]) {
   const pageMap = new Map<string, PageMapEntry>();
 
   for (const tab of tabs) {
-    if (!tab.openapi) continue;
-    const loaded = await loadSpec(tab.openapi);
-    const parsed = await parseSpec(loaded);
-    const openapi3 = await convertToOpenApi3(parsed);
-    const spec = normalizeSpec(openapi3);
-    specsBySlug.set(tab.slug, spec);
+    if (tab.openapi) {
+      const loaded = await loadSpec(tab.openapi);
+      const parsed = await parseSpec(loaded);
+      const openapi3 = await convertToOpenApi3(parsed);
+      const spec = normalizeSpec(openapi3);
+      specsBySlug.set(tab.slug, spec);
+    } else if (tab.mcp) {
+      const { parse } = await import("mcp-parser");
+      const mcpSpec = await parse(tab.mcp);
+      const spec = normalizeMcpSpec(mcpSpec);
+      specsBySlug.set(tab.slug, spec);
+    }
   }
 
   const primarySpec: NormalizedSpec = specsBySlug.values().next().value ?? {
@@ -428,7 +465,7 @@ async function loadSiteData(tabs: ResolvedTab[]) {
   };
 
   for (const tab of tabs) {
-    if (tab.openapi) {
+    if (tab.openapi || tab.mcp) {
       const spec = specsBySlug.get(tab.slug)!;
       const navTab = buildNavFromSpec(spec, tab.slug);
       navTab.label = tab.label;
