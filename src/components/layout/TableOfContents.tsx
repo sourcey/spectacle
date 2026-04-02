@@ -19,12 +19,12 @@ function TocList({ headings }: { headings: PageHeading[] }) {
   }
 
   return (
-    <ul class="space-y-0.5">
+    <ul>
       {groups.map((g) => (
         <li key={g.root.id}>
           <a href={`#${g.root.id}`} class={`${tocLink} py-1`}>{g.root.text}</a>
           {g.children.length > 0 && (
-            <ul class="mb-1.5">
+            <ul>
               {g.children.map((c) => (
                 <li key={c.id}>
                   <a href={`#${c.id}`} class={`${tocLink} pl-3 text-[13px] py-0.5`}>{c.text}</a>

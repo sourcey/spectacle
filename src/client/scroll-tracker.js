@@ -74,10 +74,17 @@
     }
   }
 
-  // Scroll to element with header offset
+  // Scroll to element with header offset.
+  // For the first traverse target, scroll to the very top of the page
+  // so the title and all top padding are visible.
   function scrollToId(id, behavior) {
     var el = document.getElementById(id);
     if (!el) return;
+    var firstTarget = targets.length ? targets[0].getAttribute('data-traverse-target') : null;
+    if (id === firstTarget) {
+      window.scrollTo({ top: 0, behavior: behavior });
+      return;
+    }
     var offset = (navbar ? navbar.offsetHeight : 0) - 1;
     window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: behavior });
   }

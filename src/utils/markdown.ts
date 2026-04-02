@@ -25,8 +25,65 @@ export interface PageHeading {
   id: string;
 }
 
+/* ── Video directive ──────────────────────────────────────────────── */
+
+interface VideoToken extends Tokens.Generic {
+  type: "video";
+  raw: string;
+  url: string;
+  title: string;
+}
+
+function parseVideoUrl(url: string): { src: string; type: "iframe" | "video"; mime?: string } {
+  // YouTube
+  let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+  if (m) return { src: `https://www.youtube-nocookie.com/embed/${m[1]}`, type: "iframe" };
+  // Vimeo
+  m = url.match(/vimeo\.com\/(\d+)/);
+  if (m) return { src: `https://player.vimeo.com/video/${m[1]}`, type: "iframe" };
+  // Raw video
+  const ext = url.split(".").pop()?.toLowerCase();
+  const mime = ext === "webm" ? "video/webm" : "video/mp4";
+  return { src: url, type: "video", mime };
+}
+
+const videoExtension: import("marked").MarkedExtension = {
+  extensions: [
+    {
+      name: "video",
+      level: "block",
+      start(src: string) {
+        return src.match(/::video\[/)?.index;
+      },
+      tokenizer(src: string): VideoToken | undefined {
+        const match = src.match(/^::video\[([^\]]+)\](?:\{([^}]*)\})?/);
+        if (!match) return undefined;
+        const url = match[1];
+        const attrs = match[2] ?? "";
+        const titleMatch = attrs.match(/title="([^"]*)"/);
+        return { type: "video", raw: match[0], url, title: titleMatch?.[1] ?? "" };
+      },
+      renderer(token: Tokens.Generic): string {
+        const { url, title } = token as VideoToken;
+        const parsed = parseVideoUrl(url);
+        const safeTitle = title.replace(/"/g, "&quot;").replace(/</g, "&lt;");
+        if (parsed.type === "iframe") {
+          return `<div class="prose-video not-prose">
+<iframe src="${parsed.src}" title="${safeTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div>\n`;
+        }
+        return `<div class="prose-video not-prose">
+<video controls preload="metadata" title="${safeTitle}">
+<source src="${parsed.src}" type="${parsed.mime}" />
+</video>
+</div>\n`;
+      },
+    },
+  ],
+};
+
 /** Singleton Marked instance — code blocks get Shiki + prose wrapper, headings get IDs. */
-const marked = new Marked({
+const marked = new Marked(videoExtension, {
   renderer: {
     code({ text, lang }: Tokens.Code): string {
       return renderCodeBlock(text, lang);
