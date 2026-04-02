@@ -69,7 +69,8 @@ export interface NormalizedTag {
 
 // ── Operations ─────────────────────────────────────────────────────
 
-export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace";
+export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace"
+  | "tool" | "resource" | "prompt";
 
 export interface NormalizedOperation {
   operationId?: string;
@@ -90,11 +91,37 @@ export interface NormalizedOperation {
   hidden?: boolean;
   /** Vendor extension: custom code samples */
   codeSamples?: CodeSample[];
+  /** MCP-specific rendering data (undefined for OpenAPI operations) */
+  mcpExtras?: McpOperationExtras;
+}
+
+export interface McpOperationExtras {
+  type: "tool" | "resource" | "prompt";
+  annotations?: {
+    readOnlyHint?: boolean;
+    destructiveHint?: boolean;
+    idempotentHint?: boolean;
+    openWorldHint?: boolean;
+  };
+  outputSchema?: NormalizedSchema;
+  connection?: McpConnectionInfo;
+}
+
+export interface McpConnectionInfo {
+  transport?: {
+    type: string;
+    command?: string;
+    args?: string[];
+    url?: string;
+  };
+  serverName: string;
+  mcpVersion?: string;
+  capabilities?: Record<string, unknown>;
 }
 
 export interface NormalizedParameter {
   name: string;
-  in: "query" | "header" | "path" | "cookie";
+  in: "query" | "header" | "path" | "cookie" | "argument";
   description?: string;
   required: boolean;
   deprecated: boolean;

@@ -11,6 +11,9 @@ import { ResponsesCopy, ResponsesExamples } from "./Responses.js";
 import { SecurityCopy } from "./Security.js";
 import { CodeSamplesExamples } from "./CodeSamples.js";
 import { EndpointBar } from "./EndpointBar.js";
+import { McpEndpointBar } from "../mcp/McpEndpointBar.js";
+import { AnnotationBadges } from "../mcp/AnnotationBadges.js";
+import { McpReturnsCopy, McpReturnsExample } from "../mcp/McpReturns.js";
 
 interface OperationProps {
   operation: NormalizedOperation;
@@ -28,21 +31,29 @@ export function Operation({ operation: op, serverUrl }: OperationProps) {
   const id = `operation-${htmlId(op.path)}-${htmlId(op.method)}`;
   const hasParams = op.parameters.length > 0;
   const hasBody = !!op.requestBody;
+  const mcp = op.mcpExtras;
 
   return (
     <div id={id} class="py-8 border-t border-[rgb(var(--color-gray-100))] dark:border-[rgb(var(--color-gray-800))]" data-traverse-target={id}>
       {/* Operation title */}
       <header class="mb-6">
         {op.summary && (
-          <h2 class="text-2xl sm:text-3xl text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] tracking-tight font-bold mb-2">
-            <Markdown content={op.summary} inline />
-          </h2>
+          <div class="flex items-baseline gap-2 flex-wrap">
+            <h2 class="text-2xl sm:text-3xl text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] tracking-tight font-bold mb-2">
+              <Markdown content={op.summary} inline />
+            </h2>
+            {op.deprecated && <DeprecatedBadge />}
+            {mcp?.annotations && <AnnotationBadges annotations={mcp.annotations} />}
+          </div>
         )}
-        {op.deprecated && <DeprecatedBadge />}
       </header>
 
       {/* Endpoint bar */}
-      <EndpointBar method={op.method} path={op.path} serverUrl={serverUrl} />
+      {mcp ? (
+        <McpEndpointBar method={op.method} path={op.path} />
+      ) : (
+        <EndpointBar method={op.method} path={op.path} serverUrl={serverUrl} />
+      )}
 
       {/* Content + sticky code panel */}
       <div class={`flex flex-col ${apiFirst ? "lg:flex-row" : "xl:flex-row"} gap-8`}>
@@ -66,21 +77,29 @@ export function Operation({ operation: op, serverUrl }: OperationProps) {
             </div>
           )}
 
-          {op.responses.length > 0 && (
-            <div class="mt-6">
-              <SectionLabel>Response</SectionLabel>
-              <ResponsesCopy responses={op.responses} />
-            </div>
+          {mcp ? (
+            <McpReturnsCopy schema={mcp.outputSchema} />
+          ) : (
+            op.responses.length > 0 && (
+              <div class="mt-6">
+                <SectionLabel>Response</SectionLabel>
+                <ResponsesCopy responses={op.responses} />
+              </div>
+            )
           )}
 
-          <SecurityCopy security={op.security} />
+          {!mcp && <SecurityCopy security={op.security} />}
         </div>
 
         {/* Right: sticky code panel */}
         <aside class={`hidden ${apiFirst ? "lg:block" : "xl:block"} w-[28rem] shrink-0 sticky self-start overflow-y-auto space-y-4`} style="top: calc(var(--header-height) + 2.5rem); max-height: calc(100vh - var(--header-height) - 5rem)">
           <CodeSamplesExamples operation={op} serverUrl={serverUrl} codeSampleLangs={site.codeSamples} />
           {hasBody && <RequestBodyExample body={op.requestBody!} />}
-          <ResponsesExamples responses={op.responses} />
+          {mcp ? (
+            <McpReturnsExample schema={mcp.outputSchema} />
+          ) : (
+            <ResponsesExamples responses={op.responses} />
+          )}
         </aside>
       </div>
 
@@ -88,7 +107,11 @@ export function Operation({ operation: op, serverUrl }: OperationProps) {
       <div class={`${apiFirst ? "lg:hidden" : "xl:hidden"} mt-8 space-y-4`}>
         <CodeSamplesExamples operation={op} serverUrl={serverUrl} codeSampleLangs={site.codeSamples} />
         {hasBody && <RequestBodyExample body={op.requestBody!} />}
-        <ResponsesExamples responses={op.responses} />
+        {mcp ? (
+          <McpReturnsExample schema={mcp.outputSchema} />
+        ) : (
+          <ResponsesExamples responses={op.responses} />
+        )}
       </div>
     </div>
   );

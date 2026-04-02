@@ -10,6 +10,7 @@ import { SecurityDefinitions } from "../openapi/Security.js";
 import { Tags } from "../openapi/Tags.js";
 import { Definition } from "../openapi/Definition.js";
 import { SocialIcon } from "../ui/SocialIcon.js";
+import { McpConnection } from "../mcp/McpConnection.js";
 
 /**
  * Markdown page content with prose typography.
@@ -66,6 +67,9 @@ function SpecPageContent({ className = "" }: { className?: string }) {
         </header>
 
         <Introduction />
+        {spec.operations[0]?.mcpExtras?.connection && (
+          <McpConnection connection={spec.operations[0].mcpExtras.connection} />
+        )}
         <SecurityDefinitions />
         <Tags tags={spec.tags} serverUrl={serverUrl} />
 

@@ -9,7 +9,7 @@ import type { SiteNavGroup } from "../../core/navigation.js";
  */
 function MethodPill({ method }: { method: string }) {
   const m = method.toUpperCase();
-  const label = m === "DELETE" ? "DEL" : m;
+  const label = m === "DELETE" ? "DEL" : m === "RESOURCE" ? "RES" : m === "PROMPT" ? "PRMT" : m;
 
   const colors: Record<string, string> = {
     GET: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
@@ -18,6 +18,11 @@ function MethodPill({ method }: { method: string }) {
     DELETE: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
     DEL: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
     PATCH: "bg-orange-400/20 dark:bg-orange-400/20 text-orange-700 dark:text-orange-400",
+    TOOL: "bg-purple-400/20 dark:bg-purple-400/20 text-purple-700 dark:text-purple-400",
+    RESOURCE: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
+    RES: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
+    PROMPT: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
+    PRMT: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
   };
 
   return (

@@ -4,6 +4,7 @@ import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
 import { normalizeSpec } from "./core/normalizer.js";
+import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { buildSite as buildSiteHtml } from "./renderer/html-builder.js";
 import type { SitePage } from "./renderer/html-builder.js";
 import type { NormalizedSpec } from "./core/types.js";
@@ -82,14 +83,20 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   const siteTabs: SiteTab[] = [];
   const specsBySlug = new Map<string, NormalizedSpec>();
 
-  // Load all specs
+  // Load all specs (OpenAPI and MCP)
   for (const tab of tabs) {
-    if (!tab.openapi) continue;
-    const loaded = await loadSpec(tab.openapi);
-    const parsed = await parseSpec(loaded);
-    const openapi3 = await convertToOpenApi3(parsed);
-    const spec = normalizeSpec(openapi3);
-    specsBySlug.set(tab.slug, spec);
+    if (tab.openapi) {
+      const loaded = await loadSpec(tab.openapi);
+      const parsed = await parseSpec(loaded);
+      const openapi3 = await convertToOpenApi3(parsed);
+      const spec = normalizeSpec(openapi3);
+      specsBySlug.set(tab.slug, spec);
+    } else if (tab.mcp) {
+      const { parse } = await import("mcp-parser");
+      const mcpSpec = await parse(tab.mcp);
+      const spec = normalizeMcpSpec(mcpSpec);
+      specsBySlug.set(tab.slug, spec);
+    }
   }
 
   // Primary spec for SpecContext on markdown pages
@@ -100,7 +107,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
 
   // Process all tabs
   for (const tab of tabs) {
-    if (tab.openapi) {
+    if (tab.openapi || tab.mcp) {
       const spec = specsBySlug.get(tab.slug)!;
       const navTab = buildNavFromSpec(spec, tab.slug);
       navTab.label = tab.label;
