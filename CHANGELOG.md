@@ -1,178 +1,294 @@
 # Changelog
 
-All notable changes to Sourcey.
+All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## Unreleased
 
+### Added
+
+- `::video` directive for embedding YouTube, Vimeo, or raw video files in markdown
+- `::iframe` directive for embedding arbitrary URLs (https only)
+
+## 3.4.0 — 2026-04-02
+
+### Added
+
+- MCP server documentation as a first-class input format alongside OpenAPI, Markdown, and Doxygen
+- `mcp` tab config option for rendering tools, resources, and prompts from an `mcp.json` snapshot
+- Auto-generated code samples in JSON-RPC, TypeScript SDK, and Python SDK for all MCP operations
+- Connection config card showing how to add the server to Claude, Cursor, or any MCP client
+- Annotation badges for tool hints (read-only, destructive, idempotent, open-world)
+- Colour-coded sidebar method pills (purple TOOL, green RES, blue PRMT)
+- Hot-reload for mcp.json files in the dev server
 - Sitemap generation
-- OpenGraph and Twitter Card meta tags in generated output
-- Dockerfile for `sourcey/sourcey` on Docker Hub
-- Nix flake (`nix build github:sourcey/sourcey`)
-- npm homepage, keywords, and funding field updated
+- OpenGraph and Twitter Card meta tags
+- Dockerfile for Docker Hub
+- Nix flake support
+
+### Changed
+
+- Sidebar active state uses pill-style background instead of left border
+- Table of contents uses a continuous grey track with primary colour active marker
+- Clicking the first sidebar item scrolls to the top of the page
+
+### Fixed
+
+- Dev server `fs.allow` now includes the sourcey root for npm link compatibility
+- Double-wrapped accordion groups from `<AccordionGroup>` component syntax
 
 ## 3.3.10 — 2026-03-30
 
-- Package metadata: homepage → sourcey.com, repo → sourcey/sourcey org
-- Node 24 JSON import compatibility (import attributes)
+### Changed
+
+- Package metadata moved to sourcey.com and sourcey/sourcey org
+
+### Fixed
+
+- Node 24 JSON import compatibility
 
 ## 3.3.9 — 2026-03-28
 
-- Fix directory structure preserved in page slugs to avoid nav collisions
+### Fixed
+
+- Page slugs preserve directory structure to avoid nav collisions
 
 ## 3.3.8 — 2026-03-28
 
-- Fix slugFromPath to preserve directory structure
+### Fixed
+
+- `slugFromPath` preserves directory structure
 
 ## 3.3.7 — 2026-03-27
 
-- Rewrite relative source links to repo URLs at build time
+### Added
+
+- Relative source links in markdown rewrite to repo URLs at build time
 
 ## 3.3.6 — 2026-03-27
 
+### Added
+
 - Doxygen index page generation
-- Fix doxygen index content links
+
+### Fixed
+
+- Doxygen index content links
 
 ## 3.3.5 — 2026-03-26
 
-- Report the actual package version in CLI help output
-- Scaffold new projects with latest published sourcey version
+### Fixed
+
+- CLI help output reports the actual package version
+- `sourcey init` scaffolds new projects with the latest published version
 
 ## 3.3.4 — 2026-03-26
 
-- Render first page directly instead of meta-refresh redirect
+### Changed
+
+- First page renders directly instead of meta-refresh redirect
 
 ## 3.3.2 — 2026-03-25
 
-- Smarter init with auto-detection and directory selection
-- Init reads Doxygen XML_OUTPUT, proper relPath resolution
+### Added
+
+- `sourcey init` auto-detects project type and offers directory selection
+- Init reads Doxygen `XML_OUTPUT` for proper path resolution
 
 ## 3.3.1 — 2026-03-25
 
-- Fix: use jiti for TS config loading, resolve moxygen from npm registry
+### Fixed
+
+- Use jiti for TypeScript config loading
+- Resolve moxygen from npm registry
 
 ## 3.3.0 — 2026-03-25
 
-- `sourcey init` command
-- Scroll tracker `?target` param
-- Node 24 added to CI test matrix
+### Added
+
+- `sourcey init` command for scaffolding new projects
+- Scroll tracker `?target` query parameter for deep linking
+- Node 24 in CI test matrix
 
 ## 3.2.1 — 2026-03-24
 
-- Fix dev-server asset path resolution for npm installs
+### Fixed
+
+- Dev server asset path resolution for npm installs
 
 ## 3.2.0 — 2026-03-23
 
-- Internal link resolution between pages
-- `editBasePath` config option
-- Page navigation (prev/next)
+### Added
+
+- Internal link resolution between markdown pages
+- `editBasePath` config option for repos with docs in a subdirectory
+- Previous/next page navigation at the bottom of markdown pages
 - Brand icons (GitHub, npm, etc.) in navbar and footer
 
 ## 3.1.0 — 2026-03-22
 
+### Added
+
 - Mobile navigation drawer with breadcrumbs
-- Responsive layout fixes
 - Configurable tab slugs
-- Stone code surfaces, TOC nesting, code indent fix
-- Collapsible schemas, edit page links, dev error recovery
-- Auto Google Fonts loading from config
-- Fix sidebar active state on prose pages, dedupe h1
-- Fix: resolve logo paths relative to config dir
+- Collapsible schemas in API reference
+- "Edit this page" links on markdown pages
+- Auto Google Fonts loading from theme config
+
+### Changed
+
+- Stone-palette code surfaces
+- TOC nesting improvements
+
+### Fixed
+
+- Responsive layout at small breakpoints
+- Code indent rendering
+- Dev server error recovery
+- Sidebar active state on prose pages
+- Duplicate h1 headings
+- Logo paths resolve relative to config directory
 
 ## 3.0.2 — 2026-03-21
 
-- Config live reload, scroll offset fix
-- Geist Mono default font
-- Style improvements
+### Added
+
+- Geist Mono as default monospace font
+
+### Changed
+
+- Config changes hot-reload in dev server
+
+### Fixed
+
+- Scroll offset calculation
 
 ## 3.0.1 — 2026-03-21
 
-- Doxygen integration via Moxygen with glob pages and auto-title
-- TOC scroll tracking, command palette search (Cmd+K), heading scroll offset
-- Google Fonts loading and font stack wrapping
-- Fix: use moxygen from npm registry
+### Added
+
+- Doxygen C++ documentation via Moxygen integration
+- Command palette search (Cmd+K)
+- Google Fonts loading and font stack configuration
+
+### Fixed
+
+- Moxygen resolved from npm registry
+- TOC scroll tracking
+- Heading scroll offset
 
 ## 3.0.0 — 2026-03-20
 
-Rebrand to Sourcey with redesigned theme.
+### Added
 
-- Rename package from `spectacle-docs` to `sourcey`, CLI binary from `spectacle` to `sourcey`
-- License changed from MIT to AGPL-3.0-only
-- Redesigned theme with new layout, typography, and color system
-- EndpointBar component with method badge and path
+- Redesigned theme with new layout, typography, and colour system
+- Theme presets (default, minimal, api-first) with custom colours, fonts, and layout
+- EndpointBar component with colour-coded method badges
 - CopyButton and SocialIcon UI components
-- Redesigned Header, Sidebar, Page, and TableOfContents components
-- Redesigned CodeSamples with language icons and synced tabs
-- Redesigned Responses and Security sections
-- Theme presets with custom colors, fonts, and layout options in config
-- Unified Vite plugin replacing watcher plugin
-- Demo site with markdown guide pages and config
-- Removed legacy Handlebars/Foundation/SCSS theme (`themes/default/reference/`)
-- Removed TabBar and old CodeBlock components
-- New screenshot
+- Demo site with markdown guides
+- Unified Vite plugin for dev server
+
+### Changed
+
+- Renamed from `spectacle-docs` to `sourcey`
+- License changed from MIT to AGPL-3.0-only
+- Complete redesign of Header, Sidebar, Page, TableOfContents, CodeSamples, Responses, and Security components
+
+### Removed
+
+- Legacy Handlebars/Foundation/SCSS theme
+- TabBar and old CodeBlock components
 
 ## 2.1.0 — 2026-03-19
 
-Multi-page documentation platform with markdown guides alongside API reference.
+### Added
 
 - Multi-page sites with tabbed navigation and sidebar groups
 - Markdown pages with rich components (Steps, Cards, Accordions)
 - Vite dev server with SSR hot reload
-- Header component with navbar links and CTA button
+- Header with navbar links and CTA button
 - Table of contents with scroll tracking
 - Footer with social links
 - Cross-page navigation link resolution
-- Hide dark example panel on prose-only pages
+
+### Changed
+
+- Dark example panel hidden on prose-only pages
 
 ## 2.0.2 — 2026-03-19
 
-- Vite dev server with header/TOC components and layout system
+### Added
+
+- Vite dev server with header, TOC, and layout system
 
 ## 2.0.0 — 2026-03-10
 
 Complete rewrite from Handlebars/Grunt to TypeScript/Preact SSG.
 
+### Added
+
 - TypeScript codebase with Preact SSR
 - `sourcey.config.ts` with `defineConfig()` and full type safety
-- OpenAPI 3.x support (via swagger2openapi for 2.0 specs)
-- Shiki syntax highlighting replacing highlight.js
+- OpenAPI 3.x support (auto-converts Swagger 2.0)
+- Shiki syntax highlighting
 - Dark mode with localStorage persistence
 - Client-side search with keyboard navigation (Cmd+K)
-- Auto-generated code samples (cURL, JavaScript, Python)
-- Custom color theming with hex-to-RGB token system
+- Auto-generated code samples in 10 languages
+- Custom colour theming with hex-to-RGB token system
 - Stone-palette code blocks with language dropdown and response tabs
 - Copy button on code blocks
 - Scroll-tracked sidebar navigation
 - Enum pills and array item type display
 - Logo support with light/dark variants
-- Static HTML output; no framework runtime
-- GitHub Actions CI workflow
+- Static HTML output with no framework runtime
+- GitHub Actions CI
+
+### Removed
+
+- Handlebars template engine
+- Grunt build system
+- highlight.js
 
 ## 1.1.0 — 2020-03-10
 
-- Fix example rendering
-- Dependency updates (handlebars, js-yaml, lodash, marked, fstream)
+### Fixed
+
+- Example rendering
+- Dependency vulnerabilities (handlebars, js-yaml, lodash, marked, fstream)
 
 ## 1.0.7 — 2019-01-30
 
-- Fix href with colon characters
-- Fix href with multiple dots
+### Added
+
 - YAML example support
-- Fix code block overflow
+
+### Fixed
+
+- Href with colon characters
+- Href with multiple dots
+- Code block overflow
 
 ## 1.0.6 — 2018-09-20
+
+### Changed
 
 - Licence update
 
 ## 1.0.5 — 2018-07-02
 
-- Update Grunt dependencies
+### Changed
+
+- Updated Grunt dependencies
 
 ## 1.0.4 — 2018-07-01
 
-- Update to grunt-sass 3.0
-- Fix grunt-sass dependency issue
+### Fixed
+
+- grunt-sass 3.0 compatibility
+- grunt-sass dependency resolution
 
 ## 1.0.3 — 2018-04-15
+
+### Added
 
 - Nested objects and arrays in definitions
 - Resource embedding support
@@ -184,60 +300,90 @@ Complete rewrite from Handlebars/Grunt to TypeScript/Preact SSG.
 
 ## 1.0.2 — 2018-03-22
 
-- Security partial updates
+### Changed
+
+- Security partial rendering
 
 ## 1.0.1 — 2018-03-21
 
-- Fix markdown rendering issues (#122, #126)
-- Improved schema description rendering and linking
+### Fixed
+
+- Markdown rendering (#122, #126)
+- Schema description rendering and linking
 
 ## 1.0.0 — 2018-03-20
 
 First stable release. Requires Node.js >= 8.
 
-- Fix rendering of remote file references
+### Added
+
 - Quiet output option
+
+### Fixed
+
+- Remote file reference rendering
 
 ## 0.9.12 — 2017-11-13
 
+### Added
+
 - Response header display
-- Fix null node error in reference resolution
+
+### Fixed
+
+- Null node error in reference resolution
 
 ## 0.9.11 — 2017-10-13
+
+### Fixed
 
 - Null check in reference replacement
 
 ## 0.9.10 — 2017-09-27
 
-- Fix remote reference tests
+### Fixed
+
+- Remote reference tests
 
 ## 0.9.9 — 2017-09-27
 
-- Display min/max ranges for parameters
-- Display maxLength and minLength for strings
+### Added
+
+- Min/max range display for parameters
+- maxLength and minLength display for strings
 - Better rendering of arrays of objects
 
 ## 0.9.8 — 2017-09-01
 
-- Fix rendering on large screens with indents
+### Fixed
+
+- Rendering on large screens with indents
 
 ## 0.7.0 — 2017-02-01
+
+### Added
 
 - Programmatic API with promise return
 
 ## 0.6.9 — 2017-01-16
+
+### Added
 
 - Remote schema support
 - Temporary directory per build run
 
 ## 0.6.8 — 2017-01-13
 
-- Code highlighting fix
+### Fixed
+
+- Code highlighting
 - HTTPS for jQuery reference
 
 ## Pre-releases — 2016
 
-- Initial release with OpenAPI 2.0 (Swagger) rendering
+### Added
+
+- OpenAPI 2.0 (Swagger) rendering
 - Foundation 6 responsive layout with drawer navigation
 - Custom logo support
 - Docker support
