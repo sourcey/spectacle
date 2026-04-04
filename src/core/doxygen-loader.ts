@@ -1,6 +1,6 @@
 import { generate } from "moxygen";
 import type { DoxygenIndexStyle, ResolvedDoxygenConfig } from "../config.js";
-import { renderMarkdown, extractHeadings } from "../utils/markdown.js";
+import { renderMarkdown, extractHeadings, extractFirstParagraph, stripMarkdownLinks } from "../utils/markdown.js";
 import type { MarkdownPage } from "./markdown-loader.js";
 import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
 
@@ -11,6 +11,14 @@ import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
 export interface DoxygenResult {
   pages: Map<string, MarkdownPage>;
   navTab: SiteTab;
+}
+
+export function normalizeDoxygenDescription(description: string, markdown: string): string {
+  if (!description) return "";
+  if (!description.includes("{#ref ")) return description;
+
+  const firstParagraph = extractFirstParagraph(markdown);
+  return firstParagraph || description;
 }
 
 export async function loadDoxygenTab(
@@ -30,12 +38,13 @@ export async function loadDoxygenTab(
   for (const page of generated) {
     if (!page.markdown.trim()) continue;
 
+    const description = normalizeDoxygenDescription(page.description, page.markdown);
     const html = renderMarkdown(page.markdown);
     const headings = extractHeadings(page.markdown);
 
     pages.set(page.slug, {
       title: page.title,
-      description: page.description,
+      description,
       slug: page.slug,
       html,
       headings,
@@ -182,7 +191,7 @@ function buildRichIndex(
 
     const typeCount = items.filter((i) => i.kind !== "group" && i.kind !== "namespace").length;
     const href = `${groupEntry.slug}.html`;
-    const desc = page.description || "";
+    const desc = stripMarkdownLinks(page.description || "");
     const meta = typeCount > 0
       ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p>`
       : "";
