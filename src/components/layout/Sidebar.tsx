@@ -28,12 +28,12 @@ function MethodPill({ method }: { method: string }) {
   const label = m === "DELETE" ? "DEL" : m;
 
   const colors: Record<string, string> = {
-    GET: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
-    POST: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
-    PUT: "bg-yellow-400/20 dark:bg-yellow-400/20 text-yellow-700 dark:text-yellow-400",
-    DELETE: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
-    DEL: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
-    PATCH: "bg-orange-400/20 dark:bg-orange-400/20 text-orange-700 dark:text-orange-400",
+    GET: "bg-green-100 dark:bg-green-400/20 text-green-800 dark:text-green-300",
+    POST: "bg-blue-100 dark:bg-blue-400/20 text-blue-800 dark:text-blue-300",
+    PUT: "bg-amber-100 dark:bg-yellow-400/20 text-amber-900 dark:text-yellow-300",
+    DELETE: "bg-red-100 dark:bg-red-400/20 text-red-800 dark:text-red-300",
+    DEL: "bg-red-100 dark:bg-red-400/20 text-red-800 dark:text-red-300",
+    PATCH: "bg-orange-100 dark:bg-orange-400/20 text-orange-900 dark:text-orange-300",
   };
 
   return (

@@ -9,10 +9,8 @@
 
 /* ── Page Description (display font) ─────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
-
 #sourcey .page-description {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
   font-size: 1.375rem;
   line-height: 1.4;
   font-style: italic;
@@ -245,7 +243,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   background: rgb(var(--color-gray-800) / 0.4);
 }
 #sourcey .nav-link.active {
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
   background: rgb(var(--color-primary) / 0.08);
   font-weight: 500;
 }
@@ -265,8 +263,8 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   border-left-color: rgb(var(--color-gray-700));
 }
 #sourcey #toc .toc-item.active {
-  color: rgb(var(--color-primary));
-  border-left-color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
+  border-left-color: rgb(var(--color-primary-ink));
 }
 .dark #sourcey #toc .toc-item.active {
   color: rgb(var(--color-primary-light));
@@ -310,7 +308,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 }
 
 #sourcey .response-tab.active {
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
 }
 .dark #sourcey .response-tab.active {
   color: rgb(var(--color-primary-light));
@@ -511,7 +509,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 600;
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
   background: transparent;
   border: none;
   padding: 0;
@@ -921,7 +919,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 }
 
 #sourcey .directive-tab.active {
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
 }
 .dark #sourcey .directive-tab.active {
   color: rgb(var(--color-primary-light));
@@ -1097,7 +1095,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   background: rgb(var(--color-gray-800));
 }
 .drawer-dropdown-item.active {
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-ink));
   font-weight: 500;
 }
 .dark .drawer-dropdown-item.active {

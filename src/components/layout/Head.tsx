@@ -24,23 +24,14 @@ export function Head() {
   // Mobile: h-16 row + h-14 breadcrumb = 7.5rem (always).
   const headerHeight = nav.tabs.length > 1 ? "7rem" : "4rem";
   const headerHeightMobile = "7.5rem";
-
-  // Extract font family names for Google Fonts loading
-  const systemFonts = new Set(["system-ui", "sans-serif", "serif", "monospace", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Consolas", "SF Mono", "Fira Code", "Cascadia Code"]);
-  function extractFontName(stack: string): string | null {
-    const m = stack.match(/^'([^']+)'/);
-    return m && !systemFonts.has(m[1]) ? m[1] : null;
-  }
-  const googleFonts = [extractFontName(fonts.sans), extractFontName(fonts.mono)].filter(Boolean) as string[];
-  const googleFontsUrl = googleFonts.length
-    ? "https://fonts.googleapis.com/css2?" + googleFonts.map(f => `family=${encodeURIComponent(f)}:wght@300;400;500;600;700`).join("&") + "&display=swap"
-    : null;
+  const showLangIconCSS = page.kind === "spec" && site.codeSamples.length > 0;
 
   const themeCSS = `
     :root {
       --color-primary: ${colors.primary};
       --color-primary-light: ${colors.light};
       --color-primary-dark: ${colors.dark};
+      --color-primary-ink: ${colors.dark};
       --color-background-light: 255 255 255;
       --color-background-dark: 11 12 16;
       --font-sans: ${fonts.sans};
@@ -74,16 +65,9 @@ export function Head() {
       <meta name="twitter:description" content={pageDescription} />
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
       <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
-      <style dangerouslySetInnerHTML={{ __html: langIconCSS() }} />
+      {showLangIconCSS && <style dangerouslySetInnerHTML={{ __html: langIconCSS() }} />}
       {site.customCSS && <style dangerouslySetInnerHTML={{ __html: site.customCSS }} />}
       <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('sourcey-theme');if(t==='dark')document.documentElement.classList.add('dark')})()` }} />
-      {googleFontsUrl && (
-        <>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link rel="stylesheet" href={googleFontsUrl} />
-        </>
-      )}
       <link rel="stylesheet" href={`${options.assetBase}sourcey.css`} />
       {site.favicon && <link rel="icon" href={site.favicon} />}
     </head>

@@ -12,10 +12,10 @@ interface ResponsesProps {
 }
 
 function statusColorClass(code: string): string {
-  if (code.startsWith("2")) return "bg-green-400/20 text-green-700 dark:text-green-400";
-  if (code.startsWith("3")) return "bg-blue-400/20 text-blue-700 dark:text-blue-400";
-  if (code.startsWith("4")) return "bg-yellow-400/20 text-yellow-700 dark:text-yellow-400";
-  if (code.startsWith("5")) return "bg-red-400/20 text-red-700 dark:text-red-400";
+  if (code.startsWith("2")) return "bg-green-100 text-green-800 dark:bg-green-400/20 dark:text-green-300";
+  if (code.startsWith("3")) return "bg-blue-100 text-blue-800 dark:bg-blue-400/20 dark:text-blue-300";
+  if (code.startsWith("4")) return "bg-amber-100 text-amber-900 dark:bg-yellow-400/20 dark:text-yellow-300";
+  if (code.startsWith("5")) return "bg-red-100 text-red-800 dark:bg-red-400/20 dark:text-red-300";
   return "bg-gray-400/20 text-gray-700 dark:text-gray-400";
 }
 
