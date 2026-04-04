@@ -265,6 +265,9 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   padding-left: 0.75rem;
   transition: color 0.15s, border-color 0.15s;
 }
+#sourcey #toc ul ul .toc-item {
+  margin-left: 0.75rem;
+}
 .dark #sourcey #toc .toc-item {
   border-left-color: rgb(var(--color-gray-700));
 }
