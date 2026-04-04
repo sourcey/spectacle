@@ -23,6 +23,7 @@
   --color-primary: 99 102 241;
   --color-primary-light: 129 140 248;
   --color-primary-dark: 79 70 229;
+  --color-primary-ink: 79 70 229;
 
   /* Backgrounds */
   --color-background-light: 255 255 255;
@@ -70,7 +71,6 @@
   --method-prompt: #2563eb;
 
   /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace;
 }
-

@@ -119,7 +119,7 @@ export function SecurityDefinitions() {
               {scheme.type === "openIdConnect" && scheme.openIdConnectUrl && (
                 <p class="mt-1">
                   OpenID Connect:{" "}
-                  <a href={scheme.openIdConnectUrl} class="text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))]">{scheme.openIdConnectUrl}</a>
+                  <a href={scheme.openIdConnectUrl} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">{scheme.openIdConnectUrl}</a>
                 </p>
               )}
             </div>

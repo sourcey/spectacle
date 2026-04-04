@@ -9,7 +9,7 @@ import { Introduction } from "../openapi/Introduction.js";
 import { SecurityDefinitions } from "../openapi/Security.js";
 import { Tags } from "../openapi/Tags.js";
 import { Definition } from "../openapi/Definition.js";
-import { SocialIcon } from "../ui/SocialIcon.js";
+import { SocialIcon, socialLabels } from "../ui/SocialIcon.js";
 import { McpConnection } from "../mcp/McpConnection.js";
 
 /**
@@ -30,7 +30,7 @@ function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; cla
       <header class="relative leading-none">
         <div class="mt-0.5 space-y-2.5">
           {eyebrow && (
-            <div class="h-5 text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))] text-sm font-semibold">{eyebrow}</div>
+            <div class="h-5 text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))] text-sm font-semibold">{eyebrow}</div>
           )}
           <div class="flex flex-col sm:flex-row items-start sm:items-center relative gap-2 min-w-0">
             <h1 class="text-2xl sm:text-3xl text-[rgb(var(--color-gray-900))] tracking-tight dark:text-[rgb(var(--color-gray-200))] font-bold" style="overflow-wrap: anywhere">{page.title}</h1>
@@ -62,7 +62,7 @@ function SpecPageContent({ className = "" }: { className?: string }) {
         <header class="mb-8">
           <div class="flex items-baseline gap-3">
             <h1 class="text-2xl sm:text-3xl font-bold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] tracking-tight">{spec.info.title}</h1>
-            <span class="text-sm text-[rgb(var(--color-gray-400))]">v{spec.info.version}</span>
+            <span class="text-sm text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">v{spec.info.version}</span>
           </div>
         </header>
 
@@ -106,9 +106,9 @@ function PageNavigation() {
   const linkClass =
     "group flex flex-col gap-1 px-4 py-3 rounded-lg border border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] hover:border-[rgb(var(--color-primary)/0.4)] dark:hover:border-[rgb(var(--color-primary-light)/0.3)] transition-colors no-underline";
   const labelClass =
-    "text-xs text-[rgb(var(--color-gray-400))]";
+    "text-xs text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]";
   const titleClass =
-    "text-sm font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))] group-hover:text-[rgb(var(--color-primary))] dark:group-hover:text-[rgb(var(--color-primary-light))] transition-colors";
+    "text-sm font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))] group-hover:text-[rgb(var(--color-primary-ink))] dark:group-hover:text-[rgb(var(--color-primary-light))] transition-colors";
 
   return (
     <nav class="mt-12 flex items-stretch justify-between gap-4">
@@ -144,10 +144,10 @@ function ContentFooter() {
   const linkStyle = "hover:text-[rgb(var(--color-gray-600))] dark:hover:text-[rgb(var(--color-gray-300))] transition-colors";
 
   return (
-    <div class="mt-16 mb-8 flex items-center justify-between border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] pt-6 text-xs text-[rgb(var(--color-gray-400))]">
+    <div class="mt-16 mb-8 flex items-center justify-between border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] pt-6 text-xs text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">
       <a href="https://sourcey.com" target="_blank" rel="noopener noreferrer" class={`flex items-center gap-1.5 ${linkStyle}`}>
         Built with
-        <img src="https://sourcey.com/sourcey-logo.png" alt="Sourcey" class="h-4 w-4" />
+        <span class="font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))]">Sourcey</span>
       </a>
       <div class="flex items-center gap-4">
         {editUrl && (
@@ -162,6 +162,7 @@ function ContentFooter() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={link.label ?? socialLabels[link.type] ?? link.href}
             class={linkStyle}
           >
             {link.type === "link"
@@ -184,7 +185,7 @@ function DefaultLayout() {
   return (
     <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
       <Sidebar />
-      <div id="docs" class="pt-[8.5rem] lg:pt-10">
+      <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
@@ -193,7 +194,7 @@ function DefaultLayout() {
         ) : (
           <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
         )}
-      </div>
+      </main>
     </div>
   );
 }
@@ -203,13 +204,13 @@ function MinimalLayout() {
 
   return (
     <div class="max-w-3xl mx-auto relative px-4 lg:px-8">
-      <div id="docs" class="pt-[8.5rem] lg:pt-10">
+      <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <MarkdownPageContent page={page.markdown!} />
         ) : (
           <SpecPageContent />
         )}
-      </div>
+      </main>
     </div>
   );
 }
@@ -220,7 +221,7 @@ function ApiFirstLayout() {
   return (
     <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
       <Sidebar />
-      <div id="docs" class="pt-[8.5rem] lg:pt-10">
+      <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
@@ -229,7 +230,7 @@ function ApiFirstLayout() {
         ) : (
           <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
         )}
-      </div>
+      </main>
     </div>
   );
 }

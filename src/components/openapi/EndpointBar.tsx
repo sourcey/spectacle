@@ -4,11 +4,11 @@
  */
 
 const METHOD_COLORS: Record<string, string> = {
-  get: "bg-green-400/20 dark:bg-green-400/20 text-green-700 dark:text-green-400",
-  post: "bg-blue-400/20 dark:bg-blue-400/20 text-blue-700 dark:text-blue-400",
-  put: "bg-yellow-400/20 dark:bg-yellow-400/20 text-yellow-700 dark:text-yellow-400",
-  delete: "bg-red-400/20 dark:bg-red-400/20 text-red-700 dark:text-red-400",
-  patch: "bg-orange-400/20 dark:bg-orange-400/20 text-orange-700 dark:text-orange-400",
+  get: "bg-green-100 dark:bg-green-400/20 text-green-800 dark:text-green-300",
+  post: "bg-blue-100 dark:bg-blue-400/20 text-blue-800 dark:text-blue-300",
+  put: "bg-amber-100 dark:bg-yellow-400/20 text-amber-900 dark:text-yellow-300",
+  delete: "bg-red-100 dark:bg-red-400/20 text-red-800 dark:text-red-300",
+  patch: "bg-orange-100 dark:bg-orange-400/20 text-orange-900 dark:text-orange-300",
 };
 
 interface EndpointBarProps {

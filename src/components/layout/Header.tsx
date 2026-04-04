@@ -1,6 +1,6 @@
 import { useContext } from "preact/hooks";
 import { NavigationContext, OptionsContext, SiteContext } from "../../renderer/context.js";
-import { SocialIcon } from "../ui/SocialIcon.js";
+import { SocialIcon, socialLabels } from "../ui/SocialIcon.js";
 import { Logo } from "../ui/Logo.js";
 import type { SiteNavigation } from "../../core/navigation.js";
 
@@ -108,7 +108,6 @@ export function Header() {
                 <button
                   id="search-open"
                   type="button"
-                  aria-label="Search"
                   class="group flex pointer-events-auto rounded-lg w-full items-center text-sm leading-6 h-9 pl-3.5 pr-3 text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))] ring-1 ring-[rgb(var(--color-gray-400)/0.3)] hover:ring-[rgb(var(--color-gray-600)/0.3)] dark:ring-[rgb(var(--color-gray-600)/0.3)] dark:hover:ring-[rgb(var(--color-gray-500)/0.3)] justify-between truncate gap-2 min-w-[43px] cursor-pointer bg-[rgb(var(--color-background-light))] dark:bg-[rgb(var(--color-background-dark))] dark:brightness-110 dark:hover:brightness-125"
                 >
                   <div class="flex items-center gap-2 min-w-[42px]">
@@ -128,7 +127,8 @@ export function Header() {
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="text-[rgb(var(--color-gray-400))] hover:text-[rgb(var(--color-gray-600))] dark:hover:text-[rgb(var(--color-gray-300))]"
+                          aria-label={link.label ?? socialLabels[link.type] ?? link.href}
+                          class="text-[rgb(var(--color-gray-500))] hover:text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))] dark:hover:text-[rgb(var(--color-gray-300))]"
                         >
                           {link.type === "link"
                             ? (link.label ?? link.href)

@@ -531,7 +531,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     name: config.name,
     theme: config.theme,
     logo: logo?.light ? logo : undefined,
-    favicon: config.favicon,
+    favicon: config.favicon ? await resolveAssetUrl(config.favicon) : undefined,
     repo: config.repo,
     editBranch: config.editBranch,
     editBasePath: config.editBasePath,

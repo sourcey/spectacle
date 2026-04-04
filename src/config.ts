@@ -179,8 +179,8 @@ const DEFAULT_COLORS = {
 };
 
 const DEFAULT_FONTS = {
-  sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-  mono: "'Geist Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
+  sans: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  mono: "ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace",
 };
 
 const DEFAULT_LAYOUT = {
@@ -250,7 +250,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     name: raw.name ?? "",
     theme,
     logo,
-    favicon: raw.favicon,
+    favicon: raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:") ? resolve(configDir, raw.favicon) : raw.favicon,
     repo: raw.repo,
     editBranch: raw.editBranch,
     editBasePath: raw.editBasePath,

@@ -115,6 +115,66 @@ function preprocessComponents(body: string): string {
     },
   );
 
+  // <Tabs> <Tab title="...">content</Tab> ... </Tabs> → :::tabs with ::tab children
+  html = html.replace(
+    /<Tabs>\s*([\s\S]*?)\s*<\/Tabs>/g,
+    (_m, inner: string) => {
+      const tabs: string[] = [];
+      inner.replace(
+        /\s*<Tab\s+title="([^"]*)">\s*([\s\S]*?)\s*<\/Tab>/g,
+        (_tm: string, title: string, content: string) => {
+          tabs.push(`::tab{title="${title}"}\n${content.trim()}\n::`);
+          return "";
+        },
+      );
+      return `:::tabs\n${tabs.join("\n")}\n:::`;
+    },
+  );
+
+  // <CodeGroup> with titled fenced code blocks → :::code-group
+  html = html.replace(
+    /<CodeGroup>\s*([\s\S]*?)\s*<\/CodeGroup>/g,
+    (_m, inner: string) => `:::code-group\n${inner.trim()}\n:::`,
+  );
+
+  // <Note>, <Warning>, <Tip>, <Info> → :::callout directives
+  for (const type of ["note", "warning", "tip", "info"] as const) {
+    const tag = type.charAt(0).toUpperCase() + type.slice(1);
+    html = html.replace(
+      new RegExp(`<${tag}(?:\\s+title="([^"]*)")?\\s*>\\s*([\\s\\S]*?)\\s*<\\/${tag}>`, "g"),
+      (_m: string, title: string | undefined, content: string) => {
+        const titleSuffix = title ? ` ${title}` : "";
+        return `:::${type}${titleSuffix}\n${content.trim()}\n:::`;
+      },
+    );
+  }
+
+  // <Video src="..." title="..." /> → ::video[url]{title="..."}
+  html = html.replace(
+    /<Video\s+([^>]*?)\s*\/?\s*>/g,
+    (_m: string, attrs: string) => {
+      const src = attrs.match(/src="([^"]*)"/)?.[1] ?? "";
+      const title = attrs.match(/title="([^"]*)"/)?.[1];
+      const titleAttr = title ? `{title="${title}"}` : "";
+      return `::video[${src}]${titleAttr}`;
+    },
+  );
+
+  // <Iframe src="..." title="..." height="..." /> → ::iframe[url]{attrs}
+  html = html.replace(
+    /<Iframe\s+([^>]*?)\s*\/?\s*>/g,
+    (_m: string, attrs: string) => {
+      const src = attrs.match(/src="([^"]*)"/)?.[1] ?? "";
+      const title = attrs.match(/title="([^"]*)"/)?.[1];
+      const height = attrs.match(/height="([^"]*)"/)?.[1];
+      const parts: string[] = [];
+      if (title) parts.push(`title="${title}"`);
+      if (height) parts.push(`height="${height}"`);
+      const attrStr = parts.length ? `{${parts.join(" ")}}` : "";
+      return `::iframe[${src}]${attrStr}`;
+    },
+  );
+
   return html;
 }
 

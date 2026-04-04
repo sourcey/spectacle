@@ -18,13 +18,13 @@ export function Introduction() {
 
       {info.termsOfService && (
         <p class="mt-4 text-sm text-[rgb(var(--color-gray-500))]">
-          <a href={info.termsOfService} class="text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))]">Terms of Service</a>
+          <a href={info.termsOfService} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">Terms of Service</a>
         </p>
       )}
 
       {info.contact?.email && (
         <p class="mt-2 text-sm text-[rgb(var(--color-gray-500))]">
-          Contact: <a href={`mailto:${info.contact.email}`} class="text-[rgb(var(--color-primary))] dark:text-[rgb(var(--color-primary-light))]">{info.contact.email}</a>
+          Contact: <a href={`mailto:${info.contact.email}`} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">{info.contact.email}</a>
         </p>
       )}
 
