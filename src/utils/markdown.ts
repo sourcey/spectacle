@@ -189,6 +189,33 @@ export function extractHeadings(input: string): PageHeading[] {
 }
 
 /**
+ * Extract the first paragraph token from markdown.
+ * Useful for generated docs where a summary paragraph is embedded in the body.
+ */
+export function extractFirstParagraph(input?: string): string {
+  if (!input) return "";
+  const tokens = marked.lexer(input);
+  for (const token of tokens) {
+    if (token.type === "paragraph") {
+      const raw = token.raw.trim();
+      if (!raw) continue;
+      if (!raw.replace(/<[^>]+>/g, "").trim()) continue;
+      return raw;
+    }
+  }
+  return "";
+}
+
+/**
+ * Replace markdown links with their visible labels.
+ * Useful when rendering inside an existing clickable container.
+ */
+export function stripMarkdownLinks(input?: string): string {
+  if (!input) return "";
+  return input.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1");
+}
+
+/**
  * Render Markdown to HTML.
  */
 export function renderMarkdown(input?: string): string {

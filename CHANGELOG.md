@@ -9,6 +9,14 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `::video` directive for embedding YouTube, Vimeo, or raw video files in markdown
 - `::iframe` directive for embedding arbitrary URLs (https only)
 
+## 3.4.3 — 2026-04-05
+
+### Fixed
+
+- Doxygen page summaries now reuse resolved cross-links in page headers instead of exposing raw `{#ref ... #}` placeholders
+- Rich Doxygen index cards strip inline markdown link syntax from summaries
+- `sourcey init` now scaffolds projects against the latest published version again
+
 ## 3.4.0 — 2026-04-02
 
 ### Added
