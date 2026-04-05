@@ -147,7 +147,7 @@ function ContentFooter() {
     <div class="mt-16 mb-8 flex items-center justify-between border-t border-[rgb(var(--color-gray-200)/0.7)] dark:border-[rgb(var(--color-gray-800)/0.5)] pt-6 text-xs text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">
       <a href="https://sourcey.com" target="_blank" rel="noopener noreferrer" class={`flex items-center gap-1.5 ${linkStyle}`}>
         Built with
-        <span class="font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))]">Sourcey</span>
+        <img src="https://sourcey.com/sourcey-logo.png" alt="Sourcey" class="h-4 w-4" />
       </a>
       <div class="flex items-center gap-4">
         {editUrl && (
