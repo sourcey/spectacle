@@ -94,23 +94,36 @@ export function SecurityDefinitions() {
                 </p>
               )}
               {scheme.type === "oauth2" && scheme.flows && (
-                <div class="mt-2 space-y-2">
+                <div class="mt-2 space-y-4">
                   {Object.entries(scheme.flows).map(([flowType, flow]) => (
                     <div key={flowType}>
                       <strong class="text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">{flowType}</strong>
-                      {flow?.authorizationUrl && (
-                        <p class="mt-1">Authorization: <code class="text-xs">{flow.authorizationUrl}</code></p>
-                      )}
-                      {flow?.tokenUrl && (
-                        <p class="mt-1">Token: <code class="text-xs">{flow.tokenUrl}</code></p>
-                      )}
+                      <dl class="mt-2 text-sm">
+                        {flow?.authorizationUrl && (
+                          <>
+                            <dt class="text-[rgb(var(--color-gray-500))] mt-2">Authorization URL</dt>
+                            <dd><code class="text-xs">{flow.authorizationUrl}</code></dd>
+                          </>
+                        )}
+                        {flow?.tokenUrl && (
+                          <>
+                            <dt class="text-[rgb(var(--color-gray-500))] mt-2">Token URL</dt>
+                            <dd><code class="text-xs">{flow.tokenUrl}</code></dd>
+                          </>
+                        )}
+                      </dl>
                       {flow?.scopes && Object.keys(flow.scopes).length > 0 && (
-                        <p class="mt-1">
-                          Scopes:{" "}
-                          {Object.entries(flow.scopes)
-                            .map(([s, desc]) => `${s} — ${desc}`)
-                            .join(", ")}
-                        </p>
+                        <div class="mt-3">
+                          <span class="text-sm text-[rgb(var(--color-gray-500))]">Scopes</span>
+                          <ul class="mt-1 space-y-1">
+                            {Object.entries(flow.scopes).map(([s, desc]) => (
+                              <li key={s} class="text-sm">
+                                <code class="text-xs font-medium text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-200))]">{s}</code>
+                                <span class="text-[rgb(var(--color-gray-500))] ml-2">— {desc}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   ))}
