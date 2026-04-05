@@ -90,6 +90,12 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
+#sourcey .table-wrap table {
+  margin: 0;
+}
+#sourcey .prose :where(thead th):not(:where([class~=not-prose],[class~=not-prose] *)) {
+  padding-top: .571429em;
+}
 
 /* ── Prose Video (::video directive) ──────────────────────────────── */
 

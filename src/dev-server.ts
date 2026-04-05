@@ -553,6 +553,7 @@ async function loadCustomCSS(paths: string[]): Promise<string> {
 const MIME_TYPES: Record<string, string> = {
   ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
   ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
+  ".ico": "image/x-icon",
 };
 
 async function resolveAssetUrl(pathOrUrl: string): Promise<string> {

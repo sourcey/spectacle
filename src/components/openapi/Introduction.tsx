@@ -12,10 +12,6 @@ export function Introduction() {
 
   return (
     <div id="introduction" data-traverse-target="introduction" class="mb-8">
-      {info.description && (
-        <Markdown content={info.description} class="max-w-none" />
-      )}
-
       {info.termsOfService && (
         <p class="mt-4 text-sm text-[rgb(var(--color-gray-500))]">
           <a href={info.termsOfService} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">Terms of Service</a>
@@ -42,6 +38,10 @@ export function Introduction() {
             </div>
           ))}
         </div>
+      )}
+
+      {info.description && (
+        <Markdown content={info.description} class="max-w-none mt-8" />
       )}
     </div>
   );

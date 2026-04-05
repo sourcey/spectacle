@@ -48,6 +48,61 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; body: string } {
   return { meta, body: match[2] };
 }
 
+const FENCED_BLOCK_TOKEN = "@@SOURCEY_FENCED_BLOCK_";
+
+function protectFencedCodeBlocks(input: string): { text: string; blocks: string[] } {
+  const blocks: string[] = [];
+  const output: string[] = [];
+  const lines = input.split("\n");
+  let fence: { char: string; length: number } | null = null;
+  let buffer: string[] = [];
+
+  const pushProtectedBlock = () => {
+    const index = blocks.push(buffer.join("\n")) - 1;
+    output.push(`${FENCED_BLOCK_TOKEN}${index}@@`);
+    buffer = [];
+  };
+
+  for (const line of lines) {
+    const stripped = line.replace(/^ {1,3}/, "");
+    const fenceMatch = stripped.match(/^(`{3,}|~{3,})(.*)$/);
+
+    if (!fence) {
+      if (!fenceMatch) {
+        output.push(line);
+        continue;
+      }
+      fence = { char: fenceMatch[1][0], length: fenceMatch[1].length };
+      buffer.push(line);
+      continue;
+    }
+
+    buffer.push(line);
+    if (
+      fenceMatch &&
+      fenceMatch[1][0] === fence.char &&
+      fenceMatch[1].length >= fence.length &&
+      !fenceMatch[2].trim()
+    ) {
+      pushProtectedBlock();
+      fence = null;
+    }
+  }
+
+  if (buffer.length > 0) {
+    output.push(...buffer);
+  }
+
+  return { text: output.join("\n"), blocks };
+}
+
+function restoreFencedCodeBlocks(input: string, blocks: string[]): string {
+  return blocks.reduce(
+    (text, block, index) => text.replaceAll(`${FENCED_BLOCK_TOKEN}${index}@@`, block),
+    input,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Component preprocessor: transforms MDX-style JSX components into HTML
 // ---------------------------------------------------------------------------
@@ -57,7 +112,8 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; body: string } {
  * a single rendering path in preprocessDirectives.
  */
 function preprocessComponents(body: string): string {
-  let html = body;
+  const { text, blocks } = protectFencedCodeBlocks(body);
+  let html = text;
 
   // <Steps> <Step title="...">content</Step> ... </Steps> → :::steps numbered list
   html = html.replace(
@@ -175,7 +231,7 @@ function preprocessComponents(body: string): string {
     },
   );
 
-  return html;
+  return restoreFencedCodeBlocks(html, blocks);
 }
 
 // ---------------------------------------------------------------------------
@@ -265,7 +321,8 @@ function splitChildren(
  * from other directive types cannot collide.
  */
 function preprocessDirectives(body: string): string {
-  let html = body;
+  const { text, blocks } = protectFencedCodeBlocks(body);
+  let html = text;
 
   // Callouts: :::note, :::warning, :::tip, :::info (optional title)
   html = html.replace(
@@ -286,13 +343,30 @@ ${body ? `<div class="callout-content">\n\n${body}\n\n</div>` : ""}
     (_m, content: string) => {
       const lines = content.trim().split("\n");
       const steps: { title: string; body: string[] }[] = [];
+      let fenceMarker = "";
       for (const line of lines) {
-        const sm = line.match(/^\d+\.\s+(.+)/);
+        // Track fenced code blocks so we don't mis-detect numbered
+        // lines inside them as step titles.  A closing fence must use
+        // the same character, at least as many repeats, and no info string.
+        const stripped = line.replace(/^ {1,3}/, "");
+        const fm = stripped.match(/^(`{3,}|~{3,})(.*)/);
+        if (fm) {
+          if (!fenceMarker) {
+            fenceMarker = fm[1];
+          } else if (
+            fm[1][0] === fenceMarker[0] &&
+            fm[1].length >= fenceMarker.length &&
+            !fm[2].trim()
+          ) {
+            fenceMarker = "";
+          }
+        }
+        const sm = !fenceMarker && line.match(/^\d+\.\s+(.+)/);
         if (sm) {
           steps.push({ title: sm[1], body: [] });
         } else if (steps.length > 0) {
           // Strip up to 3 leading spaces (markdown list indent)
-          steps[steps.length - 1].body.push(line.replace(/^ {1,3}/, ""));
+          steps[steps.length - 1].body.push(stripped);
         }
       }
       const items = steps
@@ -331,14 +405,15 @@ ${s.body.join("\n").trim()}
   html = html.replace(
     /^:::code-group\s*\n([\s\S]*?)^:::\s*$/gm,
     (_m, content: string) => {
-      const blocks: { title: string; body: string }[] = [];
+      const restoredContent = restoreFencedCodeBlocks(content, blocks);
+      const codeBlocks: { title: string; body: string }[] = [];
       const re = /```(\w+)\s+title="([^"]*)"\s*\n([\s\S]*?)```/g;
       let match: RegExpExecArray | null;
-      while ((match = re.exec(content)) !== null) {
-        blocks.push({ title: match[2], body: `\`\`\`${match[1]}\n${match[3]}\`\`\`` });
+      while ((match = re.exec(restoredContent)) !== null) {
+        codeBlocks.push({ title: match[2], body: `\`\`\`${match[1]}\n${match[3]}\`\`\`` });
       }
-      if (blocks.length === 0) return content;
-      return `\n\n${buildTabbedHtml(blocks, nextId("cg"), "directive-code-group")}\n\n`;
+      if (codeBlocks.length === 0) return restoredContent;
+      return `\n\n${buildTabbedHtml(codeBlocks, nextId("cg"), "directive-code-group")}\n\n`;
     },
   );
 
@@ -393,7 +468,7 @@ ${content.trim()}
     },
   );
 
-  return html;
+  return restoreFencedCodeBlocks(html, blocks);
 }
 
 // ---------------------------------------------------------------------------
