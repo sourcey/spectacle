@@ -37,6 +37,16 @@ describe("loadMarkdownPage", { timeout: 30_000 }, () => {
     expect(page.html).toContain("ServerConnection");
   });
 
+  it("does not expand directives or JSX components inside fenced code blocks", async () => {
+    const page = await loadMarkdownPage(
+      resolve(FIXTURE_DIR, "fenced-directive-example.md"),
+      "fenced-directive-example",
+    );
+    expect(page.html).toContain("card-group");
+    expect(page.html).toContain("CardGroup");
+    expect(page.html).not.toContain('class="card-group not-prose"');
+  });
+
   it("extracts h2 and h3 headings with IDs", async () => {
     const page = await loadMarkdownPage(
       resolve(FIXTURE_DIR, "test-page.md"),
