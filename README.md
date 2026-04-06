@@ -2,7 +2,7 @@
 
 > Your API docs shouldn't depend on someone else's SaaS.
 
-Sourcey is an open source documentation platform. Point it at an OpenAPI spec, add markdown guides, get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
+Sourcey is an open source documentation platform. Point it at an OpenAPI spec, an MCP server, or a Doxygen XML directory; add markdown guides; get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
 [![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
@@ -12,36 +12,39 @@ Sourcey is an open source documentation platform. Point it at an OpenAPI spec, a
 npx sourcey init
 ```
 
-![Sourcey](assets/screenshot.jpg)
+![Sourcey](assets/hero-preview.jpg)
 
 **[Live demo](https://cheesestore.github.io/)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/sourcey/sourcey)
 
 ## Features
 
 - **API reference from OpenAPI** — endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
-- **Markdown guides with rich components** — steps, cards, accordions, syntax-highlighted code blocks; everything you need for prose docs alongside your API reference
+- **MCP server documentation** — tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
+- **Markdown guides with rich components** — steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
+- **C++ and Doxygen** — feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
+- **llms.txt generation** — auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
 - **TypeScript config** — `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
 - **Theme presets** — default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
 - **Vite dev server** — SSR hot reload on every component and CSS change; spec and markdown changes trigger instant refresh
 - **Dark mode** — semantic design tokens, light/dark logo variants, localStorage persistence
-- **Client-side search** — instant fuzzy search across all pages and API operations
+- **Client-side search** — instant fuzzy search across all pages and API operations; Cmd+K
 - **Static HTML output** — no framework runtime, no vendor lock-in. Deploy to GitHub Pages, Vercel, Netlify, S3, anywhere
 - **Open source** — AGPL-3.0. Self-host, fork, extend. Your docs, your infrastructure
 
 ### Sourcey vs alternatives
 
-| | Sourcey | Mintlify | GitBook | Fern | Redocly | VitePress |
+| | Sourcey | Redocly | GitBook | Mintlify | Fern | ReadMe |
 |---|---|---|---|---|---|---|
-| OpenAPI reference | Native | Native | No | Native | Native | Plugin |
-| Markdown guides | Native | Native | Native | Native | Native | Native |
-| Static output you own | Yes | No | No | No | Yes | Yes |
-| Zero JS shipped | Yes | No | No | No | No | No (Vue SPA) |
-| TypeScript config | Yes | JSON | GUI | YAML | YAML | TS |
-| Hot reload dev server | Vite SSR | Hosted | Hosted | Hosted | Webpack | Vite SPA |
-| Rich components | Yes | Yes | Limited | Yes | No | Vue |
-| Theme presets | Yes | No | No | No | No | Yes |
-| Self-hosted | Yes | No | No | No | Yes | Yes |
-| Pricing | Free / AGPL | $150+/mo | Free / paid | Paid | Free / paid | Free |
+| Open source | Yes | Partial | No | No | No | No |
+| Static output | Yes | Yes | No | No | No | No |
+| Zero JS shipped | Yes | No | No | No | No | No |
+| MCP server docs | Native | No | No | No | No | No |
+| Doxygen / C++ docs | Native | No | No | No | No | No |
+| Config format | TypeScript | YAML | GUI | JSON | YAML | GUI |
+| Local preview | Vite SSR | Local | Hosted | Local | Local | Hosted |
+| No account required | Yes | Partial | No | No | No | No |
+| Self-hosted | Yes | Yes | No | No | Yes | No |
+| Pricing | Free | $10–$24 | $65–$249 | $250+ | $150+ | $79–$3,000+ |
 
 ## Install
 
@@ -105,6 +108,10 @@ export default defineConfig({
         tab: "API Reference",
         openapi: "./openapi.yaml",
       },
+      {
+        tab: "MCP Server",
+        mcp: "./mcp.json",
+      },
     ],
   },
   navbar: {
@@ -117,7 +124,7 @@ export default defineConfig({
 });
 ```
 
-Each tab is either an `openapi` spec or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
+Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
 
 ### Markdown components
 
