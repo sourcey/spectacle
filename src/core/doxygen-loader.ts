@@ -21,6 +21,55 @@ export function normalizeDoxygenDescription(description: string, markdown: strin
   return firstParagraph || description;
 }
 
+export function rewriteGeneratedDoxygenIncludePath(includePath: string): string {
+  const normalized = includePath.replace(/\\/g, "/");
+  if (!normalized.startsWith("/") && !/^[A-Za-z]:\//.test(normalized)) {
+    return includePath;
+  }
+
+  const includeMarker = "/include/";
+  const includeIndex = normalized.lastIndexOf(includeMarker);
+  if (includeIndex !== -1) {
+    return normalized.slice(includeIndex + includeMarker.length);
+  }
+
+  const srcMarker = "/src/";
+  const srcIndex = normalized.indexOf(srcMarker);
+  if (srcIndex !== -1) {
+    return normalized.slice(srcIndex + 1);
+  }
+
+  const basename = normalized.split("/").pop();
+  return basename || includePath;
+}
+
+export function rewriteGeneratedDoxygenMarkdown(markdown: string): string {
+  return markdown.replace(/^#include ([<"])([^>\n"]+)([>"])$/gm, (_match, open: string, includePath: string, close: string) => {
+    return `#include ${open}${rewriteGeneratedDoxygenIncludePath(includePath)}${close}`;
+  });
+}
+
+export function rewriteGeneratedDoxygenHref(href: string): string {
+  const [path, hash] = href.split("#", 2);
+  if (!path.startsWith("api_") || !path.endsWith(".md")) return href;
+
+  const slug = path
+    .slice("api_".length, -".md".length)
+    .replace(/--/g, "-");
+
+  return `${slug}.html${hash ? `#${hash}` : ""}`;
+}
+
+export function rewriteGeneratedDoxygenHtmlLinks(html: string): string {
+  return html
+    .replace(/href="(api_[^"]+?\.md(?:#[^"]*)?)"/g, (_match, href: string) => {
+      return `href="${rewriteGeneratedDoxygenHref(href)}"`;
+    })
+    .replace(/<code>\[([^\]]+)\]\((api_[^)]+?\.md(?:#[^)]+)?)\)<\/code>/g, (_match, label: string, href: string) => {
+      return `<a href="${rewriteGeneratedDoxygenHref(href)}"><code>${label}</code></a>`;
+    });
+}
+
 export async function loadDoxygenTab(
   config: ResolvedDoxygenConfig,
   tabSlug: string,
@@ -38,9 +87,10 @@ export async function loadDoxygenTab(
   for (const page of generated) {
     if (!page.markdown.trim()) continue;
 
-    const description = normalizeDoxygenDescription(page.description, page.markdown);
-    const html = renderMarkdown(page.markdown);
-    const headings = extractHeadings(page.markdown);
+    const markdown = rewriteGeneratedDoxygenMarkdown(page.markdown);
+    const description = normalizeDoxygenDescription(page.description, markdown);
+    const html = rewriteGeneratedDoxygenHtmlLinks(renderMarkdown(markdown));
+    const headings = extractHeadings(markdown);
 
     pages.set(page.slug, {
       title: page.title,
@@ -48,7 +98,8 @@ export async function loadDoxygenTab(
       slug: page.slug,
       html,
       headings,
-      sourcePath: config.xml,
+      sourcePath: `api/${page.slug}.md`,
+      editPath: page.kind === "group" ? `api/${page.slug}.md` : null,
     });
 
     // Group by the last segment of namespace (e.g. "icy::http" -> "http")
@@ -97,7 +148,8 @@ export async function loadDoxygenTab(
       slug: indexSlug,
       html: indexHtml,
       headings: indexHeadings,
-      sourcePath: config.xml,
+      sourcePath: `api/${indexSlug}.md`,
+      editPath: null,
     });
 
     groups.unshift({

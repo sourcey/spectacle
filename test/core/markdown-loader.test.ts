@@ -47,6 +47,51 @@ describe("loadMarkdownPage", { timeout: 30_000 }, () => {
     expect(page.html).not.toContain('class="card-group not-prose"');
   });
 
+  it("handles nested tabs and code groups without leaking directive markers", async () => {
+    const page = await loadMarkdownPage(
+      resolve(FIXTURE_DIR, "nested-tabs-code-group.md"),
+      "nested-tabs-code-group",
+    );
+
+    expect(page.html).toContain("Stream");
+    expect(page.html).toContain("Record");
+    expect(page.html).toContain("Relay");
+    expect(page.html).toContain("File source");
+    expect(page.html).toContain("Camera source");
+    expect(page.html.match(/class="directive-tab(?: active)?"/g)?.length).toBe(5);
+    expect(page.html).not.toContain(":::tabs");
+    expect(page.html).not.toContain(":::code-group");
+    expect(page.html).not.toContain("::tab{");
+  });
+
+  it("keeps supported component tags literal inside inline code and groups accordions once", async () => {
+    const page = await loadMarkdownPage(
+      resolve(FIXTURE_DIR, "component-inline-accordion.md"),
+      "component-inline-accordion",
+    );
+
+    expect(page.html).toMatch(/<code>&lt;Tab title=(?:&quot;|")Shell(?:&quot;|")&gt;<\/code>/);
+    expect(page.html.match(/class="accordion-group not-prose"/g)?.length).toBe(1);
+    expect(page.html.match(/class="accordion-item"/g)?.length).toBe(2);
+    expect(page.html.match(/class="directive-tab(?: active)?"/g)?.length).toBe(2);
+    expect(page.html).not.toContain("<AccordionGroup>");
+    expect(page.html).not.toContain("<Tab title=");
+  });
+
+  it("falls back to visible markdown when directive containers are malformed", async () => {
+    const page = await loadMarkdownPage(
+      resolve(FIXTURE_DIR, "malformed-directive-fallback.md"),
+      "malformed-directive-fallback",
+    );
+
+    expect(page.html).toContain("This block is missing");
+    expect(page.html).toContain("This card group is missing card children too.");
+    expect(page.html).toContain("This steps block has no numbered steps.");
+    expect(page.html).not.toContain('class="directive-tabs not-prose"');
+    expect(page.html).not.toContain('class="card-group not-prose"');
+    expect(page.html).not.toContain('class="steps not-prose"');
+  });
+
   it("extracts h2 and h3 headings with IDs", async () => {
     const page = await loadMarkdownPage(
       resolve(FIXTURE_DIR, "test-page.md"),
