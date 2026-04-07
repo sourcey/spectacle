@@ -3,7 +3,13 @@ import { basename, extname, relative } from "node:path";
 import { load as parseYaml } from "js-yaml";
 import { htmlId } from "../utils/html-id.js";
 import { renderIcon } from "../utils/icons.js";
-import { renderMarkdown, extractHeadings, type PageHeading } from "../utils/markdown.js";
+import {
+  renderCodeBlock,
+  renderMarkdown,
+  renderMarkdownInline,
+  extractHeadings,
+  type PageHeading,
+} from "../utils/markdown.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,6 +28,8 @@ export interface MarkdownPage {
   headings: PageHeading[];
   /** Original file path (for error messages and dev server watching) */
   sourcePath: string;
+  /** Optional repo-relative path used for "Edit this page" links. Null disables the link. */
+  editPath?: string | null;
 }
 
 export type { PageHeading } from "../utils/markdown.js";
@@ -49,6 +57,7 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; body: string } {
 }
 
 const FENCED_BLOCK_TOKEN = "@@SOURCEY_FENCED_BLOCK_";
+const INLINE_CODE_TOKEN = "@@SOURCEY_INLINE_CODE_";
 
 function protectFencedCodeBlocks(input: string): { text: string; blocks: string[] } {
   const blocks: string[] = [];
@@ -103,135 +112,529 @@ function restoreFencedCodeBlocks(input: string, blocks: string[]): string {
   );
 }
 
+function protectInlineCodeSpans(input: string): { text: string; spans: string[] } {
+  const spans: string[] = [];
+  let output = "";
+  let i = 0;
+
+  while (i < input.length) {
+    if (input[i] !== "`") {
+      output += input[i];
+      i += 1;
+      continue;
+    }
+
+    let tickEnd = i + 1;
+    while (tickEnd < input.length && input[tickEnd] === "`") tickEnd += 1;
+
+    const delimiter = input.slice(i, tickEnd);
+    const closeIndex = input.indexOf(delimiter, tickEnd);
+    if (closeIndex === -1) {
+      output += input.slice(i);
+      break;
+    }
+
+    const span = input.slice(i, closeIndex + delimiter.length);
+    const index = spans.push(span) - 1;
+    output += `${INLINE_CODE_TOKEN}${index}@@`;
+    i = closeIndex + delimiter.length;
+  }
+
+  return { text: output, spans };
+}
+
+function restoreInlineCodeSpans(input: string, spans: string[]): string {
+  return spans.reduce(
+    (text, span, index) => text.replaceAll(`${INLINE_CODE_TOKEN}${index}@@`, span),
+    input,
+  );
+}
+
+function skipWhitespace(input: string, index: number): number {
+  let i = index;
+  while (i < input.length && /\s/.test(input[i])) i += 1;
+  return i;
+}
+
+interface ParsedAttrValue {
+  value: string;
+  nextIndex: number;
+}
+
+function parseQuotedAttrValue(input: string, index: number): ParsedAttrValue | null {
+  const quote = input[index];
+  if (quote !== `"` && quote !== `'`) return null;
+
+  let value = "";
+  let i = index + 1;
+  while (i < input.length) {
+    const ch = input[i];
+    if (ch === "\\") {
+      if (i + 1 < input.length) {
+        value += input[i + 1];
+        i += 2;
+        continue;
+      }
+      i += 1;
+      continue;
+    }
+    if (ch === quote) {
+      return { value, nextIndex: i + 1 };
+    }
+    value += ch;
+    i += 1;
+  }
+
+  return null;
+}
+
+function parseBracedAttrValue(input: string, index: number): ParsedAttrValue | null {
+  if (input[index] !== "{") return null;
+
+  let depth = 1;
+  let i = index + 1;
+  while (i < input.length) {
+    const ch = input[i];
+    if (ch === `"` || ch === `'`) {
+      const quoted = parseQuotedAttrValue(input, i);
+      if (!quoted) return null;
+      i = quoted.nextIndex;
+      continue;
+    }
+    if (ch === "{") {
+      depth += 1;
+    } else if (ch === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return {
+          value: input.slice(index + 1, i).trim(),
+          nextIndex: i + 1,
+        };
+      }
+    }
+    i += 1;
+  }
+
+  return null;
+}
+
+function parseKeyValueAttrs(
+  raw: string,
+  options: { allowBraces: boolean },
+): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  let i = 0;
+
+  while (i < raw.length) {
+    i = skipWhitespace(raw, i);
+    if (i >= raw.length) break;
+
+    const keyMatch = raw.slice(i).match(/^([A-Za-z_][A-Za-z0-9_-]*)/);
+    if (!keyMatch) break;
+
+    const key = keyMatch[1];
+    i += key.length;
+    i = skipWhitespace(raw, i);
+    if (raw[i] !== "=") break;
+    i += 1;
+    i = skipWhitespace(raw, i);
+
+    const parsedValue = raw[i] === "{" && options.allowBraces
+      ? parseBracedAttrValue(raw, i)
+      : parseQuotedAttrValue(raw, i);
+    if (!parsedValue) break;
+
+    attrs[key] = parsedValue.value;
+    i = parsedValue.nextIndex;
+  }
+
+  return attrs;
+}
+
 // ---------------------------------------------------------------------------
 // Component preprocessor: transforms MDX-style JSX components into HTML
 // ---------------------------------------------------------------------------
+
+type SupportedComponentTag =
+  | "Steps"
+  | "Step"
+  | "CardGroup"
+  | "Card"
+  | "AccordionGroup"
+  | "Accordion"
+  | "Tabs"
+  | "Tab"
+  | "CodeGroup"
+  | "Note"
+  | "Warning"
+  | "Tip"
+  | "Info"
+  | "Video"
+  | "Iframe";
+
+const SUPPORTED_COMPONENT_TAGS = new Set<SupportedComponentTag>([
+  "Steps",
+  "Step",
+  "CardGroup",
+  "Card",
+  "AccordionGroup",
+  "Accordion",
+  "Tabs",
+  "Tab",
+  "CodeGroup",
+  "Note",
+  "Warning",
+  "Tip",
+  "Info",
+  "Video",
+  "Iframe",
+]);
+
+const SELF_CLOSING_COMPONENT_TAGS = new Set<SupportedComponentTag>(["Video", "Iframe"]);
+
+type ParsedComponentNode = ParsedTextNode | ParsedComponentElement;
+
+interface ParsedTextNode {
+  kind: "text";
+  value: string;
+}
+
+interface ParsedComponentElement {
+  kind: "component";
+  name: SupportedComponentTag;
+  attrs: Record<string, string>;
+  children: ParsedComponentNode[];
+  original: string;
+}
+
+interface ParsedComponentTagToken {
+  name: SupportedComponentTag;
+  kind: "open" | "close" | "self";
+  attrs: Record<string, string>;
+  raw: string;
+  start: number;
+  end: number;
+}
+
+interface ParsedComponentResult {
+  nodes: ParsedComponentNode[];
+  nextIndex: number;
+  matchedClose?: ParsedComponentTagToken;
+}
+
+function escapeDirectiveAttr(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+function buildDirectiveAttrList(entries: Array<[string, string | undefined]>): string {
+  const attrs = entries
+    .filter(([, value]) => value !== undefined && value !== "")
+    .map(([key, value]) => `${key}="${escapeDirectiveAttr(value!)}"`);
+  return attrs.length > 0 ? `{${attrs.join(" ")}}` : "";
+}
+
+function indentBlock(text: string, prefix: string): string {
+  return text
+    .split("\n")
+    .map((line) => `${prefix}${line}`)
+    .join("\n");
+}
+
+function isWhitespaceOnlyText(node: ParsedComponentNode): boolean {
+  return node.kind === "text" && node.value.trim() === "";
+}
+
+function findComponentTagEnd(input: string, start: number): number | null {
+  let quote: `"` | `'` | null = null;
+  let braceDepth = 0;
+  let i = start + 1;
+
+  while (i < input.length) {
+    const ch = input[i];
+    if (quote) {
+      if (ch === "\\") {
+        i += 2;
+        continue;
+      }
+      if (ch === quote) quote = null;
+      i += 1;
+      continue;
+    }
+
+    if (ch === `"` || ch === `'`) {
+      quote = ch;
+      i += 1;
+      continue;
+    }
+
+    if (ch === "{") {
+      braceDepth += 1;
+      i += 1;
+      continue;
+    }
+
+    if (ch === "}" && braceDepth > 0) {
+      braceDepth -= 1;
+      i += 1;
+      continue;
+    }
+
+    if (ch === ">" && braceDepth === 0) {
+      return i + 1;
+    }
+
+    i += 1;
+  }
+
+  return null;
+}
+
+function tryParseComponentTag(input: string, start: number): ParsedComponentTagToken | null {
+  if (input[start] !== "<") return null;
+
+  const end = findComponentTagEnd(input, start);
+  if (end === null) return null;
+
+  const raw = input.slice(start, end);
+  const inner = input.slice(start + 1, end - 1).trim();
+  if (!inner) return null;
+
+  if (inner.startsWith("/")) {
+    const closeName = inner.slice(1).trim();
+    if (!SUPPORTED_COMPONENT_TAGS.has(closeName as SupportedComponentTag)) return null;
+    return {
+      name: closeName as SupportedComponentTag,
+      kind: "close",
+      attrs: {},
+      raw,
+      start,
+      end,
+    };
+  }
+
+  const selfClosing = inner.endsWith("/");
+  const content = selfClosing ? inner.slice(0, -1).trimEnd() : inner;
+  const nameMatch = content.match(/^([A-Za-z][A-Za-z0-9]*)/);
+  if (!nameMatch || !SUPPORTED_COMPONENT_TAGS.has(nameMatch[1] as SupportedComponentTag)) {
+    return null;
+  }
+
+  const name = nameMatch[1] as SupportedComponentTag;
+  const attrSource = content.slice(name.length);
+  return {
+    name,
+    kind: selfClosing || SELF_CLOSING_COMPONENT_TAGS.has(name) ? "self" : "open",
+    attrs: parseKeyValueAttrs(attrSource, { allowBraces: true }),
+    raw,
+    start,
+    end,
+  };
+}
+
+function parseComponentNodes(
+  input: string,
+  startIndex = 0,
+  untilTag?: SupportedComponentTag,
+): ParsedComponentResult {
+  const nodes: ParsedComponentNode[] = [];
+  let cursor = startIndex;
+
+  while (cursor < input.length) {
+    const nextTag = input.indexOf("<", cursor);
+    if (nextTag === -1) {
+      if (cursor < input.length) {
+        nodes.push({ kind: "text", value: input.slice(cursor) });
+      }
+      return { nodes, nextIndex: input.length };
+    }
+
+    if (nextTag > cursor) {
+      nodes.push({ kind: "text", value: input.slice(cursor, nextTag) });
+    }
+
+    const tag = tryParseComponentTag(input, nextTag);
+    if (!tag) {
+      nodes.push({ kind: "text", value: "<" });
+      cursor = nextTag + 1;
+      continue;
+    }
+
+    if (tag.kind === "close") {
+      if (untilTag && tag.name === untilTag) {
+        return {
+          nodes,
+          nextIndex: tag.end,
+          matchedClose: tag,
+        };
+      }
+
+      nodes.push({ kind: "text", value: tag.raw });
+      cursor = tag.end;
+      continue;
+    }
+
+    if (tag.kind === "self") {
+      nodes.push({
+        kind: "component",
+        name: tag.name,
+        attrs: tag.attrs,
+        children: [],
+        original: tag.raw,
+      });
+      cursor = tag.end;
+      continue;
+    }
+
+    const childResult = parseComponentNodes(input, tag.end, tag.name);
+    if (!childResult.matchedClose) {
+      nodes.push({
+        kind: "text",
+        value: input.slice(nextTag, childResult.nextIndex),
+      });
+      cursor = childResult.nextIndex;
+      continue;
+    }
+
+    nodes.push({
+      kind: "component",
+      name: tag.name,
+      attrs: tag.attrs,
+      children: childResult.nodes,
+      original: input.slice(nextTag, childResult.nextIndex),
+    });
+    cursor = childResult.nextIndex;
+  }
+
+  return { nodes, nextIndex: cursor };
+}
+
+function renderParsedComponentNodes(nodes: ParsedComponentNode[]): string {
+  return nodes.map(renderParsedComponentNode).join("");
+}
+
+function collectChildComponents(
+  children: ParsedComponentNode[],
+  expected: SupportedComponentTag,
+): ParsedComponentElement[] | null {
+  const matches: ParsedComponentElement[] = [];
+  for (const child of children) {
+    if (isWhitespaceOnlyText(child)) continue;
+    if (child.kind !== "component" || child.name !== expected) {
+      return null;
+    }
+    matches.push(child);
+  }
+  return matches;
+}
+
+function renderStandaloneAccordion(node: ParsedComponentElement): string {
+  const title = node.attrs.title || "";
+  const body = renderParsedComponentNodes(node.children).trim();
+  return `:::accordion${buildDirectiveAttrList([["title", title]])}\n${body}\n:::`;
+}
+
+function renderParsedComponentElement(node: ParsedComponentElement): string | null {
+  if (node.name === "Steps") {
+    const steps = collectChildComponents(node.children, "Step");
+    if (!steps) return null;
+
+    const body = steps
+      .map((step, index) => {
+        const title = step.attrs.title || "";
+        const content = renderParsedComponentNodes(step.children).trim();
+        return `${index + 1}. ${title}${content ? `\n${indentBlock(content, "   ")}` : ""}`;
+      })
+      .join("\n");
+
+    return `:::steps\n${body}\n:::`;
+  }
+
+  if (node.name === "CardGroup") {
+    const cards = collectChildComponents(node.children, "Card");
+    if (!cards) return null;
+
+    const body = cards
+      .map((card) => {
+        const attrs = buildDirectiveAttrList([
+          ["title", card.attrs.title || ""],
+          ["icon", card.attrs.icon || ""],
+          ["href", card.attrs.href],
+        ]);
+        const content = renderParsedComponentNodes(card.children).trim();
+        return `::card${attrs}\n${content}\n::`;
+      })
+      .join("\n");
+
+    return `:::card-group${buildDirectiveAttrList([["cols", node.attrs.cols || "2"]])}\n${body}\n:::`;
+  }
+
+  if (node.name === "AccordionGroup") {
+    const accordions = collectChildComponents(node.children, "Accordion");
+    if (!accordions) return null;
+    return accordions.map(renderStandaloneAccordion).join("\n\n");
+  }
+
+  if (node.name === "Accordion") {
+    return renderStandaloneAccordion(node);
+  }
+
+  if (node.name === "Tabs") {
+    const tabs = collectChildComponents(node.children, "Tab");
+    if (!tabs) return null;
+
+    const body = tabs
+      .map((tab) => {
+        const content = renderParsedComponentNodes(tab.children).trim();
+        return `::tab${buildDirectiveAttrList([["title", tab.attrs.title || ""]])}\n${content}\n::`;
+      })
+      .join("\n");
+
+    return `:::tabs\n${body}\n:::`;
+  }
+
+  if (node.name === "CodeGroup") {
+    const content = renderParsedComponentNodes(node.children).trim();
+    return `:::code-group\n${content}\n:::`;
+  }
+
+  if (node.name === "Note" || node.name === "Warning" || node.name === "Tip" || node.name === "Info") {
+    const directive = node.name.toLowerCase();
+    const title = node.attrs.title ? ` ${node.attrs.title}` : "";
+    const content = renderParsedComponentNodes(node.children).trim();
+    return `:::${directive}${title}\n${content}\n:::`;
+  }
+
+  if (node.name === "Video") {
+    const titleAttr = node.attrs.title ? `{title="${escapeDirectiveAttr(node.attrs.title)}"}` : "";
+    return `::video[${node.attrs.src || ""}]${titleAttr}`;
+  }
+
+  if (node.name === "Iframe") {
+    const attrString = buildDirectiveAttrList([
+      ["title", node.attrs.title],
+      ["height", node.attrs.height],
+    ]);
+    return `::iframe[${node.attrs.src || ""}]${attrString}`;
+  }
+
+  return null;
+}
+
+function renderParsedComponentNode(node: ParsedComponentNode): string {
+  if (node.kind === "text") return node.value;
+  return renderParsedComponentElement(node) ?? node.original;
+}
 
 /**
  * Convert JSX-style components to directive syntax so they go through
  * a single rendering path in preprocessDirectives.
  */
 function preprocessComponents(body: string): string {
-  const { text, blocks } = protectFencedCodeBlocks(body);
-  let html = text;
-
-  // <Steps> <Step title="...">content</Step> ... </Steps> → :::steps numbered list
-  html = html.replace(
-    /<Steps>\s*([\s\S]*?)\s*<\/Steps>/g,
-    (_m, inner: string) => {
-      const steps: { title: string; content: string }[] = [];
-      inner.replace(
-        /\s*<Step\s+title="([^"]*)">\s*([\s\S]*?)\s*<\/Step>/g,
-        (_sm: string, title: string, content: string) => {
-          steps.push({ title, content: content.trim() });
-          return "";
-        },
-      );
-      const list = steps
-        .map((s, i) => `${i + 1}. ${s.title}\n   ${s.content}`)
-        .join("\n");
-      return `:::steps\n${list}\n:::`;
-    },
-  );
-
-  // <CardGroup cols={N}> <Card ...> ... </Card> ... </CardGroup> → :::card-group
-  html = html.replace(
-    /<CardGroup\s+cols=\{(\d+)\}>\s*([\s\S]*?)\s*<\/CardGroup>/g,
-    (_m, cols: string, inner: string) => {
-      const cards = inner.replace(
-        /\s*<Card\s+title="([^"]*)"\s+icon="([^"]*)"(?:\s+href="([^"]*)")?\s*>\s*([\s\S]*?)\s*<\/Card>/g,
-        (_cm: string, title: string, icon: string, href: string | undefined, content: string) => {
-          const hrefAttr = href ? ` href="${href}"` : "";
-          return `\n::card{title="${title}" icon="${icon}"${hrefAttr}}\n${content.trim()}\n::`;
-        },
-      ).trim();
-      return `:::card-group{cols="${cols}"}\n${cards}\n:::`;
-    },
-  );
-
-  // <AccordionGroup> <Accordion ...> ... </AccordionGroup> → wrap in accordion-group
-  html = html.replace(
-    /<AccordionGroup>\s*([\s\S]*?)\s*<\/AccordionGroup>/g,
-    (_m, inner: string) => {
-      const items = inner.replace(
-        /\s*<Accordion\s+title="([^"]*)">\s*([\s\S]*?)\s*<\/Accordion>/g,
-        (_am: string, title: string, content: string) => {
-          return `\n:::accordion{title="${title}"}\n${content.trim()}\n:::`;
-        },
-      ).trim();
-      return `<div class="accordion-group not-prose">\n${items}\n</div>`;
-    },
-  );
-
-  // Standalone <Accordion> outside of group
-  html = html.replace(
-    /<Accordion\s+title="([^"]*)">\s*([\s\S]*?)\s*<\/Accordion>/g,
-    (_m, title: string, content: string) => {
-      return `:::accordion{title="${title}"}\n${content.trim()}\n:::`;
-    },
-  );
-
-  // <Tabs> <Tab title="...">content</Tab> ... </Tabs> → :::tabs with ::tab children
-  html = html.replace(
-    /<Tabs>\s*([\s\S]*?)\s*<\/Tabs>/g,
-    (_m, inner: string) => {
-      const tabs: string[] = [];
-      inner.replace(
-        /\s*<Tab\s+title="([^"]*)">\s*([\s\S]*?)\s*<\/Tab>/g,
-        (_tm: string, title: string, content: string) => {
-          tabs.push(`::tab{title="${title}"}\n${content.trim()}\n::`);
-          return "";
-        },
-      );
-      return `:::tabs\n${tabs.join("\n")}\n:::`;
-    },
-  );
-
-  // <CodeGroup> with titled fenced code blocks → :::code-group
-  html = html.replace(
-    /<CodeGroup>\s*([\s\S]*?)\s*<\/CodeGroup>/g,
-    (_m, inner: string) => `:::code-group\n${inner.trim()}\n:::`,
-  );
-
-  // <Note>, <Warning>, <Tip>, <Info> → :::callout directives
-  for (const type of ["note", "warning", "tip", "info"] as const) {
-    const tag = type.charAt(0).toUpperCase() + type.slice(1);
-    html = html.replace(
-      new RegExp(`<${tag}(?:\\s+title="([^"]*)")?\\s*>\\s*([\\s\\S]*?)\\s*<\\/${tag}>`, "g"),
-      (_m: string, title: string | undefined, content: string) => {
-        const titleSuffix = title ? ` ${title}` : "";
-        return `:::${type}${titleSuffix}\n${content.trim()}\n:::`;
-      },
-    );
-  }
-
-  // <Video src="..." title="..." /> → ::video[url]{title="..."}
-  html = html.replace(
-    /<Video\s+([^>]*?)\s*\/?\s*>/g,
-    (_m: string, attrs: string) => {
-      const src = attrs.match(/src="([^"]*)"/)?.[1] ?? "";
-      const title = attrs.match(/title="([^"]*)"/)?.[1];
-      const titleAttr = title ? `{title="${title}"}` : "";
-      return `::video[${src}]${titleAttr}`;
-    },
-  );
-
-  // <Iframe src="..." title="..." height="..." /> → ::iframe[url]{attrs}
-  html = html.replace(
-    /<Iframe\s+([^>]*?)\s*\/?\s*>/g,
-    (_m: string, attrs: string) => {
-      const src = attrs.match(/src="([^"]*)"/)?.[1] ?? "";
-      const title = attrs.match(/title="([^"]*)"/)?.[1];
-      const height = attrs.match(/height="([^"]*)"/)?.[1];
-      const parts: string[] = [];
-      if (title) parts.push(`title="${title}"`);
-      if (height) parts.push(`height="${height}"`);
-      const attrStr = parts.length ? `{${parts.join(" ")}}` : "";
-      return `::iframe[${src}]${attrStr}`;
-    },
-  );
-
-  return restoreFencedCodeBlocks(html, blocks);
+  const { text: fencedText, blocks } = protectFencedCodeBlocks(body);
+  const { text, spans } = protectInlineCodeSpans(fencedText);
+  const parsed = parseComponentNodes(text);
+  const restoredInline = restoreInlineCodeSpans(renderParsedComponentNodes(parsed.nodes), spans);
+  return restoreFencedCodeBlocks(restoredInline, blocks);
 }
 
 // ---------------------------------------------------------------------------
@@ -240,12 +643,7 @@ function preprocessComponents(body: string): string {
 
 /** Parse {key="value" key2="value2"} attribute strings. */
 function parseAttrs(raw: string): Record<string, string> {
-  const attrs: Record<string, string> = {};
-  if (!raw) return attrs;
-  for (const m of raw.matchAll(/(\w+)="([^"]*)"/g)) {
-    attrs[m[1]] = m[2];
-  }
-  return attrs;
+  return parseKeyValueAttrs(raw, { allowBraces: false });
 }
 
 /** Deterministic tab-group ID; reset per page. */
@@ -257,6 +655,37 @@ function nextId(prefix: string): string {
 /** Reset counter between builds (called from loadMarkdownPage). */
 function resetDirectiveCounter(): void {
   directiveCounter = 0;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function escapeHtmlAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
+function stripDirectiveIndent(line: string): string {
+  return line.replace(/^ {0,3}/, "");
+}
+
+function isFenceStart(line: string): { char: string; length: number } | null {
+  const match = stripDirectiveIndent(line).match(/^(`{3,}|~{3,})(.*)$/);
+  if (!match) return null;
+  return { char: match[1][0], length: match[1].length };
+}
+
+function closesFence(line: string, fence: { char: string; length: number }): boolean {
+  const match = stripDirectiveIndent(line).match(/^(`{3,}|~{3,})(.*)$/);
+  return !!(
+    match &&
+    match[1][0] === fence.char &&
+    match[1].length >= fence.length &&
+    !match[2].trim()
+  );
 }
 
 /** Build tabbed UI HTML (shared by :::tabs and :::code-group). */
@@ -299,17 +728,283 @@ function splitChildren(
   marker: string,
 ): { attrs: Record<string, string>; body: string }[] {
   const children: { attrs: Record<string, string>; body: string }[] = [];
-  const parts = content.split(new RegExp(`^\\s*::${marker}`, "gm"));
-  for (const part of parts) {
-    if (!part.trim()) continue;
-    const m = part.match(/^\{([^}]*)\}\s*\n?([\s\S]*)/);
-    if (m) {
-      // Strip trailing :: child-close marker
-      const body = m[2].trim().replace(/\n?::$/m, "").trim();
-      children.push({ attrs: parseAttrs(m[1]), body });
+  const lines = content.split("\n");
+  const startRe = new RegExp(`^::${escapeRegExp(marker)}(?:\\{([^}]*)\\})?\\s*$`);
+  let i = 0;
+
+  while (i < lines.length) {
+    const start = stripDirectiveIndent(lines[i]).trimEnd().match(startRe);
+    if (!start) {
+      i += 1;
+      continue;
     }
+
+    let fence: { char: string; length: number } | null = null;
+    let depth = 1;
+    let j = i + 1;
+    while (j < lines.length) {
+      const line = lines[j];
+      if (fence) {
+        if (closesFence(line, fence)) fence = null;
+        j += 1;
+        continue;
+      }
+
+      const nextFence = isFenceStart(line);
+      if (nextFence) {
+        fence = nextFence;
+        j += 1;
+        continue;
+      }
+
+      const stripped = stripDirectiveIndent(line).trimEnd();
+      if (startRe.test(stripped)) {
+        depth += 1;
+      } else if (/^::\s*$/.test(stripped)) {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+      j += 1;
+    }
+
+    if (depth !== 0) {
+      i += 1;
+      continue;
+    }
+
+    children.push({
+      attrs: parseAttrs(start[1] ?? ""),
+      body: lines.slice(i + 1, j).join("\n").trim(),
+    });
+    i = j + 1;
   }
+
   return children;
+}
+
+function parseTitledCodeBlocks(content: string): { title: string; body: string; lang: string }[] {
+  const blocks: { title: string; body: string; lang: string }[] = [];
+  const lines = content.split("\n");
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = stripDirectiveIndent(lines[i]).trimEnd();
+    const open = line.match(/^(`{3,}|~{3,})(\S+)?(?:\s+title="([^"]*)")?\s*$/);
+    if (!open) {
+      i += 1;
+      continue;
+    }
+
+    const fence = { char: open[1][0], length: open[1].length };
+    let j = i + 1;
+    while (j < lines.length && !closesFence(lines[j], fence)) j += 1;
+    if (j >= lines.length) break;
+
+    blocks.push({
+      title: open[3] ?? "",
+      lang: open[2] ?? "",
+      body: lines.slice(i + 1, j).join("\n"),
+    });
+    i = j + 1;
+  }
+
+  return blocks;
+}
+
+type SupportedDirective =
+  | "note"
+  | "warning"
+  | "tip"
+  | "info"
+  | "steps"
+  | "tabs"
+  | "code-group"
+  | "card-group"
+  | "accordion";
+
+const SUPPORTED_DIRECTIVES = new Set<SupportedDirective>([
+  "note",
+  "warning",
+  "tip",
+  "info",
+  "steps",
+  "tabs",
+  "code-group",
+  "card-group",
+  "accordion",
+]);
+
+function matchDirectiveStart(
+  line: string,
+): { type: SupportedDirective; meta: string } | null {
+  const match = stripDirectiveIndent(line).trimEnd().match(/^:::(\w[\w-]*)(.*)$/);
+  if (!match || !SUPPORTED_DIRECTIVES.has(match[1] as SupportedDirective)) return null;
+  return {
+    type: match[1] as SupportedDirective,
+    meta: match[2].trim(),
+  };
+}
+
+function isAnyDirectiveStart(line: string): boolean {
+  return /^:::\w[\w-]*(?:\{[^}]*\}|.*)?$/.test(stripDirectiveIndent(line).trimEnd());
+}
+
+function renderDirectiveMarkdown(content: string): string {
+  const trimmed = content.trim();
+  if (!trimmed) return "";
+  return renderMarkdown(preprocessDirectives(preprocessComponents(trimmed))).trim();
+}
+
+function collectDirectiveBlock(
+  lines: string[],
+  startIndex: number,
+): { content: string; nextLine: number } | null {
+  let fence: { char: string; length: number } | null = null;
+  let depth = 1;
+  let i = startIndex + 1;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (fence) {
+      if (closesFence(line, fence)) fence = null;
+      i += 1;
+      continue;
+    }
+
+    const nextFence = isFenceStart(line);
+    if (nextFence) {
+      fence = nextFence;
+      i += 1;
+      continue;
+    }
+
+    const stripped = stripDirectiveIndent(line).trimEnd();
+    if (isAnyDirectiveStart(stripped)) {
+      depth += 1;
+    } else if (/^:::\s*$/.test(stripped)) {
+      depth -= 1;
+      if (depth === 0) {
+        return {
+          content: lines.slice(startIndex + 1, i).join("\n"),
+          nextLine: i + 1,
+        };
+      }
+    }
+    i += 1;
+  }
+
+  return null;
+}
+
+function renderDirectiveBlock(
+  type: SupportedDirective,
+  meta: string,
+  content: string,
+): string {
+  if (type === "note" || type === "warning" || type === "tip" || type === "info") {
+    const label = renderMarkdownInline(
+      meta.trim() || type.charAt(0).toUpperCase() + type.slice(1),
+    ).trim();
+    const body = renderDirectiveMarkdown(content);
+    return `\n\n<div class="callout callout-${type} not-prose">
+<div class="callout-title">${label}</div>
+${body ? `<div class="callout-content">\n${body}\n</div>` : ""}
+</div>\n`;
+  }
+
+  if (type === "steps") {
+    const lines = content.trim().split("\n");
+    const steps: { title: string; body: string[] }[] = [];
+    let fence: { char: string; length: number } | null = null;
+
+    for (const line of lines) {
+      if (fence) {
+        if (closesFence(line, fence)) fence = null;
+      } else {
+        const nextFence = isFenceStart(line);
+        if (nextFence) {
+          fence = nextFence;
+        }
+      }
+
+      const stripped = line.replace(/^ {1,3}/, "");
+      const stepMatch = !fence && line.match(/^\d+\.\s+(.+)/);
+      if (stepMatch) {
+        steps.push({ title: stepMatch[1], body: [] });
+      } else if (steps.length > 0) {
+        steps[steps.length - 1].body.push(stripped);
+      }
+    }
+
+    if (steps.length === 0) return renderDirectiveMarkdown(content);
+
+    const items = steps
+      .map((step, index) => {
+        const title = renderMarkdownInline(step.title).trim();
+        const body = renderDirectiveMarkdown(step.body.join("\n").trim());
+        return `<div role="listitem" class="step-item">
+<div class="step-number">${index + 1}</div>
+<div class="step-body">
+<p class="step-title">${title}</p>
+<div class="step-content">
+${body}
+</div>
+</div>
+</div>`;
+      })
+      .join("\n");
+
+    return `\n\n<div role="list" class="steps not-prose">\n${items}\n</div>\n`;
+  }
+
+  if (type === "tabs") {
+    const tabs = splitChildren(content, "tab").map((child) => ({
+      title: renderMarkdownInline(child.attrs.title || "").trim(),
+      body: renderDirectiveMarkdown(child.body),
+    }));
+    if (tabs.length === 0) return renderDirectiveMarkdown(content);
+    return `\n\n${buildTabbedHtml(tabs, nextId("tabs"))}\n`;
+  }
+
+  if (type === "code-group") {
+    const codeBlocks = parseTitledCodeBlocks(content).map((block) => ({
+      title: renderMarkdownInline(block.title).trim(),
+      body: renderCodeBlock(block.body, block.lang),
+    }));
+    if (codeBlocks.length === 0) return renderDirectiveMarkdown(content);
+    return `\n\n${buildTabbedHtml(codeBlocks, nextId("cg"), "directive-code-group")}\n`;
+  }
+
+  if (type === "card-group") {
+    const cols = parseAttrs(meta.match(/^\{([^}]*)\}$/)?.[1] ?? "").cols || "2";
+    const cards = splitChildren(content, "card").map((child) => {
+      const tag = child.attrs.href ? "a" : "div";
+      const href = child.attrs.href ? ` href="${escapeHtmlAttr(child.attrs.href)}"` : "";
+      const iconHtml = renderIcon(child.attrs.icon || "");
+      const title = renderMarkdownInline(child.attrs.title || "").trim();
+      const body = renderDirectiveMarkdown(child.body);
+      return `<${tag}${href} class="card-item">
+<div class="card-item-inner">
+${iconHtml}
+<h3 class="card-item-title">${title}</h3>
+<div class="card-item-content">
+${body}
+</div>
+</div>
+</${tag}>`;
+    });
+    if (cards.length === 0) return renderDirectiveMarkdown(content);
+    return `\n\n<div class="card-group not-prose" data-cols="${escapeHtmlAttr(cols)}">\n${cards.join("\n")}\n</div>\n`;
+  }
+
+  const title = renderMarkdownInline(parseAttrs(meta.match(/^\{([^}]*)\}$/)?.[1] ?? "").title || "").trim();
+  const body = renderDirectiveMarkdown(content);
+  return `\n\n<details class="accordion-item">
+<summary class="accordion-trigger">${title}</summary>
+<div class="accordion-content">
+${body}
+</div>
+</details>\n`;
 }
 
 /**
@@ -321,154 +1016,75 @@ function splitChildren(
  * from other directive types cannot collide.
  */
 function preprocessDirectives(body: string): string {
-  const { text, blocks } = protectFencedCodeBlocks(body);
-  let html = text;
+  const lines = body.split("\n");
+  const out: string[] = [];
+  let i = 0;
+  let fence: { char: string; length: number } | null = null;
 
-  // Callouts: :::note, :::warning, :::tip, :::info (optional title)
-  html = html.replace(
-    /^:::(note|warning|tip|info)(?:[^\S\n]+(.+))?\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, type: string, title: string | undefined, content: string) => {
-      const label = title?.trim() || type.charAt(0).toUpperCase() + type.slice(1);
-      const body = content.trim();
-      return `\n\n<div class="callout callout-${type} not-prose">
-<div class="callout-title">${label}</div>
-${body ? `<div class="callout-content">\n\n${body}\n\n</div>` : ""}
-</div>\n\n`;
-    },
-  );
+  while (i < lines.length) {
+    if (fence) {
+      out.push(lines[i]);
+      if (closesFence(lines[i], fence)) fence = null;
+      i += 1;
+      continue;
+    }
 
-  // Steps: :::steps with a plain numbered list inside
-  html = html.replace(
-    /^:::steps\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, content: string) => {
-      const lines = content.trim().split("\n");
-      const steps: { title: string; body: string[] }[] = [];
-      let fenceMarker = "";
-      for (const line of lines) {
-        // Track fenced code blocks so we don't mis-detect numbered
-        // lines inside them as step titles.  A closing fence must use
-        // the same character, at least as many repeats, and no info string.
-        const stripped = line.replace(/^ {1,3}/, "");
-        const fm = stripped.match(/^(`{3,}|~{3,})(.*)/);
-        if (fm) {
-          if (!fenceMarker) {
-            fenceMarker = fm[1];
-          } else if (
-            fm[1][0] === fenceMarker[0] &&
-            fm[1].length >= fenceMarker.length &&
-            !fm[2].trim()
-          ) {
-            fenceMarker = "";
-          }
-        }
-        const sm = !fenceMarker && line.match(/^\d+\.\s+(.+)/);
-        if (sm) {
-          steps.push({ title: sm[1], body: [] });
-        } else if (steps.length > 0) {
-          // Strip up to 3 leading spaces (markdown list indent)
-          steps[steps.length - 1].body.push(stripped);
-        }
+    const nextFence = isFenceStart(lines[i]);
+    if (nextFence) {
+      fence = nextFence;
+      out.push(lines[i]);
+      i += 1;
+      continue;
+    }
+
+    const start = matchDirectiveStart(lines[i]);
+    if (!start) {
+      out.push(lines[i]);
+      i += 1;
+      continue;
+    }
+
+    if (start.type === "accordion") {
+      const accordions: string[] = [];
+      let nextLine = i;
+
+      while (true) {
+        const accordionStart = matchDirectiveStart(lines[nextLine]);
+        if (!accordionStart || accordionStart.type !== "accordion") break;
+
+        const accordionBlock = collectDirectiveBlock(lines, nextLine);
+        if (!accordionBlock) break;
+
+        accordions.push(renderDirectiveBlock("accordion", accordionStart.meta, accordionBlock.content));
+        nextLine = accordionBlock.nextLine;
+
+        let scan = nextLine;
+        while (scan < lines.length && /^\s*$/.test(lines[scan])) scan += 1;
+
+        const nextAccordion = scan < lines.length ? matchDirectiveStart(lines[scan]) : null;
+        if (!nextAccordion || nextAccordion.type !== "accordion") break;
+        nextLine = scan;
       }
-      const items = steps
-        .map(
-          (s, i) =>
-            `<div role="listitem" class="step-item">
-<div class="step-number">${i + 1}</div>
-<div class="step-body">
-<p class="step-title">${s.title}</p>
-<div class="step-content">
 
-${s.body.join("\n").trim()}
-
-</div>
-</div>
-</div>`,
-        )
-        .join("\n");
-      return `\n\n<div role="list" class="steps not-prose">\n${items}\n</div>\n\n`;
-    },
-  );
-
-  // Tabs: :::tabs with ::tab{title="..."} children
-  html = html.replace(
-    /^:::tabs\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, content: string) => {
-      const tabs = splitChildren(content, "tab").map((c) => ({
-        title: c.attrs.title || "",
-        body: c.body,
-      }));
-      return `\n\n${buildTabbedHtml(tabs, nextId("tabs"))}\n\n`;
-    },
-  );
-
-  // Code Group: :::code-group with titled fenced code blocks
-  html = html.replace(
-    /^:::code-group\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, content: string) => {
-      const restoredContent = restoreFencedCodeBlocks(content, blocks);
-      const codeBlocks: { title: string; body: string }[] = [];
-      const re = /```(\w+)\s+title="([^"]*)"\s*\n([\s\S]*?)```/g;
-      let match: RegExpExecArray | null;
-      while ((match = re.exec(restoredContent)) !== null) {
-        codeBlocks.push({ title: match[2], body: `\`\`\`${match[1]}\n${match[3]}\`\`\`` });
+      if (accordions.length > 1) {
+        out.push(`\n\n<div class="accordion-group not-prose">\n${accordions.join("\n")}\n</div>\n`);
+        i = nextLine;
+        continue;
       }
-      if (codeBlocks.length === 0) return restoredContent;
-      return `\n\n${buildTabbedHtml(codeBlocks, nextId("cg"), "directive-code-group")}\n\n`;
-    },
-  );
+    }
 
-  // Card Group: :::card-group{cols="N"} with ::card children
-  html = html.replace(
-    /^:::card-group(?:\{([^}]*)\})?\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, attrsRaw: string | undefined, content: string) => {
-      const cols = parseAttrs(attrsRaw || "").cols || "2";
-      const cards = splitChildren(content, "card").map((c) => {
-        const tag = c.attrs.href ? "a" : "div";
-        const href = c.attrs.href ? ` href="${c.attrs.href}"` : "";
-        const iconHtml = renderIcon(c.attrs.icon || "");
-        return `<${tag}${href} class="card-item">
-<div class="card-item-inner">
-${iconHtml}
-<h3 class="card-item-title">${c.attrs.title || ""}</h3>
-<div class="card-item-content">
+    const block = collectDirectiveBlock(lines, i);
+    if (!block) {
+      out.push(lines[i]);
+      i += 1;
+      continue;
+    }
 
-${c.body}
+    out.push(renderDirectiveBlock(start.type, start.meta, block.content));
+    i = block.nextLine;
+  }
 
-</div>
-</div>
-</${tag}>`;
-      });
-      return `\n\n<div class="card-group not-prose" data-cols="${cols}">\n${cards.join("\n")}\n</div>\n\n`;
-    },
-  );
-
-  // Accordion: :::accordion{title="..."}
-  html = html.replace(
-    /^:::accordion(?:\{([^}]*)\})?\s*\n([\s\S]*?)^:::\s*$/gm,
-    (_m, attrsRaw: string | undefined, content: string) => {
-      const title = parseAttrs(attrsRaw || "").title || "";
-      return `\n\n<details class="accordion-item">
-<summary class="accordion-trigger">${title}</summary>
-<div class="accordion-content">
-
-${content.trim()}
-
-</div>
-</details>\n\n`;
-    },
-  );
-
-  // Auto-wrap consecutive accordion items in an accordion-group (skip already-wrapped)
-  html = html.replace(
-    /(<details class="accordion-item">[\s\S]*?<\/details>\s*){2,}/g,
-    (match, _p1, offset) => {
-      const before = html.slice(Math.max(0, offset - 40), offset);
-      if (before.includes("accordion-group")) return match;
-      return `<div class="accordion-group not-prose">\n${match.trim()}\n</div>`;
-    },
-  );
-
-  return restoreFencedCodeBlocks(html, blocks);
+  return out.join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -486,11 +1102,12 @@ export async function loadMarkdownPage(
   const { meta, body } = parseFrontmatter(raw);
 
   resetDirectiveCounter();
-  const preprocessed = preprocessDirectives(preprocessComponents(body));
-  const headings = extractHeadings(preprocessed);
+  const componentPreprocessed = preprocessComponents(body);
+  const preprocessed = preprocessDirectives(componentPreprocessed);
+  const headings = extractHeadings(componentPreprocessed);
   const html = renderMarkdown(preprocessed);
 
-  const title = meta.title ?? extractFirstHeading(preprocessed) ?? slug;
+  const title = meta.title ?? extractFirstHeading(componentPreprocessed) ?? slug;
   const description = meta.description ?? "";
 
   // Strip leading h1 from rendered HTML when it duplicates the page title
@@ -499,7 +1116,16 @@ export async function loadMarkdownPage(
     (_m, inner) => inner.replace(/<[^>]+>/g, "").trim() === title ? "" : _m,
   );
 
-  return { title, description, slug, html: cleanHtml, headings, sourcePath: relative(process.cwd(), filePath) };
+  const sourcePath = relative(process.cwd(), filePath);
+  return {
+    title,
+    description,
+    slug,
+    html: cleanHtml,
+    headings,
+    sourcePath,
+    editPath: sourcePath,
+  };
 }
 
 /**

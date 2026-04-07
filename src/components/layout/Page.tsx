@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import { SpecContext, PageContext, NavigationContext, SiteContext } from "../../renderer/context.js";
+import { SpecContext, PageContext, NavigationContext, OptionsContext, SiteContext } from "../../renderer/context.js";
 import type { MarkdownPage } from "../../core/markdown-loader.js";
 import { Markdown } from "../ui/Markdown.js";
 import { Header } from "./Header.js";
@@ -91,6 +91,7 @@ function SpecPageContent({ className = "" }: { className?: string }) {
 
 function PageNavigation() {
   const nav = useContext(NavigationContext);
+  const options = useContext(OptionsContext);
   const activeTab = nav.tabs.find((t) => t.slug === nav.activeTabSlug);
   if (!activeTab) return null;
 
@@ -109,17 +110,18 @@ function PageNavigation() {
     "text-xs text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]";
   const titleClass =
     "text-sm font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))] group-hover:text-[rgb(var(--color-primary-ink))] dark:group-hover:text-[rgb(var(--color-primary-light))] transition-colors";
+  const base = options.assetBase;
 
   return (
     <nav class="mt-12 flex items-stretch justify-between gap-4">
       {prev ? (
-        <a href={prev.href} class={linkClass}>
+        <a href={`${base}${prev.href}`} class={linkClass}>
           <span class={labelClass}>← Previous</span>
           <span class={titleClass}>{prev.label}</span>
         </a>
       ) : <span />}
       {next ? (
-        <a href={next.href} class={`${linkClass} text-right ml-auto`}>
+        <a href={`${base}${next.href}`} class={`${linkClass} text-right ml-auto`}>
           <span class={labelClass}>Next →</span>
           <span class={titleClass}>{next.label}</span>
         </a>
@@ -135,10 +137,13 @@ function ContentFooter() {
 
   // Build "Edit this page" URL when repo + editBranch are configured
   let editUrl: string | undefined;
-  if (site.repo && site.editBranch && page.kind === "markdown" && page.markdown?.sourcePath) {
+  const editPath = page.kind === "markdown"
+    ? (page.markdown?.editPath === undefined ? page.markdown?.sourcePath : page.markdown?.editPath)
+    : undefined;
+  if (site.repo && site.editBranch && editPath) {
     const repoBase = site.repo.replace(/\/$/, "");
     const basePath = site.editBasePath ? `${site.editBasePath.replace(/^\/|\/$/g, "")}/` : "";
-    editUrl = `${repoBase}/edit/${site.editBranch}/${basePath}${page.markdown.sourcePath}`;
+    editUrl = `${repoBase}/edit/${site.editBranch}/${basePath}${editPath}`;
   }
 
   const linkStyle = "hover:text-[rgb(var(--color-gray-600))] dark:hover:text-[rgb(var(--color-gray-300))] transition-colors";

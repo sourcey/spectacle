@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { buildDocs, buildSiteDocs } from "../../src/index.js";
-import { resolve } from "node:path";
-import { readFile, rm } from "node:fs/promises";
+import { resolve, dirname } from "node:path";
+import { readFile, rm, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 
 const FIXTURES = resolve(import.meta.dirname, "../fixtures");
@@ -128,6 +128,30 @@ describe("buildDocs (integration)", () => {
       const llmsFull = await readFile(resolve(outputDir, "llms-full.txt"), "utf-8");
       expect(llmsFull).toContain("Petstore");
       expect(llmsFull).toContain("GET /pets");
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("removes stale output files when pages disappear from a rebuild", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-prune");
+    try {
+      await buildDocs({
+        specSource: `${FIXTURES}/petstore-openapi3.yaml`,
+        outputDir,
+      });
+
+      const stalePath = resolve(outputDir, "documentation/modules/pluga.html");
+      await mkdir(dirname(stalePath), { recursive: true });
+      await writeFile(stalePath, "stale", "utf-8");
+      expect(existsSync(stalePath)).toBe(true);
+
+      await buildDocs({
+        specSource: `${FIXTURES}/petstore-openapi3.yaml`,
+        outputDir,
+      });
+
+      expect(existsSync(stalePath)).toBe(false);
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }

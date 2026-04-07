@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile, access } from "node:fs/promises";
+import { mkdir, writeFile, readFile, access, rm } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as viteBuild } from "vite";
@@ -57,6 +57,7 @@ export async function buildSite(
   options?: { embeddable?: boolean; searchIndex?: string; llmsTxt?: string; llmsFullTxt?: string },
 ): Promise<BuildOutput> {
   const resolvedDir = resolve(outputDir);
+  await rm(resolvedDir, { recursive: true, force: true });
   await mkdir(resolvedDir, { recursive: true });
 
   for (const page of pages) {

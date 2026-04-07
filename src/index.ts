@@ -274,7 +274,7 @@ async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
  * rewrites matching href values so they resolve on static file servers
  * that don't support extensionless URLs.
  */
-function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
+export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
   // Build a map from every plausible clean path to the output path.
   // e.g. "components" -> "components.html", "config/ref-theme-tokens" -> "config/ref-theme-tokens.html"
   const pathMap = new Map<string, string>();
@@ -282,6 +282,14 @@ function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
     const out = page.outputPath; // e.g. "components.html" or "config/ref-theme-tokens.html"
     const clean = out.replace(/\.html$/, ""); // "components" or "config/ref-theme-tokens"
     pathMap.set(clean, out);
+
+    if (page.currentPage.kind === "markdown" && page.currentPage.markdown?.sourcePath) {
+      const sourceClean = page.currentPage.markdown.sourcePath
+        .replace(/\\/g, "/")
+        .replace(/^\/+/, "")
+        .replace(/\.(md|mdx)$/, "");
+      pathMap.set(sourceClean, out);
+    }
   }
 
   // Repo source link base: e.g. "https://github.com/user/repo/tree/main"
@@ -308,23 +316,40 @@ function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
       const [path, hash] = href.split("#", 2);
       const hashSuffix = hash ? `#${hash}` : "";
 
-      // Normalize: strip leading slash, trailing slash, and .md extension
-      const clean = path.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.md$/, "");
+      // Normalize: strip leading slash, trailing slash, and markdown extension
+      const sourcePath = path.replace(/\\/g, "/");
+      const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx)$/, "");
 
       // Skip if already has .html extension
       if (clean.endsWith(".html")) return _match;
 
-      // Look up in path map — try the full clean path first, then
-      // progressively strip leading segments to handle deployment prefixes
-      // (e.g. "/docs/components" → "docs/components" → "components")
-      let target: string | undefined;
-      let candidate = clean;
-      while (!target && candidate) {
-        target = pathMap.get(candidate);
-        const slash = candidate.indexOf("/");
-        if (slash === -1) break;
-        candidate = candidate.substring(slash + 1);
+      const candidates = new Set<string>();
+
+      // Relative markdown links should resolve against the current page's
+      // source path, not just the built output path.
+      if (!sourcePath.startsWith("/") && md.sourcePath) {
+        const sourceDir = posix.dirname(md.sourcePath.replace(/\\/g, "/"));
+        candidates.add(posix.normalize(posix.join(sourceDir, clean)));
       }
+
+      candidates.add(clean);
+
+      // Look up in path map — try the resolved path first, then
+      // progressively strip leading segments to handle deployment prefixes
+      // (e.g. "docs/components" → "components").
+      let target: string | undefined;
+      for (const initialCandidate of candidates) {
+        let candidate = initialCandidate;
+        while (!target && candidate && candidate !== ".") {
+          target = pathMap.get(candidate);
+          if (target) break;
+          const slash = candidate.indexOf("/");
+          if (slash === -1) break;
+          candidate = candidate.substring(slash + 1);
+        }
+        if (target) break;
+      }
+
       if (target) {
         // Build relative path from this page to the target
         const relativePath = toRoot + target;
