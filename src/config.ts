@@ -446,7 +446,9 @@ export function slugify(name: string): string {
 
 /** Build a path under a tab, handling empty slugs (root-level tabs). */
 export function tabPath(tabSlug: string, file: string): string {
-  return tabSlug ? `${tabSlug}/${file}` : file;
+  if (!tabSlug) return file;
+  if (file.startsWith(`${tabSlug}/`)) return file;
+  return `${tabSlug}/${file}`;
 }
 
 export function hexToRgb(hex: string): string {

@@ -134,6 +134,18 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   display: block;
 }
 
+/* ── Inline Code (not-prose containers lose Tailwind prose styling) ── */
+
+#sourcey .not-prose :not(pre) > code {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--tw-prose-code);
+}
+#sourcey .not-prose :not(pre) > code::before,
+#sourcey .not-prose :not(pre) > code::after {
+  content: "`";
+}
+
 /* ── Prose Code Block (fenced code in markdown pages) ─────────────── */
 
 #sourcey .prose-code-block {
@@ -273,6 +285,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 }
 #sourcey #toc ul ul .toc-item {
   margin-left: 0.75rem;
+  border-left: none;
 }
 .dark #sourcey #toc .toc-item {
   border-left-color: rgb(var(--color-gray-700));
