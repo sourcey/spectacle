@@ -188,16 +188,16 @@ function DefaultLayout() {
   const page = useContext(PageContext);
 
   return (
-    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
       <Sidebar />
       <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-8 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
-          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-8" />
         )}
       </main>
     </div>
@@ -224,16 +224,16 @@ function ApiFirstLayout() {
   const page = useContext(PageContext);
 
   return (
-    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-12">
+    <div class="max-w-[92rem] mx-auto relative px-4 lg:px-8">
       <Sidebar />
       <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-8 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
-          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-8" />
         )}
       </main>
     </div>

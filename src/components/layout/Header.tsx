@@ -144,7 +144,12 @@ export function Header() {
                           class="group px-4 py-1.5 relative inline-flex items-center text-sm font-medium"
                         >
                           <span class="absolute inset-0 bg-[rgb(var(--color-primary-dark))] rounded-lg group-hover:opacity-90" />
-                          <span class="z-10 text-white">{site.navbar.primary.label}</span>
+                          <div class="mr-0.5 space-x-2.5 flex items-center text-white">
+                            <span class="z-10">{site.navbar.primary.label}</span>
+                            <svg width="3" height="6" viewBox="0 0 3 6" class="overflow-visible opacity-90">
+                              <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                          </div>
                         </a>
                       </li>
                     )}
@@ -191,7 +196,7 @@ export function Header() {
                   href={`${base}${tab.href}`}
                   class={`group relative h-full gap-2 flex items-center font-medium cursor-pointer transition-colors ${
                     isActive
-                      ? "text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-200))]"
+                      ? "text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-200))] [text-shadow:-0.2px_0_0_currentColor,0.2px_0_0_currentColor]"
                       : "text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-400))] hover:text-[rgb(var(--color-gray-800))] dark:hover:text-[rgb(var(--color-gray-300))]"
                   }`}
                 >

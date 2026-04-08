@@ -56,11 +56,11 @@ function NavGroups({ groups, activePageSlug, base }: {
   return (
     <>
       {groups.map((group, gi) => (
-        <div key={group.label} class={gi > 0 ? "mt-5" : ""}>
+        <div key={group.label} class={gi > 0 ? "mt-6 lg:mt-8" : ""}>
           {group.label && (
             <h5 class="nav-group-label">{group.label}</h5>
           )}
-          <ul class="space-y-0.5">
+          <ul class="space-y-px">
             {group.items.map((item) => {
               const isActive = item.id === activePageSlug;
               return (

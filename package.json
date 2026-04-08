@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.4.5",
+  "version": "3.4.7",
   "description": "Precision documentation from OpenAPI, MCP, Doxygen, and Markdown. Static HTML you own.",
   "type": "module",
   "engines": {
@@ -36,6 +36,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
     "citty": "^0.1.6",
+    "heroicons": "^2.2.0",
     "jiti": "^2.6.1",
     "js-yaml": "^4.1.0",
     "marked": "^15.0.0",

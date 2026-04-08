@@ -120,7 +120,7 @@ export function defineConfig(config: SourceyConfig): SourceyConfig {
 export interface ResolvedTheme {
   preset: ThemePreset;
   colors: { primary: string; light: string; dark: string };
-  fonts: { sans: string; mono: string };
+  fonts: { sans: string; mono: string; googleFont: string };
   layout: { sidebar: string; toc: string; content: string };
   css: string[];
 }
@@ -178,10 +178,9 @@ const DEFAULT_COLORS = {
   dark: "79 70 229",
 };
 
-const DEFAULT_FONTS = {
-  sans: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-  mono: "ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace",
-};
+const DEFAULT_FONT_SANS = "Inter";
+const SYSTEM_SANS = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+const SYSTEM_MONO = "ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace";
 
 const DEFAULT_LAYOUT = {
   sidebar: "18rem",
@@ -225,7 +224,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
     theme: {
       preset: "default",
       colors: { ...DEFAULT_COLORS },
-      fonts: { ...DEFAULT_FONTS },
+      fonts: { sans: `'${DEFAULT_FONT_SANS}', ${SYSTEM_SANS}`, mono: SYSTEM_MONO, googleFont: DEFAULT_FONT_SANS },
       layout: { ...DEFAULT_LAYOUT },
       css: [],
     },
@@ -286,15 +285,12 @@ function resolveTheme(raw: SourceyConfig, configDir: string): ResolvedTheme {
       }
     : { ...DEFAULT_COLORS };
 
-  const userSans = raw.theme?.fonts?.sans;
-  const userMono = raw.theme?.fonts?.mono;
+  const sansName = raw.theme?.fonts?.sans ?? DEFAULT_FONT_SANS;
+  const monoName = raw.theme?.fonts?.mono;
   const fonts = {
-    sans: userSans
-      ? `'${userSans}', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`
-      : DEFAULT_FONTS.sans,
-    mono: userMono
-      ? `'${userMono}', 'SF Mono', 'Fira Code', Consolas, monospace`
-      : DEFAULT_FONTS.mono,
+    sans: `'${sansName}', ${SYSTEM_SANS}`,
+    mono: monoName ? `'${monoName}', ${SYSTEM_MONO}` : SYSTEM_MONO,
+    googleFont: sansName,
   };
 
   const layout = {
