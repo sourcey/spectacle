@@ -23,12 +23,12 @@ function TocList({ headings }: { headings: PageHeading[] }) {
     <ul>
       {groups.map((g) => (
         <li key={g.root.id}>
-          <a href={`#${g.root.id}`} class={`${tocLink} py-1`}>{g.root.text}</a>
+          <a href={`#${g.root.id}`} class={`${tocLink} py-1 font-medium`}>{g.root.text}</a>
           {g.children.length > 0 && (
-            <ul>
+            <ul class="mb-2">
               {g.children.map((c) => (
                 <li key={c.id}>
-                  <a href={`#${c.id}`} class={`${tocLink} pl-3 text-[13px] py-0.5`}>{c.text}</a>
+                  <a href={`#${c.id}`} class={`${tocLink} pl-3 py-1 text-[rgb(var(--color-gray-500))]`}>{c.text}</a>
                 </li>
               ))}
             </ul>
@@ -50,8 +50,8 @@ export function TableOfContents({ headings }: { headings: PageHeading[] }) {
     >
       <div class="z-10 hidden xl:flex box-border max-h-full pl-10 w-[19rem]">
         <div class="text-[rgb(var(--color-gray-600))] text-sm leading-6 w-[16.5rem] overflow-y-auto space-y-2 pb-4 -mt-10 pt-10">
-          <h5 class="font-semibold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] flex items-center gap-1.5">
-            <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" dangerouslySetInnerHTML={{ __html: iconPath("book") ?? "" }} />
+          <h5 class="font-medium text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-300))] flex items-center gap-2">
+            <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" dangerouslySetInnerHTML={{ __html: iconPath("book-open") ?? "" }} />
             On this page
           </h5>
 

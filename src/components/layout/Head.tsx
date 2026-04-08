@@ -64,6 +64,9 @@ export function Head() {
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={pageDescription} />
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+      <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(fonts.googleFont)}:wght@100..900&display=swap`} />
       <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       {showLangIconCSS && <style dangerouslySetInnerHTML={{ __html: langIconCSS() }} />}
       {site.customCSS && <style dangerouslySetInnerHTML={{ __html: site.customCSS }} />}

@@ -59,6 +59,11 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; body: string } {
 const FENCED_BLOCK_TOKEN = "@@SOURCEY_FENCED_BLOCK_";
 const INLINE_CODE_TOKEN = "@@SOURCEY_INLINE_CODE_";
 
+/** Current page's protected fence blocks — used to restore placeholders in JSX children. */
+let activeFenceBlocks: string[] = [];
+/** Current page's protected inline code spans — used to restore placeholders in JSX children. */
+let activeInlineSpans: string[] = [];
+
 function protectFencedCodeBlocks(input: string): { text: string; blocks: string[] } {
   const blocks: string[] = [];
   const output: string[] = [];
@@ -135,6 +140,14 @@ function protectInlineCodeSpans(input: string): { text: string; spans: string[] 
     }
 
     const span = input.slice(i, closeIndex + delimiter.length);
+    // If the content between delimiters spans multiple lines, it's a fenced
+    // code block (or block-level backticks), not an inline code span — skip it.
+    const inner = input.slice(tickEnd, closeIndex);
+    if (inner.includes("\n")) {
+      output += input[i];
+      i += 1;
+      continue;
+    }
     const index = spans.push(span) - 1;
     output += `${INLINE_CODE_TOKEN}${index}@@`;
     i = closeIndex + delimiter.length;
@@ -262,6 +275,7 @@ type SupportedComponentTag =
   | "Card"
   | "AccordionGroup"
   | "Accordion"
+  | "Expandable"
   | "Tabs"
   | "Tab"
   | "CodeGroup"
@@ -279,6 +293,7 @@ const SUPPORTED_COMPONENT_TAGS = new Set<SupportedComponentTag>([
   "Card",
   "AccordionGroup",
   "Accordion",
+  "Expandable",
   "Tabs",
   "Tab",
   "CodeGroup",
@@ -334,10 +349,28 @@ function buildDirectiveAttrList(entries: Array<[string, string | undefined]>): s
 }
 
 function indentBlock(text: string, prefix: string): string {
-  return text
-    .split("\n")
-    .map((line) => `${prefix}${line}`)
-    .join("\n");
+  const lines = text.split("\n");
+  const result: string[] = [];
+  let fence: { char: string; length: number } | null = null;
+
+  for (const line of lines) {
+    if (fence) {
+      // Inside a fenced code block — don't indent
+      result.push(line);
+      if (closesFence(line, fence)) fence = null;
+    } else {
+      const nextFence = isFenceStart(line);
+      if (nextFence) {
+        // Fence opener — don't indent so markdown recognises it
+        fence = nextFence;
+        result.push(line);
+      } else {
+        result.push(`${prefix}${line}`);
+      }
+    }
+  }
+
+  return result.join("\n");
 }
 
 function isWhitespaceOnlyText(node: ParsedComponentNode): boolean {
@@ -527,81 +560,146 @@ function collectChildComponents(
   return matches;
 }
 
-function renderStandaloneAccordion(node: ParsedComponentElement): string {
-  const title = node.attrs.title || "";
-  const body = renderParsedComponentNodes(node.children).trim();
-  return `:::accordion${buildDirectiveAttrList([["title", title]])}\n${body}\n:::`;
+/**
+ * Render the raw text content of parsed component children through the full
+ * markdown pipeline (component preprocessing → directive preprocessing →
+ * markdown rendering).  Strips common leading whitespace first so that
+ * indented JSX content (e.g. code fences inside <Step>) is handled correctly.
+ */
+function renderComponentChildrenToHtml(children: ParsedComponentNode[]): string {
+  let raw = renderParsedComponentNodes(children);
+  raw = restoreFencedCodeBlocks(raw, activeFenceBlocks);
+  raw = restoreInlineCodeSpans(raw, activeInlineSpans);
+  return renderDirectiveMarkdown(dedent(raw));
 }
 
+/**
+ * Strip common leading whitespace from a block of text.
+ */
+function dedent(text: string): string {
+  const lines = text.split("\n");
+  const nonEmpty = lines.filter((l) => l.trim().length > 0);
+  if (nonEmpty.length === 0) return text;
+  const indent = Math.min(
+    ...nonEmpty.map((l) => l.match(/^(\s*)/)?.[1].length ?? 0),
+  );
+  if (indent === 0) return text;
+  return lines.map((l) => l.slice(indent)).join("\n");
+}
+
+/**
+ * Render an accordion from a parsed JSX component directly to HTML.
+ */
+function renderComponentAccordion(node: ParsedComponentElement): string {
+  const title = renderMarkdownInline(node.attrs.title || "").trim();
+  const body = renderComponentChildrenToHtml(node.children);
+  return `<details class="accordion-item">
+<summary class="accordion-trigger">${title}</summary>
+<div class="accordion-content">
+${body}
+</div>
+</details>`;
+}
+
+/**
+ * Render a parsed JSX component directly to final HTML.
+ * Returns null if the component structure is invalid (falls back to raw text).
+ */
 function renderParsedComponentElement(node: ParsedComponentElement): string | null {
   if (node.name === "Steps") {
     const steps = collectChildComponents(node.children, "Step");
     if (!steps) return null;
 
-    const body = steps
+    const items = steps
       .map((step, index) => {
-        const title = step.attrs.title || "";
-        const content = renderParsedComponentNodes(step.children).trim();
-        return `${index + 1}. ${title}${content ? `\n${indentBlock(content, "   ")}` : ""}`;
+        const title = renderMarkdownInline(step.attrs.title || "").trim();
+        const body = renderComponentChildrenToHtml(step.children);
+        return `<div role="listitem" class="step-item">
+<div class="step-number">${index + 1}</div>
+<div class="step-body">
+<p class="step-title">${title}</p>
+<div class="step-content">
+${body}
+</div>
+</div>
+</div>`;
       })
       .join("\n");
 
-    return `:::steps\n${body}\n:::`;
+    return `\n\n<div role="list" class="steps not-prose">\n${items}\n</div>\n`;
   }
 
   if (node.name === "CardGroup") {
     const cards = collectChildComponents(node.children, "Card");
     if (!cards) return null;
+    const cols = node.attrs.cols || "2";
 
-    const body = cards
+    const cardHtml = cards
       .map((card) => {
-        const attrs = buildDirectiveAttrList([
-          ["title", card.attrs.title || ""],
-          ["icon", card.attrs.icon || ""],
-          ["href", card.attrs.href],
-        ]);
-        const content = renderParsedComponentNodes(card.children).trim();
-        return `::card${attrs}\n${content}\n::`;
+        const tag = card.attrs.href ? "a" : "div";
+        const href = card.attrs.href ? ` href="${escapeHtmlAttr(card.attrs.href)}"` : "";
+        const iconHtml = renderIcon(card.attrs.icon || "");
+        const title = renderMarkdownInline(card.attrs.title || "").trim();
+        const body = renderComponentChildrenToHtml(card.children);
+        return `<${tag}${href} class="card-item">
+<div class="card-item-inner">
+${iconHtml}
+<h3 class="card-item-title">${title}</h3>
+<div class="card-item-content">
+${body}
+</div>
+</div>
+</${tag}>`;
       })
       .join("\n");
 
-    return `:::card-group${buildDirectiveAttrList([["cols", node.attrs.cols || "2"]])}\n${body}\n:::`;
+    return `\n\n<div class="card-group not-prose" data-cols="${escapeHtmlAttr(cols)}">\n${cardHtml}\n</div>\n`;
   }
 
   if (node.name === "AccordionGroup") {
     const accordions = collectChildComponents(node.children, "Accordion");
     if (!accordions) return null;
-    return accordions.map(renderStandaloneAccordion).join("\n\n");
+    return `\n\n<div class="accordion-group not-prose">\n${accordions.map(renderComponentAccordion).join("\n")}\n</div>\n`;
   }
 
-  if (node.name === "Accordion") {
-    return renderStandaloneAccordion(node);
+  if (node.name === "Accordion" || node.name === "Expandable") {
+    return `\n\n${renderComponentAccordion(node)}\n`;
   }
 
   if (node.name === "Tabs") {
     const tabs = collectChildComponents(node.children, "Tab");
     if (!tabs) return null;
 
-    const body = tabs
-      .map((tab) => {
-        const content = renderParsedComponentNodes(tab.children).trim();
-        return `::tab${buildDirectiveAttrList([["title", tab.attrs.title || ""]])}\n${content}\n::`;
-      })
-      .join("\n");
+    const tabData = tabs.map((tab) => ({
+      title: renderMarkdownInline(tab.attrs.title || "").trim(),
+      body: renderComponentChildrenToHtml(tab.children),
+    }));
 
-    return `:::tabs\n${body}\n:::`;
+    return `\n\n${buildTabbedHtml(tabData, nextId("tabs"))}\n`;
   }
 
   if (node.name === "CodeGroup") {
-    const content = renderParsedComponentNodes(node.children).trim();
-    return `:::code-group\n${content}\n:::`;
+    let cgRaw = renderParsedComponentNodes(node.children);
+    cgRaw = restoreFencedCodeBlocks(cgRaw, activeFenceBlocks);
+    cgRaw = restoreInlineCodeSpans(cgRaw, activeInlineSpans);
+    const codeBlocks = parseTitledCodeBlocks(dedent(cgRaw)).map((block) => ({
+      title: renderMarkdownInline(block.title).trim(),
+      body: renderCodeBlock(block.body, block.lang),
+    }));
+    if (codeBlocks.length === 0) return null;
+    return `\n\n${buildTabbedHtml(codeBlocks, nextId("cg"), "directive-code-group")}\n`;
   }
 
   if (node.name === "Note" || node.name === "Warning" || node.name === "Tip" || node.name === "Info") {
-    const directive = node.name.toLowerCase();
-    const title = node.attrs.title ? ` ${node.attrs.title}` : "";
-    const content = renderParsedComponentNodes(node.children).trim();
-    return `:::${directive}${title}\n${content}\n:::`;
+    const type = node.name.toLowerCase();
+    const label = renderMarkdownInline(
+      node.attrs.title?.trim() || node.name.charAt(0).toUpperCase() + node.name.slice(1),
+    ).trim();
+    const body = renderComponentChildrenToHtml(node.children);
+    return `\n\n<div class="callout callout-${type} not-prose">
+<div class="callout-title">${label}</div>
+${body ? `<div class="callout-content">\n${body}\n</div>` : ""}
+</div>\n`;
   }
 
   if (node.name === "Video") {
@@ -631,7 +729,9 @@ function renderParsedComponentNode(node: ParsedComponentNode): string {
  */
 function preprocessComponents(body: string): string {
   const { text: fencedText, blocks } = protectFencedCodeBlocks(body);
+  activeFenceBlocks = blocks;
   const { text, spans } = protectInlineCodeSpans(fencedText);
+  activeInlineSpans = spans;
   const parsed = parseComponentNodes(text);
   const restoredInline = restoreInlineCodeSpans(renderParsedComponentNodes(parsed.nodes), spans);
   return restoreFencedCodeBlocks(restoredInline, blocks);
@@ -789,7 +889,7 @@ function parseTitledCodeBlocks(content: string): { title: string; body: string; 
 
   while (i < lines.length) {
     const line = stripDirectiveIndent(lines[i]).trimEnd();
-    const open = line.match(/^(`{3,}|~{3,})(\S+)?(?:\s+title="([^"]*)")?\s*$/);
+    const open = line.match(/^(`{3,}|~{3,})(\S+)?(?:\s+title="([^"]*)"|\s+(.+?))?\s*$/);
     if (!open) {
       i += 1;
       continue;
@@ -801,7 +901,7 @@ function parseTitledCodeBlocks(content: string): { title: string; body: string; 
     if (j >= lines.length) break;
 
     blocks.push({
-      title: open[3] ?? "",
+      title: open[3] ?? open[4] ?? "",
       lang: open[2] ?? "",
       body: lines.slice(i + 1, j).join("\n"),
     });
