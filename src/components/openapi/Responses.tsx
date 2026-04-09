@@ -44,7 +44,7 @@ export function ResponsesCopy({ responses }: ResponsesProps) {
           </div>
           {r.description && (
             <div class="param-description">
-              <Markdown content={r.description} />
+              <Markdown content={r.description} class="prose-sm" />
             </div>
           )}
         </div>

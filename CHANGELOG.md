@@ -6,6 +6,8 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 ### Added
 
+- Automatic per-page OG image generation at build time using Satori and resvg
+- `ogImage` config option for overriding with a static image URL
 - `::video` directive for embedding YouTube, Vimeo, or raw video files in markdown
 - `::iframe` directive for embedding arbitrary URLs (https only)
 

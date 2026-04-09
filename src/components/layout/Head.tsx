@@ -60,9 +60,14 @@ export function Head() {
       <meta property="og:description" content={pageDescription} />
       <meta property="og:type" content="website" />
       {siteName && <meta property="og:site_name" content={siteName} />}
-      <meta name="twitter:card" content="summary" />
+      {options.ogImagePath && <meta property="og:image" content={options.ogImagePath} />}
+      {options.ogImagePath && <meta property="og:image:width" content="1200" />}
+      {options.ogImagePath && <meta property="og:image:height" content="630" />}
+      {options.ogImagePath && <meta property="og:image:type" content="image/png" />}
+      <meta name="twitter:card" content={options.ogImagePath ? "summary_large_image" : "summary"} />
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={pageDescription} />
+      {options.ogImagePath && <meta name="twitter:image" content={options.ogImagePath} />}
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />

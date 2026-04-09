@@ -12,6 +12,8 @@ export interface RenderOptions {
   embeddable: boolean;
   /** Base URL for assets (CSS, JS) */
   assetBase: string;
+  /** Relative path to the OG image for this page */
+  ogImagePath?: string;
 }
 
 /**

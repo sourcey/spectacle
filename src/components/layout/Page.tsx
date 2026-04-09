@@ -194,10 +194,10 @@ function DefaultLayout() {
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-8 xl:w-[calc(100%-28rem)]" />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
-          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-8" />
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
         )}
       </main>
     </div>
@@ -230,10 +230,10 @@ function ApiFirstLayout() {
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
             <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-8 xl:w-[calc(100%-28rem)]" />
+            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
-          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-8" />
+          <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
         )}
       </main>
     </div>

@@ -578,9 +578,6 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   color: rgb(var(--color-gray-400));
 }
 
-#sourcey .param-description p {
-  margin-bottom: 0.25rem;
-}
 
 /* ── Steps (numbered step list with vertical connector) ────────────── */
 
@@ -821,7 +818,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .callout {
   margin: 1.25rem 0;
   border: none;
-  border-left: 1px solid;
+  border-left: 2px solid;
   border-radius: 0;
   padding: 0.875rem 1rem;
   font-size: 0.875rem;

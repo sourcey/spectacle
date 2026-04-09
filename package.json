@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.4.7",
+  "version": "3.4.11",
   "description": "Precision documentation from OpenAPI, MCP, Doxygen, and Markdown. Static HTML you own.",
   "type": "module",
   "engines": {
@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/",
+    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/ && cp -r src/og/fonts dist/og/",
     "watch": "npm run build && tsc --watch --preserveWatchOutput",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -33,6 +33,7 @@
   "dependencies": {
     "@preact/preset-vite": "^2.10.4",
     "@readme/openapi-parser": "^4.0.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
     "citty": "^0.1.6",
@@ -44,6 +45,7 @@
     "moxygen": "^2.1.1",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
+    "satori": "^0.26.0",
     "shiki": "^4.0.2",
     "swagger2openapi": "^7.0.8",
     "tailwindcss": "^4.2.2",

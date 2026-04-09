@@ -180,12 +180,55 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   const llmsTxt = generateLlmsTxt(sitePages, navigation, site);
   const llmsFullTxt = generateLlmsFullTxt(sitePages, navigation, site);
 
+  // Generate OG images
+  const ogImages = new Map<string, Buffer>();
+  if (!config.ogImage) {
+    const { generateOgImage } = await import("./og/generate-og-image.js");
+
+    const CONCURRENCY = 8;
+    for (let i = 0; i < sitePages.length; i += CONCURRENCY) {
+      const batch = sitePages.slice(i, i + CONCURRENCY);
+      await Promise.all(
+        batch.map(async (page) => {
+          const title =
+            page.currentPage.kind === "markdown"
+              ? page.currentPage.markdown!.title
+              : `${config.name || "API"} Reference`;
+          const description =
+            page.currentPage.kind === "markdown"
+              ? page.currentPage.markdown!.description
+              : undefined;
+
+          const ogPath = `_og/${page.outputPath.replace(/\.html$/, ".png")}`;
+
+          const png = await generateOgImage({
+            title,
+            description,
+            siteName: config.name,
+            theme: config.theme,
+            logo: site.logo?.light,
+          });
+
+          page.ogImagePath = ogPath;
+          ogImages.set(ogPath, png);
+        }),
+      );
+    }
+  } else {
+    // Static OG image — set the same path on all pages
+    const staticOg = config.ogImage;
+    for (const page of sitePages) {
+      page.ogImagePath = staticOg;
+    }
+  }
+
   if (!options.skipWrite) {
     await buildSiteHtml(sitePages, navigation, outputDir, site, {
       searchIndex,
       llmsTxt,
       llmsFullTxt,
       embeddable: options.embeddable,
+      ogImages,
     });
   }
 
