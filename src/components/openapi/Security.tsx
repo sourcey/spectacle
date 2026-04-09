@@ -43,7 +43,7 @@ export function SecurityCopy({ security }: SecurityProps) {
                   </div>
                   {(scheme?.description || scopes.length > 0) && (
                     <div class="param-description">
-                      {scheme?.description && <Markdown content={scheme.description} />}
+                      {scheme?.description && <Markdown content={scheme.description} class="prose-sm" />}
                       {scopes.length > 0 && (
                         <p class="mt-1">Scopes: <code class="text-xs font-medium">{scopes.join(", ")}</code></p>
                       )}
@@ -81,7 +81,7 @@ export function SecurityDefinitions() {
               </span>
             </div>
             <div class="param-description">
-              {scheme.description && <Markdown content={scheme.description} />}
+              {scheme.description && <Markdown content={scheme.description} class="prose-sm" />}
               {scheme.type === "apiKey" && (
                 <p class="mt-1">
                   API Key: <code class="text-xs font-medium">{scheme.name}</code> in {scheme.in}

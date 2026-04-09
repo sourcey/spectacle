@@ -68,7 +68,7 @@ export function SchemaView({
     const required = new Set(schema.required ?? requiredFields ?? []);
     return (
       <div>
-        {schema.description && (
+        {depth === 0 && schema.description && (
           <div class="schema-description">
             <Markdown content={schema.description} />
           </div>
@@ -104,7 +104,7 @@ export function SchemaView({
   if (schema.type === "array" && schema.items) {
     return (
       <div>
-        {schema.description && (
+        {depth === 0 && schema.description && (
           <div class="schema-description">
             <Markdown content={schema.description} />
           </div>
@@ -179,7 +179,7 @@ function PropertyRow({
       </div>
       {schema.description && (
         <div class="param-description">
-          <Markdown content={schema.description} />
+          <Markdown content={schema.description} class="prose-sm" />
         </div>
       )}
       {hasInner && (

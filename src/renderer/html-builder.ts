@@ -44,6 +44,8 @@ export interface SitePage {
   spec: NormalizedSpec;
   tabSlug: string;
   pageSlug: string;
+  /** Relative path to the generated OG image (set during build) */
+  ogImagePath?: string;
 }
 
 /**
@@ -54,7 +56,7 @@ export async function buildSite(
   navigation: SiteNavigation,
   outputDir: string,
   site: SiteConfig,
-  options?: { embeddable?: boolean; searchIndex?: string; llmsTxt?: string; llmsFullTxt?: string },
+  options?: { embeddable?: boolean; searchIndex?: string; llmsTxt?: string; llmsFullTxt?: string; ogImages?: Map<string, Buffer> },
 ): Promise<BuildOutput> {
   const resolvedDir = resolve(outputDir);
   await rm(resolvedDir, { recursive: true, force: true });
@@ -70,6 +72,7 @@ export async function buildSite(
     const renderOptions: RenderOptions = {
       embeddable: options?.embeddable ?? false,
       assetBase,
+      ogImagePath: page.ogImagePath ? assetBase + page.ogImagePath : undefined,
     };
 
     const activeNav = withActivePage(navigation, page.tabSlug, page.pageSlug);
@@ -80,7 +83,11 @@ export async function buildSite(
   if (pages.length > 0 && pages[0].outputPath !== "index.html") {
     const first = pages[0];
     const activeNav = withActivePage(navigation, first.tabSlug, first.pageSlug);
-    const renderOptions: RenderOptions = { embeddable: options?.embeddable ?? false, assetBase: "" };
+    const renderOptions: RenderOptions = {
+      embeddable: options?.embeddable ?? false,
+      assetBase: "",
+      ogImagePath: first.ogImagePath,
+    };
     const html = renderPage(first.spec, renderOptions, activeNav, first.currentPage, site);
     await writeFile(resolve(resolvedDir, "index.html"), html, "utf-8");
   }
@@ -108,6 +115,15 @@ export async function buildSite(
     `</urlset>`,
   ].join("\n");
   await writeFile(resolve(resolvedDir, "sitemap.xml"), sitemap, "utf-8");
+
+  // Write generated OG images
+  if (options?.ogImages) {
+    for (const [path, data] of options.ogImages) {
+      const fullPath = resolve(resolvedDir, path);
+      await mkdir(dirname(fullPath), { recursive: true });
+      await writeFile(fullPath, data);
+    }
+  }
 
   return { htmlPath: resolve(resolvedDir, "index.html"), outputDir: resolvedDir };
 }

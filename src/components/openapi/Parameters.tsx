@@ -27,7 +27,7 @@ export function Parameters({ parameters }: ParametersProps) {
           </div>
           {param.description && (
             <div class="param-description">
-              <Markdown content={param.description} />
+              <Markdown content={param.description} class="prose-sm" />
             </div>
           )}
         </div>

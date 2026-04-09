@@ -36,6 +36,8 @@ export interface SourceyConfig {
     href?: string;
   };
   favicon?: string;
+  /** Static OG image URL or local path. When set, skips automatic per-page OG image generation. */
+  ogImage?: string;
   /** GitHub repo URL (e.g. "https://github.com/user/repo"). */
   repo?: string;
   /** Branch name for "Edit this page" links (e.g. "main", "master"). When set, enables edit links on markdown pages. */
@@ -130,6 +132,7 @@ export interface ResolvedConfig {
   theme: ResolvedTheme;
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
+  ogImage?: string;
   repo?: string;
   editBranch?: string;
   editBasePath?: string;
@@ -250,6 +253,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     theme,
     logo,
     favicon: raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:") ? resolve(configDir, raw.favicon) : raw.favicon,
+    ogImage: raw.ogImage && !raw.ogImage.startsWith("http") && !raw.ogImage.startsWith("data:") ? resolve(configDir, raw.ogImage) : raw.ogImage,
     repo: raw.repo,
     editBranch: raw.editBranch,
     editBasePath: raw.editBasePath,
@@ -266,6 +270,10 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
       featured: raw.search?.featured ?? [],
     },
   };
+}
+
+function isUrl(source: string): boolean {
+  return source.startsWith("http://") || source.startsWith("https://");
 }
 
 const VALID_PRESETS: ThemePreset[] = ["default", "minimal", "api-first"];
@@ -331,13 +339,21 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
     }
 
     if (tab.openapi) {
-      const absPath = resolve(configDir, tab.openapi);
-      await assertExists(absPath, `OpenAPI spec "${tab.openapi}" in tab "${tab.tab}"`);
-      resolved.push({ label: tab.tab, slug, openapi: absPath });
+      if (isUrl(tab.openapi)) {
+        resolved.push({ label: tab.tab, slug, openapi: tab.openapi });
+      } else {
+        const absPath = resolve(configDir, tab.openapi);
+        await assertExists(absPath, `OpenAPI spec "${tab.openapi}" in tab "${tab.tab}"`);
+        resolved.push({ label: tab.tab, slug, openapi: absPath });
+      }
     } else if (tab.mcp) {
-      const absPath = resolve(configDir, tab.mcp);
-      await assertExists(absPath, `MCP spec "${tab.mcp}" in tab "${tab.tab}"`);
-      resolved.push({ label: tab.tab, slug, mcp: absPath });
+      if (isUrl(tab.mcp)) {
+        resolved.push({ label: tab.tab, slug, mcp: tab.mcp });
+      } else {
+        const absPath = resolve(configDir, tab.mcp);
+        await assertExists(absPath, `MCP spec "${tab.mcp}" in tab "${tab.tab}"`);
+        resolved.push({ label: tab.tab, slug, mcp: absPath });
+      }
     } else if (tab.doxygen) {
       const absXml = resolve(configDir, tab.doxygen.xml);
       await assertExists(absXml, `Doxygen XML directory "${tab.doxygen.xml}" in tab "${tab.tab}"`);

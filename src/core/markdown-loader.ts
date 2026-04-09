@@ -567,10 +567,19 @@ function collectChildComponents(
  * indented JSX content (e.g. code fences inside <Step>) is handled correctly.
  */
 function renderComponentChildrenToHtml(children: ParsedComponentNode[]): string {
+  // Save outer protection maps — renderDirectiveMarkdown → preprocessComponents will overwrite them
+  const savedFenceBlocks = activeFenceBlocks;
+  const savedInlineSpans = activeInlineSpans;
+
   let raw = renderParsedComponentNodes(children);
-  raw = restoreFencedCodeBlocks(raw, activeFenceBlocks);
-  raw = restoreInlineCodeSpans(raw, activeInlineSpans);
-  return renderDirectiveMarkdown(dedent(raw));
+  raw = restoreFencedCodeBlocks(raw, savedFenceBlocks);
+  raw = restoreInlineCodeSpans(raw, savedInlineSpans);
+  const result = renderDirectiveMarkdown(dedent(raw));
+
+  // Restore outer maps for sibling components
+  activeFenceBlocks = savedFenceBlocks;
+  activeInlineSpans = savedInlineSpans;
+  return result;
 }
 
 /**
