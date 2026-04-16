@@ -191,15 +191,21 @@ const DEFAULT_LAYOUT = {
   content: "44rem",
 };
 
-export async function loadConfig(cwd?: string): Promise<ResolvedConfig> {
-  const dir = cwd ?? process.cwd();
-  const configPath = resolve(dir, "sourcey.config.ts");
+export async function loadConfig(configOrDir?: string): Promise<ResolvedConfig> {
+  let configPath: string;
+
+  if (configOrDir && configOrDir.endsWith(".ts")) {
+    configPath = resolve(configOrDir);
+  } else {
+    const dir = configOrDir ?? process.cwd();
+    configPath = resolve(dir, "sourcey.config.ts");
+  }
 
   try {
     await access(configPath);
   } catch {
     throw new Error(
-      `No sourcey.config.ts found in ${dir}.\n` +
+      `Config not found: ${configPath}\n` +
       `Create one with:\n\n` +
       `  import { defineConfig } from "sourcey";\n` +
       `  export default defineConfig({ navigation: { tabs: [...] } });\n`,
