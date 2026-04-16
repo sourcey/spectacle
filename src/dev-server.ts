@@ -38,12 +38,15 @@ function shortPath(p: string): string {
 
 export interface DevServerOptions {
   port: number;
+  config?: string;
 }
 
 export async function startDevServer(options: DevServerOptions): Promise<void> {
   const { port } = options;
-  const configPath = resolve(process.cwd(), "sourcey.config.ts");
-  let config = await loadConfig();
+  let config = await loadConfig(options.config);
+  const configPath = options.config?.endsWith(".ts")
+    ? resolve(options.config)
+    : resolve(options.config ?? process.cwd(), "sourcey.config.ts");
 
   // Collect watch paths
   const watchPaths: string[] = [configPath];
@@ -282,7 +285,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   // Reload config through Vite SSR (bypasses Node's module cache)
   async function reloadConfig(): Promise<ResolvedConfig> {
     const configMod = await vite.ssrLoadModule(configPath);
-    return resolveConfigFromRaw(configMod.default, process.cwd());
+    return resolveConfigFromRaw(configMod.default, dirname(configPath));
   }
 
   async function render(url: string): Promise<string | null> {

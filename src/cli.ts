@@ -28,6 +28,12 @@ const build = defineCommand({
       description: "Embeddable output (no html/body wrapper)",
       default: false,
     },
+    config: {
+      type: "string",
+      alias: ["c"],
+      description: "Path to sourcey.config.ts (file or directory containing it)",
+      required: false,
+    },
     quiet: {
       type: "boolean",
       alias: ["q"],
@@ -56,7 +62,7 @@ const build = defineCommand({
           console.log(`  Time:       ${elapsed}s\n`);
         }
       } else {
-        const config = await loadConfig();
+        const config = await loadConfig(args.config);
         if (!args.quiet) console.log(`\nSourcey — building documentation site\n`);
 
         const result = await buildSiteDocs({
@@ -92,11 +98,18 @@ const dev = defineCommand({
       description: "Port to listen on",
       default: "4400",
     },
+    config: {
+      type: "string",
+      alias: ["c"],
+      description: "Path to sourcey.config.ts (file or directory containing it)",
+      required: false,
+    },
   },
   async run({ args }) {
     const { startDevServer } = await import("./dev-server.js");
     await startDevServer({
       port: parseInt(args.port, 10),
+      config: args.config,
     });
   },
 });
@@ -155,7 +168,7 @@ const main = defineCommand({
 
     if (args.spec) {
       await build.run!({
-        args: { _: [], spec: args.spec, output: "dist", embed: false, quiet: false },
+        args: { _: [], spec: args.spec, output: "dist", embed: false, config: undefined as unknown as string, quiet: false },
         rawArgs: [],
         cmd: build,
       });
