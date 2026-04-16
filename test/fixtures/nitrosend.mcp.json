@@ -800,8 +800,17 @@
           },
           "audience": {
             "type": "object",
-            "description": "Target audience for the campaign",
+            "description": "Target audience for the campaign. Use audience_type='all_contacts' only for an explicit all-subscribed-contacts send.",
             "properties": {
+              "audience_type": {
+                "type": "string",
+                "enum": [
+                  "lists",
+                  "segment",
+                  "all_contacts"
+                ],
+                "description": "Explicit audience target: lists, segment, or all_contacts"
+              },
               "contact_list_ids": {
                 "type": "array",
                 "items": {
@@ -848,7 +857,7 @@
     },
     {
       "name": "nitro_manage_domains",
-      "description": "Manage sending domains — add, verify, check DNS, list, and remove. Add returns provider verification, SPF, DKIM, DMARC, MX, return-path, and tracking records; check_dns validates both the customer-facing records and the Nitro-owned delegate targets behind them. Managed SES uses Nitro-branded MX indirection, while BYO providers return their own receiving records.",
+      "description": "Manage sending domains — add, verify, check DNS, list, and remove. Add returns the core DNS records needed to finish setup plus any optional improvements such as tracking or inbound routing. check_dns validates both the customer-facing records and the Nitro-owned delegate targets behind them. Managed SES uses Nitro-branded MX indirection, while BYO providers return their own receiving records.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -861,7 +870,7 @@
               "list",
               "remove"
             ],
-            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records. The user must add these DNS records at their domain registrar. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
+            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records. The user must add these DNS records at their domain registrar. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if the core DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. Optional records like tracking are reported separately and do not block completion. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify. Optional improvements are surfaced without blocking setup completion.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
           },
           "params": {
             "type": "object",
@@ -1083,6 +1092,10 @@
             "type": "string",
             "format": "date-time",
             "description": "Required for schedule operation (ISO 8601 datetime)"
+          },
+          "confirm_send_to_all": {
+            "type": "boolean",
+            "description": "Required when making a campaign live or scheduled with audience_type='all_contacts'. Forces an explicit all-subscribed-contacts confirmation."
           }
         },
         "required": [
