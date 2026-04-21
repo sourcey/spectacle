@@ -58,7 +58,10 @@ const generators: Record<string, CodeSampleGenerator> = {
     } else if (contentType) {
       args.push(`headers={'Content-Type': '${contentType}'}`);
     }
-    lines.push(`response = requests.${method.toLowerCase()}(${args.join(", ")})`);
+    const request = pythonShortcutMethod(method)
+      ? `requests.${method.toLowerCase()}(${args.join(", ")})`
+      : `requests.request('${method}', ${args.join(", ")})`;
+    lines.push(`response = ${request}`);
     lines.push(`data = response.json()`);
     return { lang: "python", label: "Python", source: lines.join("\n") };
   },
@@ -90,10 +93,18 @@ const generators: Record<string, CodeSampleGenerator> = {
       ``,
       `uri = URI('${url}')`,
     ];
-    const methodClass = method === "GET" ? "Get" : method === "POST" ? "Post" : method === "PUT" ? "Put" : method === "DELETE" ? "Delete" : method === "PATCH" ? "Patch" : "Post";
-    lines.push(`request = Net::HTTP::${methodClass}.new(uri)`);
-    if (contentType) lines.push(`request['Content-Type'] = '${contentType}'`);
-    if (body) lines.push(`request.body = '${indent(body, 2)}'`);
+    const methodClass = rubyShortcutMethod(method);
+    if (methodClass) {
+      lines.push(`request = Net::HTTP::${methodClass}.new(uri)`);
+      if (contentType) lines.push(`request['Content-Type'] = '${contentType}'`);
+      if (body) lines.push(`request.body = '${indent(body, 2)}'`);
+    } else {
+      const headers = contentType ? `{ 'Content-Type' => '${contentType}' }` : "{}";
+      lines.push(
+        `request = Net::HTTPGenericRequest.new('${method}', ${body ? "true" : "false"}, true, uri.request_uri, ${headers})`,
+      );
+      if (body) lines.push(`request.body = '${indent(body, 2)}'`);
+    }
     lines.push(``, `response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }`);
     lines.push(`data = JSON.parse(response.body)`);
     return { lang: "ruby", label: "Ruby", source: lines.join("\n") };
@@ -148,13 +159,15 @@ const generators: Record<string, CodeSampleGenerator> = {
       `async fn main() -> Result<(), reqwest::Error> {`,
       `    let client = reqwest::Client::new();`,
     ];
-    const m = method.toLowerCase();
+    const requestBuilder = rustShortcutMethod(method)
+      ? `client.${method.toLowerCase()}("${url}")`
+      : `client.request(reqwest::Method::from_bytes(b"${method}").unwrap(), "${url}")`;
     if (body) {
       lines.push(`    let body = serde_json::json!(${indent(body, 4)});`);
-      lines.push(`    let response = client.${m}("${url}")`);
+      lines.push(`    let response = ${requestBuilder}`);
       lines.push(`        .json(&body)`);
     } else {
-      lines.push(`    let response = client.${m}("${url}")`);
+      lines.push(`    let response = ${requestBuilder}`);
     }
     lines.push(`        .send()`);
     lines.push(`        .await?`);
@@ -171,11 +184,14 @@ const generators: Record<string, CodeSampleGenerator> = {
       `using var client = new HttpClient();`,
       ``,
     ];
+    const httpMethod = csharpShortcutMethod(method)
+      ? `HttpMethod.${method[0] + method.slice(1).toLowerCase()}`
+      : `new HttpMethod("${method}")`;
     if (body) {
       lines.push(`var content = new StringContent("""`, `    ${indent(body, 4)}""", System.Text.Encoding.UTF8, "application/json");`);
-      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.${method[0] + method.slice(1).toLowerCase()}, "${url}") { Content = content });`);
+      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}") { Content = content });`);
     } else {
-      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.${method[0] + method.slice(1).toLowerCase()}, "${url}"));`);
+      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}"));`);
     }
     lines.push(`var data = await response.Content.ReadAsStringAsync();`);
     return { lang: "csharp", label: "C#", source: lines.join("\n") };
@@ -242,6 +258,35 @@ function pythonDict(jsonStr: string): string {
     .replace(/: true/g, ": True")
     .replace(/: false/g, ": False")
     .replace(/: null/g, ": None");
+}
+
+function pythonShortcutMethod(method: string): boolean {
+  return ["GET", "POST", "PUT", "DELETE", "PATCH"].includes(method);
+}
+
+function rubyShortcutMethod(method: string): string | undefined {
+  switch (method) {
+    case "GET":
+      return "Get";
+    case "POST":
+      return "Post";
+    case "PUT":
+      return "Put";
+    case "DELETE":
+      return "Delete";
+    case "PATCH":
+      return "Patch";
+    default:
+      return undefined;
+  }
+}
+
+function rustShortcutMethod(method: string): boolean {
+  return ["GET", "POST", "PUT", "DELETE", "PATCH"].includes(method);
+}
+
+function csharpShortcutMethod(method: string): boolean {
+  return ["GET", "POST", "PUT", "DELETE", "PATCH"].includes(method);
 }
 
 /** Indent all lines of a multi-line string except the first. */

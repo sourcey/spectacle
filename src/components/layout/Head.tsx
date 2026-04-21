@@ -28,7 +28,7 @@ export function Head() {
     ? page.markdown.description || pageTitle
     : page.kind === "changelog"
       ? changelogVersion?.summary || page.changelog.description || pageTitle
-      : spec.info.description ?? `${siteName} API Documentation`;
+      : spec.info.summary ?? spec.info.description ?? `${siteName} API Documentation`;
 
   const nav = useContext(NavigationContext);
   const { colors, fonts, layout } = site.theme;

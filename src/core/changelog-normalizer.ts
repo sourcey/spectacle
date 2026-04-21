@@ -9,7 +9,6 @@ import type {
   ChangelogRef,
   NormalizedChangelog,
   NormalizedChangelogEntry,
-  NormalizedChangelogSection,
   NormalizedChangelogVersion,
   VersionLink,
 } from "./types.js";

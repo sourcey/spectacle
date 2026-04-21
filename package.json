@@ -31,6 +31,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^13.0.5",
     "@preact/preset-vite": "^2.10.4",
     "@readme/openapi-parser": "^4.0.0",
     "@resvg/resvg-js": "^2.6.2",

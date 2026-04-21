@@ -75,6 +75,11 @@ function SpecPageContent({ className = "" }: { className?: string }) {
             <h1 class="text-2xl sm:text-3xl font-bold text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))] tracking-tight">{spec.info.title}</h1>
             <span class="text-sm text-[rgb(var(--color-gray-500))] dark:text-[rgb(var(--color-gray-400))]">v{spec.info.version}</span>
           </div>
+          {spec.info.summary && (
+            <p class="mt-2 max-w-2xl text-sm text-[rgb(var(--color-gray-600))] dark:text-[rgb(var(--color-gray-400))]">
+              {spec.info.summary}
+            </p>
+          )}
         </header>
 
         <Introduction />

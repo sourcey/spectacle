@@ -2,6 +2,7 @@ import type { NormalizedRequestBody } from "../../core/types.js";
 import { SchemaView } from "../schema/SchemaView.js";
 import { ExampleView } from "../schema/ExampleView.js";
 import { Markdown } from "../ui/Markdown.js";
+import { MediaTypeDetails } from "./MediaTypeDetails.js";
 
 interface RequestBodyProps {
   body: NormalizedRequestBody;
@@ -16,13 +17,23 @@ export function RequestBody({ body }: RequestBodyProps) {
 
   return (
     <div>
+      {body.description && (
+        <div class="mb-4 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
+          <Markdown content={body.description} />
+        </div>
+      )}
       {mediaTypes.map(([mediaType, content]) => (
-        <div key={mediaType}>
-          {body.description && (
-            <div class="mb-4 text-sm text-[rgb(var(--color-gray-700))] dark:text-[rgb(var(--color-gray-400))]">
-              <Markdown content={body.description} />
-            </div>
-          )}
+        <div key={mediaType} class={mediaTypes.length > 1 ? "mt-8 first:mt-0" : ""}>
+          <MediaTypeDetails
+            mediaType={mediaType}
+            content={content}
+            showLabel={
+              mediaTypes.length > 1
+              || Object.keys(content.encoding ?? {}).length > 0
+              || (content.prefixEncoding?.length ?? 0) > 0
+              || !!content.itemEncoding
+            }
+          />
           {content.schema && <SchemaView schema={content.schema} />}
         </div>
       ))}

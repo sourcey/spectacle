@@ -5,6 +5,13 @@ import type { SiteNavigation } from "../../src/core/navigation.js";
 import type { NormalizedChangelog, NormalizedSpec } from "../../src/core/types.js";
 import type { ChangelogPage, MarkdownPage } from "../../src/core/markdown-loader.js";
 import type { RenderOptions, CurrentPage, SiteConfig } from "../../src/renderer/context.js";
+import { loadSpec } from "../../src/core/loader.js";
+import { parseSpec } from "../../src/core/parser.js";
+import { convertToOpenApi3 } from "../../src/core/converter.js";
+import { normalizeSpec } from "../../src/core/normalizer.js";
+import { resolve } from "node:path";
+
+const FIXTURES = resolve(import.meta.dirname, "../fixtures");
 
 function createMinimalSpec(overrides?: Partial<NormalizedSpec>): NormalizedSpec {
   return {
@@ -55,6 +62,13 @@ function renderSpec(spec: NormalizedSpec, options: RenderOptions): string {
   const navigation = buildSiteNavigation([tab]);
   const currentPage: CurrentPage = { kind: "spec", spec };
   return renderPage(spec, options, navigation, currentPage, defaultSite);
+}
+
+async function loadAndNormalizeFixture(fixture: string): Promise<NormalizedSpec> {
+  const loaded = await loadSpec(`${FIXTURES}/${fixture}`);
+  const parsed = await parseSpec(loaded);
+  const converted = await convertToOpenApi3(parsed);
+  return normalizeSpec(converted);
 }
 
 function createMarkdownPage(overrides?: Partial<MarkdownPage>): MarkdownPage {
@@ -241,6 +255,78 @@ describe("renderPage (spec)", () => {
     const html = renderSpec(spec, defaultOptions);
     expect(html).toContain("https://api.example.com");
     expect(html).toContain("Production");
+  });
+
+  it("renders response summaries and device authorization URLs", () => {
+    const queryOperation = {
+      operationId: "querySearch",
+      method: "query" as const,
+      path: "/search",
+      summary: "Query search index",
+      tags: ["Search"],
+      parameters: [],
+      responses: [
+        {
+          statusCode: "200",
+          summary: "Search results",
+          description: "Returns ranked matches.",
+        },
+      ],
+      security: [],
+      deprecated: false,
+    };
+
+    const spec = createMinimalSpec({
+      tags: [
+        {
+          name: "Search",
+          operations: [queryOperation],
+        },
+      ],
+      operations: [queryOperation],
+      securitySchemes: {
+        oauth: {
+          type: "oauth2",
+          flows: {
+            deviceAuthorization: {
+              deviceAuthorizationUrl: "https://example.com/oauth/device",
+              tokenUrl: "https://example.com/oauth/token",
+              scopes: {
+                search: "Query the search index",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const html = renderSpec(spec, defaultOptions);
+    expect(html).toContain("Search results");
+    expect(html).toContain("Returns ranked matches.");
+    expect(html).toContain("Device Authorization URL");
+    expect(html).toContain("https://example.com/oauth/device");
+  });
+
+  it("renders rich OpenAPI 3.2 summaries, hierarchy, encodings, and security metadata", async () => {
+    const spec = await loadAndNormalizeFixture("openapi-3.2-rich.yaml");
+    const html = renderSpec(spec, defaultOptions);
+
+    expect(html).toContain("Search and indexing endpoints");
+    expect(html).toContain('meta name="description" content="Search and indexing endpoints"');
+    expect(html).toContain("Administration");
+    expect(html).toContain("Index Management");
+    expect(html).toContain("admin-index");
+    expect(html).toContain("audience");
+    expect(html).toContain("Administration / Index Management");
+    expect(html).toContain("querystring");
+    expect(html).toContain("Structured query string payload.");
+    expect(html).toContain("application/x-www-form-urlencoded");
+    expect(html).toContain("Encoding");
+    expect(html).toContain("Ordered Parts");
+    expect(html).toContain("X-Part-Id");
+    expect(html).toContain("OAuth2 Metadata");
+    expect(html).toContain("https://example.com/.well-known/oauth-authorization-server");
+    expect(html).toContain("deprecated");
   });
 
   it("prefixes markdown page navigation links with the page asset base", () => {

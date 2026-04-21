@@ -1,6 +1,6 @@
 /**
  * Internal normalized representation of an API specification.
- * All OpenAPI 2.0/3.0/3.1 specs are converted to this format
+ * All Swagger 2.0 and OpenAPI 3.x specs are converted to this format
  * before rendering, so components never need to know the source format.
  */
 
@@ -21,6 +21,7 @@ export interface NormalizedSpec {
 
 export interface ApiInfo {
   title: string;
+  summary?: string;
   version: string;
   description?: string;
   termsOfService?: string;
@@ -60,7 +61,10 @@ export interface ServerVariable {
 
 export interface NormalizedTag {
   name: string;
+  summary?: string;
   description?: string;
+  parent?: string;
+  kind?: string;
   externalDocs?: ExternalDocs;
   operations: NormalizedOperation[];
   /** Vendor extension: hide this tag from navigation */
@@ -70,7 +74,7 @@ export interface NormalizedTag {
 // ── Operations ─────────────────────────────────────────────────────
 
 export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace"
-  | "tool" | "resource" | "prompt";
+  | "query" | "tool" | "resource" | "prompt";
 
 export interface NormalizedOperation {
   operationId?: string;
@@ -121,11 +125,12 @@ export interface McpConnectionInfo {
 
 export interface NormalizedParameter {
   name: string;
-  in: "query" | "header" | "path" | "cookie" | "argument";
+  in: "query" | "querystring" | "header" | "path" | "cookie" | "argument";
   description?: string;
   required: boolean;
   deprecated: boolean;
   schema?: NormalizedSchema;
+  content?: Record<string, MediaTypeContent>;
   example?: unknown;
   examples?: Record<string, ExampleObject>;
 }
@@ -140,10 +145,24 @@ export interface MediaTypeContent {
   schema?: NormalizedSchema;
   example?: unknown;
   examples?: Record<string, ExampleObject>;
+  encoding?: Record<string, EncodingObject>;
+  prefixEncoding?: EncodingObject[];
+  itemEncoding?: EncodingObject;
+}
+
+export interface EncodingObject {
+  contentType?: string;
+  headers?: Record<string, NormalizedParameter>;
+  style?: string;
+  explode?: boolean;
+  allowReserved?: boolean;
+  prefixEncoding?: EncodingObject[];
+  itemEncoding?: EncodingObject;
 }
 
 export interface NormalizedResponse {
   statusCode: string;
+  summary?: string;
   description: string;
   content?: Record<string, MediaTypeContent>;
   headers?: Record<string, NormalizedParameter>;
@@ -229,6 +248,8 @@ export interface SecurityScheme {
   bearerFormat?: string;
   flows?: OAuthFlows;
   openIdConnectUrl?: string;
+  oauth2MetadataUrl?: string;
+  deprecated?: boolean;
 }
 
 export interface OAuthFlows {
@@ -236,10 +257,12 @@ export interface OAuthFlows {
   password?: OAuthFlow;
   clientCredentials?: OAuthFlow;
   authorizationCode?: OAuthFlow;
+  deviceAuthorization?: OAuthFlow;
 }
 
 export interface OAuthFlow {
   authorizationUrl?: string;
+  deviceAuthorizationUrl?: string;
   tokenUrl?: string;
   refreshUrl?: string;
   scopes: Record<string, string>;
@@ -353,7 +376,7 @@ export interface NormalizedChangelog {
 // ── Loader / Pipeline types ────────────────────────────────────────
 
 export type SpecFormat = "json" | "yaml";
-export type SpecVersion = "swagger-2.0" | "openapi-3.0" | "openapi-3.1";
+export type SpecVersion = "swagger-2.0" | "openapi-3.0" | "openapi-3.1" | "openapi-3.2";
 
 export interface LoadedSpec {
   /** Raw parsed object (before dereferencing) */
@@ -380,6 +403,7 @@ export interface ParsedSpec {
  */
 export interface OpenApiDocument {
   openapi: string;
+  $self?: string;
   info: Record<string, unknown>;
   servers?: Record<string, unknown>[];
   paths?: Record<string, Record<string, unknown>>;
@@ -387,6 +411,7 @@ export interface OpenApiDocument {
   components?: {
     schemas?: Record<string, unknown>;
     securitySchemes?: Record<string, unknown>;
+    pathItems?: Record<string, unknown>;
     [key: string]: unknown;
   };
   security?: Record<string, string[]>[];

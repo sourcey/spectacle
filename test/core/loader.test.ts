@@ -25,6 +25,12 @@ describe("loadSpec", () => {
     expect(result.raw.openapi).toBe("3.0.3");
   });
 
+  it("detects OpenAPI 3.2 version", async () => {
+    const result = await loadSpec(`${FIXTURES}/openapi-3.2.yaml`);
+    expect(result.version).toBe("openapi-3.2");
+    expect(result.raw.openapi).toBe("3.2.0");
+  });
+
   it("throws on missing file", async () => {
     await expect(loadSpec("/nonexistent/spec.yml")).rejects.toThrow("not found");
   });

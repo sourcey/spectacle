@@ -1,21 +1,20 @@
-import { createServer as createViteServer, type InlineConfig, type ViteDevServer } from "vite";
+import { createServer as createViteServer, type InlineConfig } from "vite";
 import { resolve, dirname, extname, basename, relative } from "node:path";
 import { access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { loadConfig, resolveConfigFromRaw, tabPath } from "./config.js";
-import type { ResolvedConfig, ResolvedTab } from "./config.js";
+import type { ResolvedConfig } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
 import { normalizeSpec } from "./core/normalizer.js";
 import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { buildNavFromSpec, buildSiteNavigation, withActivePage } from "./core/navigation.js";
-import type { NormalizedSpec } from "./core/types.js";
-import type { CurrentPage, SiteConfig } from "./renderer/context.js";
+import type { SiteConfig } from "./renderer/context.js";
 import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
-import { createRenderOptions, type SitePage } from "./renderer/html-builder.js";
+import { createRenderOptions } from "./renderer/html-builder.js";
 import {
   assembleSite,
   buildSiteConfig,
@@ -113,8 +112,6 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   const sourceyCssPath = resolve(projectRoot, hasSrc ? "src/themes/default/sourcey.css" : "dist/themes/default/sourcey.css");
   const clientEntry = resolve(projectRoot, hasSrc ? "src/client/index.ts" : "dist/client/index.js");
   const ssrRendererPath = resolve(projectRoot, hasSrc ? "src/renderer/static-renderer.ts" : "dist/renderer/static-renderer.js");
-
-  let vite: ViteDevServer;
 
   interface CachedSite {
     data: Awaited<ReturnType<typeof assembleSite>>;
@@ -366,7 +363,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     },
   };
 
-  vite = await createViteServer(viteConfig);
+  const vite = await createViteServer(viteConfig);
 
   vite.watcher.on("change", async (file) => {
     let content = fileToContent.get(file);
