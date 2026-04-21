@@ -30,6 +30,8 @@ const defaultOptions: RenderOptions = {
 
 const defaultSite: SiteConfig = {
   name: "Test",
+  siteUrl: undefined,
+  baseUrl: "",
   theme: {
     preset: "default",
     colors: { primary: "99 102 241", light: "129 140 248", dark: "79 70 229" },
@@ -286,5 +288,55 @@ describe("renderPage (spec)", () => {
     expect(html).toContain("sourcey-changelog-version");
     expect(html).toContain("1.2.0");
     expect(html).toContain("Added");
+  });
+
+  it("renders canonical, feed, and OG metadata from resolved public URLs", () => {
+    const spec = createMinimalSpec();
+    const navigation = {
+      ...createDocsNavigation(),
+      tabs: [
+        {
+          label: "Documentation",
+          slug: "documentation",
+          href: "documentation/changelog.html",
+          kind: "docs" as const,
+          groups: [
+            {
+              label: "Guides",
+              items: [{ label: "Changelog", href: "documentation/changelog.html", id: "changelog" }],
+            },
+          ],
+        },
+      ],
+      activePageSlug: "changelog",
+    };
+    const currentPage: CurrentPage = {
+      kind: "changelog",
+      changelog: createChangelogPage(),
+    };
+    const options: RenderOptions = {
+      embeddable: false,
+      assetBase: "../../",
+      pageUrl: "https://docs.example.com/reference/changelog.html",
+      ogImageUrl: "https://docs.example.com/reference/_og/changelog.png",
+      alternateLinks: [
+        {
+          href: "https://docs.example.com/reference/feed.xml",
+          type: "application/atom+xml",
+          title: "Changelog Atom Feed",
+        },
+      ],
+    };
+
+    const html = renderPage(spec, options, navigation, currentPage, {
+      ...defaultSite,
+      siteUrl: "https://docs.example.com",
+      baseUrl: "/reference/",
+    });
+
+    expect(html).toContain('rel="canonical" href="https://docs.example.com/reference/changelog.html"');
+    expect(html).toContain('property="og:url" content="https://docs.example.com/reference/changelog.html"');
+    expect(html).toContain('property="og:image" content="https://docs.example.com/reference/_og/changelog.png"');
+    expect(html).toContain('rel="alternate" type="application/atom+xml" href="https://docs.example.com/reference/feed.xml"');
   });
 });

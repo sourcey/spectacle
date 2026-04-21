@@ -68,18 +68,20 @@ export function Head() {
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="generator" content={`Sourcey ${pkg.version}`} />
+      {options.pageUrl && <link rel="canonical" href={options.pageUrl} />}
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={pageDescription} />
       <meta property="og:type" content="website" />
       {siteName && <meta property="og:site_name" content={siteName} />}
-      {options.ogImagePath && <meta property="og:image" content={options.ogImagePath} />}
-      {options.ogImagePath && <meta property="og:image:width" content="1200" />}
-      {options.ogImagePath && <meta property="og:image:height" content="630" />}
-      {options.ogImagePath && <meta property="og:image:type" content="image/png" />}
-      <meta name="twitter:card" content={options.ogImagePath ? "summary_large_image" : "summary"} />
+      {options.pageUrl && <meta property="og:url" content={options.pageUrl} />}
+      {options.ogImageUrl && <meta property="og:image" content={options.ogImageUrl} />}
+      {options.ogImageUrl && <meta property="og:image:width" content="1200" />}
+      {options.ogImageUrl && <meta property="og:image:height" content="630" />}
+      {options.ogImageUrl && <meta property="og:image:type" content="image/png" />}
+      <meta name="twitter:card" content={options.ogImageUrl ? "summary_large_image" : "summary"} />
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={pageDescription} />
-      {options.ogImagePath && <meta name="twitter:image" content={options.ogImagePath} />}
+      {options.ogImageUrl && <meta name="twitter:image" content={options.ogImageUrl} />}
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
       {options.alternateLinks?.map((link) => (
         <link key={`${link.type}-${link.href}`} rel="alternate" type={link.type} href={link.href} title={link.title} />

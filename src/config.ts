@@ -1,6 +1,7 @@
 import { access, readdir } from "node:fs/promises";
 import { resolve, relative, dirname, basename, extname } from "node:path";
 import { createJiti } from "jiti";
+import { normalizeBaseUrl, normalizeSiteUrl } from "./site-url.js";
 
 // ---------------------------------------------------------------------------
 // User-facing config types (used in sourcey.config.ts)
@@ -40,6 +41,10 @@ export interface ChangelogConfig {
 
 export interface SourceyConfig {
   name?: string;
+  /** Public site origin for absolute feeds, OG metadata, and canonical URLs (e.g. "https://docs.example.com"). */
+  siteUrl?: string;
+  /** Public path prefix when the docs are served from a subpath (e.g. "/reference"). */
+  baseUrl?: string;
   theme?: ThemeConfig;
   logo?: string | {
     light: string;
@@ -148,6 +153,8 @@ export interface ResolvedChangelogConfig {
 
 export interface ResolvedConfig {
   name: string;
+  siteUrl?: string;
+  baseUrl: string;
   theme: ResolvedTheme;
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
@@ -250,6 +257,8 @@ export function configFromSpec(specPath: string): ResolvedConfig {
   const absSpec = resolve(specPath);
   return {
     name: "API Reference",
+    siteUrl: undefined,
+    baseUrl: "",
     theme: {
       preset: "default",
       colors: { ...DEFAULT_COLORS },
@@ -278,6 +287,8 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
 
   return {
     name: raw.name ?? "",
+    siteUrl: normalizeSiteUrl(raw.siteUrl),
+    baseUrl: normalizeBaseUrl(raw.baseUrl),
     theme,
     logo,
     favicon: raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:") ? resolve(configDir, raw.favicon) : raw.favicon,

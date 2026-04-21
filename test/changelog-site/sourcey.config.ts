@@ -2,6 +2,8 @@ import { defineConfig } from "sourcey";
 
 export default defineConfig({
   name: "Changelog Test",
+  siteUrl: "https://docs.example.com",
+  baseUrl: "/reference",
   changelog: {
     feed: true,
     permalinks: true,

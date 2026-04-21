@@ -2,7 +2,9 @@
 import { defineCommand, runMain } from "citty";
 import { buildDocs, buildSiteDocs } from "./index.js";
 import { loadConfig } from "./config.js";
+import type { ChangelogDiagnostic } from "./core/types.js";
 import { init } from "./init.js";
+import { formatChangelogDiagnostic } from "./site-assembly.js";
 import pkg from "../package.json" with { type: "json" };
 
 const build = defineCommand({
@@ -113,12 +115,18 @@ const dev = defineCommand({
       description: "Path to sourcey.config.ts (file or directory containing it)",
       required: false,
     },
+    strictChangelog: {
+      type: "boolean",
+      description: "Treat changelog warnings as dev errors",
+      default: false,
+    },
   },
   async run({ args }) {
     const { startDevServer } = await import("./dev-server.js");
     await startDevServer({
       port: parseInt(args.port, 10),
       config: args.config,
+      strictChangelog: args.strictChangelog,
     });
   },
 });
@@ -193,11 +201,9 @@ const main = defineCommand({
   },
 });
 
-function logChangelogDiagnostics(diagnostics: { severity: string; code: string; message: string; line?: number; version?: string }[]): void {
+function logChangelogDiagnostics(diagnostics: ChangelogDiagnostic[]): void {
   for (const diagnostic of diagnostics) {
-    const location = diagnostic.version ? ` (${diagnostic.version})` : "";
-    const line = diagnostic.line ? ` line ${diagnostic.line}` : "";
-    console.log(`  ${diagnostic.severity.toUpperCase()} ${diagnostic.code}${location}${line}: ${diagnostic.message}`);
+    console.log(`  ${formatChangelogDiagnostic(diagnostic)}`);
   }
 }
 

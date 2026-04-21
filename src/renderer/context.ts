@@ -18,8 +18,10 @@ export interface RenderOptions {
   embeddable: boolean;
   /** Base URL for assets (CSS, JS) */
   assetBase: string;
-  /** Relative path to the OG image for this page */
-  ogImagePath?: string;
+  /** Canonical absolute URL for the current page, when configured. */
+  pageUrl?: string;
+  /** Public URL for the OG image for this page. */
+  ogImageUrl?: string;
   /** Alternate link tags to emit for the current page. */
   alternateLinks?: AlternateLink[];
 }
@@ -68,6 +70,8 @@ export const PageContext = createContext<CurrentPage>(null as never);
  */
 export interface SiteConfig {
   name: string;
+  siteUrl?: string;
+  baseUrl: string;
   theme: ResolvedTheme;
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
