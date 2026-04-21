@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { basename, extname, relative } from "node:path";
 import { load as parseYaml } from "js-yaml";
+import { normalizeChangelog } from "./changelog-normalizer.js";
 import { htmlId } from "../utils/html-id.js";
 import { renderIcon } from "../utils/icons.js";
 import {
@@ -10,12 +11,14 @@ import {
   extractHeadings,
   type PageHeading,
 } from "../utils/markdown.js";
+import type { NormalizedChangelog } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 export interface MarkdownPage {
+  kind: "markdown";
   /** Page title from frontmatter */
   title: string;
   /** Page description from frontmatter */
@@ -32,13 +35,35 @@ export interface MarkdownPage {
   editPath?: string | null;
 }
 
+export interface ChangelogPage {
+  kind: "changelog";
+  title: string;
+  description: string;
+  slug: string;
+  headings: PageHeading[];
+  sourcePath: string;
+  editPath?: string | null;
+  changelog: NormalizedChangelog;
+  rawBody: string;
+  /** Set on generated per-version pages; undefined for the full changelog page. */
+  permalinkVersionId?: string;
+}
+
+export type DocsPage = MarkdownPage | ChangelogPage;
+
 export type { PageHeading } from "../utils/markdown.js";
 
 interface Frontmatter {
   title?: string;
   description?: string;
   order?: number;
+  layout?: string;
   [key: string]: unknown;
+}
+
+export interface LoadDocsPageOptions {
+  changelog?: boolean;
+  repoUrl?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -1210,6 +1235,65 @@ export async function loadMarkdownPage(
   const raw = await readFile(filePath, "utf-8");
   const { meta, body } = parseFrontmatter(raw);
 
+  return loadMarkdownPageFromBody(filePath, slug, body, meta);
+}
+
+export async function loadDocsPage(
+  filePath: string,
+  slug: string,
+  options: LoadDocsPageOptions = {},
+): Promise<DocsPage> {
+  const raw = await readFile(filePath, "utf-8");
+  const { meta, body } = parseFrontmatter(raw);
+
+  if (shouldTreatAsChangelog(filePath, meta, options)) {
+    const sourcePath = relative(process.cwd(), filePath);
+    const changelog = normalizeChangelog(body, {
+      title: typeof meta.title === "string" ? meta.title : undefined,
+      description: typeof meta.description === "string" ? meta.description : undefined,
+      repoUrl: options.repoUrl,
+    });
+    const description = typeof meta.description === "string"
+      ? meta.description
+      : changelog.description ?? "";
+
+    return {
+      kind: "changelog",
+      title: changelog.title,
+      description,
+      slug,
+      headings: changelog.versions.map((version) => ({
+        level: 2 as const,
+        text: version.version ?? "Unreleased",
+        id: version.id,
+      })),
+      sourcePath,
+      editPath: sourcePath,
+      changelog,
+      rawBody: body,
+    };
+  }
+
+  return loadMarkdownPageFromBody(filePath, slug, body, meta);
+}
+
+function shouldTreatAsChangelog(
+  filePath: string,
+  meta: Frontmatter,
+  options: LoadDocsPageOptions,
+): boolean {
+  if (options.changelog === false) return false;
+  if (typeof meta.layout === "string" && meta.layout.toLowerCase() === "changelog") return true;
+  return basename(filePath).toLowerCase() === "changelog.md";
+}
+
+function loadMarkdownPageFromBody(
+  filePath: string,
+  slug: string,
+  body: string,
+  meta: Frontmatter,
+): MarkdownPage {
+
   resetDirectiveCounter();
   const componentPreprocessed = preprocessComponents(body);
   const preprocessed = preprocessDirectives(componentPreprocessed);
@@ -1227,6 +1311,7 @@ export async function loadMarkdownPage(
 
   const sourcePath = relative(process.cwd(), filePath);
   return {
+    kind: "markdown",
     title,
     description,
     slug,

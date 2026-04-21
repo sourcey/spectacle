@@ -867,6 +867,242 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .callout-warning .callout-title { color: #f59e0b; }
 .dark #sourcey .callout-warning .callout-title { color: #fbbf24; }
 
+/* ── Changelog ───────────────────────────────────────────────────── */
+
+#sourcey .sourcey-changelog-page {
+  width: 100%;
+}
+
+#sourcey .sourcey-changelog-header {
+  margin-bottom: 2rem;
+}
+
+#sourcey .sourcey-changelog-description {
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgb(var(--color-gray-600));
+}
+
+.dark #sourcey .sourcey-changelog-description {
+  color: rgb(var(--color-gray-400));
+}
+
+#sourcey .sourcey-changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#sourcey .sourcey-changelog-version {
+  border: 1px solid rgb(var(--color-gray-200) / 0.8);
+  border-radius: 1rem;
+  padding: 1.25rem 1.25rem 1rem;
+  background: linear-gradient(180deg, rgb(var(--color-gray-50) / 0.75), rgb(255 255 255));
+}
+
+.dark #sourcey .sourcey-changelog-version {
+  border-color: rgb(var(--color-gray-800) / 0.8);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.015));
+}
+
+#sourcey .sourcey-changelog-version-unreleased {
+  border-style: dashed;
+}
+
+#sourcey .sourcey-changelog-version-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  #sourcey .sourcey-changelog-version-header {
+    flex-direction: column;
+  }
+}
+
+#sourcey .sourcey-changelog-version-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+#sourcey .sourcey-changelog-version-link {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(var(--color-gray-900));
+  text-decoration: none;
+}
+
+.dark #sourcey .sourcey-changelog-version-link {
+  color: rgb(var(--color-gray-200));
+}
+
+#sourcey .sourcey-changelog-version-link:hover {
+  color: rgb(var(--color-primary-ink));
+}
+
+.dark #sourcey .sourcey-changelog-version-link:hover {
+  color: rgb(var(--color-primary-light));
+}
+
+#sourcey .sourcey-changelog-version-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.925rem;
+  color: rgb(var(--color-gray-500));
+}
+
+.dark #sourcey .sourcey-changelog-version-meta {
+  color: rgb(var(--color-gray-400));
+}
+
+#sourcey .sourcey-changelog-compare-link {
+  color: rgb(var(--color-primary-ink));
+  text-decoration: none;
+}
+
+.dark #sourcey .sourcey-changelog-compare-link {
+  color: rgb(var(--color-primary-light));
+}
+
+#sourcey .sourcey-changelog-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+#sourcey .sourcey-changelog-pill-yanked {
+  background: rgb(239 68 68 / 0.12);
+  color: rgb(185 28 28);
+}
+
+.dark #sourcey .sourcey-changelog-pill-yanked {
+  background: rgb(248 113 113 / 0.15);
+  color: rgb(252 165 165);
+}
+
+#sourcey .sourcey-changelog-pill-pre {
+  background: rgb(var(--color-gray-100));
+  color: rgb(var(--color-gray-600));
+}
+
+.dark #sourcey .sourcey-changelog-pill-pre {
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(var(--color-gray-300));
+}
+
+#sourcey .sourcey-changelog-summary {
+  margin-bottom: 1rem;
+}
+
+#sourcey .sourcey-changelog-summary p:first-child {
+  margin-top: 0;
+}
+
+#sourcey .sourcey-changelog-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+#sourcey .sourcey-changelog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#sourcey .sourcey-changelog-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sourcey .sourcey-changelog-entry-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: rgb(var(--color-gray-700));
+}
+
+.dark #sourcey .sourcey-changelog-entry-list {
+  color: rgb(var(--color-gray-300));
+}
+
+#sourcey .sourcey-changelog-entry-list li {
+  margin: 0.35rem 0;
+}
+
+#sourcey .sourcey-changelog-entry-list li > p {
+  margin: 0;
+}
+
+#sourcey .sourcey-changelog-badge {
+  text-transform: none;
+}
+
+#sourcey .sourcey-changelog-badge-added {
+  background: rgb(var(--color-success) / 0.12);
+  color: rgb(21 128 61);
+}
+
+.dark #sourcey .sourcey-changelog-badge-added {
+  background: rgb(var(--color-success) / 0.16);
+  color: rgb(134 239 172);
+}
+
+#sourcey .sourcey-changelog-badge-changed {
+  background: rgb(var(--color-primary) / 0.12);
+  color: rgb(var(--color-primary-ink));
+}
+
+.dark #sourcey .sourcey-changelog-badge-changed {
+  background: rgb(var(--color-primary-light) / 0.12);
+  color: rgb(var(--color-primary-light));
+}
+
+#sourcey .sourcey-changelog-badge-fixed {
+  background: rgb(245 158 11 / 0.14);
+  color: rgb(180 83 9);
+}
+
+.dark #sourcey .sourcey-changelog-badge-fixed {
+  background: rgb(251 191 36 / 0.16);
+  color: rgb(253 224 71);
+}
+
+#sourcey .sourcey-changelog-badge-removed,
+#sourcey .sourcey-changelog-badge-security {
+  background: rgb(239 68 68 / 0.12);
+  color: rgb(185 28 28);
+}
+
+.dark #sourcey .sourcey-changelog-badge-removed,
+.dark #sourcey .sourcey-changelog-badge-security {
+  background: rgb(248 113 113 / 0.16);
+  color: rgb(252 165 165);
+}
+
+#sourcey .sourcey-changelog-badge-deprecated,
+#sourcey .sourcey-changelog-badge-other {
+  background: rgb(var(--color-gray-100));
+  color: rgb(var(--color-gray-600));
+}
+
+.dark #sourcey .sourcey-changelog-badge-deprecated,
+.dark #sourcey .sourcey-changelog-badge-other {
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(var(--color-gray-300));
+}
+
 /* Tip — green */
 #sourcey .callout-tip { border-left-color: #22c55e; }
 .dark #sourcey .callout-tip { border-left-color: #4ade80; }

@@ -1,7 +1,7 @@
 import type { NormalizedSpec } from "./types.js";
 import { tabPath } from "../config.js";
 import type { ResolvedTab } from "../config.js";
-import type { MarkdownPage } from "./markdown-loader.js";
+import type { DocsPage } from "./markdown-loader.js";
 import { htmlId } from "../utils/html-id.js";
 
 // ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ export function buildNavFromSpec(
  */
 export function buildNavFromPages(
   tab: ResolvedTab,
-  pagesByPath: Map<string, MarkdownPage>,
+  pagesByPath: Map<string, DocsPage>,
 ): SiteTab {
   const groups: SiteNavGroup[] = [];
 

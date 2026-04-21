@@ -27,6 +27,17 @@ export interface ThemeConfig {
   css?: string[];
 }
 
+export interface ChangelogConfig {
+  /** Disable changelog auto-detection for CHANGELOG.md and layout: changelog pages. */
+  enabled?: boolean;
+  /** Generate Atom and RSS feeds for changelog pages. */
+  feed?: boolean | { title?: string; description?: string };
+  /** Generate standalone per-version changelog pages. */
+  permalinks?: boolean;
+  /** Generate dedicated OG images for per-version changelog pages. */
+  ogImages?: boolean;
+}
+
 export interface SourceyConfig {
   name?: string;
   theme?: ThemeConfig;
@@ -60,6 +71,7 @@ export interface SourceyConfig {
   footer?: {
     links?: NavbarLink[];
   };
+  changelog?: false | ChangelogConfig;
   /** Search configuration. */
   search?: {
     /** Page slugs to feature at the top of search results when no query is entered. */
@@ -127,6 +139,13 @@ export interface ResolvedTheme {
   css: string[];
 }
 
+export interface ResolvedChangelogConfig {
+  enabled: boolean;
+  feed: false | { title?: string; description?: string };
+  permalinks: boolean;
+  ogImages: boolean;
+}
+
 export interface ResolvedConfig {
   name: string;
   theme: ResolvedTheme;
@@ -140,6 +159,7 @@ export interface ResolvedConfig {
   tabs: ResolvedTab[];
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
   footer: { links: NavbarLink[] };
+  changelog: ResolvedChangelogConfig;
   search: { featured: string[] };
 }
 
@@ -241,6 +261,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
     tabs: [{ label: "API Reference", slug: "api", openapi: absSpec }],
     navbar: { links: [] },
     footer: { links: [] },
+    changelog: { enabled: true, feed: false, permalinks: false, ogImages: false },
     search: { featured: [] },
   };
 }
@@ -253,6 +274,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
   const theme = resolveTheme(raw, configDir);
   const logo = resolveLogo(raw.logo, configDir);
   const tabs = await resolveTabs(raw.navigation.tabs, configDir);
+  const changelog = resolveChangelog(raw.changelog);
 
   return {
     name: raw.name ?? "",
@@ -272,6 +294,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     footer: {
       links: raw.footer?.links ?? [],
     },
+    changelog,
     search: {
       featured: raw.search?.featured ?? [],
     },
@@ -323,6 +346,19 @@ function resolveLogo(logo: SourceyConfig["logo"], configDir: string): ResolvedCo
   const resolvePath = (p?: string) => p && !p.startsWith("http") && !p.startsWith("data:") ? resolve(configDir, p) : p;
   if (typeof logo === "string") return { light: resolvePath(logo) };
   return { light: resolvePath(logo.light), dark: resolvePath(logo.dark), href: logo.href };
+}
+
+function resolveChangelog(raw: SourceyConfig["changelog"]): ResolvedChangelogConfig {
+  if (raw === false) {
+    return { enabled: false, feed: false, permalinks: false, ogImages: false };
+  }
+
+  return {
+    enabled: raw?.enabled ?? true,
+    feed: raw?.feed === true ? {} : (raw?.feed ?? false),
+    permalinks: raw?.permalinks ?? false,
+    ogImages: raw?.ogImages ?? false,
+  };
 }
 
 async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<ResolvedTab[]> {

@@ -13,8 +13,8 @@ import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation, withActivePag
 import type { SiteTab } from "./core/navigation.js";
 import type { NormalizedSpec } from "./core/types.js";
 import type { CurrentPage, RenderOptions, SiteConfig } from "./renderer/context.js";
-import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
-import type { MarkdownPage } from "./core/markdown-loader.js";
+import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
+import type { DocsPage } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import { sourceyPlugin } from "./vite-plugin.js";
@@ -134,7 +134,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       const start = performance.now();
       log("building site data...");
       cachePromise = (async () => {
-        const data = await loadSiteData(config.tabs);
+        const data = await loadSiteData(config.tabs, config);
         const siteConfig = await buildSiteConfig(config);
         const result: CachedSite = { data, siteConfig };
         cache = result;
@@ -174,8 +174,18 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     if (content.kind === "markdown") {
       const slug = slugFromPath(content.pageSlug);
       log(`reloading ${shortPath(content.pagePath)}`);
-      const page = await loadMarkdownPage(content.pagePath, slug);
+      const page = await loadDocsPage(content.pagePath, slug, {
+        changelog: config.changelog.enabled,
+        repoUrl: config.repo,
+      });
       if (cache !== snapshot) return;
+
+      if (page.kind === "changelog" || data.pageMap.get(tabPath(content.tabSlug, `${slug}.html`))?.currentPage.kind === "changelog") {
+        cache = null;
+        cachePromise = null;
+        await fullRebuild();
+        return;
+      }
 
       const pageKey = tabPath(content.tabSlug, `${slug}.html`);
       const existing = data.pageMap.get(pageKey);
@@ -265,14 +275,16 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     const tab = tabs.find((t) => t.slug === tabSlug);
     if (!tab?.groups) return;
 
-    const pagesByPath = new Map<string, MarkdownPage>();
+    const pagesByPath = new Map<string, DocsPage>();
     for (const group of tab.groups) {
       for (const rp of group.pages) {
         const slug = slugFromPath(rp.slug);
         const pageKey = tabPath(tab.slug, `${slug}.html`);
         const entry = data.pageMap.get(pageKey);
         if (entry?.currentPage.kind === "markdown") {
-          pagesByPath.set(rp.slug, entry.currentPage.markdown!);
+          pagesByPath.set(rp.slug, entry.currentPage.markdown);
+        } else if (entry?.currentPage.kind === "changelog") {
+          pagesByPath.set(rp.slug, entry.currentPage.changelog);
         }
       }
     }
@@ -339,20 +351,23 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     const { data: { siteTabs, pageMap, specsBySlug } } = await getCached();
     const navigation = buildSiteNavigation(siteTabs);
 
-    const markdownPagesByTab = new Map<string, MarkdownPage[]>();
+    const docsPagesByTab = new Map<string, DocsPage[]>();
     for (const tab of config.tabs) {
       if (tab.groups || tab.doxygen) {
-        const tabPages: MarkdownPage[] = [];
+        const tabPages: DocsPage[] = [];
         for (const [, entry] of pageMap) {
-          if (entry.tabSlug === tab.slug && entry.currentPage.kind === "markdown") {
-            tabPages.push(entry.currentPage.markdown!);
+          if (entry.tabSlug !== tab.slug) continue;
+          if (entry.currentPage.kind === "markdown") {
+            tabPages.push(entry.currentPage.markdown);
+          } else if (entry.currentPage.kind === "changelog" && !entry.currentPage.changelog.permalinkVersionId) {
+            tabPages.push(entry.currentPage.changelog);
           }
         }
-        markdownPagesByTab.set(tab.slug, tabPages);
+        docsPagesByTab.set(tab.slug, tabPages);
       }
     }
 
-    return buildSearchIndex(specsBySlug, markdownPagesByTab, navigation, "/", config.search.featured);
+    return buildSearchIndex(specsBySlug, docsPagesByTab, navigation, "/", config.search.featured);
   }
 
   const viteConfig: InlineConfig = {
@@ -442,7 +457,7 @@ interface PageMapEntry {
   pageSlug: string;
 }
 
-async function loadSiteData(tabs: ResolvedTab[]) {
+async function loadSiteData(tabs: ResolvedTab[], config: ResolvedConfig) {
   const specsBySlug = new Map<string, NormalizedSpec>();
   const siteTabs: SiteTab[] = [];
   const pageMap = new Map<string, PageMapEntry>();
@@ -494,20 +509,50 @@ async function loadSiteData(tabs: ResolvedTab[]) {
 
       siteTabs.push(navTab);
     } else if (tab.groups) {
-      const pagesByPath = new Map<string, MarkdownPage>();
+      const pagesByPath = new Map<string, DocsPage>();
 
       for (const group of tab.groups) {
         for (const rp of group.pages) {
           const slug = slugFromPath(rp.slug);
-          const page = await loadMarkdownPage(rp.file, slug);
+          const page = await loadDocsPage(rp.file, slug, {
+            changelog: config.changelog.enabled,
+            repoUrl: config.repo,
+          });
           pagesByPath.set(rp.slug, page);
 
-          pageMap.set(tabPath(tab.slug, `${slug}.html`), {
-            spec: primarySpec,
-            currentPage: { kind: "markdown", markdown: page },
-            tabSlug: tab.slug,
-            pageSlug: slug,
-          });
+          pageMap.set(tabPath(tab.slug, `${slug}.html`), page.kind === "markdown"
+            ? {
+                spec: primarySpec,
+                currentPage: { kind: "markdown", markdown: page },
+                tabSlug: tab.slug,
+                pageSlug: slug,
+              }
+            : {
+                spec: primarySpec,
+                currentPage: { kind: "changelog", changelog: page },
+                tabSlug: tab.slug,
+                pageSlug: slug,
+              });
+
+          if (page.kind === "changelog" && config.changelog.permalinks) {
+            for (const version of page.changelog.versions) {
+              pageMap.set(tabPath(tab.slug, `${slug}/${version.id}/index.html`), {
+                spec: primarySpec,
+                currentPage: {
+                  kind: "changelog",
+                  changelog: {
+                    ...page,
+                    description: version.summary ?? page.description,
+                    slug: `${page.slug}/${version.id}`,
+                    headings: [],
+                    permalinkVersionId: version.id,
+                  },
+                },
+                tabSlug: tab.slug,
+                pageSlug: `${slug}--${version.id}`,
+              });
+            }
+          }
         }
       }
 
@@ -542,6 +587,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     navbar: config.navbar,
     footer: config.footer,
     customCSS: customCSS || undefined,
+    changelog: config.changelog,
   };
 }
 

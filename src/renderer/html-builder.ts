@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import preact from "@preact/preset-vite";
 import { renderPage } from "./static-renderer.js";
 import type { NormalizedSpec } from "../core/types.js";
-import type { RenderOptions, CurrentPage, SiteConfig } from "./context.js";
+import type { AlternateLink, RenderOptions, CurrentPage, SiteConfig } from "./context.js";
 import type { SiteNavigation } from "../core/navigation.js";
 import { withActivePage } from "../core/navigation.js";
 
@@ -46,6 +46,7 @@ export interface SitePage {
   pageSlug: string;
   /** Relative path to the generated OG image (set during build) */
   ogImagePath?: string;
+  alternateLinks?: AlternateLink[];
 }
 
 /**
@@ -56,7 +57,14 @@ export async function buildSite(
   navigation: SiteNavigation,
   outputDir: string,
   site: SiteConfig,
-  options?: { embeddable?: boolean; searchIndex?: string; llmsTxt?: string; llmsFullTxt?: string; ogImages?: Map<string, Buffer> },
+  options?: {
+    embeddable?: boolean;
+    searchIndex?: string;
+    llmsTxt?: string;
+    llmsFullTxt?: string;
+    ogImages?: Map<string, Buffer>;
+    extraFiles?: Map<string, string | Buffer>;
+  },
 ): Promise<BuildOutput> {
   const resolvedDir = resolve(outputDir);
   await rm(resolvedDir, { recursive: true, force: true });
@@ -73,6 +81,10 @@ export async function buildSite(
       embeddable: options?.embeddable ?? false,
       assetBase,
       ogImagePath: page.ogImagePath ? assetBase + page.ogImagePath : undefined,
+      alternateLinks: page.alternateLinks?.map((link) => ({
+        ...link,
+        href: assetBase + link.href,
+      })),
     };
 
     const activeNav = withActivePage(navigation, page.tabSlug, page.pageSlug);
@@ -87,6 +99,7 @@ export async function buildSite(
       embeddable: options?.embeddable ?? false,
       assetBase: "",
       ogImagePath: first.ogImagePath,
+      alternateLinks: first.alternateLinks,
     };
     const html = renderPage(first.spec, renderOptions, activeNav, first.currentPage, site);
     await writeFile(resolve(resolvedDir, "index.html"), html, "utf-8");
@@ -119,6 +132,14 @@ export async function buildSite(
   // Write generated OG images
   if (options?.ogImages) {
     for (const [path, data] of options.ogImages) {
+      const fullPath = resolve(resolvedDir, path);
+      await mkdir(dirname(fullPath), { recursive: true });
+      await writeFile(fullPath, data);
+    }
+  }
+
+  if (options?.extraFiles) {
+    for (const [path, data] of options.extraFiles) {
       const fullPath = resolve(resolvedDir, path);
       await mkdir(dirname(fullPath), { recursive: true });
       await writeFile(fullPath, data);

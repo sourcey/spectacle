@@ -168,11 +168,20 @@ const marked = new Marked(videoExtension, iframeExtension, {
 });
 
 /**
+ * Lex markdown into tokens using the shared Sourcey Marked instance.
+ * This keeps directive support and heading parsing aligned with rendering.
+ */
+export function lexMarkdown(input?: string): Token[] {
+  if (!input) return [];
+  return marked.lexer(input);
+}
+
+/**
  * Extract h2/h3 headings from a markdown string by lexing the token tree.
  * No rendering needed; pure token walk.
  */
 export function extractHeadings(input: string): PageHeading[] {
-  const tokens = marked.lexer(input);
+  const tokens = lexMarkdown(input);
   const headings: PageHeading[] = [];
   for (const token of tokens) {
     if (token.type === "heading") {
@@ -194,7 +203,7 @@ export function extractHeadings(input: string): PageHeading[] {
  */
 export function extractFirstParagraph(input?: string): string {
   if (!input) return "";
-  const tokens = marked.lexer(input);
+  const tokens = lexMarkdown(input);
   for (const token of tokens) {
     if (token.type === "paragraph") {
       const raw = token.raw.trim();

@@ -7,18 +7,19 @@ import { normalizeSpec } from "./core/normalizer.js";
 import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { buildSite as buildSiteHtml } from "./renderer/html-builder.js";
 import type { SitePage } from "./renderer/html-builder.js";
-import type { NormalizedSpec } from "./core/types.js";
+import type { ChangelogDiagnostic, NormalizedSpec, NormalizedChangelogVersion } from "./core/types.js";
 import { tabPath } from "./config.js";
 import type { ResolvedConfig, ResolvedTab } from "./config.js";
 import { loadConfig, configFromSpec } from "./config.js";
-import { loadMarkdownPage, slugFromPath } from "./core/markdown-loader.js";
+import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
-import type { MarkdownPage } from "./core/markdown-loader.js";
+import type { ChangelogPage, DocsPage, MarkdownPage } from "./core/markdown-loader.js";
 import { buildNavFromSpec, buildNavFromPages, buildSiteNavigation } from "./core/navigation.js";
 import type { SiteTab } from "./core/navigation.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import type { SiteConfig } from "./renderer/context.js";
 import { generateLlmsTxt, generateLlmsFullTxt } from "./renderer/llms.js";
+import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
 
 // ---------------------------------------------------------------------------
 // Build options
@@ -29,12 +30,14 @@ export interface BuildOptions {
   outputDir?: string;
   embeddable?: boolean;
   skipWrite?: boolean;
+  strictChangelog?: boolean;
 }
 
 export interface BuildResult {
   spec: NormalizedSpec;
   outputDir: string;
   pageCount: number;
+  changelogDiagnostics: ChangelogDiagnostic[];
 }
 
 /**
@@ -49,10 +52,16 @@ export async function buildDocs(options: BuildOptions): Promise<BuildResult> {
     outputDir: options.outputDir,
     skipWrite: options.skipWrite,
     embeddable: options.embeddable,
+    strictChangelog: options.strictChangelog,
   });
 
   const spec = result._specs?.values().next().value ?? createMinimalSpec();
-  return { spec, outputDir: result.outputDir, pageCount: result.pageCount };
+  return {
+    spec,
+    outputDir: result.outputDir,
+    pageCount: result.pageCount,
+    changelogDiagnostics: result.changelogDiagnostics,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -65,11 +74,13 @@ export interface SiteBuildOptions {
   config?: ResolvedConfig;
   skipWrite?: boolean;
   embeddable?: boolean;
+  strictChangelog?: boolean;
 }
 
 export interface SiteBuildResult {
   outputDir: string;
   pageCount: number;
+  changelogDiagnostics: ChangelogDiagnostic[];
   /** @internal specs by tab slug, for buildDocs compat */
   _specs?: Map<string, NormalizedSpec>;
 }
@@ -83,6 +94,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   const sitePages: SitePage[] = [];
   const siteTabs: SiteTab[] = [];
   const specsBySlug = new Map<string, NormalizedSpec>();
+  const changelogDiagnostics: ChangelogDiagnostic[] = [];
 
   // Load all specs (OpenAPI and MCP)
   for (const tab of tabs) {
@@ -136,21 +148,35 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
 
       siteTabs.push(navTab);
     } else if (tab.groups) {
-      const pagesByPath = new Map<string, MarkdownPage>();
+      const pagesByPath = new Map<string, DocsPage>();
 
       for (const group of tab.groups) {
         for (const rp of group.pages) {
           const slug = slugFromPath(rp.slug);
-          const page = await loadMarkdownPage(rp.file, slug);
+          const page = await loadDocsPage(rp.file, slug, {
+            changelog: config.changelog.enabled,
+            repoUrl: config.repo,
+          });
           pagesByPath.set(rp.slug, page);
 
-          sitePages.push({
-            outputPath: tabPath(tab.slug, `${slug}.html`),
-            currentPage: { kind: "markdown", markdown: page },
-            spec: primarySpec,
-            tabSlug: tab.slug,
-            pageSlug: slug,
-          });
+          if (page.kind === "changelog") {
+            changelogDiagnostics.push(...page.changelog.diagnostics);
+            sitePages.push({
+              outputPath: tabPath(tab.slug, `${slug}.html`),
+              currentPage: { kind: "changelog", changelog: page },
+              spec: primarySpec,
+              tabSlug: tab.slug,
+              pageSlug: slug,
+            });
+          } else {
+            sitePages.push({
+              outputPath: tabPath(tab.slug, `${slug}.html`),
+              currentPage: { kind: "markdown", markdown: page },
+              spec: primarySpec,
+              tabSlug: tab.slug,
+              pageSlug: slug,
+            });
+          }
         }
       }
 
@@ -166,17 +192,103 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   // then rewrites matching href attributes in each page's HTML.
   resolveInternalLinks(sitePages, config);
 
-  // Build search index
-  const markdownPagesByTab = new Map<string, MarkdownPage[]>();
-  for (const tab of tabs) {
-    if (tab.groups || tab.doxygen) {
-      const tabPages = sitePages
-        .filter((p) => p.tabSlug === tab.slug && p.currentPage.kind === "markdown")
-        .map((p) => p.currentPage.markdown!);
-      markdownPagesByTab.set(tab.slug, tabPages);
+  enforceChangelogDiagnostics(changelogDiagnostics, options.strictChangelog);
+
+  const changelogPages = sitePages.filter(isMainChangelogSitePage);
+  const extraFiles = new Map<string, string | Buffer>();
+
+  if (config.changelog.permalinks) {
+    const permalinkPages: SitePage[] = [];
+    for (const page of changelogPages) {
+      const changelog = page.currentPage.changelog;
+      for (const version of changelog.changelog.versions) {
+        const permalinkPage: ChangelogPage = {
+          ...changelog,
+          description: version.summary ?? changelog.description,
+          slug: `${changelog.slug}/${version.id}`,
+          headings: [],
+          permalinkVersionId: version.id,
+        };
+
+        permalinkPages.push({
+          outputPath: tabPath(page.tabSlug, `${changelog.slug}/${version.id}/index.html`),
+          currentPage: { kind: "changelog", changelog: permalinkPage },
+          spec: primarySpec,
+          tabSlug: page.tabSlug,
+          pageSlug: `${page.pageSlug}--${version.id}`,
+        });
+      }
+    }
+    sitePages.push(...permalinkPages);
+  }
+
+  if (config.changelog.feed) {
+    const globalFeedLinks = changelogPages.length === 1
+      ? createFeedLinks("feed.xml", "feed.rss", changelogPages[0].currentPage.changelog.title)
+      : null;
+
+    for (const page of changelogPages) {
+      const changelog = page.currentPage.changelog;
+      const versionHref = (version: NormalizedChangelogVersion) => {
+        if (config.changelog.permalinks) {
+          return publicHref(tabPath(page.tabSlug, `${changelog.slug}/${version.id}/index.html`));
+        }
+        return `${publicHref(page.outputPath)}#${version.id}`;
+      };
+
+      const atomPath = globalFeedLinks && changelogPages.length === 1
+        ? "feed.xml"
+        : tabPath(page.tabSlug, `${changelog.slug}/feed.xml`);
+      const rssPath = globalFeedLinks && changelogPages.length === 1
+        ? "feed.rss"
+        : tabPath(page.tabSlug, `${changelog.slug}/feed.rss`);
+
+      const feedConfig = config.changelog.feed || undefined;
+      const feeds = generateChangelogFeeds(changelog, {
+        atomPath: publicHref(atomPath),
+        rssPath: publicHref(rssPath),
+        pagePath: publicHref(page.outputPath),
+        siteName: config.name,
+        title: feedConfig?.title,
+        description: feedConfig?.description,
+        versionHref,
+      });
+
+      extraFiles.set(atomPath, feeds.atom);
+      extraFiles.set(rssPath, feeds.rss);
+
+      const feedLinks = createFeedLinks(atomPath, rssPath, changelog.title);
+      page.alternateLinks = feedLinks;
+
+      for (const candidate of sitePages) {
+        if (candidate.currentPage.kind !== "changelog") continue;
+        if (candidate.currentPage.changelog.sourcePath !== changelog.sourcePath) continue;
+        candidate.alternateLinks = feedLinks;
+      }
+    }
+
+    if (globalFeedLinks) {
+      for (const page of sitePages) {
+        if (!page.alternateLinks?.length) {
+          page.alternateLinks = globalFeedLinks;
+        }
+      }
     }
   }
-  const searchIndex = buildSearchIndex(specsBySlug, markdownPagesByTab, navigation, "/", config.search.featured);
+
+  // Build search index
+  const docsPagesByTab = new Map<string, DocsPage[]>();
+  for (const tab of tabs) {
+    if (tab.groups || tab.doxygen) {
+      const tabPages: DocsPage[] = [];
+      for (const page of sitePages) {
+        if (page.tabSlug !== tab.slug || !isSearchableDocsSitePage(page)) continue;
+        tabPages.push(page.currentPage.kind === "markdown" ? page.currentPage.markdown : page.currentPage.changelog);
+      }
+      docsPagesByTab.set(tab.slug, tabPages);
+    }
+  }
+  const searchIndex = buildSearchIndex(specsBySlug, docsPagesByTab, navigation, "/", config.search.featured);
   const llmsTxt = generateLlmsTxt(sitePages, navigation, site);
   const llmsFullTxt = generateLlmsFullTxt(sitePages, navigation, site);
 
@@ -190,20 +302,14 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
       const batch = sitePages.slice(i, i + CONCURRENCY);
       await Promise.all(
         batch.map(async (page) => {
-          const title =
-            page.currentPage.kind === "markdown"
-              ? page.currentPage.markdown!.title
-              : `${config.name || "API"} Reference`;
-          const description =
-            page.currentPage.kind === "markdown"
-              ? page.currentPage.markdown!.description
-              : undefined;
+          const ogMeta = describePageForOg(page, config.name || "API", config.changelog.ogImages);
+          if (!ogMeta) return;
 
           const ogPath = `_og/${page.outputPath.replace(/\.html$/, ".png")}`;
 
           const png = await generateOgImage({
-            title,
-            description,
+            title: ogMeta.title,
+            description: ogMeta.description,
             siteName: config.name,
             theme: config.theme,
             logo: site.logo?.light,
@@ -229,15 +335,31 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
       llmsFullTxt,
       embeddable: options.embeddable,
       ogImages,
+      extraFiles,
     });
   }
 
-  return { outputDir, pageCount: sitePages.length, _specs: specsBySlug };
+  return {
+    outputDir,
+    pageCount: sitePages.length,
+    changelogDiagnostics,
+    _specs: specsBySlug,
+  };
 }
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+function isMainChangelogSitePage(page: SitePage): page is SitePage & { currentPage: { kind: "changelog"; changelog: ChangelogPage } } {
+  return page.currentPage.kind === "changelog" && !page.currentPage.changelog.permalinkVersionId;
+}
+
+function isSearchableDocsSitePage(
+  page: SitePage,
+): page is SitePage & { currentPage: { kind: "markdown"; markdown: MarkdownPage } | { kind: "changelog"; changelog: ChangelogPage } } {
+  return page.currentPage.kind === "markdown" || isMainChangelogSitePage(page);
+}
 
 function createMinimalSpec(): NormalizedSpec {
   return {
@@ -249,6 +371,84 @@ function createMinimalSpec(): NormalizedSpec {
     securitySchemes: {},
     webhooks: [],
   };
+}
+
+function enforceChangelogDiagnostics(
+  diagnostics: ChangelogDiagnostic[],
+  strictChangelog = false,
+): void {
+  const error = diagnostics.find((diagnostic) => diagnostic.severity === "error");
+  if (error) {
+    throw new Error(formatChangelogDiagnostic(error));
+  }
+
+  if (!strictChangelog) return;
+
+  const warning = diagnostics.find((diagnostic) => diagnostic.severity === "warning");
+  if (warning) {
+    throw new Error(formatChangelogDiagnostic(warning));
+  }
+}
+
+function formatChangelogDiagnostic(diagnostic: ChangelogDiagnostic): string {
+  const location = diagnostic.version ? ` (${diagnostic.version})` : "";
+  const line = diagnostic.line ? ` line ${diagnostic.line}` : "";
+  return `[${diagnostic.code}]${location}${line}: ${diagnostic.message}`;
+}
+
+function createFeedLinks(atomPath: string, rssPath: string, title: string) {
+  return [
+    { href: atomPath, type: "application/atom+xml", title: `${title} Atom Feed` },
+    { href: rssPath, type: "application/rss+xml", title: `${title} RSS Feed` },
+  ];
+}
+
+function publicHref(outputPath: string): string {
+  if (outputPath.endsWith("/index.html")) {
+    return `/${outputPath.slice(0, -("index.html".length))}`;
+  }
+  return `/${outputPath}`;
+}
+
+function describePageForOg(
+  page: SitePage,
+  defaultSiteName: string,
+  changelogPermalinkOg: boolean,
+): { title: string; description?: string } | null {
+  if (page.currentPage.kind === "markdown") {
+    return {
+      title: page.currentPage.markdown.title,
+      description: page.currentPage.markdown.description || undefined,
+    };
+  }
+
+  if (page.currentPage.kind === "changelog") {
+    const changelog = page.currentPage.changelog;
+    if (changelog.permalinkVersionId) {
+      if (!changelogPermalinkOg) return null;
+      const version = changelog.changelog.versions.find((candidate) => candidate.id === changelog.permalinkVersionId);
+      if (!version) return null;
+
+      return {
+        title: `${version.version ?? "Unreleased"} — ${changelog.title}`,
+        description: version.summary || summarizeVersion(version),
+      };
+    }
+
+    return {
+      title: changelog.title,
+      description: changelog.description || changelog.changelog.description,
+    };
+  }
+
+  return { title: `${defaultSiteName} Reference` };
+}
+
+function summarizeVersion(version: NormalizedChangelogVersion): string | undefined {
+  if (version.summary) return version.summary;
+  const texts = version.sections.flatMap((section) => section.entries.map((entry) => entry.text));
+  const summary = texts.slice(0, 3).join(" ");
+  return summary || undefined;
 }
 
 async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
@@ -274,6 +474,7 @@ async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfig> {
     navbar: config.navbar,
     footer: config.footer,
     customCSS: customCSS || undefined,
+    changelog: config.changelog,
   };
 }
 
@@ -326,8 +527,9 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
     const clean = out.replace(/\.html$/, ""); // "components" or "config/ref-theme-tokens"
     pathMap.set(clean, out);
 
-    if (page.currentPage.kind === "markdown" && page.currentPage.markdown?.sourcePath) {
-      const sourceClean = page.currentPage.markdown.sourcePath
+    const docsSourcePath = getCanonicalSourcePath(page);
+    if (docsSourcePath) {
+      const sourceClean = docsSourcePath
         .replace(/\\/g, "/")
         .replace(/^\/+/, "")
         .replace(/\.(md|mdx)$/, "");
@@ -341,81 +543,148 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
   const sourceBase = repoBase && branch ? `${repoBase}/tree/${branch}` : undefined;
 
   for (const page of pages) {
-    if (page.currentPage.kind !== "markdown" || !page.currentPage.markdown) continue;
-    const md = page.currentPage.markdown;
-    const pageDir = page.outputPath.includes("/")
-      ? page.outputPath.substring(0, page.outputPath.lastIndexOf("/"))
-      : "";
-    const depth = pageDir ? pageDir.split("/").length : 0;
-    const toRoot = depth > 0 ? "../".repeat(depth) : "";
+    const docsSourcePath = getDocsSourcePath(page);
+    if (!docsSourcePath) continue;
 
-    md.html = md.html.replace(/href="([^"]+)"/g, (_match, href: string) => {
-      // Only rewrite internal non-anchor, non-protocol links
-      if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("mailto:")) {
-        return _match;
-      }
+    if (page.currentPage.kind === "markdown") {
+      page.currentPage.markdown.html = rewriteHtmlLinks(
+        page.currentPage.markdown.html,
+        page.outputPath,
+        docsSourcePath,
+        pathMap,
+        sourceBase,
+      );
+      continue;
+    }
 
-      // Split off hash fragment
-      const [path, hash] = href.split("#", 2);
-      const hashSuffix = hash ? `#${hash}` : "";
-
-      // Normalize: strip leading slash, trailing slash, and markdown extension
-      const sourcePath = path.replace(/\\/g, "/");
-      const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx)$/, "");
-
-      // Skip if already has .html extension
-      if (clean.endsWith(".html")) return _match;
-
-      const candidates = new Set<string>();
-
-      // Relative markdown links should resolve against the current page's
-      // source path, not just the built output path.
-      if (!sourcePath.startsWith("/") && md.sourcePath) {
-        const sourceDir = posix.dirname(md.sourcePath.replace(/\\/g, "/"));
-        candidates.add(posix.normalize(posix.join(sourceDir, clean)));
-      }
-
-      candidates.add(clean);
-
-      // Look up in path map — try the resolved path first, then
-      // progressively strip leading segments to handle deployment prefixes
-      // (e.g. "docs/components" → "components").
-      let target: string | undefined;
-      for (const initialCandidate of candidates) {
-        let candidate = initialCandidate;
-        while (!target && candidate && candidate !== ".") {
-          target = pathMap.get(candidate);
-          if (target) break;
-          const slash = candidate.indexOf("/");
-          if (slash === -1) break;
-          candidate = candidate.substring(slash + 1);
+    if (page.currentPage.kind === "changelog") {
+      const changelog = page.currentPage.changelog;
+      for (const version of changelog.changelog.versions) {
+        if (version.summary) {
+          version.summary = rewriteMarkdownLinks(
+            version.summary,
+            page.outputPath,
+            docsSourcePath,
+            pathMap,
+            sourceBase,
+          );
         }
-        if (target) break;
-      }
-
-      if (target) {
-        // Build relative path from this page to the target
-        const relativePath = toRoot + target;
-        return `href="${relativePath}${hashSuffix}"`;
-      }
-
-      // If the link contains ../ and we have a repo URL configured,
-      // resolve it relative to the markdown source file. Links to docs
-      // pages are already handled above (pathMap lookup catches them after
-      // .md stripping and prefix stripping). What remains are links to
-      // repo source code outside the docs directory.
-      if (sourceBase && href.includes("../") && md.sourcePath) {
-        const sourceDir = posix.dirname(md.sourcePath);
-        const resolved = posix.normalize(posix.join(sourceDir, path));
-        // Only rewrite if the path stays inside the repo root
-        if (!resolved.startsWith("..")) {
-          return `href="${sourceBase}/${resolved}${hashSuffix}"`;
+        for (const section of version.sections) {
+          for (const entry of section.entries) {
+            entry.html = rewriteHtmlLinks(
+              entry.html,
+              page.outputPath,
+              docsSourcePath,
+              pathMap,
+              sourceBase,
+            );
+            entry.links = entry.links.map((link) => ({
+              ...link,
+              href: resolveInternalHref(link.href, page.outputPath, docsSourcePath, pathMap, sourceBase) ?? link.href,
+            }));
+          }
         }
       }
-
-      return _match;
-    });
+    }
   }
+}
+
+function getCanonicalSourcePath(page: SitePage): string | undefined {
+  if (page.currentPage.kind === "markdown") return page.currentPage.markdown.sourcePath;
+  if (isMainChangelogSitePage(page)) return page.currentPage.changelog.sourcePath;
+  return undefined;
+}
+
+function getDocsSourcePath(page: SitePage): string | undefined {
+  if (page.currentPage.kind === "markdown") return page.currentPage.markdown.sourcePath;
+  if (page.currentPage.kind === "changelog") return page.currentPage.changelog.sourcePath;
+  return undefined;
+}
+
+function rewriteHtmlLinks(
+  html: string,
+  outputPath: string,
+  docsSourcePath: string,
+  pathMap: Map<string, string>,
+  sourceBase?: string,
+): string {
+  return html.replace(/href="([^"]+)"/g, (_match, href: string) => {
+    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase);
+    return resolved ? `href="${resolved}"` : _match;
+  });
+}
+
+function rewriteMarkdownLinks(
+  markdown: string,
+  outputPath: string,
+  docsSourcePath: string,
+  pathMap: Map<string, string>,
+  sourceBase?: string,
+): string {
+  return markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label: string, href: string) => {
+    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase);
+    return resolved ? `[${label}](${resolved})` : match;
+  });
+}
+
+function resolveInternalHref(
+  href: string,
+  outputPath: string,
+  docsSourcePath: string,
+  pathMap: Map<string, string>,
+  sourceBase?: string,
+): string | null {
+  if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("mailto:")) {
+    return null;
+  }
+
+  const [path, hash] = href.split("#", 2);
+  const hashSuffix = hash ? `#${hash}` : "";
+  const sourcePath = path.replace(/\\/g, "/");
+  const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx)$/, "");
+
+  if (clean.endsWith(".html")) return null;
+
+  const pageDir = outputPath.includes("/")
+    ? outputPath.substring(0, outputPath.lastIndexOf("/"))
+    : "";
+  const depth = pageDir ? pageDir.split("/").length : 0;
+  const toRoot = depth > 0 ? "../".repeat(depth) : "";
+  const candidates = new Set<string>();
+
+  if (!sourcePath.startsWith("/") && docsSourcePath) {
+    const sourceDir = posix.dirname(docsSourcePath.replace(/\\/g, "/"));
+    candidates.add(posix.normalize(posix.join(sourceDir, clean)));
+  }
+
+  candidates.add(clean);
+
+  let target: string | undefined;
+  for (const initialCandidate of candidates) {
+    let candidate = initialCandidate;
+    while (!target && candidate && candidate !== ".") {
+      target = pathMap.get(candidate);
+      if (target) break;
+      const slash = candidate.indexOf("/");
+      if (slash === -1) break;
+      candidate = candidate.substring(slash + 1);
+    }
+    if (target) break;
+  }
+
+  if (target) {
+    return `${toRoot}${target}${hashSuffix}`;
+  }
+
+  if (sourceBase && href.includes("../") && docsSourcePath) {
+    const sourceDir = posix.dirname(docsSourcePath);
+    const resolved = posix.normalize(posix.join(sourceDir, path));
+    if (!resolved.startsWith("..")) {
+      return `${sourceBase}/${resolved}${hashSuffix}`;
+    }
+  }
+
+  return null;
 }
 
 export { defineConfig } from "./config.js";

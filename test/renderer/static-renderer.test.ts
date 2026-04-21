@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { renderPage } from "../../src/renderer/static-renderer.js";
 import { buildNavFromSpec, buildSiteNavigation } from "../../src/core/navigation.js";
 import type { SiteNavigation } from "../../src/core/navigation.js";
-import type { NormalizedSpec } from "../../src/core/types.js";
-import type { MarkdownPage } from "../../src/core/markdown-loader.js";
+import type { NormalizedChangelog, NormalizedSpec } from "../../src/core/types.js";
+import type { ChangelogPage, MarkdownPage } from "../../src/core/markdown-loader.js";
 import type { RenderOptions, CurrentPage, SiteConfig } from "../../src/renderer/context.js";
 
 function createMinimalSpec(overrides?: Partial<NormalizedSpec>): NormalizedSpec {
@@ -36,6 +36,7 @@ const defaultSite: SiteConfig = {
     fonts: {
       sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
       mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
+      googleFont: "Inter",
     },
     layout: { sidebar: "18rem", toc: "19rem", content: "44rem" },
     css: [],
@@ -43,6 +44,7 @@ const defaultSite: SiteConfig = {
   codeSamples: ["curl", "javascript", "python"],
   navbar: { links: [] },
   footer: { links: [] },
+  changelog: { enabled: true, feed: false, permalinks: false, ogImages: false },
 };
 
 function renderSpec(spec: NormalizedSpec, options: RenderOptions): string {
@@ -55,6 +57,7 @@ function renderSpec(spec: NormalizedSpec, options: RenderOptions): string {
 
 function createMarkdownPage(overrides?: Partial<MarkdownPage>): MarkdownPage {
   return {
+    kind: "markdown",
     title: "Guide",
     description: "",
     slug: "guides/current",
@@ -62,6 +65,46 @@ function createMarkdownPage(overrides?: Partial<MarkdownPage>): MarkdownPage {
     headings: [],
     sourcePath: "guides/current.md",
     editPath: "guides/current.md",
+    ...overrides,
+  };
+}
+
+function createChangelogPage(overrides?: Partial<ChangelogPage>): ChangelogPage {
+  const changelog: NormalizedChangelog = {
+    title: "Changelog",
+    format: "keepachangelog",
+    versions: [
+      {
+        id: "1-2-0",
+        version: "1.2.0",
+        date: "2026-04-20",
+        yanked: false,
+        prerelease: false,
+        sections: [
+          {
+            type: "added",
+            label: "Added",
+            entries: [{ text: "Added feeds", html: "Added feeds", links: [], refs: [] }],
+          },
+        ],
+        sourceOrder: 0,
+      },
+    ],
+    links: [],
+    diagnostics: [],
+    rawMarkdown: "# Changelog",
+  };
+
+  return {
+    kind: "changelog",
+    title: "Changelog",
+    description: "Release notes",
+    slug: "changelog",
+    headings: [{ level: 2, text: "1.2.0", id: "1-2-0" }],
+    sourcePath: "CHANGELOG.md",
+    editPath: "CHANGELOG.md",
+    changelog,
+    rawBody: "# Changelog",
     ...overrides,
   };
 }
@@ -211,5 +254,37 @@ describe("renderPage (spec)", () => {
 
     expect(html).toContain('href="../../documentation/guides/previous.html"');
     expect(html).toContain('href="../../documentation/guides/next.html"');
+  });
+
+  it("renders changelog pages through the structured changelog component", () => {
+    const spec = createMinimalSpec();
+    const navigation = {
+      ...createDocsNavigation(),
+      tabs: [
+        {
+          label: "Documentation",
+          slug: "documentation",
+          href: "documentation/changelog.html",
+          kind: "docs" as const,
+          groups: [
+            {
+              label: "Guides",
+              items: [{ label: "Changelog", href: "documentation/changelog.html", id: "changelog" }],
+            },
+          ],
+        },
+      ],
+      activePageSlug: "changelog",
+    };
+    const currentPage: CurrentPage = {
+      kind: "changelog",
+      changelog: createChangelogPage(),
+    };
+
+    const html = renderPage(spec, defaultOptions, navigation, currentPage, defaultSite);
+
+    expect(html).toContain("sourcey-changelog-version");
+    expect(html).toContain("1.2.0");
+    expect(html).toContain("Added");
   });
 });

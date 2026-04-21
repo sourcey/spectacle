@@ -1,6 +1,6 @@
 import { useContext } from "preact/hooks";
 import { SpecContext, PageContext, NavigationContext, OptionsContext, SiteContext } from "../../renderer/context.js";
-import type { MarkdownPage } from "../../core/markdown-loader.js";
+import type { ChangelogPage as ChangelogPageData, MarkdownPage } from "../../core/markdown-loader.js";
 import { Markdown } from "../ui/Markdown.js";
 import { Header } from "./Header.js";
 import { Sidebar } from "./Sidebar.js";
@@ -11,6 +11,7 @@ import { Tags } from "../openapi/Tags.js";
 import { Definition } from "../openapi/Definition.js";
 import { SocialIcon, socialLabels } from "../ui/SocialIcon.js";
 import { McpConnection } from "../mcp/McpConnection.js";
+import { ChangelogPage } from "../changelog/ChangelogPage.js";
 
 /**
  * Markdown page content with prose typography.
@@ -43,6 +44,16 @@ function MarkdownPageContent({ page, className = "" }: { page: MarkdownPage; cla
         )}
       </header>
       <div class="prose prose-gray dark:prose-invert relative mt-8 mb-14 max-w-none" dangerouslySetInnerHTML={{ __html: page.html }} />
+      <PageNavigation />
+      <ContentFooter />
+    </div>
+  );
+}
+
+function ChangelogPageContent({ page, className = "" }: { page: ChangelogPageData; className?: string }) {
+  return (
+    <div class={`relative grow box-border flex-col w-full mx-auto px-1 min-w-0 ${className}`} id="content-area">
+      <ChangelogPage page={page} />
       <PageNavigation />
       <ContentFooter />
     </div>
@@ -138,8 +149,10 @@ function ContentFooter() {
   // Build "Edit this page" URL when repo + editBranch are configured
   let editUrl: string | undefined;
   const editPath = page.kind === "markdown"
-    ? (page.markdown?.editPath === undefined ? page.markdown?.sourcePath : page.markdown?.editPath)
-    : undefined;
+    ? (page.markdown.editPath === undefined ? page.markdown.sourcePath : page.markdown.editPath)
+    : page.kind === "changelog"
+      ? (page.changelog.editPath === undefined ? page.changelog.sourcePath : page.changelog.editPath)
+      : undefined;
   if (site.repo && site.editBranch && editPath) {
     const repoBase = site.repo.replace(/\/$/, "");
     const basePath = site.editBasePath ? `${site.editBasePath.replace(/^\/|\/$/g, "")}/` : "";
@@ -193,8 +206,13 @@ function DefaultLayout() {
       <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
-            <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+            <TableOfContents headings={page.markdown.headings} />
+            <MarkdownPageContent page={page.markdown} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+          </div>
+        ) : page.kind === "changelog" ? (
+          <div class="flex flex-row-reverse gap-12 box-border w-full">
+            <TableOfContents headings={page.changelog.headings} />
+            <ChangelogPageContent page={page.changelog} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
           <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />
@@ -211,7 +229,9 @@ function MinimalLayout() {
     <div class="max-w-3xl mx-auto relative px-4 lg:px-8">
       <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
-          <MarkdownPageContent page={page.markdown!} />
+          <MarkdownPageContent page={page.markdown} />
+        ) : page.kind === "changelog" ? (
+          <ChangelogPageContent page={page.changelog} />
         ) : (
           <SpecPageContent />
         )}
@@ -229,8 +249,13 @@ function ApiFirstLayout() {
       <main id="docs" class="pt-[8.5rem] lg:pt-10">
         {page.kind === "markdown" ? (
           <div class="flex flex-row-reverse gap-12 box-border w-full">
-            <TableOfContents headings={page.markdown!.headings} />
-            <MarkdownPageContent page={page.markdown!} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+            <TableOfContents headings={page.markdown.headings} />
+            <MarkdownPageContent page={page.markdown} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
+          </div>
+        ) : page.kind === "changelog" ? (
+          <div class="flex flex-row-reverse gap-12 box-border w-full">
+            <TableOfContents headings={page.changelog.headings} />
+            <ChangelogPageContent page={page.changelog} className="lg:pl-[23.7rem] lg:-ml-12 xl:w-[calc(100%-28rem)]" />
           </div>
         ) : (
           <SpecPageContent className="lg:pl-[23.7rem] lg:-ml-12" />

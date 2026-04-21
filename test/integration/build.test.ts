@@ -221,4 +221,52 @@ describe("buildDocs (integration)", () => {
       await rm(outputDir, { recursive: true, force: true });
     }
   });
+
+  it("builds changelog pages with feeds, llms integration, search entries, permalinks, and OG images", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-changelog");
+    const configDir = resolve(import.meta.dirname, "../changelog-site");
+    try {
+      const result = await buildSiteDocs({
+        configDir,
+        outputDir,
+      });
+
+      expect(result.pageCount).toBeGreaterThanOrEqual(4);
+
+      const changelogHtml = await readFile(resolve(outputDir, "changelog.html"), "utf-8");
+      expect(changelogHtml).toContain("sourcey-changelog-version");
+      expect(changelogHtml).toContain("1.2.0");
+      expect(changelogHtml).toContain('id="1-2-0"');
+      expect(changelogHtml).toContain('href="introduction.html"');
+
+      const permalinkHtml = await readFile(resolve(outputDir, "changelog/1-2-0/index.html"), "utf-8");
+      expect(permalinkHtml).toContain("1.2.0");
+      expect(permalinkHtml).toContain("Added root feed generation");
+      expect(permalinkHtml).toContain('href="../../introduction.html"');
+
+      const introHtml = await readFile(resolve(outputDir, "introduction.html"), "utf-8");
+      expect(introHtml).toContain('rel="alternate" type="application/atom+xml" href="feed.xml"');
+      expect(introHtml).toContain('rel="alternate" type="application/rss+xml" href="feed.rss"');
+
+      const atom = await readFile(resolve(outputDir, "feed.xml"), "utf-8");
+      expect(atom).toContain("<feed");
+      expect(atom).toContain("1.2.0");
+
+      const rss = await readFile(resolve(outputDir, "feed.rss"), "utf-8");
+      expect(rss).toContain("<rss");
+      expect(rss).toContain("1.2.0");
+
+      const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
+      expect(llms).toContain("## Changelog");
+      expect(llms).toContain("### 1.2.0 (2026-04-20)");
+
+      const searchIndex = await readFile(resolve(outputDir, "search-index.json"), "utf-8");
+      expect(searchIndex).toContain("\"category\":\"Releases\"");
+      expect(searchIndex).toContain("1.2.0");
+
+      expect(existsSync(resolve(outputDir, "_og/changelog/1-2-0/index.png"))).toBe(true);
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
 });

@@ -35,8 +35,14 @@ export function generateLlmsTxt(
         lines.push(`- [${doc.title}](${page.outputPath})${desc ? `: ${desc}` : ""}`);
         continue;
       }
+      if (page.currentPage.kind === "changelog" && page.currentPage.changelog && !page.currentPage.changelog.permalinkVersionId) {
+        const doc = page.currentPage.changelog;
+        const desc = doc.description || excerpt(summarizeChangelog(doc));
+        lines.push(`- [${doc.title}](${page.outputPath})${desc ? `: ${desc}` : ""}`);
+        continue;
+      }
 
-      const spec = page.currentPage.spec ?? page.spec;
+      const spec = page.currentPage.kind === "spec" ? page.currentPage.spec : page.spec;
       const overview = spec.info.description ? firstLine(spec.info.description) : `${spec.operations.length} documented operations`;
       lines.push(`- [${spec.info.title}](${page.outputPath})${overview ? `: ${overview}` : ""}`);
 
@@ -50,6 +56,8 @@ export function generateLlmsTxt(
 
     lines.push("");
   }
+
+  appendChangelogSummary(lines, pages);
 
   return lines.join("\n");
 }
@@ -81,6 +89,8 @@ export function generateLlmsFullTxt(
     for (const page of tabPages) {
       if (page.currentPage.kind === "markdown" && page.currentPage.markdown) {
         appendMarkdownPage(lines, page);
+      } else if (page.currentPage.kind === "changelog" && page.currentPage.changelog && !page.currentPage.changelog.permalinkVersionId) {
+        appendChangelogPage(lines, page);
       } else {
         appendSpecPage(lines, page);
       }
@@ -91,7 +101,8 @@ export function generateLlmsFullTxt(
 }
 
 function appendMarkdownPage(lines: string[], page: SitePage): void {
-  const doc = page.currentPage.markdown!;
+  if (page.currentPage.kind !== "markdown") return;
+  const doc = page.currentPage.markdown;
   lines.push(`### ${doc.title}`);
   lines.push("");
   lines.push(`Path: \`${page.outputPath}\``);
@@ -109,8 +120,70 @@ function appendMarkdownPage(lines: string[], page: SitePage): void {
   }
 }
 
+function appendChangelogPage(lines: string[], page: SitePage): void {
+  if (page.currentPage.kind !== "changelog") return;
+  const doc = page.currentPage.changelog;
+  lines.push(`### ${doc.title}`);
+  lines.push("");
+  lines.push(`Path: \`${page.outputPath}\``);
+  lines.push("");
+
+  if (doc.description) {
+    lines.push(doc.description);
+    lines.push("");
+  }
+
+  for (const version of doc.changelog.versions) {
+    const heading = version.date
+      ? `${version.version ?? "Unreleased"} (${version.date})`
+      : (version.version ?? "Unreleased");
+    lines.push(`#### ${heading}`);
+    lines.push("");
+
+    if (version.summary) {
+      lines.push(version.summary);
+      lines.push("");
+    }
+
+    for (const section of version.sections) {
+      for (const entry of section.entries) {
+        lines.push(`- ${section.label}: ${entry.text}`);
+      }
+    }
+
+    lines.push("");
+  }
+}
+
+function appendChangelogSummary(lines: string[], pages: SitePage[]): void {
+  const changelogPages = pages.filter(
+    (page) => page.currentPage.kind === "changelog" && !page.currentPage.changelog?.permalinkVersionId,
+  );
+  if (!changelogPages.length) return;
+
+  lines.push("## Changelog");
+  lines.push("");
+
+  for (const page of changelogPages) {
+    if (page.currentPage.kind !== "changelog") continue;
+    const doc = page.currentPage.changelog;
+    for (const version of doc.changelog.versions) {
+      const heading = version.date
+        ? `${version.version ?? "Unreleased"} (${version.date})`
+        : (version.version ?? "Unreleased");
+      lines.push(`### ${heading}`);
+      for (const section of version.sections) {
+        for (const entry of section.entries) {
+          lines.push(`${section.label}: ${entry.text}`);
+        }
+      }
+      lines.push("");
+    }
+  }
+}
+
 function appendSpecPage(lines: string[], page: SitePage): void {
-  const spec = page.currentPage.spec ?? page.spec;
+  const spec = page.currentPage.kind === "spec" ? page.currentPage.spec : page.spec;
 
   lines.push(`### ${spec.info.title}`);
   lines.push("");
@@ -134,7 +207,7 @@ function appendSpecPage(lines: string[], page: SitePage): void {
     }
   }
 
-  const schemas = Object.entries(spec.schemas);
+  const schemas = Object.entries(spec.schemas) as [string, NormalizedSchema][];
   if (schemas.length) {
     lines.push("#### Models");
     lines.push("");
@@ -198,23 +271,35 @@ function resolveSiteTitle(pages: SitePage[], site: SiteConfig): string {
   if (site.name && site.name !== "API Reference") return site.name;
 
   const specPages = pages.filter((page) => page.currentPage.kind === "spec");
-  if (specPages.length === 1) {
-    const spec = specPages[0].currentPage.spec ?? specPages[0].spec;
+  if (specPages.length === 1 && specPages[0].currentPage.kind === "spec") {
+    const spec = specPages[0].currentPage.spec;
     if (spec.info.title) return spec.info.title;
   }
 
-  const firstMarkdown = pages.find((page) => page.currentPage.kind === "markdown" && page.currentPage.markdown);
-  if (firstMarkdown?.currentPage.markdown?.title) return firstMarkdown.currentPage.markdown.title;
+  for (const page of pages) {
+    if (page.currentPage.kind === "markdown" && page.currentPage.markdown.title) {
+      return page.currentPage.markdown.title;
+    }
+    if (page.currentPage.kind === "changelog" && page.currentPage.changelog.title) {
+      return page.currentPage.changelog.title;
+    }
+  }
 
   return site.name || "Documentation";
 }
 
 function resolveSiteSummary(pages: SitePage[], site: SiteConfig): string | undefined {
-  const firstMarkdown = pages.find((page) => page.currentPage.kind === "markdown" && page.currentPage.markdown?.description);
-  if (firstMarkdown?.currentPage.markdown?.description) return firstMarkdown.currentPage.markdown.description;
+  for (const page of pages) {
+    if (page.currentPage.kind === "markdown" && page.currentPage.markdown.description) {
+      return page.currentPage.markdown.description;
+    }
+    if (page.currentPage.kind === "changelog" && page.currentPage.changelog.description) {
+      return page.currentPage.changelog.description;
+    }
+  }
 
   const firstSpec = pages.find((page) => page.currentPage.kind === "spec");
-  const spec = firstSpec ? (firstSpec.currentPage.spec ?? firstSpec.spec) : undefined;
+  const spec = firstSpec?.currentPage.kind === "spec" ? firstSpec.currentPage.spec : undefined;
   if (spec?.info.description) return spec.info.description;
 
   return site.name ? `${site.name} documentation generated by Sourcey.` : undefined;
@@ -236,6 +321,15 @@ function operationKind(op: NormalizedOperation): string {
 
 function operationAnchor(op: NormalizedOperation): string {
   return `operation-${htmlId(op.path)}-${htmlId(op.method)}`;
+}
+
+function summarizeChangelog(
+  page: NonNullable<Extract<SitePage["currentPage"], { kind: "changelog" }>["changelog"]>,
+): string {
+  return page.changelog.versions
+    .slice(0, 2)
+    .flatMap((version) => version.sections.flatMap((section) => section.entries.map((entry) => entry.text)))
+    .join(" ");
 }
 
 function formatResponse(response: NormalizedResponse): string {
