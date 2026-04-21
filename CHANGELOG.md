@@ -2,6 +2,12 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## Unreleased
+
+### Changed
+
+- OG image template redesigned for legibility at Slack/Discord preview sizes: larger bold wordmark, vertical accent bar in theme primary, tighter type, single-grey description, no duplicate site-name footer
+
 ## 3.4.12 — 2026-04-16
 
 ### Added

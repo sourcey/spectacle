@@ -46,12 +46,15 @@ function rgbCss(triplet: string): string {
   return `rgb(${triplet.replace(/ /g, ", ")})`;
 }
 
+function rgbaCss(triplet: string, alpha: number): string {
+  return `rgba(${triplet.replace(/ /g, ", ")}, ${alpha})`;
+}
+
 function ogCard({ title, description, siteName, theme, logo }: OgImageOptions) {
   const primary = rgbCss(theme.colors.primary);
-  const primaryLight = rgbCss(theme.colors.light);
+  const primaryGlow = rgbaCss(theme.colors.primary, 0.18);
 
-  // Truncate long titles/descriptions
-  const displayTitle = title.length > 80 ? title.slice(0, 77) + "..." : title;
+  const displayTitle = title.length > 90 ? title.slice(0, 87) + "..." : title;
   const displayDesc = description
     ? description.length > 160 ? description.slice(0, 157) + "..." : description
     : undefined;
@@ -64,45 +67,49 @@ function ogCard({ title, description, siteName, theme, logo }: OgImageOptions) {
         flexDirection: "column",
         width: "100%",
         height: "100%",
-        backgroundColor: "#0b0c10",
-        padding: "64px",
+        backgroundColor: "#0f172a",
+        padding: "72px",
         fontFamily: "Inter",
-        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% 130%, ${primary}40, transparent)`,
+        backgroundImage: `radial-gradient(ellipse 70% 50% at 20% 70%, ${primaryGlow}, transparent 70%)`,
       },
       children: [
-        // Top: logo + site name
+        // Brand block: logo (or coloured mark) + site name, top-left
         {
           type: "div",
           props: {
-            style: {
-              display: "flex",
-              alignItems: "center",
-              gap: "16px",
-            },
+            style: { display: "flex", alignItems: "center", gap: "14px" },
             children: [
-              ...(logo
-                ? [
-                    {
-                      type: "img",
-                      props: {
-                        src: logo,
-                        width: 40,
-                        height: 40,
-                        style: { borderRadius: "8px" },
+              logo
+                ? {
+                    type: "img",
+                    props: {
+                      src: logo,
+                      width: 48,
+                      height: 48,
+                      style: { borderRadius: "8px" },
+                    },
+                  }
+                : {
+                    type: "div",
+                    props: {
+                      style: {
+                        width: "14px",
+                        height: "14px",
+                        backgroundColor: primary,
+                        borderRadius: "4px",
                       },
                     },
-                  ]
-                : []),
+                  },
               ...(siteName
                 ? [
                     {
                       type: "div",
                       props: {
                         style: {
-                          fontSize: 20,
-                          fontWeight: 400,
-                          color: "#9ca3af",
-                          letterSpacing: "-0.01em",
+                          fontSize: 28,
+                          fontWeight: 700,
+                          color: "#ffffff",
+                          letterSpacing: "-0.02em",
                         },
                         children: siteName,
                       },
@@ -112,107 +119,73 @@ function ogCard({ title, description, siteName, theme, logo }: OgImageOptions) {
             ],
           },
         },
-        // Middle: title + description (pushed to center via flex)
+        // Middle: vertical accent bar + title + description
         {
           type: "div",
           props: {
             style: {
               display: "flex",
-              flexDirection: "column",
               flex: 1,
-              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "48px",
             },
             children: [
               {
                 type: "div",
                 props: {
                   style: {
-                    fontSize: 56,
-                    fontWeight: 700,
-                    color: "#ffffff",
-                    lineHeight: 1.15,
-                    letterSpacing: "-0.03em",
-                  },
-                  children: displayTitle,
-                },
-              },
-              ...(displayDesc
-                ? [
-                    {
-                      type: "div",
-                      props: {
-                        style: {
-                          fontSize: 24,
-                          fontWeight: 400,
-                          color: "#6b7280",
-                          marginTop: "20px",
-                          lineHeight: 1.4,
-                          letterSpacing: "-0.01em",
-                        },
-                        children: displayDesc,
-                      },
-                    },
-                  ]
-                : []),
-            ],
-          },
-        },
-        // Bottom: accent line + footer
-        {
-          type: "div",
-          props: {
-            style: {
-              display: "flex",
-              flexDirection: "column",
-            },
-            children: [
-              // Gradient accent line
-              {
-                type: "div",
-                props: {
-                  style: {
-                    width: "100%",
-                    height: "2px",
-                    backgroundImage: `linear-gradient(to right, ${primary}, ${primaryLight}, transparent)`,
-                    marginBottom: "20px",
+                    width: "4px",
+                    alignSelf: "stretch",
+                    backgroundColor: primary,
+                    borderRadius: "2px",
+                    marginRight: "32px",
                   },
                 },
               },
-              // Footer row
               {
                 type: "div",
                 props: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  },
+                  style: { display: "flex", flexDirection: "column", flex: 1 },
                   children: [
                     {
                       type: "div",
                       props: {
                         style: {
-                          fontSize: 16,
-                          fontWeight: 400,
-                          color: "#4b5563",
+                          fontSize: 64,
+                          fontWeight: 700,
+                          color: "#ffffff",
+                          lineHeight: 1.1,
+                          letterSpacing: "-0.02em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
                         },
-                        children: siteName || "",
+                        children: displayTitle,
                       },
                     },
-                    {
-                      type: "div",
-                      props: {
-                        style: {
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "6px",
-                          fontSize: 15,
-                          fontWeight: 400,
-                          color: "#374151",
-                        },
-                        children: "sourcey.com",
-                      },
-                    },
+                    ...(displayDesc
+                      ? [
+                          {
+                            type: "div",
+                            props: {
+                              style: {
+                                fontSize: 26,
+                                fontWeight: 400,
+                                color: "#cbd5e1",
+                                marginTop: "24px",
+                                lineHeight: 1.4,
+                                letterSpacing: "-0.005em",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              },
+                              children: displayDesc,
+                            },
+                          },
+                        ]
+                      : []),
                   ],
                 },
               },
