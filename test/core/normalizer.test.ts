@@ -162,4 +162,61 @@ describe("normalizeSpec", () => {
       expect(spec.servers.length).toBeGreaterThan(0);
     });
   });
+
+  it("normalizes OpenAPI 3.2 query methods, response summaries, and device authorization flows", async () => {
+    const spec = await loadAndNormalize("openapi-3.2.yaml");
+
+    const queryOp = spec.operations.find((op) => op.operationId === "querySearch");
+    expect(queryOp).toBeDefined();
+    expect(queryOp!.method).toBe("query");
+
+    const successResponse = queryOp!.responses.find((r) => r.statusCode === "200");
+    expect(successResponse).toBeDefined();
+    expect(successResponse!.summary).toBe("Search results");
+    expect(successResponse!.description).toBe("Returns ranked matches.");
+
+    const oauth = spec.securitySchemes.oauth;
+    expect(oauth).toBeDefined();
+    expect(oauth.type).toBe("oauth2");
+    expect(oauth.flows?.deviceAuthorization).toBeDefined();
+    expect(oauth.flows?.deviceAuthorization?.deviceAuthorizationUrl).toBe("https://example.com/oauth/device");
+    expect(oauth.flows?.deviceAuthorization?.tokenUrl).toBe("https://example.com/oauth/token");
+  });
+
+  it("preserves rich OpenAPI 3.2 metadata for tags, encodings, path items, and security schemes", async () => {
+    const spec = await loadAndNormalize("openapi-3.2-rich.yaml");
+
+    expect(spec.info.summary).toBe("Search and indexing endpoints");
+
+    const adminTag = spec.tags.find((tag) => tag.name === "admin");
+    expect(adminTag).toBeDefined();
+    expect(adminTag!.summary).toBe("Administration");
+    expect(adminTag!.kind).toBe("audience");
+
+    const childTag = spec.tags.find((tag) => tag.name === "admin-index");
+    expect(childTag).toBeDefined();
+    expect(childTag!.summary).toBe("Index Management");
+    expect(childTag!.parent).toBe("admin");
+    expect(childTag!.kind).toBe("nav");
+
+    const queryOp = spec.operations.find((op) => op.operationId === "querySearch");
+    expect(queryOp).toBeDefined();
+    expect(queryOp!.method).toBe("query");
+
+    const querystringParam = queryOp!.parameters.find((param) => param.in === "querystring");
+    expect(querystringParam).toBeDefined();
+    expect(querystringParam!.content?.["application/x-www-form-urlencoded"]).toBeDefined();
+    expect(querystringParam!.content?.["application/x-www-form-urlencoded"]?.encoding?.facets?.explode).toBe(false);
+
+    const createIndex = spec.operations.find((op) => op.operationId === "createIndex");
+    expect(createIndex).toBeDefined();
+    expect(createIndex!.requestBody?.content["application/x-www-form-urlencoded"]?.encoding?.filter?.contentType).toBe("application/json");
+    expect(createIndex!.requestBody?.content["multipart/mixed"]?.prefixEncoding?.[0]?.headers?.["X-Part-Id"]?.required).toBe(true);
+    expect(createIndex!.requestBody?.content["multipart/mixed"]?.itemEncoding?.contentType).toBe("text/plain");
+
+    const oauth = spec.securitySchemes.oauth;
+    expect(oauth).toBeDefined();
+    expect(oauth.deprecated).toBe(true);
+    expect(oauth.oauth2MetadataUrl).toBe("https://example.com/.well-known/oauth-authorization-server");
+  });
 });

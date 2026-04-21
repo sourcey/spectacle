@@ -42,9 +42,16 @@ export function ResponsesCopy({ responses }: ResponsesProps) {
               </span>
             )}
           </div>
-          {r.description && (
+          {(r.summary || r.description) && (
             <div class="param-description">
-              <Markdown content={r.description} class="prose-sm" />
+              {r.summary && (
+                <p class="text-sm font-medium text-[rgb(var(--color-gray-900))] dark:text-[rgb(var(--color-gray-200))]">
+                  {r.summary}
+                </p>
+              )}
+              {r.description && (
+                <Markdown content={r.description} class="prose-sm" />
+              )}
             </div>
           )}
         </div>

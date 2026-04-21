@@ -1,0 +1,121 @@
+openapi: 3.2.0
+info:
+  title: Search API
+  summary: Search and indexing endpoints
+  version: 1.0.0
+  description: APIs for search and index management.
+tags:
+  - name: search
+    summary: Search
+    description: Search operations.
+    kind: nav
+  - name: admin
+    summary: Administration
+    description: Administrative endpoints.
+    kind: audience
+  - name: admin-index
+    summary: Index Management
+    description: Manage search indexes.
+    parent: admin
+    kind: nav
+paths:
+  /search:
+    $ref: "#/components/pathItems/SearchQuery"
+  /indexes:
+    post:
+      operationId: createIndex
+      summary: Create index
+      tags:
+        - admin-index
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                filter:
+                  type: object
+                  properties:
+                    query:
+                      type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+            encoding:
+              filter:
+                contentType: application/json
+              tags:
+                style: form
+                explode: false
+          multipart/mixed:
+            schema:
+              type: array
+              items:
+                type: string
+            prefixEncoding:
+              - contentType: application/json
+                headers:
+                  X-Part-Id:
+                    required: true
+                    schema:
+                      type: string
+            itemEncoding:
+              contentType: text/plain
+      responses:
+        "201":
+          description: Index created
+components:
+  pathItems:
+    SearchQuery:
+      query:
+        operationId: querySearch
+        summary: Query search index
+        tags:
+          - search
+        parameters:
+          - name: search
+            in: querystring
+            description: Structured query string payload.
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    query:
+                      type: string
+                    facets:
+                      type: array
+                      items:
+                        type: string
+                encoding:
+                  facets:
+                    style: form
+                    explode: false
+        responses:
+          "200":
+            summary: Search results
+            description: Returns ranked matches.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        type: string
+  securitySchemes:
+    oauth:
+      type: oauth2
+      deprecated: true
+      oauth2MetadataUrl: https://example.com/.well-known/oauth-authorization-server
+      flows:
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://example.com/oauth/device
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            search: Query the search index

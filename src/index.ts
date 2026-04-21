@@ -14,7 +14,6 @@ import {
   collectDocsPagesByTab,
   createMinimalSpec,
   enforceChangelogDiagnostics,
-  resolveInternalLinks,
 } from "./site-assembly.js";
 
 // ---------------------------------------------------------------------------

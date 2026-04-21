@@ -3,6 +3,7 @@ import { SpecContext } from "../../renderer/context.js";
 import type { SecurityRequirement } from "../../core/types.js";
 import { SectionLabel } from "../ui/SectionLabel.js";
 import { Markdown } from "../ui/Markdown.js";
+import { DeprecatedBadge } from "../ui/Badge.js";
 
 interface SecurityProps {
   security: SecurityRequirement[];
@@ -40,6 +41,7 @@ export function SecurityCopy({ security }: SecurityProps) {
                         </span>
                       </span>
                     )}
+                    {scheme?.deprecated && <DeprecatedBadge />}
                   </div>
                   {(scheme?.description || scopes.length > 0) && (
                     <div class="param-description">
@@ -79,6 +81,7 @@ export function SecurityDefinitions() {
               <span class="param-type">
                 <span class="json-property-type">{scheme.type}</span>
               </span>
+              {scheme.deprecated && <DeprecatedBadge />}
             </div>
             <div class="param-description">
               {scheme.description && <Markdown content={scheme.description} class="prose-sm" />}
@@ -93,6 +96,14 @@ export function SecurityDefinitions() {
                   {scheme.bearerFormat && ` (${scheme.bearerFormat})`}
                 </p>
               )}
+              {scheme.type === "oauth2" && scheme.oauth2MetadataUrl && (
+                <p class="mt-1">
+                  OAuth2 Metadata:{" "}
+                  <a href={scheme.oauth2MetadataUrl} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">
+                    {scheme.oauth2MetadataUrl}
+                  </a>
+                </p>
+              )}
               {scheme.type === "oauth2" && scheme.flows && (
                 <div class="mt-2 space-y-4">
                   {Object.entries(scheme.flows).map(([flowType, flow]) => (
@@ -103,6 +114,12 @@ export function SecurityDefinitions() {
                           <>
                             <dt class="text-[rgb(var(--color-gray-500))] mt-2">Authorization URL</dt>
                             <dd><code class="text-xs">{flow.authorizationUrl}</code></dd>
+                          </>
+                        )}
+                        {flow?.deviceAuthorizationUrl && (
+                          <>
+                            <dt class="text-[rgb(var(--color-gray-500))] mt-2">Device Authorization URL</dt>
+                            <dd><code class="text-xs">{flow.deviceAuthorizationUrl}</code></dd>
                           </>
                         )}
                         {flow?.tokenUrl && (

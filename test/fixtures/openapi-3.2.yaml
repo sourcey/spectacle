@@ -1,0 +1,32 @@
+openapi: 3.2.0
+info:
+  title: Search API
+  version: 1.0.0
+paths:
+  /search:
+    query:
+      operationId: querySearch
+      summary: Query search index
+      responses:
+        "200":
+          summary: Search results
+          description: Returns ranked matches.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: string
+components:
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://example.com/oauth/device
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            search: Query the search index

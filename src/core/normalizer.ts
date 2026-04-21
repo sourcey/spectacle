@@ -10,6 +10,7 @@ import type {
   NormalizedSchema,
   NormalizedCallback,
   MediaTypeContent,
+  EncodingObject,
   SecurityScheme,
   SecuritySchemeType,
   ServerDefinition,
@@ -25,7 +26,7 @@ import type {
 } from "./types.js";
 
 const HTTP_METHODS: HttpMethod[] = [
-  "get", "post", "put", "delete", "patch", "options", "head", "trace",
+  "get", "post", "put", "delete", "patch", "options", "head", "trace", "query",
 ];
 
 /**
@@ -60,6 +61,7 @@ function normalizeInfo(doc: OpenApiDocument) {
   const info = doc.info ?? {};
   return {
     title: str(info.title, "Untitled API"),
+    summary: optStr(info.summary),
     version: str(info.version, "0.0.0"),
     description: optStr(info.description),
     termsOfService: optStr(info.termsOfService),
@@ -124,7 +126,10 @@ function normalizeTags(
       if (name) {
         tagMap.set(name, {
           name,
+          summary: optStr(t.summary),
           description: optStr(t.description),
+          parent: optStr(t.parent),
+          kind: optStr(t.kind),
           externalDocs: normalizeExternalDocs(
             t.externalDocs as Record<string, unknown> | undefined,
           ),
@@ -151,13 +156,54 @@ function normalizeTags(
     }
   }
 
-  // Filter out tags with no operations (unless they have a description)
-  return Array.from(tagMap.values()).filter(
-    (t) => t.operations.length > 0 || t.description,
-  );
+  const referencedAsParent = new Set<string>();
+  for (const tag of tagMap.values()) {
+    if (tag.parent && tagMap.has(tag.parent)) {
+      referencedAsParent.add(tag.parent);
+    }
+  }
+
+  // Keep tags that contribute visible metadata or structure, even without operations.
+  return sortTagsByHierarchy(Array.from(tagMap.values()).filter(
+    (t) => t.operations.length > 0
+      || !!t.summary
+      || !!t.description
+      || !!t.kind
+      || referencedAsParent.has(t.name),
+  ));
 }
 
-// ── Operations ─────────────────────────────────────────────────────
+function sortTagsByHierarchy(tags: NormalizedTag[]): NormalizedTag[] {
+  const tagsByName = new Map(tags.map((tag) => [tag.name, tag]));
+  const childrenByParent = new Map<string, NormalizedTag[]>();
+  const roots: NormalizedTag[] = [];
+
+  for (const tag of tags) {
+    if (tag.parent && tag.parent !== tag.name && tagsByName.has(tag.parent)) {
+      const siblings = childrenByParent.get(tag.parent) ?? [];
+      siblings.push(tag);
+      childrenByParent.set(tag.parent, siblings);
+      continue;
+    }
+
+    roots.push(tag);
+  }
+
+  const sorted: NormalizedTag[] = [];
+  const visited = new Set<string>();
+  const visit = (tag: NormalizedTag) => {
+    if (visited.has(tag.name)) return;
+    visited.add(tag.name);
+    sorted.push(tag);
+    for (const child of childrenByParent.get(tag.name) ?? []) {
+      visit(child);
+    }
+  };
+
+  for (const tag of roots) visit(tag);
+  for (const tag of tags) visit(tag);
+  return sorted;
+}
 
 function normalizeOperations(
   paths?: Record<string, Record<string, unknown>>,
@@ -251,6 +297,9 @@ function normalizeParameters(
     schema: p.schema
       ? normalizeSchema(p.schema as Record<string, unknown>)
       : undefined,
+    content: p.content
+      ? normalizeContent(p.content as Record<string, Record<string, unknown>>)
+      : undefined,
     example: p.example,
     examples: p.examples
       ? normalizeExamples(p.examples as Record<string, Record<string, unknown>>)
@@ -285,9 +334,53 @@ function normalizeContent(
       examples: value.examples
         ? normalizeExamples(value.examples as Record<string, Record<string, unknown>>)
         : undefined,
+      encoding: isRecord(value.encoding)
+        ? normalizeEncodingMap(value.encoding as Record<string, unknown>)
+        : undefined,
+      prefixEncoding: Array.isArray(value.prefixEncoding)
+        ? value.prefixEncoding
+          .filter(isRecord)
+          .map((entry) => normalizeEncodingObject(entry as Record<string, unknown>))
+        : undefined,
+      itemEncoding: isRecord(value.itemEncoding)
+        ? normalizeEncodingObject(value.itemEncoding as Record<string, unknown>)
+        : undefined,
     };
   }
   return result;
+}
+
+function normalizeEncodingMap(
+  encodings: Record<string, unknown>,
+): Record<string, EncodingObject> {
+  const result: Record<string, EncodingObject> = {};
+  for (const [name, encoding] of Object.entries(encodings)) {
+    if (!isRecord(encoding)) continue;
+    result[name] = normalizeEncodingObject(encoding);
+  }
+  return result;
+}
+
+function normalizeEncodingObject(encoding: Record<string, unknown>): EncodingObject {
+  return {
+    contentType: optStr(encoding.contentType),
+    headers: isRecord(encoding.headers)
+      ? normalizeResponseHeaders(encoding.headers as Record<string, Record<string, unknown>>)
+      : undefined,
+    style: optStr(encoding.style),
+    explode: typeof encoding.explode === "boolean" ? encoding.explode : undefined,
+    allowReserved: typeof encoding.allowReserved === "boolean"
+      ? encoding.allowReserved
+      : undefined,
+    prefixEncoding: Array.isArray(encoding.prefixEncoding)
+      ? encoding.prefixEncoding
+        .filter(isRecord)
+        .map((entry) => normalizeEncodingObject(entry as Record<string, unknown>))
+      : undefined,
+    itemEncoding: isRecord(encoding.itemEncoding)
+      ? normalizeEncodingObject(encoding.itemEncoding as Record<string, unknown>)
+      : undefined,
+  };
 }
 
 function normalizeResponses(
@@ -296,6 +389,7 @@ function normalizeResponses(
   if (!responses) return [];
   return Object.entries(responses).map(([statusCode, r]) => ({
     statusCode,
+    summary: optStr(r.summary),
     description: str(r.description, ""),
     content: r.content
       ? normalizeContent(r.content as Record<string, Record<string, unknown>>)
@@ -322,6 +416,9 @@ function normalizeResponseHeaders(
       deprecated: h.deprecated === true,
       schema: h.schema
         ? normalizeSchema(h.schema as Record<string, unknown>)
+        : undefined,
+      content: h.content
+        ? normalizeContent(h.content as Record<string, Record<string, unknown>>)
         : undefined,
     };
   }
@@ -530,6 +627,8 @@ function normalizeSecuritySchemes(
         ? normalizeOAuthFlows(raw.flows as Record<string, Record<string, unknown>>)
         : undefined,
       openIdConnectUrl: optStr(raw.openIdConnectUrl),
+      oauth2MetadataUrl: optStr(raw.oauth2MetadataUrl),
+      deprecated: raw.deprecated === true,
     };
   }
   return result;
@@ -544,6 +643,7 @@ function normalizeOAuthFlows(
     "password",
     "clientCredentials",
     "authorizationCode",
+    "deviceAuthorization",
   ] as const) {
     if (flows[flowType]) {
       result[flowType] = normalizeOAuthFlow(flows[flowType]);
@@ -555,6 +655,7 @@ function normalizeOAuthFlows(
 function normalizeOAuthFlow(flow: Record<string, unknown>): OAuthFlow {
   return {
     authorizationUrl: optStr(flow.authorizationUrl),
+    deviceAuthorizationUrl: optStr(flow.deviceAuthorizationUrl),
     tokenUrl: optStr(flow.tokenUrl),
     refreshUrl: optStr(flow.refreshUrl),
     scopes: (flow.scopes ?? {}) as Record<string, string>,
@@ -605,4 +706,8 @@ function str(value: unknown, fallback: string): string {
 
 function optStr(value: unknown): string | undefined {
   return typeof value === "string" ? value : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
 }

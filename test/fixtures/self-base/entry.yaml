@@ -1,0 +1,8 @@
+openapi: 3.2.0
+$self: ./canonical/openapi.yaml
+info:
+  title: Canonical API
+  version: 1.0.0
+paths:
+  /pets:
+    $ref: ./paths.yaml#/petsPath

@@ -84,6 +84,7 @@ function detectVersion(raw: Record<string, unknown>): SpecVersion {
     return "swagger-2.0";
   }
   if (typeof raw.openapi === "string") {
+    if (raw.openapi.startsWith("3.2")) return "openapi-3.2";
     if (raw.openapi.startsWith("3.1")) return "openapi-3.1";
     if (raw.openapi.startsWith("3.")) return "openapi-3.0";
   }

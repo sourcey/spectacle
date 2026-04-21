@@ -1,4 +1,5 @@
 import type { NormalizedSpec } from "./types.js";
+import { tagNavigationLabel } from "./tag-utils.js";
 import { tabPath } from "../config.js";
 import type { ResolvedTab } from "../config.js";
 import type { DocsPage } from "./markdown-loader.js";
@@ -69,6 +70,7 @@ export function buildNavFromSpec(
   groups.push({ label: "", items: introItems });
 
   // Tag groups with operations
+  const tagsByName = new Map(spec.tags.map((tag) => [tag.name, tag]));
   for (const tag of spec.tags) {
     if (tag.hidden) continue;
     const items: SiteNavItem[] = tag.operations.map((op) => ({
@@ -77,7 +79,8 @@ export function buildNavFromSpec(
       id: `operation-${htmlId(op.path)}-${htmlId(op.method)}`,
       method: op.method,
     }));
-    groups.push({ label: tag.name, items });
+    if (!items.length) continue;
+    groups.push({ label: tagNavigationLabel(tag, tagsByName), items });
   }
 
   // Models group

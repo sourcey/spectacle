@@ -31,9 +31,13 @@ function findOpenAPISpecs(dir: string): string[] {
         if (content.includes("openapi:") || content.includes('"openapi"')) {
           specs.push(file);
         }
-      } catch {}
+      } catch {
+        // Ignore unreadable candidate files during spec auto-detection.
+      }
     }
-  } catch {}
+  } catch {
+    // Ignore unreadable directories during spec auto-detection.
+  }
   return specs;
 }
 

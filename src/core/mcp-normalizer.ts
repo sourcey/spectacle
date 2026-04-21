@@ -15,7 +15,6 @@ import type {
   NormalizedSchema,
   NormalizedRequestBody,
   McpConnectionInfo,
-  McpOperationExtras,
   CodeSample,
   HttpMethod,
 } from "./types.js";

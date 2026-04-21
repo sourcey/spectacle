@@ -16,7 +16,7 @@ import type { SiteTab } from "./core/navigation.js";
 import type { ChangelogDiagnostic, NormalizedChangelogVersion, NormalizedSpec } from "./core/types.js";
 import type { SitePage } from "./renderer/html-builder.js";
 import type { SiteConfig } from "./renderer/context.js";
-import { toPublicPath, toPublicUrl } from "./site-url.js";
+import { toPublicUrl } from "./site-url.js";
 
 export interface SiteAssembly {
   siteTabs: SiteTab[];

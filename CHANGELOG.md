@@ -4,9 +4,18 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 ## Unreleased
 
+### Added
+
+- OpenAPI 3.2 parsing and rendering for `QUERY` operations, response summaries, `deviceAuthorization` OAuth flows, hierarchical tags, `querystring` parameters, and media-type encoding metadata
+- `$self`-aware reference resolution for canonical multi-document OpenAPI descriptions
+
 ### Changed
 
 - OG image template redesigned for legibility at Slack/Discord preview sizes: larger bold wordmark, vertical accent bar in theme primary, tighter type, single-grey description, no duplicate site-name footer
+
+### Fixed
+
+- Lint configuration for browser-side client scripts and generated MCP test artifacts
 
 ## 3.4.12 — 2026-04-16
 

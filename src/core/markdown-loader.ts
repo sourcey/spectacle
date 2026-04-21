@@ -373,31 +373,6 @@ function buildDirectiveAttrList(entries: Array<[string, string | undefined]>): s
   return attrs.length > 0 ? `{${attrs.join(" ")}}` : "";
 }
 
-function indentBlock(text: string, prefix: string): string {
-  const lines = text.split("\n");
-  const result: string[] = [];
-  let fence: { char: string; length: number } | null = null;
-
-  for (const line of lines) {
-    if (fence) {
-      // Inside a fenced code block — don't indent
-      result.push(line);
-      if (closesFence(line, fence)) fence = null;
-    } else {
-      const nextFence = isFenceStart(line);
-      if (nextFence) {
-        // Fence opener — don't indent so markdown recognises it
-        fence = nextFence;
-        result.push(line);
-      } else {
-        result.push(`${prefix}${line}`);
-      }
-    }
-  }
-
-  return result.join("\n");
-}
-
 function isWhitespaceOnlyText(node: ParsedComponentNode): boolean {
   return node.kind === "text" && node.value.trim() === "";
 }

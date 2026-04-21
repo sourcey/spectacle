@@ -1,0 +1,6 @@
+petsPath:
+  get:
+    operationId: listPets
+    responses:
+      "200":
+        description: ok
