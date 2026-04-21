@@ -1,10 +1,13 @@
 import type { Plugin, ViteDevServer } from "vite";
 import { resolve, extname } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { normalizeBaseUrl } from "./site-url.js";
 
 export interface SourceyPluginOptions {
   /** Additional file paths to watch (specs, markdown) */
   watchPaths: string[];
+  /** Current public base URL, used for dev routes under subpaths. */
+  baseUrl?: () => string;
   /** SSR render function: given a URL path, return HTML or null */
   render: (url: string) => Promise<string | null>;
   /** Optional: generate search index JSON on demand */
@@ -17,7 +20,7 @@ export interface SourceyPluginOptions {
  * - Watches spec and markdown files; triggers full reload on change
  */
 export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
-  const { watchPaths, render, searchIndex } = options;
+  const { watchPaths, baseUrl, render, searchIndex } = options;
   const watchSet = new Set(watchPaths.map((p) => resolve(p)));
 
   return {
@@ -56,6 +59,9 @@ export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
       // This runs BEFORE Vite's static file handler
       server.middlewares.use(async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
         const url = req.url ?? "/";
+        const pathname = url.split("?", 1)[0] ?? "/";
+        const currentBaseUrl = normalizeBaseUrl(baseUrl?.());
+        const baseSearchPath = currentBaseUrl ? `${currentBaseUrl}search-index.json` : "/search-index.json";
 
         // Let Vite handle its own requests
         if (
@@ -68,7 +74,7 @@ export function sourceyPlugin(options: SourceyPluginOptions): Plugin {
         }
 
         // Serve search index on demand
-        if (url === "/search-index.json" && searchIndex) {
+        if (searchIndex && (pathname === "/search-index.json" || pathname === baseSearchPath)) {
           try {
             const json = await searchIndex();
             res.writeHead(200, {
