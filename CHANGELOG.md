@@ -2,22 +2,58 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
-## Unreleased
+## 3.4.12 — 2026-04-16
 
 ### Added
 
 - Automatic per-page OG image generation at build time using Satori and resvg
 - `ogImage` config option for overriding with a static image URL
-- `::video` directive for embedding YouTube, Vimeo, or raw video files in markdown
-- `::iframe` directive for embedding arbitrary URLs (https only)
+- Heroicons in navigation and UI components
+
+### Changed
+
+- Inter loaded as the default sans-serif; layout rhythm refined for tighter vertical spacing
+
+### Fixed
+
+- Tab path deduplication when multiple tabs share a slug
+- Inline code styling inside TOC items
+- TOC nested-item border alignment
+
+## 3.4.5 — 2026-04-07
+
+### Added
+
+- Nested directives (e.g. tabs inside `:::code-group`)
+- Doxygen link rewriting for cross-referenced symbols in prose
+
+### Fixed
+
+- Inline code protection during markdown directive preprocessing
+
+## 3.4.4 — 2026-04-06
+
+### Fixed
+
+- OAuth security section rendering
+- Footer logo restored after layout refactor
+- Fenced markdown examples preserved through directive preprocessing
 
 ## 3.4.3 — 2026-04-05
+
+### Added
+
+- `::iframe` directive for embedding arbitrary https URLs in markdown
 
 ### Fixed
 
 - Doxygen page summaries now reuse resolved cross-links in page headers instead of exposing raw `{#ref ... #}` placeholders
 - Rich Doxygen index cards strip inline markdown link syntax from summaries
 - `sourcey init` now scaffolds projects against the latest published version again
+- Minimal-theme callout borders and responsive page description sizing
+- TOC sub-item margin alignment
+- Search featured pages, inline dialog, display font, and sidebar dot markers
+- Lighthouse baseline polish for generated docs
 
 ## 3.4.0 — 2026-04-02
 
@@ -30,6 +66,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - Annotation badges for tool hints (read-only, destructive, idempotent, open-world)
 - Colour-coded sidebar method pills (purple TOOL, green RES, blue PRMT)
 - Hot-reload for mcp.json files in the dev server
+- `::video` directive for embedding YouTube, Vimeo, or raw video files in markdown
 - Sitemap generation
 - OpenGraph and Twitter Card meta tags
 - Dockerfile for Docker Hub
