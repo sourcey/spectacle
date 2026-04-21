@@ -49,7 +49,7 @@
     "shiki": "^4.0.2",
     "swagger2openapi": "^7.0.8",
     "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1"
+    "vite": "^8.0.9"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
