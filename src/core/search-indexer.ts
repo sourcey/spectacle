@@ -1,5 +1,5 @@
 import type { NormalizedSpec } from "./types.js";
-import type { MarkdownPage } from "./markdown-loader.js";
+import type { DocsPage } from "./markdown-loader.js";
 import type { SiteNavigation } from "./navigation.js";
 import { htmlId } from "../utils/html-id.js";
 
@@ -36,7 +36,7 @@ export interface SearchEntry {
  */
 export function buildSearchIndex(
   specs: Map<string, NormalizedSpec>,
-  pages: Map<string, MarkdownPage[]>,
+  pages: Map<string, DocsPage[]>,
   navigation: SiteNavigation,
   assetBase = "/",
   featuredSlugs: string[] = [],
@@ -87,22 +87,35 @@ export function buildSearchIndex(
       const isFeatured = featuredSet.has(page.slug);
       entries.push({
         title: page.title,
-        content: page.description || stripHtml(page.html).slice(0, 200),
+        content: page.kind === "markdown"
+          ? page.description || stripHtml(page.html).slice(0, 200)
+          : page.description || summarizeChangelog(page).slice(0, 200),
         url: `${pageBase}${page.slug}.html`,
         tab: tabLabel,
         category: "Pages",
         ...(isFeatured && { featured: true }),
       });
 
-      // Headings within page
-      for (const heading of page.headings) {
-        entries.push({
-          title: heading.text,
-          content: `${page.title} — ${heading.text}`,
-          url: `${pageBase}${page.slug}.html#${heading.id}`,
-          tab: tabLabel,
-          category: "Sections",
-        });
+      if (page.kind === "markdown") {
+        for (const heading of page.headings) {
+          entries.push({
+            title: heading.text,
+            content: `${page.title} — ${heading.text}`,
+            url: `${pageBase}${page.slug}.html#${heading.id}`,
+            tab: tabLabel,
+            category: "Sections",
+          });
+        }
+      } else {
+        for (const version of page.changelog.versions) {
+          entries.push({
+            title: version.version ?? "Unreleased",
+            content: summarizeVersion(version).slice(0, 200),
+            url: `${pageBase}${page.slug}.html#${version.id}`,
+            tab: tabLabel,
+            category: "Releases",
+          });
+        }
       }
     }
   }
@@ -115,4 +128,20 @@ export function buildSearchIndex(
  */
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function summarizeChangelog(page: Extract<DocsPage, { kind: "changelog" }>): string {
+  return page.changelog.versions
+    .slice(0, 3)
+    .map(summarizeVersion)
+    .join(" ");
+}
+
+function summarizeVersion(
+  version: Extract<DocsPage, { kind: "changelog" }>["changelog"]["versions"][number],
+): string {
+  if (version.summary) return version.summary;
+
+  const entries = version.sections.flatMap((section) => section.entries.map((entry) => entry.text));
+  return entries.slice(0, 3).join(" ");
 }

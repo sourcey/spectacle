@@ -8,15 +8,27 @@ export function Head() {
   const spec = useContext(SpecContext);
   const options = useContext(OptionsContext);
   const page = useContext(PageContext);
+  const changelogVersion = page.kind === "changelog" && page.changelog.permalinkVersionId
+    ? page.changelog.changelog.versions.find((version) => version.id === page.changelog.permalinkVersionId)
+    : undefined;
 
   const siteName = site.name || spec.info.title || "";
   const pageTitle = page.kind === "markdown"
-    ? (siteName ? `${page.markdown!.title} — ${siteName}` : page.markdown!.title)
-    : `${siteName} — API Reference`;
+    ? (siteName ? `${page.markdown.title} — ${siteName}` : page.markdown.title)
+    : page.kind === "changelog"
+      ? (() => {
+          const baseTitle = changelogVersion
+            ? `${changelogVersion.version ?? "Unreleased"} — ${page.changelog.title}`
+            : page.changelog.title;
+          return siteName ? `${baseTitle} — ${siteName}` : baseTitle;
+        })()
+      : `${siteName} — API Reference`;
 
   const pageDescription = page.kind === "markdown"
-    ? page.markdown!.description || pageTitle
-    : spec.info.description ?? `${siteName} API Documentation`;
+    ? page.markdown.description || pageTitle
+    : page.kind === "changelog"
+      ? changelogVersion?.summary || page.changelog.description || pageTitle
+      : spec.info.description ?? `${siteName} API Documentation`;
 
   const nav = useContext(NavigationContext);
   const { colors, fonts, layout } = site.theme;
@@ -69,6 +81,9 @@ export function Head() {
       <meta name="twitter:description" content={pageDescription} />
       {options.ogImagePath && <meta name="twitter:image" content={options.ogImagePath} />}
       <meta name="sourcey-search" content={`${options.assetBase}search-index.json`} />
+      {options.alternateLinks?.map((link) => (
+        <link key={`${link.type}-${link.href}`} rel="alternate" type={link.type} href={link.href} title={link.title} />
+      ))}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
       <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(fonts.googleFont)}:wght@100..900&display=swap`} />

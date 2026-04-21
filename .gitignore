@@ -5,4 +5,5 @@ coverage/
 .DS_Store
 .preview/
 .plans/
+.test*
 result

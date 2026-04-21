@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { resolve, relative } from "node:path";
-import { loadMarkdownPage, slugFromPath } from "../../src/core/markdown-loader.js";
+import { loadDocsPage, loadMarkdownPage, slugFromPath } from "../../src/core/markdown-loader.js";
 
 const FIXTURE_DIR = resolve(import.meta.dirname, "../fixtures");
 
@@ -129,5 +129,27 @@ describe("slugFromPath", () => {
     expect(slugFromPath("index")).toBe("index");
     expect(slugFromPath("intro.md")).toBe("intro");
     expect(slugFromPath("api/PacketStream.md")).toBe("api/packetstream");
+  });
+});
+
+describe("loadDocsPage", () => {
+  it("detects changelog pages and returns a structured changelog page", async () => {
+    const page = await loadDocsPage(
+      resolve(FIXTURE_DIR, "changelog.md"),
+      "changelog",
+      { repoUrl: "https://github.com/example/project" },
+    );
+
+    expect(page.kind).toBe("changelog");
+    if (page.kind !== "changelog") return;
+
+    expect(page.title).toBe("Changelog");
+    expect(page.changelog.versions[0].version).toBeNull();
+    expect(page.changelog.versions[1].version).toBe("1.2.0");
+    expect(page.headings).toEqual([
+      { level: 2, text: "Unreleased", id: "unreleased" },
+      { level: 2, text: "1.2.0", id: "1-2-0" },
+      { level: 2, text: "1.1.0", id: "1-1-0" },
+    ]);
   });
 });

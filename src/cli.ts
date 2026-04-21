@@ -40,6 +40,11 @@ const build = defineCommand({
       description: "Suppress output",
       default: false,
     },
+    strictChangelog: {
+      type: "boolean",
+      description: "Treat changelog warnings as build errors",
+      default: false,
+    },
   },
   async run({ args }) {
     const startTime = Date.now();
@@ -52,9 +57,11 @@ const build = defineCommand({
           specSource: args.spec,
           outputDir: args.output,
           embeddable: args.embed,
+          strictChangelog: args.strictChangelog,
         });
 
         if (!args.quiet) {
+          logChangelogDiagnostics(result.changelogDiagnostics);
           const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
           console.log(`  Spec:       ${result.spec.info.title} v${result.spec.info.version}`);
           console.log(`  Operations: ${result.spec.operations.length}`);
@@ -69,9 +76,11 @@ const build = defineCommand({
           config,
           outputDir: args.output,
           embeddable: args.embed,
+          strictChangelog: args.strictChangelog,
         });
 
         if (!args.quiet) {
+          logChangelogDiagnostics(result.changelogDiagnostics);
           const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
           console.log(`  Pages:  ${result.pageCount}`);
           console.log(`  Output: ${result.outputDir}`);
@@ -168,12 +177,28 @@ const main = defineCommand({
 
     if (args.spec) {
       await build.run!({
-        args: { _: [], spec: args.spec, output: "dist", embed: false, config: undefined as unknown as string, quiet: false },
+        args: {
+          _: [],
+          spec: args.spec,
+          output: "dist",
+          embed: false,
+          config: undefined as unknown as string,
+          quiet: false,
+          strictChangelog: false,
+        },
         rawArgs: [],
         cmd: build,
       });
     }
   },
 });
+
+function logChangelogDiagnostics(diagnostics: { severity: string; code: string; message: string; line?: number; version?: string }[]): void {
+  for (const diagnostic of diagnostics) {
+    const location = diagnostic.version ? ` (${diagnostic.version})` : "";
+    const line = diagnostic.line ? ` line ${diagnostic.line}` : "";
+    console.log(`  ${diagnostic.severity.toUpperCase()} ${diagnostic.code}${location}${line}: ${diagnostic.message}`);
+  }
+}
 
 runMain(main);

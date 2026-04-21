@@ -276,6 +276,80 @@ export interface CodeSample {
   source: string;
 }
 
+// ── Changelog ──────────────────────────────────────────────────────
+
+export type ChangelogFormat = "keepachangelog" | "conventional" | "loose";
+
+export type ChangelogChangeType =
+  | "added"
+  | "changed"
+  | "fixed"
+  | "removed"
+  | "deprecated"
+  | "security"
+  | "other";
+
+export type ChangelogDiagnosticSeverity = "error" | "warning" | "info";
+
+export interface ChangelogDiagnostic {
+  severity: ChangelogDiagnosticSeverity;
+  code: string;
+  message: string;
+  line?: number;
+  version?: string;
+}
+
+export interface ChangelogInlineLink {
+  href: string;
+  text: string;
+}
+
+export interface ChangelogRef {
+  type: "pr" | "issue" | "commit";
+  id: string;
+  url?: string;
+}
+
+export interface NormalizedChangelogEntry {
+  text: string;
+  html: string;
+  links: ChangelogInlineLink[];
+  refs: ChangelogRef[];
+}
+
+export interface NormalizedChangelogSection {
+  type: ChangelogChangeType;
+  label: string;
+  entries: NormalizedChangelogEntry[];
+}
+
+export interface NormalizedChangelogVersion {
+  id: string;
+  version: string | null;
+  date: string | null;
+  yanked: boolean;
+  prerelease: boolean;
+  summary?: string;
+  sections: NormalizedChangelogSection[];
+  compareUrl?: string;
+  sourceOrder: number;
+}
+
+export interface VersionLink {
+  version: string;
+  url: string;
+}
+
+export interface NormalizedChangelog {
+  title: string;
+  description?: string;
+  format: ChangelogFormat;
+  versions: NormalizedChangelogVersion[];
+  links: VersionLink[];
+  diagnostics: ChangelogDiagnostic[];
+  rawMarkdown: string;
+}
+
 // ── Loader / Pipeline types ────────────────────────────────────────
 
 export type SpecFormat = "json" | "yaml";

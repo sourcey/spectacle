@@ -92,11 +92,12 @@ export async function loadDoxygenTab(
     const html = rewriteGeneratedDoxygenHtmlLinks(renderMarkdown(markdown));
     const headings = extractHeadings(markdown);
 
-    pages.set(page.slug, {
-      title: page.title,
-      description,
-      slug: page.slug,
-      html,
+      pages.set(page.slug, {
+        kind: "markdown",
+        title: page.title,
+        description,
+        slug: page.slug,
+        html,
       headings,
       sourcePath: `api/${page.slug}.md`,
       editPath: page.kind === "group" ? `api/${page.slug}.md` : null,
@@ -143,6 +144,7 @@ export async function loadDoxygenTab(
     const indexHeadings = indexStyle === "rich" ? [] : extractHeadings(indexHtml);
 
     pages.set(indexSlug, {
+      kind: "markdown",
       title: tabLabel,
       description: "",
       slug: indexSlug,

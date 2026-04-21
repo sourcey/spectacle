@@ -1,8 +1,14 @@
 import { createContext } from "preact";
 import type { NormalizedSpec } from "../core/types.js";
 import type { SiteNavigation } from "../core/navigation.js";
-import type { MarkdownPage } from "../core/markdown-loader.js";
-import type { NavbarLink, ResolvedTheme } from "../config.js";
+import type { ChangelogPage, MarkdownPage } from "../core/markdown-loader.js";
+import type { NavbarLink, ResolvedChangelogConfig, ResolvedTheme } from "../config.js";
+
+export interface AlternateLink {
+  href: string;
+  type: string;
+  title?: string;
+}
 
 /**
  * Options that control rendering behavior.
@@ -14,6 +20,8 @@ export interface RenderOptions {
   assetBase: string;
   /** Relative path to the OG image for this page */
   ogImagePath?: string;
+  /** Alternate link tags to emit for the current page. */
+  alternateLinks?: AlternateLink[];
 }
 
 /**
@@ -27,11 +35,10 @@ export interface RenderContext {
 /**
  * What the current page is rendering.
  */
-export interface CurrentPage {
-  kind: "spec" | "markdown";
-  spec?: NormalizedSpec;
-  markdown?: MarkdownPage;
-}
+export type CurrentPage =
+  | { kind: "spec"; spec: NormalizedSpec }
+  | { kind: "markdown"; markdown: MarkdownPage }
+  | { kind: "changelog"; changelog: ChangelogPage };
 
 /**
  * Preact context for passing spec data to deeply nested components.
@@ -71,6 +78,7 @@ export interface SiteConfig {
   navbar: { links: NavbarLink[]; primary?: { type: "button"; label: string; href: string } };
   footer: { links: NavbarLink[] };
   customCSS?: string;
+  changelog: ResolvedChangelogConfig;
 }
 
 export const SiteContext = createContext<SiteConfig>(null as never);
