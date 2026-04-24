@@ -4,6 +4,8 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 ## Unreleased
 
+## 3.5.0 - 2026-04-24
+
 ### Added
 
 - OpenAPI 3.2 parsing and rendering for `QUERY` operations, response summaries, `deviceAuthorization` OAuth flows, hierarchical tags, `querystring` parameters, and media-type encoding metadata
@@ -18,7 +20,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 - Lint configuration for browser-side client scripts and generated MCP test artifacts
 
-## 3.4.12 — 2026-04-16
+## 3.4.12 - 2026-04-16
 
 ### Added
 
