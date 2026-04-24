@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildDocs, buildSiteDocs } from "../../src/index.js";
+import { loadConfig } from "../../src/config.js";
 import { resolve, dirname } from "node:path";
 import { readFile, rm, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -209,7 +210,7 @@ describe("buildDocs (integration)", () => {
 
       const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
       expect(llms).toContain("# Mixed Docs");
-      expect(llms).toContain("[Welcome to Mixed Docs](introduction.html)");
+      expect(llms).toContain("[Welcome to Mixed Docs](/introduction.html)");
       expect(llms).toContain("List all pets");
       expect(llms).toContain("nitro_get_status");
 
@@ -217,6 +218,59 @@ describe("buildDocs (integration)", () => {
       expect(llmsFull).toContain("Welcome to Mixed Docs");
       expect(llmsFull).toContain("GET /pets");
       expect(llmsFull).toContain("TOOL nitro_get_status");
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("emits a stable hosted-docs contract for search, llms-full, sitemap, and canonical URLs", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-langchain-contract");
+    const configDir = resolve(import.meta.dirname, "../llms-site");
+    try {
+      const config = await loadConfig(configDir);
+      config.siteUrl = "https://docs.example.com";
+      config.baseUrl = "/reference";
+
+      await buildSiteDocs({
+        config,
+        outputDir,
+      });
+
+      const searchIndex = JSON.parse(await readFile(resolve(outputDir, "search-index.json"), "utf-8")) as Array<{
+        title: string;
+        content: string;
+        url: string;
+        tab: string;
+        category: string;
+      }>;
+
+      expect(searchIndex.length).toBeGreaterThan(0);
+      expect(searchIndex).toContainEqual(expect.objectContaining({
+        title: "Welcome to Mixed Docs",
+        url: "/reference/introduction.html",
+        tab: "Documentation",
+        category: "Pages",
+      }));
+      expect(searchIndex).toContainEqual(expect.objectContaining({
+        title: "Why it exists",
+        url: "/reference/introduction.html#why-it-exists",
+        tab: "Documentation",
+        category: "Sections",
+      }));
+
+      const llmsFull = await readFile(resolve(outputDir, "llms-full.txt"), "utf-8");
+      expect(llmsFull).toContain("### Welcome to Mixed Docs");
+      expect(llmsFull).toContain("Path: `/reference/introduction.html`");
+      expect(llmsFull).toContain("### Petstore");
+      expect(llmsFull).toContain("Path: `/reference/api/`");
+
+      const sitemap = await readFile(resolve(outputDir, "sitemap.xml"), "utf-8");
+      expect(sitemap).toContain("<loc>https://docs.example.com/reference/introduction.html</loc>");
+      expect(sitemap).toContain("<loc>https://docs.example.com/reference/api/</loc>");
+
+      const introductionHtml = await readFile(resolve(outputDir, "introduction.html"), "utf-8");
+      expect(introductionHtml).toContain('rel="canonical" href="https://docs.example.com/reference/introduction.html"');
+      expect(introductionHtml).toContain('property="og:url" content="https://docs.example.com/reference/introduction.html"');
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }
@@ -273,6 +327,60 @@ describe("buildDocs (integration)", () => {
       expect(searchIndex).toContain("/reference/changelog.html#1-2-0");
 
       expect(existsSync(resolve(outputDir, "_og/changelog/1-2-0/index.png"))).toBe(true);
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("emits prettyUrls=slash as foo/index.html with slashed links", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-pretty-slash");
+    const configDir = resolve(import.meta.dirname, "../llms-site");
+    try {
+      const config = await loadConfig(configDir);
+      config.prettyUrls = "slash";
+
+      await buildSiteDocs({ config, outputDir });
+
+      expect(existsSync(resolve(outputDir, "introduction/index.html"))).toBe(true);
+      expect(existsSync(resolve(outputDir, "introduction.html"))).toBe(false);
+
+      const sitemap = await readFile(resolve(outputDir, "sitemap.xml"), "utf-8");
+      expect(sitemap).toContain("<loc>/introduction/</loc>");
+      expect(sitemap).not.toContain(".html</loc>");
+
+      const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
+      expect(llms).toContain("(/introduction/)");
+
+      const searchIndex = await readFile(resolve(outputDir, "search-index.json"), "utf-8");
+      expect(searchIndex).toContain("\"url\":\"/introduction/\"");
+      expect(searchIndex).not.toContain(".html\"");
+
+      expect(existsSync(resolve(outputDir, "_redirects"))).toBe(false);
+    } finally {
+      await rm(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("emits prettyUrls=strip with extensionless links and a _redirects file", async () => {
+    const outputDir = resolve(import.meta.dirname, "../../.test-output-pretty-strip");
+    const configDir = resolve(import.meta.dirname, "../llms-site");
+    try {
+      const config = await loadConfig(configDir);
+      config.prettyUrls = "strip";
+
+      await buildSiteDocs({ config, outputDir });
+
+      expect(existsSync(resolve(outputDir, "introduction/index.html"))).toBe(true);
+
+      const sitemap = await readFile(resolve(outputDir, "sitemap.xml"), "utf-8");
+      expect(sitemap).toContain("<loc>/introduction</loc>");
+
+      const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
+      expect(llms).toContain("(/introduction)");
+
+      const redirects = await readFile(resolve(outputDir, "_redirects"), "utf-8");
+      expect(redirects).toContain("/introduction/ /introduction 301");
+      expect(redirects).toContain("/introduction.html /introduction 301");
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }

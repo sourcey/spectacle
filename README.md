@@ -18,18 +18,18 @@ npx sourcey init
 
 ## Features
 
-- **API reference from OpenAPI** — endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
-- **MCP server documentation** — tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
-- **Markdown guides with rich components** — steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
-- **C++ and Doxygen** — feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
-- **llms.txt generation** — auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
-- **TypeScript config** — `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
-- **Theme presets** — default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
-- **Vite dev server** — SSR hot reload on every component and CSS change; spec and markdown changes trigger instant refresh
-- **Dark mode** — semantic design tokens, light/dark logo variants, localStorage persistence
-- **Client-side search** — instant fuzzy search across all pages and API operations; Cmd+K
-- **Static HTML output** — no framework runtime, no vendor lock-in. Deploy to GitHub Pages, Vercel, Netlify, S3, anywhere
-- **Open source** — AGPL-3.0. Self-host, fork, extend. Your docs, your infrastructure
+- **API reference from OpenAPI**: endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
+- **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
+- **Markdown guides with rich components**: steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
+- **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
+- **llms.txt generation**: auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
+- **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
+- **Theme presets**: default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
+- **Vite dev server**: SSR hot reload on every component and CSS change; spec and markdown changes trigger instant refresh
+- **Dark mode**: semantic design tokens, light/dark logo variants, localStorage persistence
+- **Client-side search**: instant fuzzy search across all pages and API operations; Cmd+K
+- **Static HTML output**: no framework runtime, no vendor lock-in. Deploy to GitHub Pages, Vercel, Netlify, S3, anywhere
+- **Open source**: AGPL-3.0. Self-host, fork, extend. Your docs, your infrastructure
 
 ### Sourcey vs alternatives
 

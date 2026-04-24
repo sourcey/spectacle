@@ -2,7 +2,7 @@ import { createContext } from "preact";
 import type { NormalizedSpec } from "../core/types.js";
 import type { SiteNavigation } from "../core/navigation.js";
 import type { ChangelogPage, MarkdownPage } from "../core/markdown-loader.js";
-import type { NavbarLink, ResolvedChangelogConfig, ResolvedTheme } from "../config.js";
+import type { NavbarLink, PrettyUrls, ResolvedChangelogConfig, ResolvedTheme } from "../config.js";
 
 export interface AlternateLink {
   href: string;
@@ -72,6 +72,7 @@ export interface SiteConfig {
   name: string;
   siteUrl?: string;
   baseUrl: string;
+  prettyUrls: PrettyUrls;
   theme: ResolvedTheme;
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;

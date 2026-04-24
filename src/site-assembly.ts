@@ -9,8 +9,8 @@ import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { buildNavFromSpec, buildNavFromPages } from "./core/navigation.js";
 import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
-import { tabPath } from "./config.js";
-import type { ResolvedConfig, ResolvedTab } from "./config.js";
+import { pageOutputPath, tabPath } from "./config.js";
+import type { PrettyUrls, ResolvedConfig, ResolvedTab } from "./config.js";
 import type { ChangelogPage, DocsPage, MarkdownPage } from "./core/markdown-loader.js";
 import type { SiteTab } from "./core/navigation.js";
 import type { ChangelogDiagnostic, NormalizedChangelogVersion, NormalizedSpec } from "./core/types.js";
@@ -55,8 +55,9 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
 
       for (const [slug, page] of pages) {
-        pageMap.set(tabPath(tab.slug, `${slug}.html`), {
-          outputPath: tabPath(tab.slug, `${slug}.html`),
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        pageMap.set(outputPath, {
+          outputPath,
           currentPage: { kind: "markdown", markdown: page },
           spec: primarySpec,
           tabSlug: tab.slug,
@@ -80,10 +81,11 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
         });
         pagesByPath.set(rp.slug, page);
 
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
         if (page.kind === "changelog") {
           changelogDiagnostics.push(...page.changelog.diagnostics);
-          pageMap.set(tabPath(tab.slug, `${slug}.html`), {
-            outputPath: tabPath(tab.slug, `${slug}.html`),
+          pageMap.set(outputPath, {
+            outputPath,
             currentPage: { kind: "changelog", changelog: page },
             spec: primarySpec,
             tabSlug: tab.slug,
@@ -92,8 +94,8 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
           continue;
         }
 
-        pageMap.set(tabPath(tab.slug, `${slug}.html`), {
-          outputPath: tabPath(tab.slug, `${slug}.html`),
+        pageMap.set(outputPath, {
+          outputPath,
           currentPage: { kind: "markdown", markdown: page },
           spec: primarySpec,
           tabSlug: tab.slug,
@@ -149,6 +151,7 @@ export function rebuildMarkdownTabNavigation(
   siteTabs: SiteTab[],
   tabs: ResolvedTab[],
   tabSlug: string,
+  prettyUrls: PrettyUrls,
 ): void {
   const tab = tabs.find((candidate) => candidate.slug === tabSlug);
   if (!tab?.groups) return;
@@ -157,7 +160,7 @@ export function rebuildMarkdownTabNavigation(
   for (const group of tab.groups) {
     for (const rp of group.pages) {
       const slug = slugFromPath(rp.slug);
-      const entry = pageMap.get(tabPath(tab.slug, `${slug}.html`));
+      const entry = pageMap.get(pageOutputPath(tab.slug, slug, prettyUrls));
       if (!entry) continue;
 
       if (entry.currentPage.kind === "markdown") {
@@ -221,6 +224,7 @@ export async function buildSiteConfig(config: ResolvedConfig): Promise<SiteConfi
     name: config.name,
     siteUrl: config.siteUrl,
     baseUrl: config.baseUrl,
+    prettyUrls: config.prettyUrls,
     theme: config.theme,
     logo: logo?.light ? logo : undefined,
     favicon: config.favicon ? await resolveAssetUrl(config.favicon) : undefined,
@@ -251,7 +255,7 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
   const pathMap = new Map<string, string>();
   for (const page of pages) {
     const out = page.outputPath;
-    const clean = out.replace(/\.html$/, "");
+    const clean = out.replace(/\/index\.html$/, "").replace(/\.html$/, "");
     pathMap.set(clean, out);
 
     const docsSourcePath = getCanonicalSourcePath(page);
@@ -267,6 +271,7 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
   const repoBase = config.repo?.replace(/\/$/, "");
   const branch = config.editBranch;
   const sourceBase = repoBase && branch ? `${repoBase}/tree/${branch}` : undefined;
+  const prettyUrls = config.prettyUrls;
 
   for (const page of pages) {
     const docsSourcePath = getDocsSourcePath(page);
@@ -279,6 +284,7 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
         docsSourcePath,
         pathMap,
         sourceBase,
+        prettyUrls,
       );
       continue;
     }
@@ -294,6 +300,7 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
           docsSourcePath,
           pathMap,
           sourceBase,
+          prettyUrls,
         );
       }
 
@@ -305,10 +312,11 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
             docsSourcePath,
             pathMap,
             sourceBase,
+            prettyUrls,
           );
           entry.links = entry.links.map((link) => ({
             ...link,
-            href: resolveInternalHref(link.href, page.outputPath, docsSourcePath, pathMap, sourceBase) ?? link.href,
+            href: resolveInternalHref(link.href, page.outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls) ?? link.href,
           }));
         }
       }
@@ -336,10 +344,11 @@ function attachChangelogFeeds(
           tabPath(page.tabSlug, `${changelog.slug}/${version.id}/index.html`),
           config.siteUrl,
           config.baseUrl,
+          config.prettyUrls,
         );
       }
 
-      return `${toPublicUrl(page.outputPath, config.siteUrl, config.baseUrl)}#${version.id}`;
+      return `${toPublicUrl(page.outputPath, config.siteUrl, config.baseUrl, config.prettyUrls)}#${version.id}`;
     };
 
     const atomPath = globalFeedLinks && changelogPages.length === 1
@@ -351,9 +360,9 @@ function attachChangelogFeeds(
 
     const feedConfig = config.changelog.feed || undefined;
     const feeds = generateChangelogFeeds(changelog, {
-      atomPath: toPublicUrl(atomPath, config.siteUrl, config.baseUrl),
-      rssPath: toPublicUrl(rssPath, config.siteUrl, config.baseUrl),
-      pagePath: toPublicUrl(page.outputPath, config.siteUrl, config.baseUrl),
+      atomPath: toPublicUrl(atomPath, config.siteUrl, config.baseUrl, config.prettyUrls),
+      rssPath: toPublicUrl(rssPath, config.siteUrl, config.baseUrl, config.prettyUrls),
+      pagePath: toPublicUrl(page.outputPath, config.siteUrl, config.baseUrl, config.prettyUrls),
       siteName: config.name,
       title: feedConfig?.title,
       description: feedConfig?.description,
@@ -493,10 +502,11 @@ function rewriteHtmlLinks(
   outputPath: string,
   docsSourcePath: string,
   pathMap: Map<string, string>,
-  sourceBase?: string,
+  sourceBase: string | undefined,
+  prettyUrls: PrettyUrls,
 ): string {
   return html.replace(/href="([^"]+)"/g, (match, href: string) => {
-    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase);
+    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls);
     return resolved ? `href="${resolved}"` : match;
   });
 }
@@ -506,10 +516,11 @@ function rewriteMarkdownLinks(
   outputPath: string,
   docsSourcePath: string,
   pathMap: Map<string, string>,
-  sourceBase?: string,
+  sourceBase: string | undefined,
+  prettyUrls: PrettyUrls,
 ): string {
   return markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label: string, href: string) => {
-    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase);
+    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls);
     return resolved ? `[${label}](${resolved})` : match;
   });
 }
@@ -519,7 +530,8 @@ function resolveInternalHref(
   outputPath: string,
   docsSourcePath: string,
   pathMap: Map<string, string>,
-  sourceBase?: string,
+  sourceBase: string | undefined,
+  prettyUrls: PrettyUrls,
 ): string | null {
   if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("mailto:")) {
     return null;
@@ -560,7 +572,7 @@ function resolveInternalHref(
   }
 
   if (target) {
-    return `${toRoot}${target}${hashSuffix}`;
+    return `${toRoot}${toPrettyLink(target, prettyUrls)}${hashSuffix}`;
   }
 
   if (sourceBase && href.includes("../") && docsSourcePath) {
@@ -572,4 +584,20 @@ function resolveInternalHref(
   }
 
   return null;
+}
+
+/**
+ * Rewrite an on-disk output path into the relative href that a user visits.
+ * - `"slash"`: trims trailing `index.html`, leaves a directory-style `foo/`.
+ * - `"strip"`: trims both `index.html` and the trailing slash, so the browser sees `foo`.
+ * - `false`: returns the path unchanged.
+ */
+function toPrettyLink(target: string, prettyUrls: PrettyUrls): string {
+  if (!prettyUrls) return target;
+  if (target === "index.html") return "";
+  if (target.endsWith("/index.html")) {
+    const withSlash = target.slice(0, -"index.html".length);
+    return prettyUrls === "strip" ? withSlash.slice(0, -1) : withSlash;
+  }
+  return target;
 }

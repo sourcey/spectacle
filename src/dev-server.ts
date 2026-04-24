@@ -2,7 +2,7 @@ import { createServer as createViteServer, type InlineConfig } from "vite";
 import { resolve, dirname, extname, basename, relative } from "node:path";
 import { access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { loadConfig, resolveConfigFromRaw, tabPath } from "./config.js";
+import { loadConfig, pageOutputPath, resolveConfigFromRaw, tabPath } from "./config.js";
 import type { ResolvedConfig } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
@@ -178,7 +178,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       });
       if (cache !== snapshot) return;
 
-      const pageKey = tabPath(content.tabSlug, `${slug}.html`);
+      const pageKey = pageOutputPath(content.tabSlug, slug, config.prettyUrls);
       const existing = data.pageMap.get(pageKey);
       if (page.kind === "changelog" || existing?.currentPage.kind === "changelog") {
         cache = null;
@@ -190,7 +190,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       if (existing) {
         existing.currentPage = { kind: "markdown", markdown: page };
       }
-      rebuildMarkdownTabNavigation(data.pageMap, data.siteTabs, config.tabs, content.tabSlug);
+      rebuildMarkdownTabNavigation(data.pageMap, data.siteTabs, config.tabs, content.tabSlug, config.prettyUrls);
     } else if (content.kind === "doxygen") {
       const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
       if (!tab?.doxygen) return;
@@ -204,8 +204,9 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       }
 
       for (const [slug, page] of pages) {
-        data.pageMap.set(tabPath(tab.slug, `${slug}.html`), {
-          outputPath: tabPath(tab.slug, `${slug}.html`),
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        data.pageMap.set(outputPath, {
+          outputPath,
           spec: data.primarySpec,
           currentPage: { kind: "markdown", markdown: page },
           tabSlug: tab.slug,
@@ -295,7 +296,12 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       pagePath += "/index.html";
     }
 
-    const pageData = data.pageMap.get(pagePath);
+    let pageData = data.pageMap.get(pagePath);
+    if (!pageData && pagePath.endsWith(".html") && !pagePath.endsWith("/index.html")) {
+      // Fallback for stale `.html` links when prettyUrls is enabled.
+      const pretty = pagePath.replace(/\.html$/, "/index.html");
+      pageData = data.pageMap.get(pretty);
+    }
     if (!pageData) return null;
 
     const activeNav = withActivePage(navigation, pageData.tabSlug, pageData.pageSlug);

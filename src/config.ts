@@ -2,6 +2,9 @@ import { access, readdir } from "node:fs/promises";
 import { resolve, relative, dirname, basename, extname } from "node:path";
 import { createJiti } from "jiti";
 import { normalizeBaseUrl, normalizeSiteUrl } from "./site-url.js";
+import type { PrettyUrls } from "./site-url.js";
+
+export type { PrettyUrls } from "./site-url.js";
 
 // ---------------------------------------------------------------------------
 // User-facing config types (used in sourcey.config.ts)
@@ -45,6 +48,13 @@ export interface SourceyConfig {
   siteUrl?: string;
   /** Public path prefix when the docs are served from a subpath (e.g. "/reference"). */
   baseUrl?: string;
+  /**
+   * Clean URLs without `.html` extensions.
+   * - `"slash"`: emit `foo/index.html` and link as `/foo/`.
+   * - `"strip"`: same layout but link as `/foo` and emit a `_redirects` file for stale variants.
+   * - `false` (default): keep `.html` extensions.
+   */
+  prettyUrls?: PrettyUrls;
   theme?: ThemeConfig;
   logo?: string | {
     light: string;
@@ -155,6 +165,7 @@ export interface ResolvedConfig {
   name: string;
   siteUrl?: string;
   baseUrl: string;
+  prettyUrls: PrettyUrls;
   theme: ResolvedTheme;
   logo?: { light?: string; dark?: string; href?: string };
   favicon?: string;
@@ -259,6 +270,7 @@ export function configFromSpec(specPath: string): ResolvedConfig {
     name: "API Reference",
     siteUrl: undefined,
     baseUrl: "",
+    prettyUrls: false,
     theme: {
       preset: "default",
       colors: { ...DEFAULT_COLORS },
@@ -289,6 +301,7 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     name: raw.name ?? "",
     siteUrl: normalizeSiteUrl(raw.siteUrl),
     baseUrl: normalizeBaseUrl(raw.baseUrl),
+    prettyUrls: resolvePrettyUrls(raw.prettyUrls),
     theme,
     logo,
     favicon: raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:") ? resolve(configDir, raw.favicon) : raw.favicon,
@@ -514,6 +527,24 @@ export function tabPath(tabSlug: string, file: string): string {
   if (!tabSlug) return file;
   if (file.startsWith(`${tabSlug}/`)) return file;
   return `${tabSlug}/${file}`;
+}
+
+/**
+ * Build the on-disk output path for a content page within a tab.
+ * When `prettyUrls` is enabled, the page is emitted as `slug/index.html` so hosts
+ * serve it at `/slug/` (or `/slug` with rewrites). Otherwise it's emitted as `slug.html`.
+ */
+export function pageOutputPath(tabSlug: string, slug: string, prettyUrls: PrettyUrls): string {
+  if (prettyUrls) {
+    return tabPath(tabSlug, `${slug}/index.html`);
+  }
+  return tabPath(tabSlug, `${slug}.html`);
+}
+
+function resolvePrettyUrls(value: PrettyUrls | undefined): PrettyUrls {
+  if (value === undefined || value === false) return false;
+  if (value === "slash" || value === "strip") return value;
+  throw new Error(`Invalid prettyUrls "${String(value)}". Expected false, "slash", or "strip".`);
 }
 
 export function hexToRgb(hex: string): string {

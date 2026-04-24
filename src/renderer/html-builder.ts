@@ -59,7 +59,7 @@ export function createRenderOptions(
   },
 ): RenderOptions {
   const assetBase = options?.assetBase ?? "";
-  const pagePublicPath = toPublicPath(page.outputPath, site.baseUrl);
+  const pagePublicPath = toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls);
 
   return {
     embeddable: options?.embeddable ?? false,
@@ -136,7 +136,7 @@ export async function buildSite(
   }
 
   const urls = pages.map((page) => {
-    const publicPath = toPublicPath(page.outputPath, site.baseUrl);
+    const publicPath = toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls);
     const loc = site.siteUrl ? toAbsoluteUrl(publicPath, site.siteUrl) : publicPath;
     return `  <url><loc>${loc}</loc></url>`;
   });
