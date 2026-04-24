@@ -8,6 +8,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 - OpenAPI 3.2 parsing and rendering for `QUERY` operations, response summaries, `deviceAuthorization` OAuth flows, hierarchical tags, `querystring` parameters, and media-type encoding metadata
 - `$self`-aware reference resolution for canonical multi-document OpenAPI descriptions
+- `prettyUrls` config option for clean URLs (`"slash"` emits `foo/index.html` and links as `/foo/`; `"strip"` links as `/foo` and emits a `_redirects` file for static hosts)
 
 ### Changed
 

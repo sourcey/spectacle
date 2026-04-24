@@ -140,7 +140,7 @@ export const init = defineCommand({
     }
 
     if (doxyfile) {
-      const useDoxygen = (await consola.prompt(`Found ${doxyfile} — add Doxygen API reference?`, {
+      const useDoxygen = (await consola.prompt(`Found ${doxyfile}. Add Doxygen API reference?`, {
         type: "confirm",
         initial: true,
       })) as boolean;

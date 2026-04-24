@@ -53,7 +53,7 @@ const build = defineCommand({
 
     try {
       if (args.spec) {
-        if (!args.quiet) console.log(`\nSourcey — generating docs from ${args.spec}\n`);
+        if (!args.quiet) console.log(`\nSourcey: generating docs from ${args.spec}\n`);
 
         const result = await buildDocs({
           specSource: args.spec,
@@ -72,7 +72,7 @@ const build = defineCommand({
         }
       } else {
         const config = await loadConfig(args.config);
-        if (!args.quiet) console.log(`\nSourcey — building documentation site\n`);
+        if (!args.quiet) console.log(`\nSourcey: building documentation site\n`);
 
         const result = await buildSiteDocs({
           config,

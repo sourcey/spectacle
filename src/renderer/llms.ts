@@ -1,6 +1,7 @@
 import type { SiteNavigation } from "../core/navigation.js";
 import type { NormalizedOperation, NormalizedResponse, NormalizedSchema } from "../core/types.js";
 import { htmlId } from "../utils/html-id.js";
+import { toPublicPath } from "../site-url.js";
 import type { SiteConfig } from "./context.js";
 import type { SitePage } from "./html-builder.js";
 
@@ -12,6 +13,7 @@ export function generateLlmsTxt(
   const lines: string[] = [];
   const title = resolveSiteTitle(pages, site);
   const summary = resolveSiteSummary(pages, site);
+  const href = (page: SitePage): string => toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls);
 
   lines.push(`# ${title}`);
   lines.push("");
@@ -32,13 +34,13 @@ export function generateLlmsTxt(
       if (page.currentPage.kind === "markdown" && page.currentPage.markdown) {
         const doc = page.currentPage.markdown;
         const desc = doc.description || excerpt(stripHtml(doc.html));
-        lines.push(`- [${doc.title}](${page.outputPath})${desc ? `: ${desc}` : ""}`);
+        lines.push(`- [${doc.title}](${href(page)})${desc ? `: ${desc}` : ""}`);
         continue;
       }
       if (page.currentPage.kind === "changelog" && page.currentPage.changelog && !page.currentPage.changelog.permalinkVersionId) {
         const doc = page.currentPage.changelog;
         const desc = doc.description || excerpt(summarizeChangelog(doc));
-        lines.push(`- [${doc.title}](${page.outputPath})${desc ? `: ${desc}` : ""}`);
+        lines.push(`- [${doc.title}](${href(page)})${desc ? `: ${desc}` : ""}`);
         continue;
       }
 
@@ -48,13 +50,13 @@ export function generateLlmsTxt(
         : spec.info.description
           ? firstLine(spec.info.description)
           : `${spec.operations.length} documented operations`;
-      lines.push(`- [${spec.info.title}](${page.outputPath})${overview ? `: ${overview}` : ""}`);
+      lines.push(`- [${spec.info.title}](${href(page)})${overview ? `: ${overview}` : ""}`);
 
       for (const op of spec.operations) {
         if (op.hidden) continue;
         const opLabel = op.summary ?? operationDisplayName(op);
         const opSummary = [operationKind(op), firstLine(op.description)].filter(Boolean).join(" — ");
-        lines.push(`- [${opLabel}](${page.outputPath}#${operationAnchor(op)})${opSummary ? `: ${opSummary}` : ""}`);
+        lines.push(`- [${opLabel}](${href(page)}#${operationAnchor(op)})${opSummary ? `: ${opSummary}` : ""}`);
       }
     }
 
@@ -92,11 +94,11 @@ export function generateLlmsFullTxt(
 
     for (const page of tabPages) {
       if (page.currentPage.kind === "markdown" && page.currentPage.markdown) {
-        appendMarkdownPage(lines, page);
+        appendMarkdownPage(lines, page, site);
       } else if (page.currentPage.kind === "changelog" && page.currentPage.changelog && !page.currentPage.changelog.permalinkVersionId) {
-        appendChangelogPage(lines, page);
+        appendChangelogPage(lines, page, site);
       } else {
-        appendSpecPage(lines, page);
+        appendSpecPage(lines, page, site);
       }
     }
   }
@@ -104,12 +106,12 @@ export function generateLlmsFullTxt(
   return lines.join("\n");
 }
 
-function appendMarkdownPage(lines: string[], page: SitePage): void {
+function appendMarkdownPage(lines: string[], page: SitePage, site: SiteConfig): void {
   if (page.currentPage.kind !== "markdown") return;
   const doc = page.currentPage.markdown;
   lines.push(`### ${doc.title}`);
   lines.push("");
-  lines.push(`Path: \`${page.outputPath}\``);
+  lines.push(`Path: \`${toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls)}\``);
   lines.push("");
 
   if (doc.description) {
@@ -124,12 +126,12 @@ function appendMarkdownPage(lines: string[], page: SitePage): void {
   }
 }
 
-function appendChangelogPage(lines: string[], page: SitePage): void {
+function appendChangelogPage(lines: string[], page: SitePage, site: SiteConfig): void {
   if (page.currentPage.kind !== "changelog") return;
   const doc = page.currentPage.changelog;
   lines.push(`### ${doc.title}`);
   lines.push("");
-  lines.push(`Path: \`${page.outputPath}\``);
+  lines.push(`Path: \`${toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls)}\``);
   lines.push("");
 
   if (doc.description) {
@@ -186,12 +188,12 @@ function appendChangelogSummary(lines: string[], pages: SitePage[]): void {
   }
 }
 
-function appendSpecPage(lines: string[], page: SitePage): void {
+function appendSpecPage(lines: string[], page: SitePage, site: SiteConfig): void {
   const spec = page.currentPage.kind === "spec" ? page.currentPage.spec : page.spec;
 
   lines.push(`### ${spec.info.title}`);
   lines.push("");
-  lines.push(`Path: \`${page.outputPath}\``);
+  lines.push(`Path: \`${toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls)}\``);
   if (spec.info.version) {
     lines.push(`Version: ${spec.info.version}`);
   }

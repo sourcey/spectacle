@@ -15,6 +15,20 @@ describe("site-url helpers", () => {
     expect(toPublicUrl("feed.xml", "https://docs.example.com", "/reference/")).toBe("https://docs.example.com/reference/feed.xml");
   });
 
+  it("renders pretty URLs with slash mode", () => {
+    expect(toPublicPath("docs/intro/index.html", "", "slash")).toBe("/docs/intro/");
+    expect(toPublicPath("intro/index.html", "/ref/", "slash")).toBe("/ref/intro/");
+    expect(toPublicPath("index.html", "", "slash")).toBe("/");
+  });
+
+  it("renders pretty URLs with strip mode", () => {
+    expect(toPublicPath("docs/intro/index.html", "", "strip")).toBe("/docs/intro");
+    expect(toPublicPath("intro/index.html", "/ref/", "strip")).toBe("/ref/intro");
+    expect(toPublicPath("index.html", "", "strip")).toBe("/");
+    expect(toPublicUrl("docs/intro/index.html", "https://docs.example.com", "", "strip"))
+      .toBe("https://docs.example.com/docs/intro");
+  });
+
   it("strips the configured baseUrl for dev routing", () => {
     expect(stripBaseUrl("/reference", "/reference/")).toBe("/");
     expect(stripBaseUrl("/reference/changelog.html", "/reference/")).toBe("/changelog.html");
