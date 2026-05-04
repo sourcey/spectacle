@@ -23,6 +23,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime/debug"
 	"sort"
 	"strings"
 	"time"
@@ -198,7 +199,7 @@ func parseFlags() (*config, error) {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Println(version)
+		fmt.Println(versionString())
 		os.Exit(0)
 	}
 
@@ -221,6 +222,20 @@ func parseFlags() (*config, error) {
 		includeUnexported: *includeUnexported,
 		out:               *out,
 	}, nil
+}
+
+func versionString() string {
+	if version != "" && version != "dev" {
+		return version
+	}
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return version
+	}
+	if info.Main.Version == "" || info.Main.Version == "(devel)" {
+		return version
+	}
+	return strings.TrimPrefix(info.Main.Version, "v")
 }
 
 func build(cfg *config) (*snapshot, error) {
