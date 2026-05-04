@@ -76,7 +76,12 @@
     "developer-documentation",
     "doxygen",
     "godoc",
-    "golang"
+    "golang",
+    "go-docs",
+    "go-documentation",
+    "mcp",
+    "llms-txt",
+    "static-docs"
   ],
   "funding": {
     "url": "https://sourcey.com"

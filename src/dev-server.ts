@@ -272,7 +272,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
       const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
       if (tab) {
-        const navTab = buildNavFromSpec(spec, tab.slug);
+        const navTab = buildNavFromSpec(spec, tab.slug, config.prettyUrls);
         navTab.label = tab.label;
         const idx = data.siteTabs.findIndex((candidate) => candidate.slug === content.tabSlug);
         if (idx !== -1) data.siteTabs[idx] = navTab;
@@ -295,7 +295,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
       const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
       if (tab) {
-        const navTab = buildNavFromSpec(spec, tab.slug);
+        const navTab = buildNavFromSpec(spec, tab.slug, config.prettyUrls);
         navTab.label = tab.label;
         const idx = data.siteTabs.findIndex((candidate) => candidate.slug === content.tabSlug);
         if (idx !== -1) data.siteTabs[idx] = navTab;

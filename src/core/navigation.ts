@@ -1,9 +1,20 @@
 import type { NormalizedSpec } from "./types.js";
 import { tagNavigationLabel } from "./tag-utils.js";
-import { tabPath } from "../config.js";
+import { pageOutputPath, tabPath } from "../config.js";
 import type { ResolvedTab } from "../config.js";
 import type { DocsPage } from "./markdown-loader.js";
 import { htmlId } from "../utils/html-id.js";
+import { toPublicPath, type PrettyUrls } from "../site-url.js";
+
+/**
+ * Convert a file output path (e.g. `concepts/index.html`) into the relative
+ * href the nav should emit, honouring the `prettyUrls` mode. The Sidebar
+ * prepends a `../` depth prefix at render time, so the value returned here
+ * must be root-relative *without* a leading slash.
+ */
+function navHref(outputPath: string, prettyUrls: PrettyUrls): string {
+  return toPublicPath(outputPath, "", prettyUrls).replace(/^\//, "");
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -52,8 +63,9 @@ export interface SiteNavItem {
 export function buildNavFromSpec(
   spec: NormalizedSpec,
   tabSlug: string,
+  prettyUrls: PrettyUrls = false,
 ): SiteTab {
-  const basePath = tabPath(tabSlug, "index.html");
+  const basePath = navHref(tabPath(tabSlug, "index.html"), prettyUrls);
   const groups: SiteNavGroup[] = [];
 
   // Intro group
@@ -110,6 +122,7 @@ export function buildNavFromSpec(
 export function buildNavFromPages(
   tab: ResolvedTab,
   pagesByPath: Map<string, DocsPage>,
+  prettyUrls: PrettyUrls = false,
 ): SiteTab {
   const groups: SiteNavGroup[] = [];
 
@@ -121,7 +134,7 @@ export function buildNavFromPages(
         if (!page) continue;
         items.push({
           label: page.title,
-          href: tabPath(tab.slug, `${page.slug}.html`),
+          href: navHref(pageOutputPath(tab.slug, page.slug, prettyUrls), prettyUrls),
           id: page.slug,
         });
       }

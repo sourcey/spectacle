@@ -5,8 +5,11 @@
 Sourcey is an open source documentation platform. Point it at an OpenAPI spec, an MCP server, a Doxygen XML directory, or a Go module; add markdown guides; get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
-[![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
+[![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=main)](https://github.com/sourcey/sourcey/actions)
 [![node](https://img.shields.io/node/v/sourcey)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/sourcey)](LICENSE)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sourcey/sourcey/go/sourcey-godoc.svg)](https://pkg.go.dev/github.com/sourcey/sourcey/go/sourcey-godoc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sourcey/sourcey/go/sourcey-godoc)](https://goreportcard.com/report/github.com/sourcey/sourcey/go/sourcey-godoc)
 
 ```bash
 npx sourcey init
@@ -23,7 +26,7 @@ npx sourcey init
 - **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
 - **Markdown guides with rich components**: steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
 - **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
-- **Go and godoc**: native package documentation extracted from Go source via the toolchain. No Doxygen detour. Live mode runs on every build; snapshot mode commits a `godoc.json` for JS-only docs hosts
+- **Go and godoc**: native package documentation extracted from Go source via the toolchain. Render Go modules as Sourcey tabs, generate standalone static Go docs sites, or commit `godoc.json` snapshots for JS-only docs hosts. No Doxygen detour
 - **llms.txt generation**: auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
 - **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
 - **Theme presets**: default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
@@ -51,18 +54,31 @@ npx sourcey init
 
 ## Install
 
+### Sourcey
+
 ```bash
-# npm (recommended)
+npm install -g sourcey
 npx sourcey init
+```
 
-# Homebrew
-brew tap sourcey/sourcey && brew install sourcey
+### Go docs generator
 
-# Docker
-docker run -v $(pwd):/docs sourcey/sourcey build
+```bash
+go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
+```
 
-# Nix
-nix run github:sourcey/sourcey
+### Homebrew
+
+```bash
+brew tap sourcey/tap
+brew install sourcey-godoc
+```
+
+### Scoop
+
+```powershell
+scoop bucket add sourcey https://github.com/sourcey/scoop-bucket
+scoop install sourcey-godoc
 ```
 
 ## Quick start
