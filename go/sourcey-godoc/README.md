@@ -1,10 +1,11 @@
 # sourcey-godoc
 
-Native Go documentation extractor for Sourcey.
+Native Go documentation generator for Sourcey.
 
 `sourcey-godoc` reads a Go module with the Go toolchain (`go list`, `go/parser`,
-`go/doc`) and emits Sourcey's portable `sourcey-godoc` JSON snapshot. Sourcey's
-main CLI uses the same extractor internally for live-mode Go docs builds.
+`go/doc`) and can either generate a standalone static docs site or emit
+Sourcey's portable `sourcey-godoc` JSON snapshot. Sourcey's main CLI uses the
+same generator internally for live-mode Go docs builds.
 
 ## Install
 
@@ -21,12 +22,23 @@ sourcey godoc --module . --packages ./... --out godoc.json
 
 Native binaries are published as GitHub release assets for
 `go/sourcey-godoc/v*` tags. Package-manager manifests such as Homebrew, Scoop,
-and WinGet should consume those assets and their published checksums.
+and WinGet consume those assets and their published checksums.
 
 ## Usage
 
+Generate a standalone static Go docs site:
+
 ```bash
-sourcey-godoc --module . --packages ./... --out godoc.json
+sourcey-godoc generate --module . --packages ./... --out site
+```
+
+The generated directory contains HTML pages, `sourcey-godoc.css`, `llms.txt`,
+`llms-full.txt`, and `sourcey-godoc.json`.
+
+Generate only the portable snapshot:
+
+```bash
+sourcey-godoc snapshot --module . --packages ./... --out godoc.json
 ```
 
 Common options:
@@ -36,7 +48,7 @@ Common options:
 - `--include-tests=false` skips examples from `*_test.go`.
 - `--include-unexported` includes unexported symbols.
 
-The emitted JSON is intended for Sourcey's `godoc` snapshot mode:
+The emitted JSON snapshot is intended for Sourcey's `godoc` snapshot mode:
 
 ```ts
 export default {

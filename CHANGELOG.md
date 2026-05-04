@@ -8,7 +8,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 - Native Go documentation as a fifth tab source (`godoc`). Sourcey extracts package docs directly from Go source via the toolchain (`go list` + `go/parser` + `go/doc`); no Doxygen pipeline. Supports live mode (runs Go at build time) and snapshot mode (reads a committed `godoc.json`); `mode: "auto"` (default) picks live when Go is available and snapshot otherwise. Renders consts, vars, functions, types (struct, interface, alias, defined), fields with tags, methods, and examples from `*_test.go`.
 - `sourcey godoc --module . --packages './...' --out godoc.json` CLI command to snapshot a Go module's documentation into a portable JSON artifact for JS-only docs hosts.
-- Standalone `sourcey-godoc` Go module and CLI at `github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc`, with cross-platform GitHub release binaries on `go/sourcey-godoc/v*` tags.
+- Standalone `sourcey-godoc` Go module and CLI at `github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc`, with `generate` for static Go docs sites, `snapshot` for portable JSON, and cross-platform GitHub release binaries on `go/sourcey-godoc/v*` tags.
 - `goEnv` option (`GOOS`/`GOARCH`/`tags`) for pinning the live-mode Go build environment so docs reproduce across hosts.
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.

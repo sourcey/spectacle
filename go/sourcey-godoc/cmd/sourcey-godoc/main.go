@@ -143,12 +143,14 @@ type goListPackage struct {
 }
 
 type config struct {
+	command           string
 	moduleDir         string
 	patterns          []string
 	excludes          []string
 	includeTests      bool
 	includeUnexported bool
 	out               string
+	title             string
 }
 
 func main() {
@@ -162,18 +164,14 @@ func main() {
 		fail(err)
 	}
 
-	payload, err := json.MarshalIndent(snap, "", "  ")
-	if err != nil {
-		fail(err)
-	}
-
-	if cfg.out != "" {
-		if err := os.WriteFile(cfg.out, append(payload, '\n'), 0o644); err != nil {
+	if cfg.command == "generate" {
+		if err := writeSite(cfg, snap); err != nil {
 			fail(err)
 		}
 	} else {
-		os.Stdout.Write(payload)
-		os.Stdout.WriteString("\n")
+		if err := writeSnapshot(cfg.out, snap); err != nil {
+			fail(err)
+		}
 	}
 
 	if hasErrorDiagnostic(snap.Diagnostics) {
@@ -187,20 +185,42 @@ func fail(err error) {
 }
 
 func parseFlags() (*config, error) {
-	module := flag.String("module", ".", "Go module directory")
-	includeTests := flag.Bool("include-tests", true, "include examples from *_test.go")
-	includeUnexported := flag.Bool("include-unexported", false, "include unexported symbols")
-	out := flag.String("out", "", "output file (default stdout)")
-	showVersion := flag.Bool("version", false, "print version and exit")
+	args := os.Args[1:]
+	command := "snapshot"
+	if len(args) > 0 {
+		switch args[0] {
+		case "snapshot", "generate":
+			command = args[0]
+			args = args[1:]
+		}
+	}
+
+	defaultOut := ""
+	if command == "generate" {
+		defaultOut = "site"
+	}
+
+	fs := flag.NewFlagSet("sourcey-godoc "+command, flag.ContinueOnError)
+	module := fs.String("module", ".", "Go module directory")
+	includeTests := fs.Bool("include-tests", true, "include examples from *_test.go")
+	includeUnexported := fs.Bool("include-unexported", false, "include unexported symbols")
+	out := fs.String("out", defaultOut, "output file for snapshot mode; output directory for generate mode")
+	title := fs.String("title", "", "site title for generate mode")
+	showVersion := fs.Bool("version", false, "print version and exit")
 	var patterns stringSliceFlag
 	var excludes stringSliceFlag
-	flag.Var(&patterns, "packages", "package patterns (repeatable; comma-separated allowed)")
-	flag.Var(&excludes, "exclude", "package import-path prefixes to exclude (repeatable)")
-	flag.Parse()
+	fs.Var(&patterns, "packages", "package patterns (repeatable; comma-separated allowed)")
+	fs.Var(&excludes, "exclude", "package import-path prefixes to exclude (repeatable)")
+	if err := fs.Parse(args); err != nil {
+		return nil, err
+	}
 
 	if *showVersion {
 		fmt.Println(versionString())
 		os.Exit(0)
+	}
+	if fs.NArg() > 0 {
+		return nil, fmt.Errorf("unexpected arguments: %s", strings.Join(fs.Args(), " "))
 	}
 
 	abs, err := filepath.Abs(*module)
@@ -215,13 +235,31 @@ func parseFlags() (*config, error) {
 	}
 
 	return &config{
+		command:           command,
 		moduleDir:         abs,
 		patterns:          patterns,
 		excludes:          excludes,
 		includeTests:      *includeTests,
 		includeUnexported: *includeUnexported,
 		out:               *out,
+		title:             *title,
 	}, nil
+}
+
+func writeSnapshot(out string, snap *snapshot) error {
+	payload, err := json.MarshalIndent(snap, "", "  ")
+	if err != nil {
+		return err
+	}
+	payload = append(payload, '\n')
+	if out == "" {
+		_, err = os.Stdout.Write(payload)
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(out), 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(out, payload, 0o644)
 }
 
 func versionString() string {

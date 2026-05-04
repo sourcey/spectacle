@@ -165,12 +165,13 @@ then point the tab at it:
 }
 ```
 
-The extractor is also a standalone Go CLI for projects that want to generate
-snapshots without installing the full Sourcey npm package:
+The extractor is also a standalone Go CLI for projects that want a native Go
+docs generator without installing the full Sourcey npm package:
 
 ```bash
 go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
-sourcey-godoc --module . --packages './...' --out docs/godoc.json
+sourcey-godoc generate --module . --packages './...' --out site
+sourcey-godoc snapshot --module . --packages './...' --out docs/godoc.json
 ```
 
 ### Markdown components
@@ -218,7 +219,7 @@ sourcey build                     Build site (reads sourcey.config.ts)
 sourcey build api.yaml            Quick build from a single spec
 sourcey validate api.yaml         Validate a spec file
 sourcey godoc --out godoc.json    Snapshot a Go module's docs to JSON
-sourcey-godoc --out godoc.json    Standalone Go CLI for godoc snapshots
+sourcey-godoc generate --out site Standalone Go CLI for static godoc sites
 ```
 
 | Command | Flag | Description |
