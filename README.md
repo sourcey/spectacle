@@ -2,7 +2,7 @@
 
 > Your API docs shouldn't depend on someone else's SaaS.
 
-Sourcey is an open source documentation platform. Point it at an OpenAPI spec, an MCP server, or a Doxygen XML directory; add markdown guides; get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
+Sourcey is an open source documentation platform. Point it at an OpenAPI spec, an MCP server, a Doxygen XML directory, or a Go module; add markdown guides; get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
 [![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=master)](https://github.com/sourcey/sourcey/actions)
@@ -23,6 +23,7 @@ npx sourcey init
 - **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
 - **Markdown guides with rich components**: steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
 - **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
+- **Go and godoc**: native package documentation extracted from Go source via the toolchain. No Doxygen detour. Live mode runs on every build; snapshot mode commits a `godoc.json` for JS-only docs hosts
 - **llms.txt generation**: auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
 - **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
 - **Theme presets**: default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
@@ -41,6 +42,7 @@ npx sourcey init
 | Zero JS shipped | Yes | No | No | No | No | No |
 | MCP server docs | Native | No | No | No | No | No |
 | Doxygen / C++ docs | Native | No | No | No | No | No |
+| godoc / Go docs | Native | No | No | No | No | No |
 | Config format | TypeScript | YAML | GUI | JSON | YAML | GUI |
 | Local preview | Vite SSR | Local | Hosted | Local | Local | Hosted |
 | No account required | Yes | Partial | No | No | No | No |
@@ -125,7 +127,43 @@ export default defineConfig({
 });
 ```
 
-Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
+Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, a `godoc` Go module, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
+
+### Go documentation (godoc)
+
+Add a Go module as a tab and Sourcey extracts package docs natively (no Doxygen pipeline):
+
+```typescript
+{
+  tab: "Go API",
+  godoc: {
+    module: ".",
+    packages: ["./internal/core/...", "./cmd/..."],
+    // mode: "auto"   // default; live when Go is available, snapshot otherwise
+    // includeTests: true       // examples from *_test.go (default)
+    // includeUnexported: false // hide unexported symbols (default)
+  },
+}
+```
+
+The string shorthand is `godoc: "."` and expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`.
+
+Live mode invokes `go list` + `go/parser` + `go/doc` against the host Go toolchain. To pin a build environment for reproducibility, set `goEnv: { GOOS, GOARCH, tags }`.
+
+Snapshot mode reads a committed `godoc.json` and needs no Go on the build host. Generate it with:
+
+```bash
+sourcey godoc --module . --packages './...' --out docs/godoc.json
+```
+
+then point the tab at it:
+
+```typescript
+{
+  tab: "Go API",
+  godoc: { mode: "snapshot", snapshot: "./docs/godoc.json" },
+}
+```
 
 ### Markdown components
 
@@ -171,6 +209,7 @@ sourcey dev                       Dev server (reads sourcey.config.ts)
 sourcey build                     Build site (reads sourcey.config.ts)
 sourcey build api.yaml            Quick build from a single spec
 sourcey validate api.yaml         Validate a spec file
+sourcey godoc --out godoc.json    Snapshot a Go module's docs to JSON
 ```
 
 | Command | Flag | Description |

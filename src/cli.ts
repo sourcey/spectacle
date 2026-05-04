@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
 import { buildDocs, buildSiteDocs } from "./index.js";
 import { loadConfig } from "./config.js";
 import type { ChangelogDiagnostic } from "./core/types.js";
+import { runIntrospector, GodocIntrospectorError } from "./core/godoc-introspector.js";
+import { GODOC_SCHEMA_VERSION } from "./core/godoc-types.js";
+import type { GodocSnapshot } from "./core/godoc-types.js";
 import { init } from "./init.js";
-import { formatChangelogDiagnostic } from "./site-assembly.js";
+import { formatChangelogDiagnostic, formatGodocDiagnostic } from "./site-assembly.js";
+import type { GodocLoaderDiagnostic } from "./core/godoc-loader.js";
 import pkg from "../package.json" with { type: "json" };
 
 const build = defineCommand({
@@ -83,6 +89,7 @@ const build = defineCommand({
 
         if (!args.quiet) {
           logChangelogDiagnostics(result.changelogDiagnostics);
+          logGodocDiagnostics(result.godocDiagnostics);
           const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
           console.log(`  Pages:  ${result.pageCount}`);
           console.log(`  Output: ${result.outputDir}`);
@@ -161,17 +168,123 @@ const validate = defineCommand({
   },
 });
 
+const godoc = defineCommand({
+  meta: {
+    name: "godoc",
+    description: "Snapshot a Go module's godoc data into a portable JSON file",
+  },
+  args: {
+    module: {
+      type: "string",
+      alias: ["m"],
+      description: "Go module directory (containing go.mod)",
+      default: ".",
+    },
+    packages: {
+      type: "string",
+      alias: ["p"],
+      description: "Package patterns (comma-separated)",
+      default: "./...",
+    },
+    exclude: {
+      type: "string",
+      description: "Import-path prefixes to exclude (comma-separated)",
+      required: false,
+    },
+    out: {
+      type: "string",
+      alias: ["o"],
+      description: "Output file path",
+      default: "godoc.json",
+    },
+    includeTests: {
+      type: "boolean",
+      description: "Include examples from *_test.go files",
+      default: true,
+    },
+    includeUnexported: {
+      type: "boolean",
+      description: "Include unexported symbols",
+      default: false,
+    },
+    quiet: {
+      type: "boolean",
+      alias: ["q"],
+      description: "Suppress output",
+      default: false,
+    },
+  },
+  async run({ args }) {
+    const moduleDir = resolve(process.cwd(), args.module);
+    const patterns = args.packages.split(",").map((p) => p.trim()).filter(Boolean);
+    const exclude = args.exclude
+      ? args.exclude.split(",").map((p) => p.trim()).filter(Boolean)
+      : [];
+    const outputPath = resolve(process.cwd(), args.out);
+
+    try {
+      const spec = await runIntrospector({
+        config: {
+          module: moduleDir,
+          packages: patterns.length > 0 ? patterns : ["./..."],
+          mode: "live",
+          includeTests: args.includeTests,
+          includeUnexported: args.includeUnexported,
+          hideUndocumented: false,
+          exclude,
+        },
+      });
+
+      const snapshot: GodocSnapshot = {
+        schema_version: GODOC_SCHEMA_VERSION,
+        source: "sourcey-godoc",
+        module_path: spec.modulePath,
+        generated_at: spec.generatedAt,
+        packages: spec.packages,
+        diagnostics: spec.diagnostics.length > 0 ? spec.diagnostics : undefined,
+      };
+
+      await mkdir(dirname(outputPath), { recursive: true });
+      await writeFile(outputPath, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
+
+      const errors = spec.diagnostics.filter((d) => d.severity === "error");
+      const warnings = spec.diagnostics.filter((d) => d.severity === "warning");
+
+      if (!args.quiet) {
+        console.log(`\nSourcey: wrote godoc snapshot for ${spec.modulePath}`);
+        console.log(`  Packages:    ${spec.packages.length}`);
+        console.log(`  Output:      ${outputPath}`);
+        if (warnings.length > 0) console.log(`  Warnings:    ${warnings.length}`);
+        if (errors.length > 0) console.log(`  Errors:      ${errors.length}`);
+        for (const diag of spec.diagnostics) {
+          const where = diag.package ? ` [${diag.package}]` : "";
+          console.log(`    ${diag.severity}: ${diag.code}${where} ${diag.message}`);
+        }
+        console.log("");
+      }
+
+      if (errors.length > 0) process.exit(1);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const code = error instanceof GodocIntrospectorError ? ` (${error.code})` : "";
+      console.error(`\nError${code}: ${message}\n`);
+      process.exit(1);
+    }
+  },
+});
+
 const main = defineCommand({
   meta: {
     name: "sourcey",
     version: pkg.version,
-    description: "Open source documentation platform for OpenAPI specs and markdown guides",
+    description: "Open source documentation platform for OpenAPI, MCP, Doxygen, godoc, and Markdown",
   },
   subCommands: {
     init,
     build,
     dev,
     validate,
+    godoc,
   },
   args: {
     spec: {
@@ -181,7 +294,13 @@ const main = defineCommand({
     },
   },
   async run({ args, rawArgs }) {
-    if (rawArgs.includes("init") || rawArgs.includes("build") || rawArgs.includes("dev") || rawArgs.includes("validate")) return;
+    if (
+      rawArgs.includes("init") ||
+      rawArgs.includes("build") ||
+      rawArgs.includes("dev") ||
+      rawArgs.includes("validate") ||
+      rawArgs.includes("godoc")
+    ) return;
 
     if (args.spec) {
       await build.run!({
@@ -204,6 +323,13 @@ const main = defineCommand({
 function logChangelogDiagnostics(diagnostics: ChangelogDiagnostic[]): void {
   for (const diagnostic of diagnostics) {
     console.log(`  ${formatChangelogDiagnostic(diagnostic)}`);
+  }
+}
+
+function logGodocDiagnostics(diagnostics: GodocLoaderDiagnostic[]): void {
+  for (const diagnostic of diagnostics) {
+    const writer = diagnostic.severity === "error" ? console.error : console.log;
+    writer(`  ${formatGodocDiagnostic(diagnostic)}`);
   }
 }
 

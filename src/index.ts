@@ -77,6 +77,7 @@ export interface SiteBuildResult {
   outputDir: string;
   pageCount: number;
   changelogDiagnostics: ChangelogDiagnostic[];
+  godocDiagnostics: import("./core/godoc-loader.js").GodocLoaderDiagnostic[];
   /** @internal specs by tab slug, for buildDocs compat */
   _specs?: Map<string, NormalizedSpec>;
 }
@@ -167,6 +168,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
     outputDir,
     pageCount: sitePages.length,
     changelogDiagnostics: assembled.changelogDiagnostics,
+    godocDiagnostics: assembled.godocDiagnostics,
     _specs: assembled.specsBySlug,
   };
 }

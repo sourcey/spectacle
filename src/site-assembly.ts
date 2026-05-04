@@ -7,6 +7,7 @@ import { normalizeSpec } from "./core/normalizer.js";
 import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
+import { loadGodocTab, type GodocLoaderDiagnostic } from "./core/godoc-loader.js";
 import { buildNavFromSpec, buildNavFromPages } from "./core/navigation.js";
 import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
 import { pageOutputPath, tabPath } from "./config.js";
@@ -24,6 +25,7 @@ export interface SiteAssembly {
   specsBySlug: Map<string, NormalizedSpec>;
   pageMap: Map<string, SitePage>;
   changelogDiagnostics: ChangelogDiagnostic[];
+  godocDiagnostics: GodocLoaderDiagnostic[];
   extraFiles: Map<string, string | Buffer>;
 }
 
@@ -33,6 +35,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   const pageMap = new Map<string, SitePage>();
   const siteTabs: SiteTab[] = [];
   const changelogDiagnostics: ChangelogDiagnostic[] = [];
+  const godocDiagnostics: GodocLoaderDiagnostic[] = [];
 
   for (const tab of config.tabs) {
     if (tab.openapi || tab.mcp) {
@@ -53,6 +56,25 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
 
     if (tab.doxygen) {
       const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+
+      for (const [slug, page] of pages) {
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        pageMap.set(outputPath, {
+          outputPath,
+          currentPage: { kind: "markdown", markdown: page },
+          spec: primarySpec,
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      siteTabs.push(navTab);
+      continue;
+    }
+
+    if (tab.godoc) {
+      const { pages, navTab, diagnostics } = await loadGodocTab(tab.godoc, tab.slug, tab.label);
+      godocDiagnostics.push(...diagnostics);
 
       for (const [slug, page] of pages) {
         const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
@@ -121,8 +143,16 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
     specsBySlug,
     pageMap,
     changelogDiagnostics,
+    godocDiagnostics,
     extraFiles,
   };
+}
+
+export function formatGodocDiagnostic(diag: GodocLoaderDiagnostic): string {
+  const sev = diag.severity.toUpperCase();
+  const where = diag.package ? ` [${diag.package}]` : "";
+  const loc = diag.file ? ` ${diag.file}${diag.line ? `:${diag.line}` : ""}` : "";
+  return `[${sev}] ${diag.code}${where}${loc} ${diag.message}`;
 }
 
 export function collectDocsPagesByTab(
@@ -132,7 +162,7 @@ export function collectDocsPagesByTab(
   const docsPagesByTab = new Map<string, DocsPage[]>();
 
   for (const tab of tabs) {
-    if (!tab.groups && !tab.doxygen) continue;
+    if (!tab.groups && !tab.doxygen && !tab.godoc) continue;
 
     const tabPages: DocsPage[] = [];
     for (const [, page] of pageMap) {

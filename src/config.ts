@@ -114,6 +114,43 @@ export interface DoxygenConfig {
   index?: DoxygenIndexStyle | false;
 }
 
+export type GodocMode = "auto" | "live" | "snapshot";
+
+export interface GodocGoEnv {
+  GOOS?: string;
+  GOARCH?: string;
+  tags?: string[];
+}
+
+export interface GodocConfig {
+  /** Module root (directory containing go.mod). Defaults to the directory containing sourcey.config.ts. */
+  module?: string;
+  /** Package patterns passed to `go list`, e.g. "./..." or "./internal/core/...". */
+  packages?: string[];
+  /** Optional path to a committed godoc snapshot (godoc.json). */
+  snapshot?: string;
+  /**
+   * Source mode.
+   * - "live": run the Go toolchain at build time.
+   * - "snapshot": read the committed snapshot file; no Go required.
+   * - "auto" (default): prefer live when Go is available; fall back to snapshot.
+   */
+  mode?: GodocMode;
+  /** Include package examples from *_test.go files (default: true). */
+  includeTests?: boolean;
+  /** Include unexported symbols (default: false). */
+  includeUnexported?: boolean;
+  /** Hide packages with no package comment from navigation (default: false). */
+  hideUndocumented?: boolean;
+  /** Package path prefixes to exclude after `go list` expansion. */
+  exclude?: string[];
+  /**
+   * Pin Go build environment for reproducible live-mode docs across hosts.
+   * When unset, live mode follows the host's GOOS/GOARCH and active tags.
+   */
+  goEnv?: GodocGoEnv;
+}
+
 export interface TabConfig {
   tab: string;
   /** Custom URL slug for this tab. Defaults to slugified tab name. */
@@ -123,6 +160,11 @@ export interface TabConfig {
   doxygen?: DoxygenConfig;
   /** Path to an mcp.json file (MCP server snapshot). */
   mcp?: string;
+  /**
+   * Native Go documentation. String shorthand expands to
+   * `{ module: <value>, packages: ["./..."], mode: "auto", includeTests: true }`.
+   */
+  godoc?: GodocConfig | string;
 }
 
 export interface GroupConfig {
@@ -188,6 +230,21 @@ export interface ResolvedDoxygenConfig {
   index: DoxygenIndexStyle;
 }
 
+export interface ResolvedGodocConfig {
+  /** Absolute path to the Go module directory (containing go.mod). */
+  module: string;
+  /** Package patterns to pass to `go list`. Always at least one entry. */
+  packages: string[];
+  /** Absolute path to a snapshot file when configured. */
+  snapshot?: string;
+  mode: GodocMode;
+  includeTests: boolean;
+  includeUnexported: boolean;
+  hideUndocumented: boolean;
+  exclude: string[];
+  goEnv?: GodocGoEnv;
+}
+
 export interface ResolvedTab {
   label: string;
   slug: string;
@@ -195,6 +252,7 @@ export interface ResolvedTab {
   groups?: ResolvedGroup[];
   doxygen?: ResolvedDoxygenConfig;
   mcp?: string;
+  godoc?: ResolvedGodocConfig;
 }
 
 export interface ResolvedPage {
@@ -396,12 +454,12 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
     if (slugs.has(slug)) throw new Error(`Duplicate tab slug "${slug}" (from "${tab.tab}")`);
     slugs.add(slug);
 
-    const sources = [tab.openapi, tab.groups, tab.doxygen, tab.mcp].filter(Boolean).length;
+    const sources = [tab.openapi, tab.groups, tab.doxygen, tab.mcp, tab.godoc].filter(Boolean).length;
     if (sources > 1) {
-      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", "doxygen", or "mcp"`);
+      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", "doxygen", "mcp", or "godoc"`);
     }
     if (sources === 0) {
-      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", "doxygen", or "mcp"`);
+      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", "doxygen", "mcp", or "godoc"`);
     }
 
     if (tab.openapi) {
@@ -431,6 +489,26 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
           language: tab.doxygen.language ?? "cpp",
           groups: tab.doxygen.groups ?? false,
           index: tab.doxygen.index === false ? "none" : (tab.doxygen.index ?? "auto"),
+        },
+      });
+    } else if (tab.godoc) {
+      const cfg = typeof tab.godoc === "string" ? { module: tab.godoc } : tab.godoc;
+      const moduleAbs = resolve(configDir, cfg.module ?? ".");
+      await assertExists(moduleAbs, `Go module directory "${cfg.module ?? "."}" in tab "${tab.tab}"`);
+      const snapshotAbs = cfg.snapshot ? resolve(configDir, cfg.snapshot) : undefined;
+      resolved.push({
+        label: tab.tab,
+        slug,
+        godoc: {
+          module: moduleAbs,
+          packages: cfg.packages?.length ? cfg.packages : ["./..."],
+          snapshot: snapshotAbs,
+          mode: cfg.mode ?? "auto",
+          includeTests: cfg.includeTests ?? true,
+          includeUnexported: cfg.includeUnexported ?? false,
+          hideUndocumented: cfg.hideUndocumented ?? false,
+          exclude: cfg.exclude ?? [],
+          goEnv: cfg.goEnv,
         },
       });
     } else {

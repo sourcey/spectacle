@@ -1,7 +1,7 @@
 {
   "name": "sourcey",
   "version": "3.5.0",
-  "description": "Precision documentation from OpenAPI, MCP, Doxygen, and Markdown. Static HTML you own.",
+  "description": "Precision documentation from OpenAPI, MCP, Doxygen, godoc, and Markdown. Static HTML you own.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/ && cp -r src/og/fonts dist/og/",
+    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/ && cp -r src/og/fonts dist/og/ && mkdir -p dist/core/godoc-introspect && cp src/core/godoc-introspect/main.go src/core/godoc-introspect/go.mod dist/core/godoc-introspect/",
     "watch": "npm run build && tsc --watch --preserveWatchOutput",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -72,7 +72,9 @@
     "markdown",
     "api-docs",
     "developer-documentation",
-    "doxygen"
+    "doxygen",
+    "godoc",
+    "golang"
   ],
   "funding": {
     "url": "https://sourcey.com"

@@ -13,6 +13,7 @@ import { buildNavFromSpec, buildSiteNavigation, withActivePage } from "./core/na
 import type { SiteConfig } from "./renderer/context.js";
 import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
+import { loadGodocTab } from "./core/godoc-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import { createRenderOptions } from "./renderer/html-builder.js";
 import {
@@ -62,6 +63,11 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     if (tab.openapi) watchPaths.push(tab.openapi);
     if (tab.mcp) watchPaths.push(tab.mcp);
     if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
+    if (tab.godoc) {
+      if (tab.godoc.snapshot) watchPaths.push(tab.godoc.snapshot);
+      // The Go module directory is large; watching every .go file slows the
+      // dev server. Restart manually after broad source edits.
+    }
     if (tab.groups) {
       for (const group of tab.groups) {
         for (const page of group.pages) {
@@ -74,6 +80,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   type ContentKind =
     | { kind: "markdown"; tabSlug: string; pagePath: string; pageSlug: string }
     | { kind: "doxygen"; tabSlug: string; xmlDir: string }
+    | { kind: "godoc"; tabSlug: string; snapshotPath: string }
     | { kind: "openapi"; tabSlug: string; specPath: string }
     | { kind: "mcp"; tabSlug: string; specPath: string }
     | { kind: "config" };
@@ -91,6 +98,9 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       }
       if (tab.doxygen) {
         map.set(resolve(tab.doxygen.xml), { kind: "doxygen", tabSlug: tab.slug, xmlDir: tab.doxygen.xml });
+      }
+      if (tab.godoc?.snapshot) {
+        map.set(resolve(tab.godoc.snapshot), { kind: "godoc", tabSlug: tab.slug, snapshotPath: tab.godoc.snapshot });
       }
       if (tab.groups) {
         for (const group of tab.groups) {
@@ -197,6 +207,32 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
       log(`rebuilding doxygen tab "${tab.label}"`);
       const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+      if (cache !== snapshot) return;
+
+      for (const [key, page] of data.pageMap) {
+        if (page.tabSlug === content.tabSlug) data.pageMap.delete(key);
+      }
+
+      for (const [slug, page] of pages) {
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        data.pageMap.set(outputPath, {
+          outputPath,
+          spec: data.primarySpec,
+          currentPage: { kind: "markdown", markdown: page },
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      const idx = data.siteTabs.findIndex((candidate) => candidate.slug === content.tabSlug);
+      if (idx !== -1) data.siteTabs[idx] = navTab;
+      else data.siteTabs.push(navTab);
+    } else if (content.kind === "godoc") {
+      const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
+      if (!tab?.godoc) return;
+
+      log(`rebuilding godoc tab "${tab.label}"`);
+      const { pages, navTab } = await loadGodocTab(tab.godoc, tab.slug, tab.label);
       if (cache !== snapshot) return;
 
       for (const [key, page] of data.pageMap) {
