@@ -13,6 +13,12 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.
 
+## 3.5.1 - 2026-05-04
+
+### Fixed
+
+- Sidebar nav and OpenAPI tab anchor base now honour `prettyUrls` ("slash" / "strip"). Previously hrefs were hard-coded to `slug.html` / `tab/index.html`, which 404 on hosts that don't auto-rewrite (e.g. GitHub Pages). The production `sourcey.com` masked the issue with its `/foo.html → /foo/` 308 redirect.
+
 ## 3.5.0 - 2026-04-24
 
 ### Added
