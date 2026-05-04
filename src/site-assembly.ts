@@ -37,7 +37,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   for (const tab of config.tabs) {
     if (tab.openapi || tab.mcp) {
       const spec = specsBySlug.get(tab.slug)!;
-      const navTab = buildNavFromSpec(spec, tab.slug);
+      const navTab = buildNavFromSpec(spec, tab.slug, config.prettyUrls);
       navTab.label = tab.label;
       siteTabs.push(navTab);
 
@@ -104,7 +104,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       }
     }
 
-    siteTabs.push(buildNavFromPages(tab, pagesByPath));
+    siteTabs.push(buildNavFromPages(tab, pagesByPath, config.prettyUrls));
   }
 
   if (config.changelog.permalinks) {
@@ -171,7 +171,7 @@ export function rebuildMarkdownTabNavigation(
     }
   }
 
-  const navTab = buildNavFromPages(tab, pagesByPath);
+  const navTab = buildNavFromPages(tab, pagesByPath, prettyUrls);
   const idx = siteTabs.findIndex((candidate) => candidate.slug === tabSlug);
   if (idx !== -1) siteTabs[idx] = navTab;
 }
