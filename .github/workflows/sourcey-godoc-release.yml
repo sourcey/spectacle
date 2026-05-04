@@ -16,11 +16,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go/sourcey-godoc/go.mod
+          cache: false
 
       - name: Validate
         working-directory: go/sourcey-godoc
@@ -66,7 +67,7 @@ jobs:
           (cd dist && shasum -a 256 * > checksums.txt)
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: sourcey-godoc ${{ github.ref_name }}
           generate_release_notes: true
