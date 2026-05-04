@@ -6,8 +6,10 @@ import type { ResolvedGodocConfig } from "../config.js";
 import type { GodocSnapshot, GodocSpec } from "./godoc-types.js";
 import { GODOC_SCHEMA_VERSION } from "./godoc-types.js";
 
-const HELPER_DIR = join(dirname(fileURLToPath(import.meta.url)), "godoc-introspect");
-const HELPER_ENTRY = join(HELPER_DIR, "main.go");
+const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
+const PACKAGED_HELPER_DIR = join(MODULE_DIR, "sourcey-godoc");
+const DEV_HELPER_DIR = resolve(MODULE_DIR, "../../go/sourcey-godoc");
+const HELPER_ENTRY = "cmd/sourcey-godoc/main.go";
 
 export class GodocIntrospectorError extends Error {
   readonly code: string;
@@ -35,12 +37,12 @@ export interface IntrospectOptions {
  * diagnostic kind.
  */
 export async function runIntrospector(opts: IntrospectOptions): Promise<GodocSpec> {
-  await assertHelperPresent();
+  const helperDir = await resolveHelperDir();
   const goBinary = opts.goBinary ?? "go";
   const args = buildArgs(opts.config);
   const env = buildEnv(opts.config);
 
-  const { stdout, stderr, code } = await runGo(goBinary, args, HELPER_DIR, env);
+  const { stdout, stderr, code } = await runGo(goBinary, args, helperDir, env);
 
   if (code === 2) {
     throw new GodocIntrospectorError(
@@ -84,21 +86,28 @@ export async function runIntrospector(opts: IntrospectOptions): Promise<GodocSpe
   };
 }
 
-/** Verify the helper source is on disk; raise an actionable error if not. */
-async function assertHelperPresent(): Promise<void> {
-  try {
-    await access(HELPER_ENTRY);
-  } catch {
-    throw new GodocIntrospectorError(
-      "GODOC_HELPER_MISSING",
-      `Sourcey's Go introspector helper is missing at ${HELPER_ENTRY}. ` +
-        "Reinstall sourcey or run `npm run build`.",
-    );
+/** Locate the helper source in either the packaged dist tree or repo checkout. */
+async function resolveHelperDir(): Promise<string> {
+  const candidates = [PACKAGED_HELPER_DIR, DEV_HELPER_DIR];
+  for (const candidate of candidates) {
+    try {
+      await access(join(candidate, "go.mod"));
+      await access(join(candidate, HELPER_ENTRY));
+      return candidate;
+    } catch {
+      // Try the next known layout.
+    }
   }
+  throw new GodocIntrospectorError(
+    "GODOC_HELPER_MISSING",
+    "Sourcey's Go documentation extractor is missing. Checked:\n" +
+      candidates.map((candidate) => `- ${join(candidate, HELPER_ENTRY)}`).join("\n") +
+      "\nReinstall sourcey or run `npm run build`.",
+  );
 }
 
 function buildArgs(cfg: ResolvedGodocConfig): string[] {
-  const args = ["run", ".", "--module", cfg.module];
+  const args = ["run", "./cmd/sourcey-godoc", "--module", cfg.module];
   for (const pattern of cfg.packages) args.push("--packages", pattern);
   for (const exclude of cfg.exclude) args.push("--exclude", exclude);
   if (cfg.includeTests) args.push("--include-tests=true");
@@ -179,10 +188,13 @@ function runGo(
   });
 }
 
-/** Helper entry path, exported for tests that pin the runtime. */
-export const __helperEntryForTests = HELPER_ENTRY;
+/** Helper entry paths, exported for tests that pin the runtime. */
+export const __helperEntryCandidatesForTests = [
+  join(PACKAGED_HELPER_DIR, HELPER_ENTRY),
+  join(DEV_HELPER_DIR, HELPER_ENTRY),
+];
 
 /** Resolve the helper entry path relative to a given module directory.  */
 export function resolveHelperPath(fromDir: string): string {
-  return resolve(fromDir, "godoc-introspect/main.go");
+  return resolve(fromDir, "sourcey-godoc", HELPER_ENTRY);
 }

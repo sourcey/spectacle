@@ -1,0 +1,73 @@
+name: sourcey-godoc release
+
+on:
+  push:
+    tags:
+      - "go/sourcey-godoc/v*.*.*"
+
+concurrency:
+  group: sourcey-godoc-release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go/sourcey-godoc/go.mod
+
+      - name: Validate
+        working-directory: go/sourcey-godoc
+        run: |
+          go test ./...
+          go vet ./...
+
+      - name: Build release assets
+        working-directory: go/sourcey-godoc
+        run: |
+          set -eu
+          version="${GITHUB_REF_NAME#go/sourcey-godoc/v}"
+          mkdir -p dist
+          for target in \
+            darwin/amd64 \
+            darwin/arm64 \
+            linux/amd64 \
+            linux/arm64 \
+            windows/amd64 \
+            windows/arm64
+          do
+            goos="${target%/*}"
+            goarch="${target#*/}"
+            name="sourcey-godoc_${version}_${goos}_${goarch}"
+            dir="dist/${name}"
+            mkdir -p "$dir"
+            bin="sourcey-godoc"
+            if [ "$goos" = "windows" ]; then
+              bin="sourcey-godoc.exe"
+            fi
+            GOOS="$goos" GOARCH="$goarch" CGO_ENABLED=0 \
+              go build -trimpath \
+                -ldflags "-s -w -X main.version=${version}" \
+                -o "${dir}/${bin}" ./cmd/sourcey-godoc
+            cp README.md "${dir}/README.md"
+            if [ "$goos" = "windows" ]; then
+              (cd dist && zip -qr "${name}.zip" "${name}")
+            else
+              tar -C dist -czf "dist/${name}.tar.gz" "${name}"
+            fi
+            rm -rf "$dir"
+          done
+          (cd dist && shasum -a 256 * > checksums.txt)
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: sourcey-godoc ${{ github.ref_name }}
+          generate_release_notes: true
+          files: go/sourcey-godoc/dist/*

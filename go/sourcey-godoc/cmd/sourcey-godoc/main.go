@@ -33,6 +33,8 @@ const (
 	source        = "sourcey-godoc"
 )
 
+var version = "dev"
+
 type snapshot struct {
 	SchemaVersion int          `json:"schema_version"`
 	Source        string       `json:"source"`
@@ -188,11 +190,17 @@ func parseFlags() (*config, error) {
 	includeTests := flag.Bool("include-tests", true, "include examples from *_test.go")
 	includeUnexported := flag.Bool("include-unexported", false, "include unexported symbols")
 	out := flag.String("out", "", "output file (default stdout)")
+	showVersion := flag.Bool("version", false, "print version and exit")
 	var patterns stringSliceFlag
 	var excludes stringSliceFlag
 	flag.Var(&patterns, "packages", "package patterns (repeatable; comma-separated allowed)")
 	flag.Var(&excludes, "exclude", "package import-path prefixes to exclude (repeatable)")
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	abs, err := filepath.Abs(*module)
 	if err != nil {

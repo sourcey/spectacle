@@ -20,13 +20,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/ && cp -r src/og/fonts dist/og/ && mkdir -p dist/core/godoc-introspect && cp src/core/godoc-introspect/main.go src/core/godoc-introspect/go.mod dist/core/godoc-introspect/",
+    "build": "tsc && cp -r src/themes dist/ && cp src/client/*.js dist/client/ && cp -r src/og/fonts dist/og/ && rm -rf dist/core/sourcey-godoc dist/core/godoc-introspect && mkdir -p dist/core/sourcey-godoc && cp -R go/sourcey-godoc/go.mod go/sourcey-godoc/doc.go go/sourcey-godoc/cmd dist/core/sourcey-godoc/",
     "watch": "npm run build && tsc --watch --preserveWatchOutput",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/ test/",
     "lint:fix": "eslint src/ test/ --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "godoc:go:test": "cd go/sourcey-godoc && go test ./...",
+    "godoc:go:vet": "cd go/sourcey-godoc && go vet ./...",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
