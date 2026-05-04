@@ -67,8 +67,12 @@ jobs:
           (cd dist && shasum -a 256 * > checksums.txt)
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v3
-        with:
-          name: sourcey-godoc ${{ github.ref_name }}
-          generate_release_notes: true
-          files: go/sourcey-godoc/dist/*
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            go/sourcey-godoc/dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "sourcey-godoc ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag
