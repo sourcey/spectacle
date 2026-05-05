@@ -54,32 +54,28 @@ npx sourcey init
 
 ## Install
 
-### Sourcey
+### Sourcey CLI
 
-```bash
-npm install -g sourcey
-npx sourcey init
-```
+The full Sourcey binary handles OpenAPI, Doxygen, godoc, MCP, and Markdown sources.
 
-### Go docs generator
+| Path     | Command                                            | Requires          |
+|----------|----------------------------------------------------|-------------------|
+| npm      | `npm install -g sourcey`                           | Node 20+          |
+| Homebrew | `brew tap sourcey/tap && brew install sourcey`     | macOS / Linuxbrew |
+| Docker   | `docker run -v "$PWD":/docs sourcey/sourcey`       | Docker            |
+| Nix      | `nix run github:sourcey/sourcey`                   | Nix (flakes)      |
 
-```bash
-go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
-```
+Then `sourcey init` to scaffold a new project, or `sourcey build` against an existing one. See [docs/install.md](docs/install.md) for full Docker invocations (`init` / `dev` / `build`), the `--host` flag for containerized dev, Linuxbrew notes, and Nix profile install.
 
-### Homebrew (Go docs generator)
+### Standalone Go docs generator
 
-```bash
-brew tap sourcey/tap
-brew install sourcey-godoc
-```
+For Go-only consumers without a JavaScript toolchain, `sourcey-godoc` ships as a separate native binary. It produces static Go docs sites or portable `godoc.json` snapshots.
 
-### Scoop (Go docs generator)
-
-```powershell
-scoop bucket add sourcey https://github.com/sourcey/scoop-bucket
-scoop install sourcey-godoc
-```
+| Path     | Command |
+|----------|---------|
+| Go       | `go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest` |
+| Homebrew | `brew install sourcey/tap/sourcey-godoc` |
+| Scoop    | `scoop bucket add sourcey https://github.com/sourcey/scoop-bucket && scoop install sourcey-godoc` |
 
 ## Quick start
 
