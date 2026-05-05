@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/nilstate/scafld/spec-v2.0.json",
+  "title": "scafld normalized task specification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "task_id", "status", "title", "phases"],
+  "properties": {
+    "spec_version": {"type": "string", "const": "2.0"},
+    "task_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "created": {"type": "string"},
+    "updated": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["draft", "approved", "active", "blocked", "review", "completed", "failed", "cancelled"]
+    },
+    "harden_status": {
+      "type": "string",
+      "enum": ["not_run", "in_progress", "passed", "failed"]
+    },
+    "size": {"type": "string", "enum": ["small", "medium", "large"]},
+    "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
+    "current_state": {"$ref": "#/definitions/current_state"},
+    "context": {"$ref": "#/definitions/context"},
+    "objectives": {"type": "array", "items": {"type": "string"}},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "touchpoints": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"$ref": "#/definitions/risk"}},
+    "acceptance": {"$ref": "#/definitions/acceptance"},
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/phase"}
+    },
+    "rollback": {"type": "array", "items": {"type": "string"}},
+    "review": {"$ref": "#/definitions/review"},
+    "self_eval": {"type": "array", "items": {"type": "string"}},
+    "deviations": {"type": "array", "items": {"type": "string"}},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "origin": {"$ref": "#/definitions/origin"},
+    "harden_rounds": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/harden_round"}
+    },
+    "planning_log": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/planning_event"}
+    }
+  },
+  "definitions": {
+    "current_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "current_phase": {"type": "string"},
+        "next": {"type": "string"},
+        "reason": {"type": "string"},
+        "blockers": {"type": "string"},
+        "allowed_follow_up": {"type": "string"},
+        "latest_runner_update": {"type": "string"},
+        "review_gate": {"type": "string"}
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cwd": {"type": "string"},
+        "packages": {"type": "array", "items": {"type": "string"}},
+        "files_impacted": {"type": "array", "items": {"type": "string"}},
+        "invariants": {"type": "array", "items": {"type": "string"}},
+        "related_docs": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {"type": "string"},
+        "mitigation": {"type": "string"}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "validation_profile": {"type": "string"},
+        "definition_done": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/checklist_item"}
+        },
+        "criteria": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/criterion"}
+        }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^phase[0-9]+$"},
+        "number": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1},
+        "status": {"type": "string"},
+        "reason": {"type": "string"},
+        "dependencies": {"type": "array", "items": {"type": "string"}},
+        "objective": {"type": "string"},
+        "changes": {"type": "array", "items": {"type": "string"}},
+        "acceptance": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/criterion"}
+        },
+        "definition_done": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/checklist_item"}
+        }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "expected_kind"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "type": {"type": "string"},
+        "phase_id": {"type": "string"},
+        "command": {"type": "string"},
+        "expected_kind": {
+          "type": "string",
+          "enum": ["exit_code_zero", "exit_code_nonzero", "no_matches"]
+        },
+        "status": {"type": "string"},
+        "evidence": {"type": "string"},
+        "source_event": {"type": "string"}
+      }
+    },
+    "checklist_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "text": {"type": "string"},
+        "checked": {"type": "boolean"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {"type": "string"},
+        "verdict": {"type": "string", "enum": ["pass", "fail", ""]}
+      }
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_by": {"type": "string"},
+        "source": {"type": "string"}
+      }
+    },
+    "harden_round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^round-[0-9]+$"},
+        "status": {"type": "string", "enum": ["in_progress", "passed", "failed"]},
+        "started_at": {"type": "string"},
+        "ended_at": {"type": "string"},
+        "questions": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/harden_question"}
+        }
+      }
+    },
+    "harden_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "question": {"type": "string"},
+        "grounded_in": {"type": "string", "pattern": "^(spec_gap:|code:|archive:).+"},
+        "recommended_answer": {"type": "string"},
+        "if_unanswered": {"type": "string"},
+        "answered_with": {"type": "string"}
+      }
+    },
+    "planning_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "time": {"type": "string"},
+        "text": {"type": "string"}
+      }
+    }
+  }
+}

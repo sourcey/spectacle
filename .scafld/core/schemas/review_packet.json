@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/nilstate/scafld/review-packet-v1.json",
+  "title": "scafld ReviewPacket",
+  "description": "Structured output emitted by the external review provider (claude or codex) at the end of an adversarial review run. Mirrors the runtime contract enforced by scafld.review_packet.normalize_review_packet. The pass_results object's required keys are parameterized at runtime by the topology's adversarial pass_ids; this static schema declares the shape and type-narrows the value enums.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "review_summary",
+    "verdict",
+    "pass_results",
+    "checked_surfaces",
+    "findings"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "review_packet.v1"
+    },
+    "review_summary": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\n\\r]+$",
+      "description": "One concise paragraph summarizing what was attacked and the verdict. Single-line."
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "fail", "pass_with_issues"]
+    },
+    "pass_results": {
+      "type": "object",
+      "description": "Per-pass verdict. Keys are exactly the topology's adversarial pass_ids; runtime composition narrows this further.",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["pass", "fail", "pass_with_issues"]
+      }
+    },
+    "checked_surfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pass_id", "targets", "summary", "limitations"],
+        "properties": {
+          "pass_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targets": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "limitations": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^\\n\\r]+$"
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pass_id",
+          "severity",
+          "blocking",
+          "target",
+          "summary",
+          "failure_mode",
+          "why_it_matters",
+          "evidence",
+          "suggested_fix",
+          "tests_to_add",
+          "spec_update_suggestions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "pass_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"]
+          },
+          "blocking": {
+            "type": "boolean"
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?:[^`\\n]+:\\d+|[^`\\n]+\\.(?:ya?ml|md|markdown)#[A-Za-z0-9_.:/-]+)$",
+            "description": "Either file:line (one numeric line, no ranges) or doc.md#anchor / doc.yaml#anchor. Lowercase extensions only."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "failure_mode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "why_it_matters": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^\\n\\r]+$"
+            }
+          },
+          "suggested_fix": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "tests_to_add": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^\\n\\r]+$"
+            }
+          },
+          "spec_update_suggestions": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "suggested_text",
+                "reason",
+                "phase_id",
+                "validation_command"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[^\\n\\r]+$"
+                },
+                "suggested_text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[^\\n\\r]+$"
+                },
+                "reason": {
+                  "type": ["string", "null"],
+                  "pattern": "^[^\\n\\r]*$"
+                },
+                "phase_id": {
+                  "type": ["string", "null"],
+                  "pattern": "^[^\\n\\r]*$"
+                },
+                "validation_command": {
+                  "type": ["string", "null"],
+                  "pattern": "^[^\\n\\r]*$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

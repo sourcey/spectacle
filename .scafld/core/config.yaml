@@ -1,0 +1,346 @@
+# scafld Configuration
+# Version: 1.1
+# Purpose: Machine-readable control file for AI coding agents
+
+version: "1.0"
+
+# Status lifecycle: See specs/README.md for canonical state machine and transitions
+
+# =============================================================================
+# INVARIANTS (immutable during session)
+# =============================================================================
+invariants:
+  # CUSTOMIZE: Replace these with your project's architectural invariants.
+  # These names are referenced in specs (context.invariants) and enforced during execution.
+  canonical:
+    - domain_boundaries      # Respect layer separation
+    - error_envelope         # Consistent error format
+    - no_legacy_code         # No dual-reads, dual-writes, or runtime fallbacks
+    - no_test_logic_in_production  # Keep test-only code in test files
+    - public_api_stable      # Public APIs require approval to change
+    - config_from_env        # Configuration from environment, never hardcoded
+
+  # Code quality policies
+  no_legacy_code: true
+  no_test_logic_in_production: true
+
+  # Change control
+  public_api_changes: require_approval  # schemas, migrations, HTTP/event shapes
+
+  # See also: ../CONVENTIONS.md for detailed coding standards
+
+# =============================================================================
+# MODES (planning vs execution)
+# =============================================================================
+modes:
+  planning:
+    # Output: generate .scafld/specs/{task-id}.md
+    output_format: spec_file
+
+    # Requirements for a valid plan
+    require_task_outline: true
+    require_touchpoints: true
+    require_acceptance_checklist: true
+
+    # Quality gate
+    self_eval_threshold: 7
+
+    # ReAct behavior
+    exploration_depth: thorough
+    show_reasoning: true
+
+  execution:
+    # Input: load approved .scafld/specs/{task-id}.md
+    input_format: spec_file
+    require_approval: true
+
+    # Checkpoint frequency
+    checkpoint_frequency: per_phase
+
+    # Quality controls
+    self_review: mandatory
+    rollback_on_fail: true
+    strict_spec_adherence: true
+
+    # Output style
+    progress_format: concise
+    show_reasoning: true
+
+# =============================================================================
+# LLM RUNTIME
+# =============================================================================
+llm:
+  model_profile: "default"
+  context:
+    budget_tokens: 12000
+  recovery:
+    max_attempts: 1
+
+# =============================================================================
+# HARDEN
+# =============================================================================
+# Optional pre-approval interrogation phase. Operator-driven: `scafld approve`
+# does NOT gate on harden status. Only non-gating knobs live here.
+harden:
+  max_questions_per_round: 8   # cap per `scafld harden` invocation; not a target
+
+# =============================================================================
+# VALIDATION PIPELINES
+# =============================================================================
+# CUSTOMIZE: Replace placeholder commands below with your actual build/test/lint commands.
+validation:
+  # Run after each phase (fast, targeted)
+  # Placeholders:
+  # - {spec_pattern}: test file or example filter for the current phase
+  # - {changed_files}: union of phases[N].changes[*].file for the current phase
+  per_phase:
+    - id: compile_check
+      type: command
+      command: "echo 'Replace with your compile/build check command'"
+      required: true
+
+    - id: targeted_tests
+      type: command
+      command: "echo 'Replace with your test command, e.g.: npm test -- {spec_pattern}'"
+      required: true
+
+    - id: boundary_check
+      type: command
+      command: "echo 'Replace with your boundary/integration check, e.g.: cross-module dependency scan'"
+      description: "Verify no cross-module side effects (used by strict profile)"
+      required: true
+
+    - id: acceptance_item_check
+      type: spec_validation
+      description: "Verify all phase acceptance_criteria pass"
+      required: true
+
+  # Run once before commit (comprehensive)
+  pre_commit:
+    - id: full_test_suite
+      type: command
+      command: "echo 'Replace with your full test suite command'"
+      required: true
+
+    - id: linter_suite
+      type: command
+      command: "echo 'Replace with your linter command'"
+      required: false  # warn only
+
+    - id: typecheck
+      type: command
+      command: "echo 'Replace with your typecheck command'"
+      required: true
+
+    - id: security_scan
+      type: command
+      command: "rg -i '(password|secret|api[_-]?key)\\s*=\\s*[\"']\\w' --type-add 'code:*.{js,ts,py,rb,go,java}' --type code"
+      description: "Detect hardcoded secrets"
+      required: true
+      expected_kind: "no_matches"
+
+    - id: perf_eval
+      type: self_evaluation
+      description: "AI scores its work against rubric"
+      threshold: 7
+      required: true
+
+  # Validation profiles map task risk/size to concrete per_phase + pre_commit steps.
+  # EXEC agents should prefer `task.acceptance.validation_profile` when present;
+  # otherwise derive a profile from `task.risk_level`:
+  #   low → light, medium → standard, high → strict.
+  profiles:
+    # Light: compile + acceptance only, quick feedback loop
+    light:
+      per_phase: ["compile_check", "acceptance_item_check"]
+      pre_commit: ["perf_eval"]
+    # Standard: adds targeted tests per phase, full validation at commit
+    standard:
+      per_phase: ["compile_check", "targeted_tests", "acceptance_item_check"]
+      pre_commit: ["full_test_suite", "linter_suite", "typecheck", "security_scan", "perf_eval"]
+    # Strict: broader test coverage per phase (boundary check ensures no
+    # cross-module side effects), plus all pre_commit checks from standard
+    strict:
+      per_phase: ["compile_check", "targeted_tests", "boundary_check", "acceptance_item_check"]
+      pre_commit: ["full_test_suite", "linter_suite", "typecheck", "security_scan", "perf_eval"]
+
+# =============================================================================
+# SELF-EVALUATION RUBRIC
+# =============================================================================
+rubric:
+  # Scoring dimensions (0-10 scale)
+  completeness:
+    weight: 3
+    description: "0=partial, 1=meets ask, 2=edge cases, 3=edge cases + conventions"
+
+  architecture_fidelity:
+    weight: 3
+    description: "0=unclear, 1=respects boundaries, 2=uses patterns, 3=improves separation"
+
+  spec_alignment:
+    weight: 2
+    description: "0=not checked, 1=aligned, 2=proposed improvements"
+
+  validation_depth:
+    weight: 2
+    description: "0=missing, 1=targeted, 2=targeted + broader checks"
+
+  # Minimum acceptable score
+  threshold: 7
+
+  # Action on low score
+  on_below_threshold: "perform_second_pass"
+
+# =============================================================================
+# ADVERSARIAL REVIEW
+# =============================================================================
+# Mandatory review gate before scafld complete can archive a spec.
+# Every spec gets the same review — no profiles.
+# Recommended: run the agent review in a fresh context/session.
+review:
+  external:
+    # Runtime-supported providers: auto, codex, claude, command, local.
+    # local is for development smoke tests only.
+    provider: "auto"
+    # Used when provider is command. CLI flag: --provider-command.
+    # command: "./reviewer"
+    # Optional override for the selected provider binary. CLI flag: --provider-binary.
+    # provider_binary: "/usr/local/bin/codex"
+    # idle_timeout_seconds catches genuine hangs (no stdout bytes for N seconds);
+    # absolute_max_seconds is the safety ceiling for runaway loops, not the
+    # primary kill signal. Healthy reviews complete well before either trips.
+    idle_timeout_seconds: 180
+    absolute_max_seconds: 1800
+    # disable means provider:auto requires codex and will not fall back to claude.
+    fallback_policy: "warn"
+    codex:
+      model: "gpt-5.5"
+      # binary: "codex"
+    claude:
+      model: "claude-opus-4-7"
+      # binary: "claude"
+
+  # Review focus included in the external challenger's prompt.
+  # Ordering is explicit; scafld sorts by `order`, not mapping insertion luck.
+  automated_passes:
+    spec_compliance:
+      order: 10
+      title: "Spec Compliance"
+      description: "Re-run acceptance criteria to verify code satisfies the spec"
+    scope_drift:
+      order: 20
+      title: "Scope Drift"
+      description: "Compare spec scope vs current workspace changes and flag undeclared changes"
+
+  adversarial_passes:
+    regression_hunt:
+      order: 30
+      title: "Regression Hunt"
+      description: "Trace callers, importers, and downstream consumers for regressions"
+    convention_check:
+      order: 40
+      title: "Convention Check"
+      description: "Check changed code against CONVENTIONS.md and AGENTS.md"
+    dark_patterns:
+      order: 50
+      title: "Dark Patterns"
+      description: "Hunt for subtle bugs, hardcodes, races, and safety gaps"
+
+# =============================================================================
+# REACT PATTERN (reasoning + acting)
+# =============================================================================
+react:
+  enabled: true
+
+  # Cycle structure
+  cycle:
+    - thought: "Analyze the task/phase objective"
+    - action: "Search codebase, read files, or apply changes"
+    - observation: "Capture results, check outputs"
+    - thought: "Evaluate success, decide next step"
+
+  # Reasoning visibility
+  log_thoughts: true
+
+  # Iteration limits
+  max_cycles_per_phase: 10
+  max_cycles_planning: 20
+
+# =============================================================================
+# TECH STACK CONTEXT (customize for your project)
+# =============================================================================
+tech_stack:
+  # CUSTOMIZE: Replace with your actual tech stack
+  backend:
+    language: "Your language (e.g., Python 3.11, Ruby 3.2, Go 1.21)"
+    framework: "Your framework (e.g., Django, Rails, FastAPI)"
+
+  frontend:
+    framework: "Your framework (e.g., React, Vue, Next.js)"
+    typescript_version: "5.x"
+
+  shared:
+    error_format: "Your error format (e.g., Problem+JSON RFC 7807)"
+    api_spec: "Your API spec format (e.g., OpenAPI 3.1)"
+
+# =============================================================================
+# REPO LAYOUT (customize for your project)
+# =============================================================================
+repo_layout:
+  # CUSTOMIZE: Replace with your actual directory layout
+  backend: "backend/"
+  frontend: "frontend/"
+  specs: ".scafld/specs/"
+
+# =============================================================================
+# COMMUNICATION STYLE
+# =============================================================================
+communication:
+  # Progress updates during EXEC mode
+  progress:
+    format: concise
+    include_reasoning: false
+    include_acceptance_status: true
+
+  # When blocked
+  blocking_issues:
+    format: structured
+    require_recommendation: true
+
+  # Final summary
+  completion:
+    include_perf_eval: true
+    include_deviations: true
+    include_next_actions: true
+
+# =============================================================================
+# SAFETY & SECURITY
+# =============================================================================
+safety:
+  # Destructive operations
+  require_approval_for:
+    - schema_migrations
+    - public_api_changes
+    - data_deletion
+    - production_deployments
+
+  # Automatic checks
+  prevent:
+    - hardcoded_secrets
+    - unbounded_queries
+    - sql_injection_patterns
+    - xss_vulnerabilities
+
+# =============================================================================
+# EXPERIMENTAL FEATURES
+# =============================================================================
+experimental:
+  # Auto-generate acceptance criteria from natural language
+  auto_acceptance_criteria: true
+
+  # Self-healing: auto-fix failed acceptance criteria (1 retry)
+  self_healing: true
+  max_healing_attempts: 1
+
+  # Parallel phase execution (if phases are independent)
+  parallel_execution: false
