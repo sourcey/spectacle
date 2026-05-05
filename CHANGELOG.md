@@ -17,7 +17,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 ### Fixed
 
-- Sidebar nav and OpenAPI tab anchor base now honour `prettyUrls` ("slash" / "strip"). Previously hrefs were hard-coded to `slug.html` / `tab/index.html`, which 404 on hosts that don't auto-rewrite (e.g. GitHub Pages). The production `sourcey.com` masked the issue with its `/foo.html → /foo/` 308 redirect.
+- Sidebar nav and OpenAPI tab anchor base now honour `prettyUrls` ("slash" / "strip"). Previously hrefs were hard-coded to `slug.html` / `tab/index.html`, which 404 on hosts that don't auto-rewrite (e.g. GitHub Pages). Production `sourcey.com` masked the issue with its `/foo.html → /foo/` 308 redirect.
 
 ## 3.5.0 - 2026-04-24
 
@@ -25,7 +25,7 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 - OpenAPI 3.2 parsing and rendering for `QUERY` operations, response summaries, `deviceAuthorization` OAuth flows, hierarchical tags, `querystring` parameters, and media-type encoding metadata
 - `$self`-aware reference resolution for canonical multi-document OpenAPI descriptions
-- `prettyUrls` config option for clean URLs (`"slash"` emits `foo/index.html` and links as `/foo/`; `"strip"` links as `/foo` and emits a `_redirects` file for static hosts)
+- `prettyUrls` config option for clean URLs (`"slash"` emits `foo/index.html` and links as `/foo/`; `"strip"` links as `/foo` and emits a `_redirects` file for static hosts that support redirect rules)
 
 ### Changed
 
