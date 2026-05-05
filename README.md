@@ -67,14 +67,14 @@ npx sourcey init
 go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
 ```
 
-### Homebrew
+### Homebrew (Go docs generator)
 
 ```bash
 brew tap sourcey/tap
 brew install sourcey-godoc
 ```
 
-### Scoop
+### Scoop (Go docs generator)
 
 ```powershell
 scoop bucket add sourcey https://github.com/sourcey/scoop-bucket

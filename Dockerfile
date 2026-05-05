@@ -1,5 +1,6 @@
 FROM node:20-alpine
-RUN npm install -g sourcey@latest
+ARG SOURCEY_VERSION=latest
+RUN npm install -g "sourcey@${SOURCEY_VERSION}" && npm cache clean --force
 WORKDIR /docs
 ENTRYPOINT ["sourcey"]
 CMD ["build"]

@@ -1,6 +1,6 @@
 ---
 title: Install
-description: Install Sourcey through npm, Homebrew, Docker, or Nix.
+description: Install Sourcey through npm, Docker, or Nix, and install the standalone Go docs generator through Go, Homebrew, or Scoop.
 ---
 
 # Install
@@ -8,14 +8,8 @@ description: Install Sourcey through npm, Homebrew, Docker, or Nix.
 ## npm
 
 ```bash
+npm install -g sourcey
 npx sourcey init
-```
-
-## Homebrew
-
-```bash
-brew tap sourcey/sourcey
-brew install sourcey
 ```
 
 ## Docker
@@ -28,6 +22,26 @@ docker run -v $(pwd):/docs sourcey/sourcey build
 
 ```bash
 nix run github:sourcey/sourcey
+```
+
+## Go docs generator
+
+```bash
+go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
+```
+
+## Homebrew
+
+```bash
+brew tap sourcey/tap
+brew install sourcey-godoc
+```
+
+## Scoop
+
+```powershell
+scoop bucket add sourcey https://github.com/sourcey/scoop-bucket
+scoop install sourcey-godoc
 ```
 
 ## Local development

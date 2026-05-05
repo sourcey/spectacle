@@ -29,6 +29,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "godoc:go:test": "cd go/sourcey-godoc && go test ./...",
     "godoc:go:vet": "cd go/sourcey-godoc && go vet ./...",
+    "godoc:packages:test": "packaging/sourcey-godoc/render-package-managers.test.sh",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },

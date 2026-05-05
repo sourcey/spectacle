@@ -66,6 +66,13 @@ jobs:
           done
           (cd dist && shasum -a 256 * > checksums.txt)
 
+      - name: Render package-manager manifests
+        run: |
+          packaging/sourcey-godoc/render-package-managers.sh \
+            "${GITHUB_REF_NAME#go/sourcey-godoc/v}" \
+            go/sourcey-godoc/dist \
+            .stage/sourcey-godoc-package-managers
+
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -76,3 +83,46 @@ jobs:
             --title "sourcey-godoc ${GITHUB_REF_NAME}" \
             --generate-notes \
             --verify-tag
+
+      - name: Publish Homebrew formula
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -eu
+          if [ -z "${HOMEBREW_TAP_TOKEN:-}" ]; then
+            echo "Skipping Homebrew publish: HOMEBREW_TAP_TOKEN is not configured."
+            exit 0
+          fi
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/sourcey/homebrew-tap.git" .stage/homebrew-tap
+          mkdir -p .stage/homebrew-tap/Formula
+          cp .stage/sourcey-godoc-package-managers/homebrew/Formula/sourcey-godoc.rb .stage/homebrew-tap/Formula/sourcey-godoc.rb
+          git -C .stage/homebrew-tap config user.name "github-actions[bot]"
+          git -C .stage/homebrew-tap config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C .stage/homebrew-tap add Formula/sourcey-godoc.rb
+          if git -C .stage/homebrew-tap diff --cached --quiet; then
+            exit 0
+          fi
+          git -C .stage/homebrew-tap commit -m "sourcey-godoc ${VERSION#go/sourcey-godoc/v}"
+          git -C .stage/homebrew-tap push
+
+      - name: Publish Scoop manifest
+        env:
+          SCOOP_BUCKET_TOKEN: ${{ secrets.SCOOP_BUCKET_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -eu
+          if [ -z "${SCOOP_BUCKET_TOKEN:-}" ]; then
+            echo "Skipping Scoop publish: SCOOP_BUCKET_TOKEN is not configured."
+            exit 0
+          fi
+          git clone "https://x-access-token:${SCOOP_BUCKET_TOKEN}@github.com/sourcey/scoop-bucket.git" .stage/scoop-bucket
+          cp .stage/sourcey-godoc-package-managers/scoop/sourcey-godoc.json .stage/scoop-bucket/sourcey-godoc.json
+          git -C .stage/scoop-bucket config user.name "github-actions[bot]"
+          git -C .stage/scoop-bucket config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C .stage/scoop-bucket add sourcey-godoc.json
+          if git -C .stage/scoop-bucket diff --cached --quiet; then
+            exit 0
+          fi
+          git -C .stage/scoop-bucket commit -m "sourcey-godoc ${VERSION#go/sourcey-godoc/v}"
+          git -C .stage/scoop-bucket push

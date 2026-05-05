@@ -1,0 +1,10 @@
+.git
+.github
+.preview
+.sourcey
+dist
+node_modules
+npm-debug.log
+.stage
+coverage
+result
