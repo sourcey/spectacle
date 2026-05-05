@@ -601,6 +601,10 @@ function resolveInternalHref(
     candidates.add(posix.normalize(posix.join(sourceDir, clean)));
   }
 
+  if (!sourcePath.startsWith("/") && pageDir) {
+    candidates.add(posix.normalize(posix.join(pageDir, clean)));
+  }
+
   candidates.add(clean);
 
   let target: string | undefined;

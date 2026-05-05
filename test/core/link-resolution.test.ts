@@ -123,4 +123,49 @@ describe("resolveInternalLinks", () => {
     expect(pages[0].currentPage.markdown?.html).toContain('href="quickstart"');
     expect(pages[0].currentPage.markdown?.html).toContain('href="missing.html"');
   });
+
+  it("rewrites output-relative html links between generated pages", () => {
+    const pages: SitePage[] = [
+      {
+        outputPath: "api-reference/base.html",
+        currentPage: {
+          kind: "markdown",
+          markdown: {
+            title: "Base",
+            description: "",
+            slug: "base",
+            html: '<p>See <a href="icy.html#onshutdownsignal">icy</a>.</p>',
+            headings: [],
+            sourcePath: "api/base.md",
+            editPath: null,
+          },
+        },
+        spec: EMPTY_SPEC,
+        tabSlug: "api-reference",
+        pageSlug: "base",
+      },
+      {
+        outputPath: "api-reference/icy.html",
+        currentPage: {
+          kind: "markdown",
+          markdown: {
+            title: "icy",
+            description: "",
+            slug: "icy",
+            html: "<p>icy namespace</p>",
+            headings: [],
+            sourcePath: "api/icy.md",
+            editPath: null,
+          },
+        },
+        spec: EMPTY_SPEC,
+        tabSlug: "api-reference",
+        pageSlug: "icy",
+      },
+    ];
+
+    resolveInternalLinks(pages, { prettyUrls: "strip" } as ResolvedConfig);
+
+    expect(pages[0].currentPage.markdown?.html).toContain('href="../api-reference/icy#onshutdownsignal"');
+  });
 });
