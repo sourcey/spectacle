@@ -43,6 +43,9 @@ export function toPublicPath(outputPath: string, baseUrl = "", prettyUrls: Prett
   const cleanOutputPath = outputPath.replace(/^\/+/, "");
 
   if (!cleanOutputPath || cleanOutputPath === "index.html") {
+    if (prettyUrls === "strip" && normalizedBase) {
+      return normalizedBase.slice(0, -1);
+    }
     return prefix;
   }
 
