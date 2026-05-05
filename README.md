@@ -165,6 +165,10 @@ Add a Go module as a tab and Sourcey extracts package docs natively (no Doxygen 
 
 The string shorthand is `godoc: "."` and expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`.
 
+`editBasePath` remains the global base for Markdown "Edit this page" links.
+Use `godoc.sourceBasePath` only when Go source files live under a different
+repository prefix than the docs source.
+
 Live mode invokes `go list` + `go/parser` + `go/doc` against the host Go toolchain. To pin a build environment for reproducibility, set `goEnv: { GOOS, GOARCH, tags }`.
 
 Snapshot mode reads a committed `godoc.json` and needs no Go on the build host. Generate it with:

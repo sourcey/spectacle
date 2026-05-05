@@ -181,6 +181,7 @@ function buildResult(
       headings,
       sourcePath: `godoc/${slug}.md`,
       editPath: packageEditPath(pkg),
+      editBasePath: sourceLinks.editBasePath ?? "",
       searchEntries,
     });
 
@@ -200,6 +201,7 @@ function buildResult(
     headings: [],
     sourcePath: `godoc/${indexSlug}.md`,
     editPath: null,
+    editBasePath: sourceLinks.editBasePath ?? "",
   });
 
   const navGroups: SiteNavGroup[] = [];

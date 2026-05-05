@@ -35,6 +35,7 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
         siteUrl: "https://docs.example.com",
         repo: "https://github.com/sourcey/example",
         editBranch: "main",
+        editBasePath: "docs",
         navigation: {
           tabs: [
             {
@@ -44,6 +45,7 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
                 packages: ["./..."],
                 mode: "live",
                 includeTests: true,
+                sourceBasePath: "go/basic",
               },
             },
           ],
@@ -66,8 +68,10 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
     expect(packagePage).toContain("Widget");
     expect(packagePage).toContain('id="func-New"');
     expect(packagePage.match(/<h1/g)?.length ?? 0).toBe(1);
-    expect(packagePage).toContain("https://github.com/sourcey/example/edit/main/widget.go");
-    expect(packagePage).toContain("https://github.com/sourcey/example/blob/main/widget.go#L");
+    expect(packagePage).toContain("https://github.com/sourcey/example/edit/main/go/basic/widget.go");
+    expect(packagePage).toContain("https://github.com/sourcey/example/blob/main/go/basic/widget.go#L");
+    expect(packagePage).not.toContain("https://github.com/sourcey/example/edit/main/docs/widget.go");
+    expect(packagePage).not.toContain("https://github.com/sourcey/example/blob/main/docs/widget.go#L");
 
     // Index page lists the package
     const indexPage = await readFile(resolve(OUTPUT_DIR, "go-api/index.html"), "utf-8");

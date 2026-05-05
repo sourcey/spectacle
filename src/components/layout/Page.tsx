@@ -160,7 +160,10 @@ function ContentFooter() {
       : undefined;
   if (site.repo && site.editBranch && editPath) {
     const repoBase = site.repo.replace(/\/$/, "");
-    const basePath = site.editBasePath ? `${site.editBasePath.replace(/^\/|\/$/g, "")}/` : "";
+    const editBasePath = page.kind === "markdown" && page.markdown.editBasePath !== undefined
+      ? page.markdown.editBasePath
+      : site.editBasePath;
+    const basePath = editBasePath ? `${editBasePath.replace(/^\/|\/$/g, "")}/` : "";
     editUrl = `${repoBase}/edit/${site.editBranch}/${basePath}${editPath}`;
   }
 

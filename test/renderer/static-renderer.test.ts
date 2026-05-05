@@ -344,6 +344,42 @@ describe("renderPage (spec)", () => {
     expect(html).toContain('href="../../documentation/guides/next.html"');
   });
 
+  it("uses the global edit base for markdown pages unless the page overrides it", () => {
+    const spec = createMinimalSpec();
+    const navigation = createDocsNavigation();
+    const site = {
+      ...defaultSite,
+      repo: "https://github.com/sourcey/example",
+      editBranch: "main",
+      editBasePath: "docs",
+    };
+
+    const markdownHtml = renderPage(
+      spec,
+      defaultOptions,
+      navigation,
+      { kind: "markdown", markdown: createMarkdownPage({ editPath: "guides/current.md" }) },
+      site,
+    );
+    expect(markdownHtml).toContain("https://github.com/sourcey/example/edit/main/docs/guides/current.md");
+
+    const generatedHtml = renderPage(
+      spec,
+      defaultOptions,
+      navigation,
+      {
+        kind: "markdown",
+        markdown: createMarkdownPage({
+          editPath: "internal/app/build/build.go",
+          editBasePath: "",
+        }),
+      },
+      site,
+    );
+    expect(generatedHtml).toContain("https://github.com/sourcey/example/edit/main/internal/app/build/build.go");
+    expect(generatedHtml).not.toContain("https://github.com/sourcey/example/edit/main/docs/internal/app/build/build.go");
+  });
+
   it("renders changelog pages through the structured changelog component", () => {
     const spec = createMinimalSpec();
     const navigation = {
