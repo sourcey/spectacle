@@ -2,13 +2,7 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
-## 3.5.8 - 2026-05-06
-
-### Added
-
-- `sourcey dev --host <address>` flag (and `HOST` env var fallback) to control the Vite dev-server bind address. Defaults to `127.0.0.1`. Use `--host 0.0.0.0` (or `-e HOST=0.0.0.0` in Docker) to expose the dev server outside the host so the official `sourcey/sourcey` image's `dev` command works end-to-end.
-
-## Unreleased
+## 3.5.9 - 2026-05-06
 
 ### Added
 
@@ -18,6 +12,21 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `goEnv` option (`GOOS`/`GOARCH`/`tags`) for pinning the live-mode Go build environment so docs reproduce across hosts.
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.
+
+### Changed
+
+- Changelog page descriptions now render inline markdown so links and inline code resolve, with a constrained reading width and primary-tinted underlined links.
+- Unreleased version cards drop the dashed border for a primary-tinted left accent and soft tint, with a "Next release" pill in place of the empty meta row.
+
+### Fixed
+
+- Changelog parser no longer leaks bullet/paragraph tokens from non-SemVer headings into the page description, so trailing historical sections stop polluting the lead paragraph.
+
+## 3.5.8 - 2026-05-06
+
+### Added
+
+- `sourcey dev --host <address>` flag (and `HOST` env var fallback) to control the Vite dev-server bind address. Defaults to `127.0.0.1`. Use `--host 0.0.0.0` (or `-e HOST=0.0.0.0` in Docker) to expose the dev server outside the host so the official `sourcey/sourcey` image's `dev` command works end-to-end.
 
 ## 3.5.6 - 2026-05-05
 
@@ -490,7 +499,7 @@ First stable release. Requires Node.js >= 8.
 - Code highlighting
 - HTTPS for jQuery reference
 
-## Pre-releases — 2016
+## 0.5.0 — 2016-12-31
 
 ### Added
 

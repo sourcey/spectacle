@@ -882,10 +882,44 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   font-size: 1.05rem;
   line-height: 1.7;
   color: rgb(var(--color-gray-600));
+  max-width: 65ch;
+  text-wrap: pretty;
 }
 
 .dark #sourcey .sourcey-changelog-description {
   color: rgb(var(--color-gray-400));
+}
+
+#sourcey .sourcey-changelog-description a {
+  color: rgb(var(--color-primary-ink));
+  text-decoration: none;
+  border-bottom: 1px solid rgb(var(--color-primary-ink) / 0.3);
+}
+
+#sourcey .sourcey-changelog-description a:hover {
+  border-bottom-color: rgb(var(--color-primary-ink));
+}
+
+.dark #sourcey .sourcey-changelog-description a {
+  color: rgb(var(--color-primary-light));
+  border-bottom-color: rgb(var(--color-primary-light) / 0.3);
+}
+
+.dark #sourcey .sourcey-changelog-description a:hover {
+  border-bottom-color: rgb(var(--color-primary-light));
+}
+
+#sourcey .sourcey-changelog-description code {
+  font-size: 0.92em;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.25rem;
+  background: rgb(var(--color-gray-100));
+  color: rgb(var(--color-gray-800));
+}
+
+.dark #sourcey .sourcey-changelog-description code {
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(var(--color-gray-200));
 }
 
 #sourcey .sourcey-changelog-list {
@@ -907,7 +941,16 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 }
 
 #sourcey .sourcey-changelog-version-unreleased {
-  border-style: dashed;
+  border-color: rgb(var(--color-primary) / 0.18);
+  border-left: 3px solid rgb(var(--color-primary));
+  padding-left: calc(1.25rem - 2px);
+  background: linear-gradient(180deg, rgb(var(--color-primary) / 0.04), rgb(var(--color-primary) / 0.015));
+}
+
+.dark #sourcey .sourcey-changelog-version-unreleased {
+  border-color: rgb(var(--color-primary-light) / 0.22);
+  border-left-color: rgb(var(--color-primary-light));
+  background: linear-gradient(180deg, rgb(var(--color-primary-light) / 0.06), rgb(var(--color-primary-light) / 0.02));
 }
 
 #sourcey .sourcey-changelog-version-header {
@@ -999,6 +1042,19 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 .dark #sourcey .sourcey-changelog-pill-pre {
   background: rgb(255 255 255 / 0.08);
   color: rgb(var(--color-gray-300));
+}
+
+#sourcey .sourcey-changelog-pill-next {
+  background: rgb(var(--color-primary) / 0.1);
+  color: rgb(var(--color-primary-ink));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+}
+
+.dark #sourcey .sourcey-changelog-pill-next {
+  background: rgb(var(--color-primary-light) / 0.14);
+  color: rgb(var(--color-primary-light));
 }
 
 #sourcey .sourcey-changelog-summary {

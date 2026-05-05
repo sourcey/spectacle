@@ -88,6 +88,7 @@ export function normalizeChangelog(
   const descriptionParts: string[] = [];
   const rawBlocks: RawVersionBlock[] = [];
   let currentBlock: RawVersionBlock | null = null;
+  let seenFirstVersionHeading = false;
 
   for (const token of tokens) {
     if (token.type === "heading") {
@@ -102,6 +103,7 @@ export function normalizeChangelog(
       if (heading.depth === 2) {
         if (currentBlock) rawBlocks.push(currentBlock);
         currentBlock = null;
+        seenFirstVersionHeading = true;
 
         const parsed = parseVersionHeading(text);
         if (!parsed) {
@@ -128,7 +130,7 @@ export function normalizeChangelog(
 
     if (currentBlock) {
       appendTokenToVersion(token, currentBlock, diagnostics, options.repoUrl);
-    } else if (!options.description && shouldContributeToDescription(token)) {
+    } else if (!options.description && !seenFirstVersionHeading && shouldContributeToDescription(token)) {
       descriptionParts.push(token.raw);
     }
   }

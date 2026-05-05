@@ -1,4 +1,5 @@
 import type { ChangelogPage as ChangelogPageData } from "../../core/markdown-loader.js";
+import { renderMarkdownInline } from "../../utils/markdown.js";
 import { VersionCard } from "./VersionCard.js";
 
 export function ChangelogPage({ page }: { page: ChangelogPageData }) {
@@ -15,7 +16,10 @@ export function ChangelogPage({ page }: { page: ChangelogPageData }) {
           </h1>
         </div>
         {page.description && (
-          <p class="sourcey-changelog-description">{page.description}</p>
+          <p
+            class="sourcey-changelog-description"
+            dangerouslySetInnerHTML={{ __html: renderMarkdownInline(page.description) }}
+          />
         )}
       </header>
 

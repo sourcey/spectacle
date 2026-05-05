@@ -28,9 +28,11 @@ export function VersionCard({
   const href = permalinkHref ?? `#${version.id}`;
   const label = version.version ?? "Unreleased";
   const formattedDate = formatDate(version.date);
+  const isUnreleased = !version.version;
+  const hasMeta = isUnreleased || formattedDate || version.compareUrl;
 
   return (
-    <article id={version.id} class={`sourcey-changelog-version${version.version ? "" : " sourcey-changelog-version-unreleased"}`}>
+    <article id={version.id} class={`sourcey-changelog-version${isUnreleased ? " sourcey-changelog-version-unreleased" : ""}`}>
       <header class="sourcey-changelog-version-header">
         <div class="sourcey-changelog-version-heading">
           <a href={href} class="sourcey-changelog-version-link">
@@ -39,14 +41,17 @@ export function VersionCard({
           {version.yanked && <span class="sourcey-changelog-pill sourcey-changelog-pill-yanked">YANKED</span>}
           {version.prerelease && <span class="sourcey-changelog-pill sourcey-changelog-pill-pre">pre</span>}
         </div>
-        <div class="sourcey-changelog-version-meta">
-          {formattedDate && <time dateTime={version.date ?? undefined}>{formattedDate}</time>}
-          {version.compareUrl && (
-            <a href={version.compareUrl} target="_blank" rel="noopener noreferrer" class="sourcey-changelog-compare-link">
-              Compare
-            </a>
-          )}
-        </div>
+        {hasMeta && (
+          <div class="sourcey-changelog-version-meta">
+            {isUnreleased && <span class="sourcey-changelog-pill sourcey-changelog-pill-next">Next release</span>}
+            {formattedDate && <time dateTime={version.date ?? undefined}>{formattedDate}</time>}
+            {version.compareUrl && (
+              <a href={version.compareUrl} target="_blank" rel="noopener noreferrer" class="sourcey-changelog-compare-link">
+                Compare
+              </a>
+            )}
+          </div>
+        )}
       </header>
 
       {version.summary && <Markdown content={version.summary} class="sourcey-changelog-summary" />}
