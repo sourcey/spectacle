@@ -13,6 +13,12 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.
 
+## 3.5.4 - 2026-05-05
+
+### Fixed
+
+- Generated Godoc and Doxygen tab navigation now normalizes through the active `prettyUrls` mode, so `prettyUrls: "strip"` builds do not emit stale `.html` or `index.html` navigation links.
+
 ## 3.5.3 - 2026-05-05
 
 ### Fixed

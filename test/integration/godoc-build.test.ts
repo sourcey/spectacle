@@ -107,4 +107,50 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
     expect(searchIndex.some((entry) => entry.category === "go method" && entry.title === "Widget.Publish")).toBe(true);
     expect(searchIndex.some((entry) => entry.category === "go example" && entry.title === "Example New")).toBe(true);
   });
+
+  it("emits prettyUrls=strip Godoc navigation without html suffixes", async () => {
+    const config = await resolveConfigFromRaw(
+      {
+        name: "Go Docs",
+        siteUrl: "https://docs.example.com",
+        prettyUrls: "strip",
+        navigation: {
+          tabs: [
+            {
+              tab: "Go API",
+              godoc: {
+                module: FIXTURE_MODULE,
+                packages: ["./..."],
+                mode: "live",
+                includeTests: true,
+              },
+            },
+          ],
+        },
+      },
+      FIXTURE_MODULE,
+    );
+
+    await buildSiteDocs({
+      config,
+      outputDir: OUTPUT_DIR,
+    });
+
+    const packagePage = await readFile(resolve(OUTPUT_DIR, "go-api/package-root.html"), "utf-8");
+    expect(packagePage).toContain('href="../go-api"');
+    expect(packagePage).toContain('href="../go-api/package-root"');
+    expect(packagePage).not.toMatch(/href="[^"]*\.html/);
+
+    const indexPage = await readFile(resolve(OUTPUT_DIR, "go-api.html"), "utf-8");
+    expect(indexPage).toContain('href="go-api/package-root"');
+    expect(indexPage).not.toMatch(/href="[^"]*\.html/);
+
+    const sitemap = await readFile(resolve(OUTPUT_DIR, "sitemap.xml"), "utf-8");
+    expect(sitemap).toContain("go-api/package-root");
+    expect(sitemap).not.toContain("go-api/package-root.html");
+
+    const llms = await readFile(resolve(OUTPUT_DIR, "llms.txt"), "utf-8");
+    expect(llms).toContain("go-api/package-root");
+    expect(llms).not.toContain("go-api/package-root.html");
+  });
 });

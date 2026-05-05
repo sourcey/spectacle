@@ -138,6 +138,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
     addPermalinkPages(pageMap, config.prettyUrls);
   }
 
+  normalizeNavigationHrefs(siteTabs, config.prettyUrls);
   const sitePages = Array.from(pageMap.values());
   resolveInternalLinks(sitePages, config);
   const extraFiles = attachChangelogFeeds(sitePages, config);
@@ -209,6 +210,17 @@ export function rebuildMarkdownTabNavigation(
   const navTab = buildNavFromPages(tab, pagesByPath, prettyUrls);
   const idx = siteTabs.findIndex((candidate) => candidate.slug === tabSlug);
   if (idx !== -1) siteTabs[idx] = navTab;
+}
+
+function normalizeNavigationHrefs(siteTabs: SiteTab[], prettyUrls: PrettyUrls): void {
+  for (const tab of siteTabs) {
+    tab.href = toPrettyLink(tab.href, prettyUrls);
+    for (const group of tab.groups) {
+      for (const item of group.items) {
+        item.href = toPrettyLink(item.href, prettyUrls);
+      }
+    }
+  }
 }
 
 export function enforceChangelogDiagnostics(
@@ -627,13 +639,13 @@ function resolveInternalHref(
  */
 function toPrettyLink(target: string, prettyUrls: PrettyUrls): string {
   if (!prettyUrls) return target;
-  if (prettyUrls === "strip" && target.endsWith(".html")) {
-    return target.slice(0, -(".html".length));
-  }
   if (target === "index.html") return "";
   if (target.endsWith("/index.html")) {
     const withSlash = target.slice(0, -"index.html".length);
     return prettyUrls === "strip" ? withSlash.slice(0, -1) : withSlash;
+  }
+  if (prettyUrls === "strip" && target.endsWith(".html")) {
+    return target.slice(0, -(".html".length));
   }
   return target;
 }
