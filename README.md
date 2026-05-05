@@ -1,8 +1,10 @@
 # Sourcey
 
-> Your API docs shouldn't depend on someone else's SaaS.
+> Docs straight from the source.
 
-Sourcey is an open source documentation platform. Point it at an OpenAPI spec, an MCP server, a Doxygen XML directory, or a Go module; add markdown guides; get a complete docs site. Static HTML you own; no dashboard, no monthly bill, no API calls to render your own documentation. Deploy anywhere.
+Sourcey tells the whole product story. It turns specs, code, rich guides, changelog, roadmap pages, examples, and agent-readable context from your project into static HTML you can deploy anywhere.
+
+No dashboard. No runtime. No API calls to render your own documentation.
 
 [![npm](https://img.shields.io/npm/v/sourcey)](https://www.npmjs.com/package/sourcey)
 [![build](https://img.shields.io/github/actions/workflow/status/sourcey/sourcey/ci.yml?branch=main)](https://github.com/sourcey/sourcey/actions)
@@ -17,14 +19,15 @@ npx sourcey init
 
 ![Sourcey](assets/hero-preview.jpg)
 
-**[Live demo](https://cheesestore.github.io/)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/sourcey/sourcey)
+**[Live demo](https://sourcey.com/cheesestore)** · [Documentation](https://sourcey.com/docs) · [GitHub](https://github.com/sourcey/sourcey)
 
 ## Features
 
 - **OpenAPI 2.0, 3.0, 3.1, and 3.2**: full spec coverage including `QUERY` operations, response summaries, hierarchical tags, `deviceAuthorization` OAuth, `querystring` parameters, and `$self`-aware refs for multi-document APIs
 - **API reference from OpenAPI**: endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
 - **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
-- **Markdown guides with rich components**: steps, cards, accordions, syntax-highlighted code blocks; prose docs alongside your API reference
+- **Rich guides**: markdown pages with steps, cards, accordions, syntax-highlighted code blocks, and prose alongside your API reference
+- **Product story pages**: changelog, roadmap pages, examples, reference material, search, and agent-readable output in one source-owned site
 - **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
 - **Go and godoc**: native package documentation extracted from Go source via the toolchain. Render Go modules as Sourcey tabs, generate standalone static Go docs sites, or commit `godoc.json` snapshots for JS-only docs hosts. No Doxygen detour
 - **llms.txt generation**: auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
