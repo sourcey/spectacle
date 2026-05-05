@@ -47,12 +47,13 @@ function shortPath(path: string): string {
 
 export interface DevServerOptions {
   port: number;
+  host?: string;
   config?: string;
   strictChangelog?: boolean;
 }
 
 export async function startDevServer(options: DevServerOptions): Promise<void> {
-  const { port } = options;
+  const { port, host } = options;
   let config = await loadConfig(options.config);
   const configPath = options.config?.endsWith(".ts")
     ? resolve(options.config)
@@ -390,6 +391,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     root: process.cwd(),
     server: {
       port,
+      host,
       strictPort: true,
       hmr: true,
       fs: {
@@ -451,7 +453,8 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
   await vite.listen();
 
-  console.log(`\n  Sourcey dev server running at http://localhost:${port}${config.baseUrl || "/"}`);
+  const displayHost = !host || host === "127.0.0.1" || host === "localhost" ? "localhost" : host;
+  console.log(`\n  Sourcey dev server running at http://${displayHost}:${port}${config.baseUrl || "/"}`);
   console.log(`  Watching: ${watchPaths.length} content file${watchPaths.length === 1 ? "" : "s"} + components + CSS (HMR)`);
   console.log(`  Press Ctrl+C to stop\n`);
 

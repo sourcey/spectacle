@@ -2,6 +2,12 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.5.8 - 2026-05-06
+
+### Added
+
+- `sourcey dev --host <address>` flag (and `HOST` env var fallback) to control the Vite dev-server bind address. Defaults to `127.0.0.1`. Use `--host 0.0.0.0` (or `-e HOST=0.0.0.0` in Docker) to expose the dev server outside the host so the official `sourcey/sourcey` image's `dev` command works end-to-end.
+
 ## Unreleased
 
 ### Added

@@ -116,6 +116,11 @@ const dev = defineCommand({
       description: "Port to listen on",
       default: "4400",
     },
+    host: {
+      type: "string",
+      description: "Address to bind to (e.g. 0.0.0.0 to expose externally; defaults to 127.0.0.1, or $HOST if set)",
+      required: false,
+    },
     config: {
       type: "string",
       alias: ["c"],
@@ -132,6 +137,7 @@ const dev = defineCommand({
     const { startDevServer } = await import("./dev-server.js");
     await startDevServer({
       port: parseInt(args.port, 10),
+      host: args.host ?? process.env.HOST,
       config: args.config,
       strictChangelog: args.strictChangelog,
     });
