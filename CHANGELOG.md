@@ -13,6 +13,12 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.
 
+## 3.5.5 - 2026-05-05
+
+### Fixed
+
+- Generated Doxygen page descriptions now render as plain text, preventing stale `.html` cross-reference links from appearing in page headers and metadata when `prettyUrls: "strip"` is enabled.
+
 ## 3.5.4 - 2026-05-05
 
 ### Fixed

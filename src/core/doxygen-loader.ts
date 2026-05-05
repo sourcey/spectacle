@@ -15,10 +15,10 @@ export interface DoxygenResult {
 
 export function normalizeDoxygenDescription(description: string, markdown: string): string {
   if (!description) return "";
-  if (!description.includes("{#ref ")) return description;
+  if (!description.includes("{#ref ")) return stripMarkdownLinks(description);
 
   const firstParagraph = extractFirstParagraph(markdown);
-  return firstParagraph || description;
+  return stripMarkdownLinks(firstParagraph || description);
 }
 
 export function rewriteGeneratedDoxygenIncludePath(includePath: string): string {

@@ -26,14 +26,16 @@ Session type documented in a different group from [PacketStream](demo-PacketStre
 ### Public Methods`;
 
     expect(normalizeDoxygenDescription(description, markdown)).toBe(
-      "Session type documented in a different group from [PacketStream](demo-PacketStream.html#packetstream).",
+      "Session type documented in a different group from PacketStream.",
     );
   });
 
-  it("keeps existing descriptions when no placeholder refs remain", () => {
-    const description = "Packet pipeline primitive owned by the base module.";
+  it("returns plain-text descriptions when no placeholder refs remain", () => {
+    const description = "Packet pipeline primitive owned by the [base](base.html) module.";
 
-    expect(normalizeDoxygenDescription(description, "## PacketStream")).toBe(description);
+    expect(normalizeDoxygenDescription(description, "## PacketStream")).toBe(
+      "Packet pipeline primitive owned by the base module.",
+    );
   });
 
   it("rewrites moxygen api_*.md hrefs to generated html pages", () => {
