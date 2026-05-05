@@ -22,10 +22,11 @@ describe("site-url helpers", () => {
   });
 
   it("renders pretty URLs with strip mode", () => {
+    expect(toPublicPath("docs/intro.html", "", "strip")).toBe("/docs/intro");
     expect(toPublicPath("docs/intro/index.html", "", "strip")).toBe("/docs/intro");
     expect(toPublicPath("intro/index.html", "/ref/", "strip")).toBe("/ref/intro");
     expect(toPublicPath("index.html", "", "strip")).toBe("/");
-    expect(toPublicUrl("docs/intro/index.html", "https://docs.example.com", "", "strip"))
+    expect(toPublicUrl("docs/intro.html", "https://docs.example.com", "", "strip"))
       .toBe("https://docs.example.com/docs/intro");
   });
 

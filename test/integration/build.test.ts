@@ -109,7 +109,7 @@ describe("buildDocs (integration)", () => {
       expect(indexHtml).toContain("<!DOCTYPE html>");
       expect(indexHtml).not.toContain("Redirecting");
 
-      const apiHtml = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
+      const apiHtml = await readFile(resolve(outputDir, "api.html"), "utf-8");
       expect(apiHtml).toContain("<!DOCTYPE html>");
       expect(apiHtml).toContain("Petstore");
       expect(apiHtml).toContain("API Reference");
@@ -166,7 +166,7 @@ describe("buildDocs (integration)", () => {
         outputDir,
       });
 
-      const html = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
+      const html = await readFile(resolve(outputDir, "api.html"), "utf-8");
       expect(html).toContain("Cheese Store");
       expect(html).toContain("Models");
       expect(html).toContain("operation-");
@@ -188,7 +188,7 @@ describe("buildDocs (integration)", () => {
         embeddable: true,
       });
 
-      const html = await readFile(resolve(outputDir, "api/index.html"), "utf-8");
+      const html = await readFile(resolve(outputDir, "api.html"), "utf-8");
       expect(html).not.toContain("<!DOCTYPE html>");
       expect(html).not.toContain("<html");
       expect(html).toContain("Petstore");
@@ -262,11 +262,11 @@ describe("buildDocs (integration)", () => {
       expect(llmsFull).toContain("### Welcome to Mixed Docs");
       expect(llmsFull).toContain("Path: `/reference/introduction.html`");
       expect(llmsFull).toContain("### Petstore");
-      expect(llmsFull).toContain("Path: `/reference/api/`");
+      expect(llmsFull).toContain("Path: `/reference/api.html`");
 
       const sitemap = await readFile(resolve(outputDir, "sitemap.xml"), "utf-8");
       expect(sitemap).toContain("<loc>https://docs.example.com/reference/introduction.html</loc>");
-      expect(sitemap).toContain("<loc>https://docs.example.com/reference/api/</loc>");
+      expect(sitemap).toContain("<loc>https://docs.example.com/reference/api.html</loc>");
 
       const introductionHtml = await readFile(resolve(outputDir, "introduction.html"), "utf-8");
       expect(introductionHtml).toContain('rel="canonical" href="https://docs.example.com/reference/introduction.html"');
@@ -295,12 +295,12 @@ describe("buildDocs (integration)", () => {
       expect(changelogHtml).toContain('property="og:image" content="https://docs.example.com/reference/_og/changelog.png"');
       expect(changelogHtml).toContain('rel="canonical" href="https://docs.example.com/reference/changelog.html"');
 
-      const permalinkHtml = await readFile(resolve(outputDir, "changelog/1-2-0/index.html"), "utf-8");
+      const permalinkHtml = await readFile(resolve(outputDir, "changelog/1-2-0.html"), "utf-8");
       expect(permalinkHtml).toContain("1.2.0");
       expect(permalinkHtml).toContain("Added root feed generation");
-      expect(permalinkHtml).toContain('href="../../introduction.html"');
-      expect(permalinkHtml).toContain('property="og:image" content="https://docs.example.com/reference/_og/changelog/1-2-0/index.png"');
-      expect(permalinkHtml).toContain('rel="canonical" href="https://docs.example.com/reference/changelog/1-2-0/"');
+      expect(permalinkHtml).toContain('href="../introduction.html"');
+      expect(permalinkHtml).toContain('property="og:image" content="https://docs.example.com/reference/_og/changelog/1-2-0.png"');
+      expect(permalinkHtml).toContain('rel="canonical" href="https://docs.example.com/reference/changelog/1-2-0.html"');
 
       const introHtml = await readFile(resolve(outputDir, "introduction.html"), "utf-8");
       expect(introHtml).toContain('rel="alternate" type="application/atom+xml" href="https://docs.example.com/reference/feed.xml"');
@@ -326,7 +326,7 @@ describe("buildDocs (integration)", () => {
       expect(searchIndex).toContain("1.2.0");
       expect(searchIndex).toContain("/reference/changelog.html#1-2-0");
 
-      expect(existsSync(resolve(outputDir, "_og/changelog/1-2-0/index.png"))).toBe(true);
+      expect(existsSync(resolve(outputDir, "_og/changelog/1-2-0.png"))).toBe(true);
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }
@@ -361,7 +361,7 @@ describe("buildDocs (integration)", () => {
     }
   });
 
-  it("emits prettyUrls=strip with extensionless links and a _redirects file", async () => {
+  it("emits prettyUrls=strip as foo.html with extensionless links", async () => {
     const outputDir = resolve(import.meta.dirname, "../../.test-output-pretty-strip");
     const configDir = resolve(import.meta.dirname, "../llms-site");
     try {
@@ -370,7 +370,10 @@ describe("buildDocs (integration)", () => {
 
       await buildSiteDocs({ config, outputDir });
 
-      expect(existsSync(resolve(outputDir, "introduction/index.html"))).toBe(true);
+      expect(existsSync(resolve(outputDir, "introduction.html"))).toBe(true);
+      expect(existsSync(resolve(outputDir, "introduction/index.html"))).toBe(false);
+      expect(existsSync(resolve(outputDir, "api.html"))).toBe(true);
+      expect(existsSync(resolve(outputDir, "api/index.html"))).toBe(false);
 
       const sitemap = await readFile(resolve(outputDir, "sitemap.xml"), "utf-8");
       expect(sitemap).toContain("<loc>/introduction</loc>");
@@ -378,9 +381,12 @@ describe("buildDocs (integration)", () => {
       const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
       expect(llms).toContain("(/introduction)");
 
-      const redirects = await readFile(resolve(outputDir, "_redirects"), "utf-8");
-      expect(redirects).toContain("/introduction/ /introduction 301");
-      expect(redirects).toContain("/introduction.html /introduction 301");
+      const searchIndex = await readFile(resolve(outputDir, "search-index.json"), "utf-8");
+      expect(searchIndex).toContain("\"url\":\"/introduction\"");
+      expect(searchIndex).toContain("\"url\":\"/api#");
+      expect(searchIndex).not.toContain(".html\"");
+
+      expect(existsSync(resolve(outputDir, "_redirects"))).toBe(false);
     } finally {
       await rm(outputDir, { recursive: true, force: true });
     }

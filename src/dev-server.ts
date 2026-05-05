@@ -2,7 +2,7 @@ import { createServer as createViteServer, type InlineConfig } from "vite";
 import { resolve, dirname, extname, basename, relative } from "node:path";
 import { access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { loadConfig, pageOutputPath, resolveConfigFromRaw, tabPath } from "./config.js";
+import { loadConfig, pageOutputPath, resolveConfigFromRaw, tabIndexOutputPath } from "./config.js";
 import type { ResolvedConfig } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
@@ -267,7 +267,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
       data.specsBySlug.set(content.tabSlug, spec);
 
-      const pageKey = tabPath(content.tabSlug, "index.html");
+      const pageKey = tabIndexOutputPath(content.tabSlug, config.prettyUrls);
       const existing = data.pageMap.get(pageKey);
       if (existing) {
         existing.currentPage = { kind: "spec", spec };
@@ -290,7 +290,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
       data.specsBySlug.set(content.tabSlug, spec);
 
-      const pageKey = tabPath(content.tabSlug, "index.html");
+      const pageKey = tabIndexOutputPath(content.tabSlug, config.prettyUrls);
       const existing = data.pageMap.get(pageKey);
       if (existing) {
         existing.currentPage = { kind: "spec", spec };
@@ -333,11 +333,15 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       pagePath = firstKey;
     }
     if (!pagePath.endsWith(".html")) {
-      pagePath += "/index.html";
+      if (config.prettyUrls === "strip") {
+        pagePath += ".html";
+      } else {
+        pagePath += "/index.html";
+      }
     }
 
     let pageData = data.pageMap.get(pagePath);
-    if (!pageData && pagePath.endsWith(".html") && !pagePath.endsWith("/index.html")) {
+    if (!pageData && config.prettyUrls === "slash" && pagePath.endsWith(".html") && !pagePath.endsWith("/index.html")) {
       // Fallback for stale `.html` links when prettyUrls is enabled.
       const pretty = pagePath.replace(/\.html$/, "/index.html");
       pageData = data.pageMap.get(pretty);

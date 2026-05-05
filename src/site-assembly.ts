@@ -10,7 +10,7 @@ import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { loadGodocTab, type GodocLoaderDiagnostic } from "./core/godoc-loader.js";
 import { buildNavFromSpec, buildNavFromPages } from "./core/navigation.js";
 import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
-import { pageOutputPath, tabPath } from "./config.js";
+import { pageOutputPath, tabIndexOutputPath, tabPath } from "./config.js";
 import type { PrettyUrls, ResolvedConfig, ResolvedTab } from "./config.js";
 import type { ChangelogPage, DocsPage, MarkdownPage } from "./core/markdown-loader.js";
 import type { SiteTab } from "./core/navigation.js";
@@ -44,8 +44,9 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       navTab.label = tab.label;
       siteTabs.push(navTab);
 
-      pageMap.set(tabPath(tab.slug, "index.html"), {
-        outputPath: tabPath(tab.slug, "index.html"),
+      const outputPath = tabIndexOutputPath(tab.slug, config.prettyUrls);
+      pageMap.set(outputPath, {
+        outputPath,
         currentPage: { kind: "spec", spec },
         spec,
         tabSlug: tab.slug,
@@ -134,7 +135,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   }
 
   if (config.changelog.permalinks) {
-    addPermalinkPages(pageMap);
+    addPermalinkPages(pageMap, config.prettyUrls);
   }
 
   const sitePages = Array.from(pageMap.values());
@@ -375,7 +376,7 @@ function attachChangelogFeeds(
     const versionHref = (version: NormalizedChangelogVersion) => {
       if (config.changelog.permalinks) {
         return toPublicUrl(
-          tabPath(page.tabSlug, `${changelog.slug}/${version.id}/index.html`),
+          pageOutputPath(page.tabSlug, `${changelog.slug}/${version.id}`, config.prettyUrls),
           config.siteUrl,
           config.baseUrl,
           config.prettyUrls,
@@ -427,7 +428,7 @@ function attachChangelogFeeds(
   return extraFiles;
 }
 
-function addPermalinkPages(pageMap: Map<string, SitePage>): void {
+function addPermalinkPages(pageMap: Map<string, SitePage>, prettyUrls: PrettyUrls): void {
   const changelogPages = Array.from(pageMap.values()).filter(isMainChangelogSitePage);
   for (const page of changelogPages) {
     const changelog = page.currentPage.changelog;
@@ -440,7 +441,7 @@ function addPermalinkPages(pageMap: Map<string, SitePage>): void {
         permalinkVersionId: version.id,
       };
 
-      const outputPath = tabPath(page.tabSlug, `${changelog.slug}/${version.id}/index.html`);
+      const outputPath = pageOutputPath(page.tabSlug, `${changelog.slug}/${version.id}`, prettyUrls);
       pageMap.set(outputPath, {
         outputPath,
         currentPage: { kind: "changelog", changelog: permalinkPage },
@@ -574,9 +575,7 @@ function resolveInternalHref(
   const [path, hash] = href.split("#", 2);
   const hashSuffix = hash ? `#${hash}` : "";
   const sourcePath = path.replace(/\\/g, "/");
-  const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx)$/, "");
-
-  if (clean.endsWith(".html")) return null;
+  const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx|html)$/, "");
 
   const pageDir = outputPath.includes("/")
     ? outputPath.substring(0, outputPath.lastIndexOf("/"))
@@ -628,6 +627,9 @@ function resolveInternalHref(
  */
 function toPrettyLink(target: string, prettyUrls: PrettyUrls): string {
   if (!prettyUrls) return target;
+  if (prettyUrls === "strip" && target.endsWith(".html")) {
+    return target.slice(0, -(".html".length));
+  }
   if (target === "index.html") return "";
   if (target.endsWith("/index.html")) {
     const withSlash = target.slice(0, -"index.html".length);

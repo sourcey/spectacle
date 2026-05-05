@@ -1,6 +1,6 @@
 import type { NormalizedSpec } from "./types.js";
 import { tagNavigationLabel } from "./tag-utils.js";
-import { pageOutputPath, tabPath } from "../config.js";
+import { pageOutputPath, tabIndexOutputPath } from "../config.js";
 import type { ResolvedTab } from "../config.js";
 import type { DocsPage } from "./markdown-loader.js";
 import { htmlId } from "../utils/html-id.js";
@@ -65,7 +65,7 @@ export function buildNavFromSpec(
   tabSlug: string,
   prettyUrls: PrettyUrls = false,
 ): SiteTab {
-  const basePath = navHref(tabPath(tabSlug, "index.html"), prettyUrls);
+  const basePath = navHref(tabIndexOutputPath(tabSlug, prettyUrls), prettyUrls);
   const groups: SiteNavGroup[] = [];
 
   // Intro group

@@ -54,6 +54,10 @@ export function toPublicPath(outputPath: string, baseUrl = "", prettyUrls: Prett
     return `${prefix}${withSlash}`;
   }
 
+  if (prettyUrls === "strip" && cleanOutputPath.endsWith(".html")) {
+    return `${prefix}${cleanOutputPath.slice(0, -(".html".length))}`;
+  }
+
   return `${prefix}${cleanOutputPath}`;
 }
 

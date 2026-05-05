@@ -74,13 +74,13 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
     expect(packagePage).not.toContain("https://github.com/sourcey/example/blob/main/docs/widget.go#L");
 
     // Index page lists the package
-    const indexPage = await readFile(resolve(OUTPUT_DIR, "go-api/index.html"), "utf-8");
+    const indexPage = await readFile(resolve(OUTPUT_DIR, "go-api.html"), "utf-8");
     expect(indexPage).toContain("example.com/basic");
 
-    // Sitemap contains both pages (index renders as a tab-root URL)
+    // Sitemap contains both pages.
     const sitemap = await readFile(resolve(OUTPUT_DIR, "sitemap.xml"), "utf-8");
     expect(sitemap).toContain("go-api/package-root.html");
-    expect(sitemap).toMatch(/go-api\/(index\.html)?</);
+    expect(sitemap).toContain("go-api.html");
 
     // llms.txt links the package page
     const llms = await readFile(resolve(OUTPUT_DIR, "llms.txt"), "utf-8");

@@ -77,4 +77,50 @@ describe("resolveInternalLinks", () => {
     expect(pages[0].currentPage.markdown?.html).toContain('href="../../api-reference/base.html"');
     expect(pages[0].currentPage.markdown?.html).toContain('href="../../documentation/concepts/runtime-contracts.html"');
   });
+
+  it("rewrites stale html links to strip pretty URLs when they resolve internally", () => {
+    const pages: SitePage[] = [
+      {
+        outputPath: "introduction.html",
+        currentPage: {
+          kind: "markdown",
+          markdown: {
+            title: "Introduction",
+            description: "",
+            slug: "introduction",
+            html: '<p><a href="/docs/quickstart.html">Quickstart</a> <a href="missing.html">Missing</a></p>',
+            headings: [],
+            sourcePath: "introduction.md",
+            editPath: "introduction.md",
+          },
+        },
+        spec: EMPTY_SPEC,
+        tabSlug: "",
+        pageSlug: "introduction",
+      },
+      {
+        outputPath: "quickstart.html",
+        currentPage: {
+          kind: "markdown",
+          markdown: {
+            title: "Quickstart",
+            description: "",
+            slug: "quickstart",
+            html: "<p>Quickstart</p>",
+            headings: [],
+            sourcePath: "quickstart.md",
+            editPath: "quickstart.md",
+          },
+        },
+        spec: EMPTY_SPEC,
+        tabSlug: "",
+        pageSlug: "quickstart",
+      },
+    ];
+
+    resolveInternalLinks(pages, { prettyUrls: "strip" } as ResolvedConfig);
+
+    expect(pages[0].currentPage.markdown?.html).toContain('href="quickstart"');
+    expect(pages[0].currentPage.markdown?.html).toContain('href="missing.html"');
+  });
 });

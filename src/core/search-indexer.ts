@@ -2,6 +2,8 @@ import type { NormalizedSpec } from "./types.js";
 import type { DocsPage } from "./markdown-loader.js";
 import type { SiteNavigation } from "./navigation.js";
 import type { PrettyUrls } from "../site-url.js";
+import { toPublicPath } from "../site-url.js";
+import { pageOutputPath, tabIndexOutputPath } from "../config.js";
 import { htmlId } from "../utils/html-id.js";
 
 // ---------------------------------------------------------------------------
@@ -47,18 +49,14 @@ export function buildSearchIndex(
   const featuredSet = new Set(featuredSlugs);
   const entries: SearchEntry[] = [];
 
-  const pageUrl = (tabSlug: string, slug: string): string => {
-    const tabPrefix = tabSlug ? `${base}${tabSlug}/` : base;
-    if (prettyUrls === "strip") return `${tabPrefix}${slug}`;
-    if (prettyUrls === "slash") return `${tabPrefix}${slug}/`;
-    return `${tabPrefix}${slug}.html`;
-  };
+  const pageUrl = (tabSlug: string, slug: string): string =>
+    toPublicPath(pageOutputPath(tabSlug, slug, prettyUrls), base, prettyUrls);
 
   // Index OpenAPI specs
   for (const [tabSlug, spec] of specs) {
     const tab = navigation.tabs.find((t) => t.slug === tabSlug);
     const tabLabel = tab?.label ?? tabSlug;
-    const tabBase = tabSlug ? `${base}${tabSlug}/` : base;
+    const tabBase = toPublicPath(tabIndexOutputPath(tabSlug, prettyUrls), base, prettyUrls);
 
     // Operations
     for (const op of spec.operations) {

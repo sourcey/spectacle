@@ -51,7 +51,7 @@ export interface SourceyConfig {
   /**
    * Clean URLs without `.html` extensions.
    * - `"slash"`: emit `foo/index.html` and link as `/foo/`.
-   * - `"strip"`: same layout but link as `/foo` and emit a `_redirects` file for stale variants.
+   * - `"strip"`: emit `foo.html` and link as `/foo`.
    * - `false` (default): keep `.html` extensions.
    */
   prettyUrls?: PrettyUrls;
@@ -614,13 +614,23 @@ export function tabPath(tabSlug: string, file: string): string {
   return `${tabSlug}/${file}`;
 }
 
+/** Build the on-disk output path for a tab landing page. */
+export function tabIndexOutputPath(tabSlug: string, prettyUrls: PrettyUrls): string {
+  if (!tabSlug) return "index.html";
+  if (prettyUrls === "slash") return tabPath(tabSlug, "index.html");
+  return `${tabSlug}.html`;
+}
+
 /**
  * Build the on-disk output path for a content page within a tab.
- * When `prettyUrls` is enabled, the page is emitted as `slug/index.html` so hosts
- * serve it at `/slug/` (or `/slug` with rewrites). Otherwise it's emitted as `slug.html`.
+ * `"slash"` emits directory indexes. `false` and `"strip"` emit `.html`
+ * files; `"strip"` only changes the public URL, not the file layout.
  */
 export function pageOutputPath(tabSlug: string, slug: string, prettyUrls: PrettyUrls): string {
-  if (prettyUrls) {
+  if (slug === "index") {
+    return tabIndexOutputPath(tabSlug, prettyUrls);
+  }
+  if (prettyUrls === "slash") {
     return tabPath(tabSlug, `${slug}/index.html`);
   }
   return tabPath(tabSlug, `${slug}.html`);

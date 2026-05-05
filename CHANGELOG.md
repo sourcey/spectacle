@@ -13,6 +13,13 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 - `includeTests`, `includeUnexported`, `hideUndocumented`, and `exclude` options on `godoc` tabs.
 - godoc package and symbol entries flow through the existing search index, `llms.txt`, `llms-full.txt`, and `sitemap.xml` pipelines.
 
+## 3.5.3 - 2026-05-05
+
+### Fixed
+
+- `prettyUrls: "strip"` now emits `foo.html` files and public `/foo` links, without generated `_redirects`, so extensionless hosts do not loop between slashless and trailing-slash paths.
+- Internal markdown links that still point at `.html` pages are rewritten to the active pretty URL form when they resolve to a generated page.
+
 ## 3.5.1 - 2026-05-04
 
 ### Fixed
