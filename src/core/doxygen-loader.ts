@@ -67,6 +67,12 @@ export function rewriteGeneratedDoxygenHtmlLinks(html: string): string {
     })
     .replace(/<code>\[([^\]]+)\]\((api_[^)]+?\.md(?:#[^)]+)?)\)<\/code>/g, (_match, label: string, href: string) => {
       return `<a href="${rewriteGeneratedDoxygenHref(href)}"><code>${label}</code></a>`;
+    })
+    .replace(/<a href="\[([^\]"]+)\]\([^"]+"><\/a>/g, (_match, label: string) => {
+      return `<code>${label}</code>`;
+    })
+    .replace(/<a href="([A-Za-z][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)">([^<]+)<\/a>/g, (_match, _href: string, label: string) => {
+      return `<code>${label}</code>`;
     });
 }
 

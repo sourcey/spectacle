@@ -51,6 +51,14 @@ Session type documented in a different group from [PacketStream](demo-PacketStre
     );
   });
 
+  it("strips pseudo-links emitted for C++ names in generated prose", () => {
+    const html = "<p><a href=\"http::Request\">http::Request</a> <a href=\"[ServerPeer](icy-smpl-ServerPeer.html#serverpeer\"></a>&amp; peer <a href=\"std::string\">std::string</a></p>";
+
+    expect(rewriteGeneratedDoxygenHtmlLinks(html)).toBe(
+      "<p><code>http::Request</code> <code>ServerPeer</code>&amp; peer <code>std::string</code></p>",
+    );
+  });
+
   it("strips machine-local prefixes from generated include paths", () => {
     expect(rewriteGeneratedDoxygenIncludePath("/home/kam/dev/icey/src/graft/include/icy/graft/graft.h")).toBe("icy/graft/graft.h");
     expect(rewriteGeneratedDoxygenIncludePath("/home/kam/dev/icey/src/symple/src/server/detail.h")).toBe("src/symple/src/server/detail.h");
