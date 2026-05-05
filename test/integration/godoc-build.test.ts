@@ -33,6 +33,8 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
       {
         name: "Go Docs",
         siteUrl: "https://docs.example.com",
+        repo: "https://github.com/sourcey/example",
+        editBranch: "main",
         navigation: {
           tabs: [
             {
@@ -63,6 +65,9 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
     expect(packagePage).toContain("example.com/basic");
     expect(packagePage).toContain("Widget");
     expect(packagePage).toContain('id="func-New"');
+    expect(packagePage.match(/<h1/g)?.length ?? 0).toBe(1);
+    expect(packagePage).toContain("https://github.com/sourcey/example/edit/main/widget.go");
+    expect(packagePage).toContain("https://github.com/sourcey/example/blob/main/widget.go#L");
 
     // Index page lists the package
     const indexPage = await readFile(resolve(OUTPUT_DIR, "go-api/index.html"), "utf-8");
@@ -86,8 +91,16 @@ skipWithoutGo("buildSiteDocs (integration) – godoc tab", () => {
     // Search index includes the package symbols
     const searchIndex = JSON.parse(
       await readFile(resolve(OUTPUT_DIR, "search-index.json"), "utf-8"),
-    ) as Array<{ title: string; content: string }>;
+    ) as Array<{ title: string; content: string; category: string }>;
     const titles = searchIndex.map((entry) => entry.title);
     expect(titles.some((t) => t.includes("example.com/basic"))).toBe(true);
+    expect(titles).toContain("func New(name string) *Widget");
+    expect(titles).toContain("type Widget");
+    expect(titles).toContain("Widget.Publish");
+    expect(titles).toContain("Example New");
+    expect(searchIndex.some((entry) => entry.category === "go function" && entry.content.includes("New constructs a Widget"))).toBe(true);
+    expect(searchIndex.some((entry) => entry.category === "go type" && entry.title === "type Widget")).toBe(true);
+    expect(searchIndex.some((entry) => entry.category === "go method" && entry.title === "Widget.Publish")).toBe(true);
+    expect(searchIndex.some((entry) => entry.category === "go example" && entry.title === "Example New")).toBe(true);
   });
 });

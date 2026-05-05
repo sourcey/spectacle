@@ -114,6 +114,15 @@ export function buildSearchIndex(
             category: "Sections",
           });
         }
+        for (const entry of page.searchEntries ?? []) {
+          entries.push({
+            title: entry.title,
+            content: entry.content.slice(0, 500),
+            url: entry.anchor ? `${href}#${entry.anchor}` : href,
+            tab: tabLabel,
+            category: entry.category,
+          });
+        }
       } else {
         for (const version of page.changelog.versions) {
           entries.push({

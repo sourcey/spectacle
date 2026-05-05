@@ -17,7 +17,7 @@ import {
   renderMarkdown,
   type PageHeading,
 } from "../utils/markdown.js";
-import type { MarkdownPage } from "./markdown-loader.js";
+import type { MarkdownPage, PageSearchEntry } from "./markdown-loader.js";
 import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
 
 export interface GodocLoaderResult {
@@ -35,6 +35,12 @@ export interface GodocLoaderDiagnostic {
   line?: number;
 }
 
+export interface GodocSourceLinkOptions {
+  repo?: string;
+  editBranch?: string;
+  editBasePath?: string;
+}
+
 /**
  * Resolve a configured godoc tab into pre-rendered Sourcey pages plus a
  * navigation tab. Honours `mode: "live" | "snapshot" | "auto"`:
@@ -50,9 +56,10 @@ export async function loadGodocTab(
   config: ResolvedGodocConfig,
   tabSlug: string,
   tabLabel: string,
+  sourceLinks: GodocSourceLinkOptions = {},
 ): Promise<GodocLoaderResult> {
   const spec = await loadSpec(config);
-  return buildResult(spec, tabSlug, tabLabel, config);
+  return buildResult(spec, tabSlug, tabLabel, config, sourceLinks);
 }
 
 async function loadSpec(config: ResolvedGodocConfig): Promise<GodocSpec> {
@@ -146,6 +153,7 @@ function buildResult(
   tabSlug: string,
   tabLabel: string,
   config: ResolvedGodocConfig,
+  sourceLinks: GodocSourceLinkOptions,
 ): GodocLoaderResult {
   const pages = new Map<string, MarkdownPage>();
   const groups = new Map<string, NavEntry[]>();
@@ -156,8 +164,9 @@ function buildResult(
 
   for (const pkg of filteredPackages) {
     const slug = packageSlug(pkg.importPath, spec.modulePath);
-    const html = renderPackagePage(pkg, slug);
+    const html = renderPackagePage(pkg, slug, sourceLinks);
     const headings = collectHeadings(pkg);
+    const searchEntries = collectSearchEntries(pkg);
     // Fallback description for undocumented packages — using the import
     // path keeps llms.txt and search summaries clean instead of leaking
     // raw HTML structure.
@@ -171,7 +180,8 @@ function buildResult(
       html,
       headings,
       sourcePath: `godoc/${slug}.md`,
-      editPath: null,
+      editPath: packageEditPath(pkg),
+      searchEntries,
     });
 
     const groupKey = navGroupKey(pkg.importPath, spec.modulePath);
@@ -180,7 +190,7 @@ function buildResult(
   }
 
   const indexSlug = "index";
-  const indexHtml = renderIndexPage(spec, filteredPackages, tabLabel);
+  const indexHtml = renderIndexPage(spec, filteredPackages);
   pages.set(indexSlug, {
     kind: "markdown",
     title: tabLabel,
@@ -296,6 +306,57 @@ function collectHeadings(pkg: GodocPackage): PageHeading[] {
   return headings;
 }
 
+function collectSearchEntries(pkg: GodocPackage): PageSearchEntry[] {
+  const entries: PageSearchEntry[] = [];
+  for (const value of pkg.consts) {
+    entries.push(godocSearchEntry(`const ${value.name}`, value.doc, value.declaration, valueAnchor("const", value.name), "go constant"));
+  }
+  for (const value of pkg.vars) {
+    entries.push(godocSearchEntry(`var ${value.name}`, value.doc, value.declaration, valueAnchor("var", value.name), "go variable"));
+  }
+  for (const fn of pkg.funcs) {
+    entries.push(godocSearchEntry(fn.signature, fn.doc, fn.signature, funcAnchor(fn.name), "go function"));
+    for (const ex of fn.examples) {
+      entries.push(godocSearchEntry(exampleTitle(`Example ${fn.name}`, ex), ex.doc, ex.code, funcAnchor(fn.name), "go example"));
+    }
+  }
+  for (const t of pkg.types) {
+    entries.push(godocSearchEntry(`type ${t.name}`, t.doc, t.declaration, typeAnchor(t.name), "go type"));
+    for (const method of t.methods) {
+      entries.push(godocSearchEntry(`${t.name}.${method.name}`, method.doc, method.signature, methodAnchor(t.name, method.name), "go method"));
+      for (const ex of method.examples) {
+        entries.push(godocSearchEntry(exampleTitle(`Example ${t.name}.${method.name}`, ex), ex.doc, ex.code, methodAnchor(t.name, method.name), "go example"));
+      }
+    }
+    for (const ex of t.examples) {
+      entries.push(godocSearchEntry(exampleTitle(`Example ${t.name}`, ex), ex.doc, ex.code, typeAnchor(t.name), "go example"));
+    }
+  }
+  for (const ex of pkg.examples) {
+    entries.push(godocSearchEntry(exampleTitle("Example", ex), ex.doc, ex.code, "examples", "go example"));
+  }
+  return entries;
+}
+
+function godocSearchEntry(title: string, doc: string, declaration: string, anchor: string, category: string): PageSearchEntry {
+  return {
+    title,
+    content: [doc, declaration].filter(Boolean).join("\n\n"),
+    anchor,
+    category,
+  };
+}
+
+function exampleTitle(prefix: string, ex: GodocExample): string {
+  return ex.suffix ? `${prefix} (${humaniseSuffix(ex.suffix)})` : prefix;
+}
+
+function packageEditPath(pkg: GodocPackage): string | null {
+  const firstFile = pkg.files[0];
+  if (!firstFile) return null;
+  return firstFile;
+}
+
 function funcAnchor(name: string): string {
   return `func-${slugifySymbol(name)}`;
 }
@@ -320,9 +381,8 @@ function slugifySymbol(name: string): string {
 // HTML rendering
 // ---------------------------------------------------------------------------
 
-function renderIndexPage(spec: GodocSpec, packages: GodocPackage[], tabLabel: string): string {
+function renderIndexPage(spec: GodocSpec, packages: GodocPackage[]): string {
   const parts: string[] = [];
-  parts.push(`<h1>${escHtml(tabLabel)}</h1>`);
   if (spec.modulePath) {
     parts.push(`<p class="godoc-import-path"><code>${escHtml(spec.modulePath)}</code></p>`);
   }
@@ -352,11 +412,9 @@ function renderIndexPage(spec: GodocSpec, packages: GodocPackage[], tabLabel: st
   return parts.join("\n");
 }
 
-function renderPackagePage(pkg: GodocPackage, slug: string): string {
+function renderPackagePage(pkg: GodocPackage, slug: string, sourceLinks: GodocSourceLinkOptions): string {
   const parts: string[] = [];
-  const title = pkg.importPath;
 
-  parts.push(`<h1>${escHtml(title)}</h1>`);
   parts.push(
     `<p class="godoc-import"><code>import "${escHtml(pkg.importPath)}"</code></p>`,
   );
@@ -369,22 +427,22 @@ function renderPackagePage(pkg: GodocPackage, slug: string): string {
 
   if (pkg.consts.length > 0) {
     parts.push(`<h2 id="constants">Constants</h2>`);
-    parts.push(renderValueGroup(pkg.consts, "const"));
+    parts.push(renderValueGroup(pkg.consts, "const", sourceLinks));
   }
   if (pkg.vars.length > 0) {
     parts.push(`<h2 id="variables">Variables</h2>`);
-    parts.push(renderValueGroup(pkg.vars, "var"));
+    parts.push(renderValueGroup(pkg.vars, "var", sourceLinks));
   }
   if (pkg.funcs.length > 0) {
     parts.push(`<h2 id="functions">Functions</h2>`);
     for (const fn of pkg.funcs) {
-      parts.push(renderFunc(fn, funcAnchor(fn.name)));
+      parts.push(renderFunc(fn, funcAnchor(fn.name), sourceLinks));
     }
   }
   if (pkg.types.length > 0) {
     parts.push(`<h2 id="types">Types</h2>`);
     for (const t of pkg.types) {
-      parts.push(renderType(t));
+      parts.push(renderType(t, sourceLinks));
     }
   }
   if (pkg.examples.length > 0) {
@@ -424,7 +482,7 @@ function renderTableOfContents(pkg: GodocPackage): string {
   return `<nav class="godoc-toc not-prose"><h4>Index</h4><ul>${items.join("")}</ul></nav>`;
 }
 
-function renderValueGroup(values: GodocValue[], kind: "const" | "var"): string {
+function renderValueGroup(values: GodocValue[], kind: "const" | "var", sourceLinks: GodocSourceLinkOptions): string {
   const seenDeclarations = new Set<string>();
   const parts: string[] = [];
 
@@ -436,6 +494,7 @@ function renderValueGroup(values: GodocValue[], kind: "const" | "var"): string {
       parts.push(
         `<section class="godoc-value" id="${id}">` +
           docHtml +
+          renderSourceLink(v.position, sourceLinks) +
           renderCodeBlock(v.declaration, "go") +
           `</section>`,
       );
@@ -450,21 +509,23 @@ function renderValueGroup(values: GodocValue[], kind: "const" | "var"): string {
   return parts.join("\n");
 }
 
-function renderFunc(fn: GodocFunc, anchorId: string): string {
+function renderFunc(fn: GodocFunc, anchorId: string, sourceLinks: GodocSourceLinkOptions): string {
   const parts: string[] = [];
   parts.push(`<section class="godoc-func" id="${anchorId}">`);
   parts.push(`<h3 class="godoc-symbol">${escHtml(fn.signature)}</h3>`);
+  parts.push(renderSourceLink(fn.position, sourceLinks));
   if (fn.doc) parts.push(`<div class="godoc-doc">${renderDoc(fn.doc)}</div>`);
   for (const ex of fn.examples) parts.push(renderExample(ex));
   parts.push(`</section>`);
   return parts.join("\n");
 }
 
-function renderType(t: GodocType): string {
+function renderType(t: GodocType, sourceLinks: GodocSourceLinkOptions): string {
   const parts: string[] = [];
   const id = typeAnchor(t.name);
   parts.push(`<section class="godoc-type" id="${id}">`);
   parts.push(`<h3 class="godoc-symbol">type ${escHtml(t.name)}</h3>`);
+  parts.push(renderSourceLink(t.position, sourceLinks));
   if (t.doc) parts.push(`<div class="godoc-doc">${renderDoc(t.doc)}</div>`);
   parts.push(renderCodeBlock(t.declaration, "go"));
 
@@ -473,7 +534,7 @@ function renderType(t: GodocType): string {
   }
 
   for (const m of t.methods) {
-    parts.push(renderMethod(t.name, m));
+    parts.push(renderMethod(t.name, m, sourceLinks));
   }
   for (const ex of t.examples) parts.push(renderExample(ex));
 
@@ -496,15 +557,32 @@ function renderFields(t: GodocType): string {
   return `<details class="godoc-fields" open><summary>${heading}</summary><ul>${rows.join("")}</ul></details>`;
 }
 
-function renderMethod(typeName: string, m: GodocFunc): string {
+function renderMethod(typeName: string, m: GodocFunc, sourceLinks: GodocSourceLinkOptions): string {
   const id = methodAnchor(typeName, m.name);
-  return renderFunc(m, id).replace(`id="${funcAnchor(m.name)}"`, `id="${id}"`);
+  return renderFunc(m, id, sourceLinks).replace(`id="${funcAnchor(m.name)}"`, `id="${id}"`);
+}
+
+function renderSourceLink(
+  position: { file: string; line: number } | undefined,
+  sourceLinks: GodocSourceLinkOptions,
+): string {
+  const href = sourceURL(position, sourceLinks);
+  if (!href || !position) return "";
+  return `<p class="godoc-source"><a href="${escAttr(href)}" target="_blank" rel="noopener noreferrer">Source: ${escHtml(position.file)}:${position.line}</a></p>`;
+}
+
+function sourceURL(
+  position: { file: string; line: number } | undefined,
+  sourceLinks: GodocSourceLinkOptions,
+): string | undefined {
+  if (!position || !sourceLinks.repo || !sourceLinks.editBranch) return undefined;
+  const repoBase = sourceLinks.repo.replace(/\/$/, "");
+  const basePath = sourceLinks.editBasePath ? `${sourceLinks.editBasePath.replace(/^\/|\/$/g, "")}/` : "";
+  return `${repoBase}/blob/${sourceLinks.editBranch}/${basePath}${position.file}#L${position.line}`;
 }
 
 function renderExample(ex: GodocExample): string {
-  const title = ex.suffix
-    ? `Example (${escHtml(humaniseSuffix(ex.suffix))})`
-    : "Example";
+  const title = escHtml(exampleTitle("Example", ex));
   const parts: string[] = [`<details class="godoc-example"><summary>${title}</summary>`];
   if (ex.doc) parts.push(`<div class="godoc-doc">${renderDoc(ex.doc)}</div>`);
   parts.push(renderCodeBlock(ex.code, "go"));
@@ -532,4 +610,8 @@ function escHtml(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function escAttr(s: string): string {
+  return escHtml(s);
 }

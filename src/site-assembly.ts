@@ -73,7 +73,11 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
     }
 
     if (tab.godoc) {
-      const { pages, navTab, diagnostics } = await loadGodocTab(tab.godoc, tab.slug, tab.label);
+      const { pages, navTab, diagnostics } = await loadGodocTab(tab.godoc, tab.slug, tab.label, {
+        repo: config.repo,
+        editBranch: config.editBranch,
+        editBasePath: tab.godoc.sourceBasePath,
+      });
       godocDiagnostics.push(...diagnostics);
 
       for (const [slug, page] of pages) {

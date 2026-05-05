@@ -1611,6 +1611,21 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   border-radius: 3px;
 }
 
+#sourcey .godoc-source {
+  margin: -0.25rem 0 0.625rem;
+  font-size: 0.75rem;
+  color: rgb(var(--color-gray-500));
+}
+
+#sourcey .godoc-source a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#sourcey .godoc-source a:hover {
+  color: rgb(var(--color-primary-ink));
+}
+
 #sourcey .godoc-toc {
   margin: 1.5rem 0 2.5rem;
   padding: 0.875rem 1rem;

@@ -232,6 +232,7 @@ const godoc = defineCommand({
           includeUnexported: args.includeUnexported,
           hideUndocumented: false,
           exclude,
+          sourceBasePath: "",
         },
       });
 

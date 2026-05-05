@@ -232,7 +232,11 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       if (!tab?.godoc) return;
 
       log(`rebuilding godoc tab "${tab.label}"`);
-      const { pages, navTab } = await loadGodocTab(tab.godoc, tab.slug, tab.label);
+      const { pages, navTab } = await loadGodocTab(tab.godoc, tab.slug, tab.label, {
+        repo: config.repo,
+        editBranch: config.editBranch,
+        editBasePath: tab.godoc.sourceBasePath,
+      });
       if (cache !== snapshot) return;
 
       for (const [key, page] of data.pageMap) {

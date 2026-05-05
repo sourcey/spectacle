@@ -155,6 +155,7 @@ Add a Go module as a tab and Sourcey extracts package docs natively (no Doxygen 
   godoc: {
     module: ".",
     packages: ["./internal/core/...", "./cmd/..."],
+    // sourceBasePath: "go/my-module" // repo-relative prefix for source links when module is not at repo root
     // mode: "auto"   // default; live when Go is available, snapshot otherwise
     // includeTests: true       // examples from *_test.go (default)
     // includeUnexported: false // hide unexported symbols (default)

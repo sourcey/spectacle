@@ -33,6 +33,15 @@ export interface MarkdownPage {
   sourcePath: string;
   /** Optional repo-relative path used for "Edit this page" links. Null disables the link. */
   editPath?: string | null;
+  /** Optional page-local entries that should be indexed in addition to headings. */
+  searchEntries?: PageSearchEntry[];
+}
+
+export interface PageSearchEntry {
+  title: string;
+  content: string;
+  anchor?: string;
+  category: string;
 }
 
 export interface ChangelogPage {

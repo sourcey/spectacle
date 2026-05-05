@@ -149,6 +149,11 @@ export interface GodocConfig {
    * When unset, live mode follows the host's GOOS/GOARCH and active tags.
    */
   goEnv?: GodocGoEnv;
+  /**
+   * Repository-relative base path for Go source links. Leave empty when the
+   * configured Go module is at the repository root.
+   */
+  sourceBasePath?: string;
 }
 
 export interface TabConfig {
@@ -243,6 +248,7 @@ export interface ResolvedGodocConfig {
   hideUndocumented: boolean;
   exclude: string[];
   goEnv?: GodocGoEnv;
+  sourceBasePath: string;
 }
 
 export interface ResolvedTab {
@@ -509,6 +515,7 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
           hideUndocumented: cfg.hideUndocumented ?? false,
           exclude: cfg.exclude ?? [],
           goEnv: cfg.goEnv,
+          sourceBasePath: trimSlashes(cfg.sourceBasePath ?? ""),
         },
       });
     } else {
@@ -632,6 +639,10 @@ export function hexToRgb(hex: string): string {
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
   return `${r} ${g} ${b}`;
+}
+
+function trimSlashes(path: string): string {
+  return path.replace(/^\/+|\/+$/g, "");
 }
 
 async function assertExists(filePath: string, label: string): Promise<void> {

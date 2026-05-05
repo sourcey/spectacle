@@ -31,6 +31,7 @@ function liveConfig(overrides: Partial<ResolvedGodocConfig> = {}): ResolvedGodoc
     includeUnexported: false,
     hideUndocumented: false,
     exclude: [],
+    sourceBasePath: "",
     ...overrides,
   };
 }
@@ -131,6 +132,7 @@ describe("loadGodocTab – snapshot mode", () => {
           includeUnexported: false,
           hideUndocumented: false,
           exclude: [],
+          sourceBasePath: "",
         },
         "go-api",
         "Go API",
@@ -142,6 +144,51 @@ describe("loadGodocTab – snapshot mode", () => {
       expect(pkgPage!.html).toContain("Hello");
       expect(pkgPage!.html).toContain("<p>Tiny snapshot fixture.</p>");
       expect(pkgPage!.html).toContain("<p>Second paragraph with <strong>emphasis</strong>.</p>");
+    });
+  });
+
+  it("uses module-relative package files for nested package edit links", async () => {
+    await withTempDir(async (dir) => {
+      const snapshot: GodocSnapshot = {
+        schema_version: GODOC_SCHEMA_VERSION,
+        source: "sourcey-godoc",
+        module_path: "example.com/snapshotted",
+        packages: [
+          {
+            importPath: "example.com/snapshotted/internal/core",
+            name: "core",
+            synopsis: "Core package.",
+            doc: "Core package.",
+            dir: "internal/core",
+            files: ["internal/core/core.go"],
+            consts: [],
+            vars: [],
+            funcs: [],
+            types: [],
+            examples: [],
+          },
+        ],
+      };
+      const snapshotPath = join(dir, "godoc.json");
+      await writeFile(snapshotPath, JSON.stringify(snapshot), "utf8");
+
+      const result = await loadGodocTab(
+        {
+          module: dir,
+          packages: ["./..."],
+          mode: "snapshot",
+          snapshot: snapshotPath,
+          includeTests: false,
+          includeUnexported: false,
+          hideUndocumented: false,
+          exclude: [],
+          sourceBasePath: "",
+        },
+        "go-api",
+        "Go API",
+      );
+
+      expect(result.pages.get("pkg-internal-core")?.editPath).toBe("internal/core/core.go");
     });
   });
 

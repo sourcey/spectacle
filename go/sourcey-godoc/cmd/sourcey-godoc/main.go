@@ -384,9 +384,10 @@ func parsePackage(p goListPackage, cfg *config) (*pkgOut, []diagnostic) {
 
 	fset := token.NewFileSet()
 	parseErrors := []diagnostic{}
-	parsedFiles := []*ast.File{}
+	packageFiles := []*ast.File{}
+	exampleFiles := []*ast.File{}
 
-	collect := func(files []string, severity string, code string) {
+	collect := func(files []string, severity string, code string, target *[]*ast.File) {
 		for _, name := range files {
 			path := filepath.Join(p.Dir, name)
 			file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
@@ -400,17 +401,17 @@ func parsePackage(p goListPackage, cfg *config) (*pkgOut, []diagnostic) {
 				})
 				continue
 			}
-			parsedFiles = append(parsedFiles, file)
+			*target = append(*target, file)
 		}
 	}
 
-	collect(p.GoFiles, "error", "GODOC_PACKAGE_PARSE_FAILED")
+	collect(p.GoFiles, "error", "GODOC_PACKAGE_PARSE_FAILED", &packageFiles)
 	if cfg.includeTests {
-		collect(p.TestGoFiles, "warning", "GODOC_TEST_PARSE_FAILED")
-		collect(p.XTestGoFiles, "warning", "GODOC_TEST_PARSE_FAILED")
+		collect(p.TestGoFiles, "warning", "GODOC_TEST_PARSE_FAILED", &exampleFiles)
+		collect(p.XTestGoFiles, "warning", "GODOC_TEST_PARSE_FAILED", &exampleFiles)
 	}
 
-	if len(parsedFiles) == 0 {
+	if len(packageFiles) == 0 {
 		return nil, parseErrors
 	}
 
@@ -418,7 +419,7 @@ func parsePackage(p goListPackage, cfg *config) (*pkgOut, []diagnostic) {
 	if cfg.includeUnexported {
 		docMode |= doc.AllDecls
 	}
-	d, err := doc.NewFromFiles(fset, parsedFiles, p.ImportPath, docMode)
+	d, err := doc.NewFromFiles(fset, packageFiles, p.ImportPath, docMode)
 	if err != nil {
 		parseErrors = append(parseErrors, diagnostic{
 			Severity: "error",
@@ -472,56 +473,21 @@ func parsePackage(p goListPackage, cfg *config) (*pkgOut, []diagnostic) {
 	}
 	sort.Slice(out.Funcs, func(i, j int) bool { return out.Funcs[i].Name < out.Funcs[j].Name })
 
-	out.Examples = convertExamples(fset, d.Examples)
+	examples := doc.Examples(exampleFiles...)
+	out.Examples = convertExamples(fset, packageExamples(examples))
 	for i := range out.Funcs {
-		// Match by name; doc.NewFromFiles already attaches examples to
-		// d.Funcs[i].Examples for top-level funcs and d.Types[i].Funcs.
-		if attached := findFuncExamples(d, out.Funcs[i].Name); len(attached) > 0 {
+		if attached := functionExamples(examples, out.Funcs[i].Name); len(attached) > 0 {
 			out.Funcs[i].Examples = convertExamples(fset, attached)
 		}
 	}
 	for i := range out.Types {
-		t := findType(d, out.Types[i].Name)
-		if t == nil {
-			continue
-		}
-		out.Types[i].Examples = convertExamples(fset, t.Examples)
+		out.Types[i].Examples = convertExamples(fset, typeExamples(examples, out.Types[i].Name))
 		for j := range out.Types[i].Methods {
-			for _, m := range t.Methods {
-				if m.Name == out.Types[i].Methods[j].Name {
-					out.Types[i].Methods[j].Examples = convertExamples(fset, m.Examples)
-					break
-				}
-			}
+			out.Types[i].Methods[j].Examples = convertExamples(fset, methodExamples(examples, out.Types[i].Name, out.Types[i].Methods[j].Name))
 		}
 	}
 
 	return out, parseErrors
-}
-
-func findFuncExamples(d *doc.Package, name string) []*doc.Example {
-	for _, f := range d.Funcs {
-		if f.Name == name {
-			return f.Examples
-		}
-	}
-	for _, t := range d.Types {
-		for _, f := range t.Funcs {
-			if f.Name == name {
-				return f.Examples
-			}
-		}
-	}
-	return nil
-}
-
-func findType(d *doc.Package, name string) *doc.Type {
-	for _, t := range d.Types {
-		if t.Name == name {
-			return t
-		}
-	}
-	return nil
 }
 
 func convertExamples(fset *token.FileSet, examples []*doc.Example) []exOut {
@@ -534,6 +500,33 @@ func convertExamples(fset *token.FileSet, examples []*doc.Example) []exOut {
 			Code:   printNode(fset, ex.Code),
 			Output: strings.TrimSpace(ex.Output),
 		})
+	}
+	return out
+}
+
+func packageExamples(examples []*doc.Example) []*doc.Example {
+	return matchingExamples(examples, func(ex *doc.Example) bool { return ex.Name == "" })
+}
+
+func functionExamples(examples []*doc.Example, name string) []*doc.Example {
+	return matchingExamples(examples, func(ex *doc.Example) bool { return ex.Name == name })
+}
+
+func typeExamples(examples []*doc.Example, typeName string) []*doc.Example {
+	return matchingExamples(examples, func(ex *doc.Example) bool { return ex.Name == typeName })
+}
+
+func methodExamples(examples []*doc.Example, typeName string, methodName string) []*doc.Example {
+	want := typeName + "_" + methodName
+	return matchingExamples(examples, func(ex *doc.Example) bool { return ex.Name == want })
+}
+
+func matchingExamples(examples []*doc.Example, keep func(*doc.Example) bool) []*doc.Example {
+	out := []*doc.Example{}
+	for _, ex := range examples {
+		if keep(ex) {
+			out = append(out, ex)
+		}
 	}
 	return out
 }
