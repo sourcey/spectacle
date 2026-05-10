@@ -164,6 +164,8 @@ describe("renderPage (spec)", () => {
     const html = renderSpec(createMinimalSpec(), defaultOptions);
     expect(html).toContain('id="sidebar"');
     expect(html).toContain('id="nav"');
+    expect(html).toContain("data-sourcey-sidebar-scroll");
+    expect(html).toContain('data-sourcey-sidebar-tab="api"');
     expect(html).toContain("Introduction");
   });
 

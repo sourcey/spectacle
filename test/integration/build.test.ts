@@ -115,12 +115,14 @@ describe("buildDocs (integration)", () => {
       expect(apiHtml).toContain("API Reference");
       expect(apiHtml).toContain("sourcey.css");
       expect(apiHtml).toContain("sourcey.js");
+      expect(apiHtml).toContain("data-sourcey-sidebar-scroll");
 
       const css = await readFile(resolve(outputDir, "sourcey.css"), "utf-8");
       expect(css).toContain("#sourcey");
 
       const js = await readFile(resolve(outputDir, "sourcey.js"), "utf-8");
       expect(js).toContain("data-traverse-target");
+      expect(js).toContain("sourcey:sidebar-scroll:v1");
 
       const llms = await readFile(resolve(outputDir, "llms.txt"), "utf-8");
       expect(llms).toContain("# Petstore");

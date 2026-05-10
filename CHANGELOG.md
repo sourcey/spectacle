@@ -2,6 +2,13 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.5.10 - 2026-05-10
+
+### Fixed
+
+- Desktop sidebar scroll position now survives sidebar-initiated page navigation, so long generated docs sidebars no longer jump back to the top after selecting deep items in Doxygen/moxygen, OpenAPI, MCP, godoc, Markdown, or changelog tabs.
+- Direct, search-result, and external deep links now reveal the active sidebar item without reusing stale sidebar state.
+
 ## 3.5.9 - 2026-05-06
 
 ### Added

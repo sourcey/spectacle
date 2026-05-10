@@ -21,6 +21,7 @@ export default tseslint.config(
         navigator: "readonly",
         requestAnimationFrame: "readonly",
         setTimeout: "readonly",
+        URL: "readonly",
         URLSearchParams: "readonly",
         window: "readonly",
       },

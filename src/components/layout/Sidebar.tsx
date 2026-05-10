@@ -117,7 +117,11 @@ export function Sidebar() {
         class="z-20 hidden lg:block fixed bottom-0 right-auto w-[18rem]"
         style="top: var(--header-height)"
       >
-        <div class="absolute inset-0 z-10 overflow-auto pr-8 pb-10">
+        <div
+          class="absolute inset-0 z-10 overflow-auto pr-8 pb-10"
+          data-sourcey-sidebar-scroll
+          data-sourcey-sidebar-tab={nav.activeTabSlug || "default"}
+        >
           <div class="relative text-sm leading-6">
             <div class="sticky top-0 h-8 z-10 bg-gradient-to-b from-[rgb(var(--color-background-light))] dark:from-[rgb(var(--color-background-dark))]" />
             <nav id="nav" role="navigation">
