@@ -4,6 +4,10 @@ All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepa
 
 ## 3.5.10 - 2026-05-10
 
+### Changed
+
+- Bumped `mcp-parser` to `^0.4.0`, bringing the current `mcp-schema` dependency and markdown-first standalone generation docs into Sourcey's MCP tooling stack.
+
 ### Fixed
 
 - Desktop sidebar scroll position now survives sidebar-initiated page navigation, so long generated docs sidebars no longer jump back to the top after selecting deep items in Doxygen/moxygen, OpenAPI, MCP, godoc, Markdown, or changelog tabs.

@@ -2,7 +2,7 @@
 
 > Docs straight from the source.
 
-Sourcey tells the whole product story. It turns specs, code, rich guides, changelog, roadmap pages, examples, and agent-readable context from your project into static HTML you can deploy anywhere.
+Sourcey tells the whole product story. It turns specs, code, rich guides, changelog, roadmap pages, examples, and portable context files from your project into static HTML you can deploy anywhere.
 
 No dashboard. No runtime. No API calls to render your own documentation.
 
@@ -27,10 +27,10 @@ npx sourcey init
 - **API reference from OpenAPI**: endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
 - **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
 - **Rich guides**: markdown pages with steps, cards, accordions, syntax-highlighted code blocks, and prose alongside your API reference
-- **Product story pages**: changelog, roadmap pages, examples, reference material, search, and agent-readable output in one source-owned site
+- **Product story pages**: changelog, roadmap pages, examples, reference material, search, and portable context exports in one source-owned site
 - **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
 - **Go and godoc**: native package documentation extracted from Go source via the toolchain. Render Go modules as Sourcey tabs, generate standalone static Go docs sites, or commit `godoc.json` snapshots for JS-only docs hosts. No Doxygen detour
-- **llms.txt generation**: auto-generate llms.txt and llms-full.txt alongside your HTML. Docs serve developers and AI agents from one build
+- **Context exports**: auto-generate llms.txt and llms-full.txt alongside your HTML as alternate views of the same documentation graph
 - **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
 - **Theme presets**: default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top
 - **Vite dev server**: SSR hot reload on every component and CSS change; spec and markdown changes trigger instant refresh
@@ -38,22 +38,6 @@ npx sourcey init
 - **Client-side search**: instant fuzzy search across all pages and API operations; Cmd+K
 - **Static HTML output**: no framework runtime, no vendor lock-in. Deploy to GitHub Pages, Vercel, Netlify, S3, anywhere
 - **Open source**: AGPL-3.0. Self-host, fork, extend. Your docs, your infrastructure
-
-### Sourcey vs alternatives
-
-| | Sourcey | Redocly | GitBook | Mintlify | Fern | ReadMe |
-|---|---|---|---|---|---|---|
-| Open source | Yes | Partial | No | No | No | No |
-| Static output | Yes | Yes | No | No | No | No |
-| Zero JS shipped | Yes | No | No | No | No | No |
-| MCP server docs | Native | No | No | No | No | No |
-| Doxygen / C++ docs | Native | No | No | No | No | No |
-| godoc / Go docs | Native | No | No | No | No | No |
-| Config format | TypeScript | YAML | GUI | JSON | YAML | GUI |
-| Local preview | Vite SSR | Local | Hosted | Local | Local | Hosted |
-| No account required | Yes | Partial | No | No | No | No |
-| Self-hosted | Yes | Yes | No | No | Yes | No |
-| Pricing | Free | $10–$24 | $65–$249 | $250+ | $150+ | $79–$3,000+ |
 
 ## Install
 
@@ -102,97 +86,28 @@ import { defineConfig } from "sourcey";
 
 export default defineConfig({
   name: "My API",
-  theme: {
-    preset: "default",  // "default" | "minimal" | "api-first"
-    colors: {
-      primary: "#6366F1",
-      light: "#818CF8",
-      dark: "#4F46E5",
-    },
-  },
-  logo: "./logo.png",
   navigation: {
     tabs: [
-      {
-        tab: "Documentation",
-        groups: [
-          {
-            group: "Getting Started",
-            pages: ["introduction", "quickstart", "authentication"],
-          },
-        ],
-      },
-      {
-        tab: "API Reference",
-        openapi: "./openapi.yaml",
-      },
-      {
-        tab: "MCP Server",
-        mcp: "./mcp.json",
-      },
+      { tab: "API Reference", openapi: "./openapi.yaml" },
     ],
-  },
-  navbar: {
-    links: [{ type: "github", href: "https://github.com/you/repo" }],
-    primary: { type: "button", label: "Dashboard", href: "https://app.example.com" },
-  },
-  footer: {
-    socials: { github: "https://github.com/you/repo" },
   },
 });
 ```
 
-Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, a `godoc` Go module, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`).
+Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, a `godoc` Go module, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`). See [docs/configuration.md](docs/configuration.md) for theme, navbar, footer, logo, and full tab options.
 
 ### Go documentation (godoc)
 
-Add a Go module as a tab and Sourcey extracts package docs natively (no Doxygen pipeline):
+Add a Go module as a tab and Sourcey extracts package docs natively, no Doxygen pipeline:
 
 ```typescript
 {
   tab: "Go API",
-  godoc: {
-    module: ".",
-    packages: ["./internal/core/...", "./cmd/..."],
-    // sourceBasePath: "go/my-module" // repo-relative prefix for source links when module is not at repo root
-    // mode: "auto"   // default; live when Go is available, snapshot otherwise
-    // includeTests: true       // examples from *_test.go (default)
-    // includeUnexported: false // hide unexported symbols (default)
-  },
+  godoc: ".",
 }
 ```
 
-The string shorthand is `godoc: "."` and expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`.
-
-`editBasePath` remains the global base for Markdown "Edit this page" links.
-Use `godoc.sourceBasePath` only when Go source files live under a different
-repository prefix than the docs source.
-
-Live mode invokes `go list` + `go/parser` + `go/doc` against the host Go toolchain. To pin a build environment for reproducibility, set `goEnv: { GOOS, GOARCH, tags }`.
-
-Snapshot mode reads a committed `godoc.json` and needs no Go on the build host. Generate it with:
-
-```bash
-sourcey godoc --module . --packages './...' --out docs/godoc.json
-```
-
-then point the tab at it:
-
-```typescript
-{
-  tab: "Go API",
-  godoc: { mode: "snapshot", snapshot: "./docs/godoc.json" },
-}
-```
-
-The extractor is also a standalone Go CLI for projects that want a native Go
-docs generator without installing the full Sourcey npm package:
-
-```bash
-go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest
-sourcey-godoc generate --module . --packages './...' --out site
-sourcey-godoc snapshot --module . --packages './...' --out docs/godoc.json
-```
+The shorthand expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`. Live mode uses the host Go toolchain; snapshot mode reads a committed `godoc.json` and needs no Go on the build host. See [docs/configuration.md](docs/configuration.md) for `packages`, `mode`, `goEnv`, `sourceBasePath`, and `includeUnexported`.
 
 ### Markdown components
 
@@ -242,12 +157,7 @@ sourcey godoc --out godoc.json    Snapshot a Go module's docs to JSON
 sourcey-godoc generate --out site Standalone Go CLI for static godoc sites
 ```
 
-| Command | Flag | Description |
-| --- | --- | --- |
-| `build` | `--output, -o` | Output directory (default: `dist`) |
-| `build` | `--embed, -e` | Embeddable output (no html/body wrapper) |
-| `build` | `--quiet, -q` | Suppress output |
-| `dev` | `--port, -p` | Dev server port (default: `4400`) |
+Run `sourcey <command> --help` for flags.
 
 ## Development
 
