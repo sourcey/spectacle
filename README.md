@@ -98,13 +98,12 @@ Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, a `godo
 
 ### Go documentation (godoc)
 
-Add a Go module as a tab and Sourcey extracts package docs natively, no Doxygen pipeline:
+Render Go package docs as a tab inside your Sourcey site, branded and styled with the rest of your documentation. Native toolchain extraction (`go list` + `go/parser` + `go/doc`) feeds the same renderer as your OpenAPI, MCP, and Markdown tabs, so signatures, examples from `*_test.go`, and source links sit alongside your guides instead of bouncing readers to pkg.go.dev.
+
+**[Live: scafld's Go API reference →](https://0state.com/scafld/docs/go-api)**
 
 ```typescript
-{
-  tab: "Go API",
-  godoc: ".",
-}
+{ tab: "Go API", godoc: "." }
 ```
 
 The shorthand expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`. Live mode uses the host Go toolchain; snapshot mode reads a committed `godoc.json` and needs no Go on the build host. See [docs/configuration.md](docs/configuration.md) for `packages`, `mode`, `goEnv`, `sourceBasePath`, and `includeUnexported`.
