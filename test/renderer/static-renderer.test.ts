@@ -346,6 +346,28 @@ describe("renderPage (spec)", () => {
     expect(html).toContain('href="../../documentation/guides/next.html"');
   });
 
+  it("renders a table of contents for h3-only generated API pages", () => {
+    const spec = createMinimalSpec();
+    const navigation = createDocsNavigation();
+    const currentPage: CurrentPage = {
+      kind: "markdown",
+      markdown: createMarkdownPage({
+        headings: [
+          { level: 3, text: "Namespaces", id: "namespaces" },
+          { level: 3, text: "Classes", id: "classes" },
+          { level: 3, text: "Functions", id: "functions" },
+        ],
+      }),
+    };
+
+    const html = renderPage(spec, defaultOptions, navigation, currentPage, defaultSite);
+
+    expect(html).toContain("On this page");
+    expect(html).toContain('href="#namespaces"');
+    expect(html).toContain('href="#classes"');
+    expect(html).toContain('href="#functions"');
+  });
+
   it("uses the global edit base for markdown pages unless the page overrides it", () => {
     const spec = createMinimalSpec();
     const navigation = createDocsNavigation();

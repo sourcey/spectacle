@@ -9,10 +9,12 @@ import { iconPath } from "../../utils/icons.js";
 const tocLink = "toc-item break-words block hover:text-[rgb(var(--color-gray-900))] dark:hover:text-[rgb(var(--color-gray-300))] dark:text-[rgb(var(--color-gray-400))] transition-colors";
 
 function TocList({ headings }: { headings: PageHeading[] }) {
-  // Group: each root heading (level 2) followed by its sub-headings (level 3+)
+  // Group by the shallowest heading present. Moxygen C++ pages often use
+  // h1 for the page title and h3 for sections, with no h2 in between.
+  const rootLevel = Math.min(...headings.map((h) => h.level));
   const groups: { root: PageHeading; children: PageHeading[] }[] = [];
   for (const h of headings) {
-    if (h.level < 3) {
+    if (h.level <= rootLevel) {
       groups.push({ root: h, children: [] });
     } else if (groups.length) {
       groups[groups.length - 1].children.push(h);
