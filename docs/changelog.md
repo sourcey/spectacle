@@ -1,9 +1,13 @@
 ---
 title: Changelog
-description: Recent Sourcey releases and the current unreleased lane.
+description: Recent Sourcey releases.
 ---
 
 # Changelog
+
+## 3.6.0
+
+Sourcey 3.6.0 made source adapters the primary tab configuration shape (`source: markdown(...)`, `mkdocs(...)`, `openapi(...)`, `mcp(...)`, `doxygen(...)`, and `godoc(...)`), added MkDocs import for existing `mkdocs.yml` sites, and upgraded generated C++ references with member search, route-mapped source links, examples, modern signatures, inherited members, and relationship sections.
 
 ## 3.5.0
 
@@ -13,6 +17,4 @@ Sourcey 3.5.0 shipped OpenAPI 3.2 support, `$self`-aware reference resolution fo
 
 The 3.4 release line added build-time OG image generation, Heroicons support, MCP documentation as a first-class input, sitemap and social metadata, and a long sequence of rendering and developer-experience fixes.
 
-## Unreleased
-
-The root `CHANGELOG.md` remains the detailed record for ongoing work. This page is the short view for docs readers who want the shape of recent releases before diving into the full changelog.
+The root `CHANGELOG.md` remains the detailed record. This page is the short view for docs readers who want the shape of recent releases before diving into the full changelog.

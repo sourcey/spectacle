@@ -1,6 +1,6 @@
 {
   "name": "sourcey",
-  "version": "3.5.10",
+  "version": "3.6.0",
   "description": "Precision documentation from OpenAPI, MCP, Doxygen, godoc, and Markdown. Static HTML you own.",
   "type": "module",
   "engines": {
@@ -30,6 +30,7 @@
     "godoc:go:test": "cd go/sourcey-godoc && go test ./...",
     "godoc:go:vet": "cd go/sourcey-godoc && go vet ./...",
     "godoc:packages:test": "packaging/sourcey-godoc/render-package-managers.test.sh",
+    "cpp:release-gate": "node scripts/check-cpp-reference-quality.mjs",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
@@ -46,7 +47,7 @@
     "js-yaml": "^4.1.0",
     "marked": "^15.0.0",
     "mcp-parser": "^0.4.0",
-    "moxygen": "^2.1.1",
+    "moxygen": "file:../engines/moxygen",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
     "satori": "^0.26.0",

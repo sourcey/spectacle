@@ -27,8 +27,9 @@ npx sourcey init
 - **API reference from OpenAPI**: endpoints, parameters, request/response schemas, auto-generated code samples in 10 languages (cURL, JavaScript, TypeScript, Python, Go, Ruby, Java, PHP, Rust, C#)
 - **MCP server documentation**: tools, resources, prompts rendered as browsable reference with JSON-RPC, TypeScript, and Python code samples. Color-coded method types, annotation badges, connection config cards
 - **Rich guides**: markdown pages with steps, cards, accordions, syntax-highlighted code blocks, and prose alongside your API reference
+- **MkDocs source import**: point a tab at `mkdocs.yml`; Sourcey reads `docs_dir` and `nav` so existing MkDocs markdown sites can render without hand-copying the sidebar structure
 - **Product story pages**: changelog, roadmap pages, examples, reference material, search, and portable context exports in one source-owned site
-- **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
+- **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs with exact member search, source links, templates, qualifiers, examples, inherited members, and relationship sections. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
 - **Go and godoc**: native package documentation extracted from Go source via the toolchain. Render Go modules as Sourcey tabs, generate standalone static Go docs sites, or commit `godoc.json` snapshots for JS-only docs hosts. No Doxygen detour
 - **Context exports**: auto-generate llms.txt and llms-full.txt alongside your HTML as alternate views of the same documentation graph
 - **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
@@ -45,12 +46,12 @@ npx sourcey init
 
 The full Sourcey binary handles OpenAPI, Doxygen, godoc, MCP, and Markdown sources.
 
-| Path     | Command                                            | Requires          |
-|----------|----------------------------------------------------|-------------------|
-| npm      | `npm install -g sourcey`                           | Node 20+          |
-| Homebrew | `brew tap sourcey/tap && brew install sourcey`     | macOS / Linuxbrew |
-| Docker   | `docker run -v "$PWD":/docs sourcey/sourcey`       | Docker            |
-| Nix      | `nix run github:sourcey/sourcey`                   | Nix (flakes)      |
+| Path     | Command                                        | Requires          |
+| -------- | ---------------------------------------------- | ----------------- |
+| npm      | `npm install -g sourcey`                       | Node 20+          |
+| Homebrew | `brew tap sourcey/tap && brew install sourcey` | macOS / Linuxbrew |
+| Docker   | `docker run -v "$PWD":/docs sourcey/sourcey`   | Docker            |
+| Nix      | `nix run github:sourcey/sourcey`               | Nix (flakes)      |
 
 Then `sourcey init` to scaffold a new project, or `sourcey build` against an existing one. See [docs/install.md](docs/install.md) for full Docker invocations (`init` / `dev` / `build`), the `--host` flag for containerized dev, Linuxbrew notes, and Nix profile install.
 
@@ -58,10 +59,10 @@ Then `sourcey init` to scaffold a new project, or `sourcey build` against an exi
 
 For Go-only consumers without a JavaScript toolchain, `sourcey-godoc` ships as a separate native binary. It produces static Go docs sites or portable `godoc.json` snapshots.
 
-| Path     | Command |
-|----------|---------|
-| Go       | `go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest` |
-| Homebrew | `brew install sourcey/tap/sourcey-godoc` |
+| Path     | Command                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| Go       | `go install github.com/sourcey/sourcey/go/sourcey-godoc/cmd/sourcey-godoc@latest`                 |
+| Homebrew | `brew install sourcey/tap/sourcey-godoc`                                                          |
 | Scoop    | `scoop bucket add sourcey https://github.com/sourcey/scoop-bucket && scoop install sourcey-godoc` |
 
 ## Quick start
@@ -82,19 +83,17 @@ sourcey dev
 Create `sourcey.config.ts` in your project root:
 
 ```typescript
-import { defineConfig } from "sourcey";
+import { defineConfig, openapi } from "sourcey";
 
 export default defineConfig({
   name: "My API",
   navigation: {
-    tabs: [
-      { tab: "API Reference", openapi: "./openapi.yaml" },
-    ],
+    tabs: [{ tab: "API Reference", source: openapi("./openapi.yaml") }],
   },
 });
 ```
 
-Each tab is an `openapi` spec, an `mcp` snapshot, a `doxygen` directory, a `godoc` Go module, or `groups` of markdown pages. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`). See [docs/configuration.md](docs/configuration.md) for theme, navbar, footer, logo, and full tab options.
+Each tab has one `source`, usually created with `markdown()`, `mkdocs()`, `openapi()`, `mcp()`, `doxygen()`, or `godoc()`. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`). See [docs/configuration.md](docs/configuration.md) for theme, navbar, footer, logo, and full tab options.
 
 ### Go documentation (godoc)
 
@@ -103,7 +102,7 @@ Render Go package docs as a tab inside your Sourcey site, branded and styled wit
 **[Live: scafld's Go API reference →](https://0state.com/scafld/docs/go-api)**
 
 ```typescript
-{ tab: "Go API", godoc: "." }
+{ tab: "Go API", source: godoc(".") }
 ```
 
 The shorthand expands to `{ module: ".", packages: ["./..."], mode: "auto", includeTests: true }`. Live mode uses the host Go toolchain; snapshot mode reads a committed `godoc.json` and needs no Go on the build host. See [docs/configuration.md](docs/configuration.md) for `packages`, `mode`, `goEnv`, `sourceBasePath`, and `includeUnexported`.

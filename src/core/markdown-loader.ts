@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile as readFileAsync } from "node:fs/promises";
 import { basename, extname, relative } from "node:path";
 import { load as parseYaml } from "js-yaml";
 import { normalizeChangelog } from "./changelog-normalizer.js";
@@ -9,6 +9,8 @@ import {
   renderMarkdown,
   renderMarkdownInline,
   extractHeadings,
+  extractFirstParagraph,
+  stripMarkdownLinks,
   type PageHeading,
 } from "../utils/markdown.js";
 import type { NormalizedChangelog } from "./types.js";
@@ -37,6 +39,8 @@ export interface MarkdownPage {
   editBasePath?: string | null;
   /** Optional page-local entries that should be indexed in addition to headings. */
   searchEntries?: PageSearchEntry[];
+  /** Optional source root used to rewrite source-format-relative assets. */
+  sourceRoot?: string;
 }
 
 export interface PageSearchEntry {
@@ -44,6 +48,11 @@ export interface PageSearchEntry {
   content: string;
   anchor?: string;
   category: string;
+  symbolKind?: string;
+  owner?: string;
+  ownerKind?: string;
+  namespace?: string;
+  qualifiedName?: string;
 }
 
 export interface ChangelogPage {
@@ -75,7 +84,16 @@ interface Frontmatter {
 export interface LoadDocsPageOptions {
   changelog?: boolean;
   repoUrl?: string;
+  sourceRoot?: string;
+  preprocess?: MarkdownPreprocessor[];
 }
+
+export interface MarkdownPreprocessContext {
+  filePath: string;
+  sourceRoot?: string;
+}
+
+export type MarkdownPreprocessor = (body: string, context: MarkdownPreprocessContext) => string;
 
 // ---------------------------------------------------------------------------
 // Frontmatter parsing
@@ -288,9 +306,10 @@ function parseKeyValueAttrs(
     i += 1;
     i = skipWhitespace(raw, i);
 
-    const parsedValue = raw[i] === "{" && options.allowBraces
-      ? parseBracedAttrValue(raw, i)
-      : parseQuotedAttrValue(raw, i);
+    const parsedValue =
+      raw[i] === "{" && options.allowBraces
+        ? parseBracedAttrValue(raw, i)
+        : parseQuotedAttrValue(raw, i);
     if (!parsedValue) break;
 
     attrs[key] = parsedValue.value;
@@ -600,9 +619,7 @@ function dedent(text: string): string {
   const lines = text.split("\n");
   const nonEmpty = lines.filter((l) => l.trim().length > 0);
   if (nonEmpty.length === 0) return text;
-  const indent = Math.min(
-    ...nonEmpty.map((l) => l.match(/^(\s*)/)?.[1].length ?? 0),
-  );
+  const indent = Math.min(...nonEmpty.map((l) => l.match(/^(\s*)/)?.[1].length ?? 0));
   if (indent === 0) return text;
   return lines.map((l) => l.slice(indent)).join("\n");
 }
@@ -710,7 +727,12 @@ ${body}
     return `\n\n${buildTabbedHtml(codeBlocks, nextId("cg"), "directive-code-group")}\n`;
   }
 
-  if (node.name === "Note" || node.name === "Warning" || node.name === "Tip" || node.name === "Info") {
+  if (
+    node.name === "Note" ||
+    node.name === "Warning" ||
+    node.name === "Tip" ||
+    node.name === "Info"
+  ) {
     const type = node.name.toLowerCase();
     const label = renderMarkdownInline(
       node.attrs.title?.trim() || node.name.charAt(0).toUpperCase() + node.name.slice(1),
@@ -782,10 +804,7 @@ function escapeRegExp(value: string): string {
 }
 
 function escapeHtmlAttr(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;");
+  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
 
 function stripDirectiveIndent(line: string): string {
@@ -814,9 +833,7 @@ function buildTabbedHtml(
   id: string,
   extraClass?: string,
 ): string {
-  const cls = extraClass
-    ? `directive-tabs ${extraClass} not-prose`
-    : "directive-tabs not-prose";
+  const cls = extraClass ? `directive-tabs ${extraClass} not-prose` : "directive-tabs not-prose";
   const buttons = tabs
     .map(
       (t, i) =>
@@ -894,7 +911,10 @@ function splitChildren(
 
     children.push({
       attrs: parseAttrs(start[1] ?? ""),
-      body: lines.slice(i + 1, j).join("\n").trim(),
+      body: lines
+        .slice(i + 1, j)
+        .join("\n")
+        .trim(),
     });
     i = j + 1;
   }
@@ -954,10 +974,10 @@ const SUPPORTED_DIRECTIVES = new Set<SupportedDirective>([
   "accordion",
 ]);
 
-function matchDirectiveStart(
-  line: string,
-): { type: SupportedDirective; meta: string } | null {
-  const match = stripDirectiveIndent(line).trimEnd().match(/^:::(\w[\w-]*)(.*)$/);
+function matchDirectiveStart(line: string): { type: SupportedDirective; meta: string } | null {
+  const match = stripDirectiveIndent(line)
+    .trimEnd()
+    .match(/^:::(\w[\w-]*)(.*)$/);
   if (!match || !SUPPORTED_DIRECTIVES.has(match[1] as SupportedDirective)) return null;
   return {
     type: match[1] as SupportedDirective,
@@ -1016,11 +1036,7 @@ function collectDirectiveBlock(
   return null;
 }
 
-function renderDirectiveBlock(
-  type: SupportedDirective,
-  meta: string,
-  content: string,
-): string {
+function renderDirectiveBlock(type: SupportedDirective, meta: string, content: string): string {
   if (type === "note" || type === "warning" || type === "tip" || type === "info") {
     const label = renderMarkdownInline(
       meta.trim() || type.charAt(0).toUpperCase() + type.slice(1),
@@ -1117,7 +1133,9 @@ ${body}
     return `\n\n<div class="card-group not-prose" data-cols="${escapeHtmlAttr(cols)}">\n${cards.join("\n")}\n</div>\n`;
   }
 
-  const title = renderMarkdownInline(parseAttrs(meta.match(/^\{([^}]*)\}$/)?.[1] ?? "").title || "").trim();
+  const title = renderMarkdownInline(
+    parseAttrs(meta.match(/^\{([^}]*)\}$/)?.[1] ?? "").title || "",
+  ).trim();
   const body = renderDirectiveMarkdown(content);
   return `\n\n<details class="accordion-item">
 <summary class="accordion-trigger">${title}</summary>
@@ -1175,7 +1193,9 @@ function preprocessDirectives(body: string): string {
         const accordionBlock = collectDirectiveBlock(lines, nextLine);
         if (!accordionBlock) break;
 
-        accordions.push(renderDirectiveBlock("accordion", accordionStart.meta, accordionBlock.content));
+        accordions.push(
+          renderDirectiveBlock("accordion", accordionStart.meta, accordionBlock.content),
+        );
         nextLine = accordionBlock.nextLine;
 
         let scan = nextLine;
@@ -1214,11 +1234,8 @@ function preprocessDirectives(body: string): string {
 /**
  * Load a single markdown file and return a MarkdownPage.
  */
-export async function loadMarkdownPage(
-  filePath: string,
-  slug: string,
-): Promise<MarkdownPage> {
-  const raw = await readFile(filePath, "utf-8");
+export async function loadMarkdownPage(filePath: string, slug: string): Promise<MarkdownPage> {
+  const raw = await readFileAsync(filePath, "utf-8");
   const { meta, body } = parseFrontmatter(raw);
 
   return loadMarkdownPageFromBody(filePath, slug, body, meta);
@@ -1229,7 +1246,7 @@ export async function loadDocsPage(
   slug: string,
   options: LoadDocsPageOptions = {},
 ): Promise<DocsPage> {
-  const raw = await readFile(filePath, "utf-8");
+  const raw = await readFileAsync(filePath, "utf-8");
   const { meta, body } = parseFrontmatter(raw);
 
   if (shouldTreatAsChangelog(filePath, meta, options)) {
@@ -1239,9 +1256,8 @@ export async function loadDocsPage(
       description: typeof meta.description === "string" ? meta.description : undefined,
       repoUrl: options.repoUrl,
     });
-    const description = typeof meta.description === "string"
-      ? meta.description
-      : changelog.description ?? "";
+    const description =
+      typeof meta.description === "string" ? meta.description : (changelog.description ?? "");
 
     return {
       kind: "changelog",
@@ -1260,7 +1276,7 @@ export async function loadDocsPage(
     };
   }
 
-  return loadMarkdownPageFromBody(filePath, slug, body, meta);
+  return loadMarkdownPageFromBody(filePath, slug, body, meta, options);
 }
 
 function shouldTreatAsChangelog(
@@ -1278,21 +1294,21 @@ function loadMarkdownPageFromBody(
   slug: string,
   body: string,
   meta: Frontmatter,
+  options: LoadDocsPageOptions = {},
 ): MarkdownPage {
-
   resetDirectiveCounter();
-  const componentPreprocessed = preprocessComponents(body);
+  const sourcePreprocessed = preprocessSourceMarkdown(body, filePath, options);
+  const componentPreprocessed = preprocessComponents(sourcePreprocessed);
   const preprocessed = preprocessDirectives(componentPreprocessed);
   const headings = extractHeadings(componentPreprocessed);
   const html = renderMarkdown(preprocessed);
 
   const title = meta.title ?? extractFirstHeading(componentPreprocessed) ?? slug;
-  const description = meta.description ?? "";
+  const description = normalizeMarkdownDescription(meta.description, componentPreprocessed);
 
   // Strip leading h1 from rendered HTML when it duplicates the page title
-  const cleanHtml = html.replace(
-    /^\s*<h1[^>]*>(.*?)<\/h1>\s*/i,
-    (_m, inner) => inner.replace(/<[^>]+>/g, "").trim() === title ? "" : _m,
+  const cleanHtml = html.replace(/^\s*<h1[^>]*>(.*?)<\/h1>\s*/i, (_m, inner) =>
+    inner.replace(/<[^>]+>/g, "").trim() === title ? "" : _m,
   );
 
   const sourcePath = relative(process.cwd(), filePath);
@@ -1305,7 +1321,15 @@ function loadMarkdownPageFromBody(
     headings,
     sourcePath,
     editPath: sourcePath,
+    sourceRoot: options.sourceRoot ? relative(process.cwd(), options.sourceRoot) : undefined,
   };
+}
+
+function normalizeMarkdownDescription(description: unknown, markdown: string): string {
+  if (typeof description === "string" && description.trim()) {
+    return description;
+  }
+  return stripMarkdownLinks(extractFirstParagraph(markdown)).replace(/\s+/g, " ").trim();
 }
 
 /**
@@ -1326,5 +1350,43 @@ function extractFirstHeading(md: string): string | undefined {
 export function slugFromPath(filePath: string): string {
   const ext = extname(filePath);
   const stripped = ext ? filePath.slice(0, -ext.length) : filePath;
-  return stripped.split("/").map((s) => htmlId(s)).join("/");
+  return stripped
+    .split("/")
+    .map((s) => slugSegmentFromPath(s))
+    .join("/");
+}
+
+function slugSegmentFromPath(segment: string): string {
+  const normalized = segment
+    .replace(/^operator=$/, "operator-assign")
+    .replace(/^~(.+)$/, "destructor-$1")
+    .replace(/<=>/g, "-spaceship")
+    .replace(/<=/g, "-le")
+    .replace(/>=/g, "-ge")
+    .replace(/==/g, "-eq")
+    .replace(/!=/g, "-ne")
+    .replace(/\[\]/g, "-array")
+    .replace(/\+=/g, "-plus-eq")
+    .replace(/\/=/g, "-slash-eq")
+    .replace(/\//g, "-slash")
+    .replace(/=/g, "-eq")
+    .replace(/\+/g, "-plus")
+    .replace(/</g, "-lt")
+    .replace(/>/g, "-gt");
+  return htmlId(normalized);
+}
+
+function preprocessSourceMarkdown(
+  body: string,
+  filePath: string,
+  options: LoadDocsPageOptions,
+): string {
+  let current = body;
+  for (const preprocess of options.preprocess ?? []) {
+    current = preprocess(current, {
+      filePath,
+      sourceRoot: options.sourceRoot,
+    });
+  }
+  return current;
 }

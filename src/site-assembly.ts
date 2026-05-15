@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { extname, posix, resolve } from "node:path";
+import { extname, posix, relative, resolve } from "node:path";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
@@ -13,8 +13,13 @@ import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
 import { pageOutputPath, tabIndexOutputPath, tabPath } from "./config.js";
 import type { PrettyUrls, ResolvedConfig, ResolvedTab } from "./config.js";
 import type { ChangelogPage, DocsPage, MarkdownPage } from "./core/markdown-loader.js";
+import type { ResolvedMarkdownSource } from "./adapters/types.js";
 import type { SiteTab } from "./core/navigation.js";
-import type { ChangelogDiagnostic, NormalizedChangelogVersion, NormalizedSpec } from "./core/types.js";
+import type {
+  ChangelogDiagnostic,
+  NormalizedChangelogVersion,
+  NormalizedSpec,
+} from "./core/types.js";
 import type { SitePage } from "./renderer/html-builder.js";
 import type { SiteConfig } from "./renderer/context.js";
 import { toPublicUrl } from "./site-url.js";
@@ -38,7 +43,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   const godocDiagnostics: GodocLoaderDiagnostic[] = [];
 
   for (const tab of config.tabs) {
-    if (tab.openapi || tab.mcp) {
+    if (tab.source.kind === "openapi" || tab.source.kind === "mcp") {
       const spec = specsBySlug.get(tab.slug)!;
       const navTab = buildNavFromSpec(spec, tab.slug, config.prettyUrls);
       navTab.label = tab.label;
@@ -55,8 +60,8 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       continue;
     }
 
-    if (tab.doxygen) {
-      const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+    if (tab.source.kind === "doxygen") {
+      const { pages, navTab } = await loadDoxygenTab(tab.source.config, tab.slug, tab.label);
 
       for (const [slug, page] of pages) {
         const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
@@ -73,12 +78,17 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       continue;
     }
 
-    if (tab.godoc) {
-      const { pages, navTab, diagnostics } = await loadGodocTab(tab.godoc, tab.slug, tab.label, {
-        repo: config.repo,
-        editBranch: config.editBranch,
-        editBasePath: tab.godoc.sourceBasePath,
-      });
+    if (tab.source.kind === "godoc") {
+      const { pages, navTab, diagnostics } = await loadGodocTab(
+        tab.source.config,
+        tab.slug,
+        tab.label,
+        {
+          repo: config.repo,
+          editBranch: config.editBranch,
+          editBasePath: tab.source.config.sourceBasePath,
+        },
+      );
       godocDiagnostics.push(...diagnostics);
 
       for (const [slug, page] of pages) {
@@ -96,15 +106,17 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
       continue;
     }
 
-    if (!tab.groups) continue;
+    if (tab.source.kind !== "markdown") continue;
 
     const pagesByPath = new Map<string, DocsPage>();
-    for (const group of tab.groups) {
+    for (const group of tab.source.groups) {
       for (const rp of group.pages) {
         const slug = slugFromPath(rp.slug);
         const page = await loadDocsPage(rp.file, slug, {
           changelog: config.changelog.enabled,
           repoUrl: config.repo,
+          sourceRoot: rp.sourceRoot,
+          preprocess: rp.preprocess,
         });
         pagesByPath.set(rp.slug, page);
 
@@ -142,6 +154,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   const sitePages = Array.from(pageMap.values());
   resolveInternalLinks(sitePages, config);
   const extraFiles = attachChangelogFeeds(sitePages, config);
+  await attachSourceAssets(extraFiles, config.tabs);
 
   return {
     siteTabs,
@@ -168,12 +181,16 @@ export function collectDocsPagesByTab(
   const docsPagesByTab = new Map<string, DocsPage[]>();
 
   for (const tab of tabs) {
-    if (!tab.groups && !tab.doxygen && !tab.godoc) continue;
+    if (!isDocsSource(tab.source.kind)) continue;
 
     const tabPages: DocsPage[] = [];
     for (const [, page] of pageMap) {
       if (page.tabSlug !== tab.slug || !isSearchableDocsSitePage(page)) continue;
-      tabPages.push(page.currentPage.kind === "markdown" ? page.currentPage.markdown : page.currentPage.changelog);
+      tabPages.push(
+        page.currentPage.kind === "markdown"
+          ? page.currentPage.markdown
+          : page.currentPage.changelog,
+      );
     }
 
     docsPagesByTab.set(tab.slug, tabPages);
@@ -190,10 +207,10 @@ export function rebuildMarkdownTabNavigation(
   prettyUrls: PrettyUrls,
 ): void {
   const tab = tabs.find((candidate) => candidate.slug === tabSlug);
-  if (!tab?.groups) return;
+  if (!tab || tab.source.kind !== "markdown") return;
 
   const pagesByPath = new Map<string, DocsPage>();
-  for (const group of tab.groups) {
+  for (const group of tab.source.groups) {
     for (const rp of group.pages) {
       const slug = slugFromPath(rp.slug);
       const entry = pageMap.get(pageOutputPath(tab.slug, slug, prettyUrls));
@@ -300,6 +317,7 @@ export function createMinimalSpec(): NormalizedSpec {
 
 export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig): void {
   const pathMap = new Map<string, string>();
+  addSourceAssetAliases(pathMap, config.tabs ?? []);
   for (const page of pages) {
     const out = page.outputPath;
     const clean = out.replace(/\/index\.html$/, "").replace(/\.html$/, "");
@@ -313,6 +331,11 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
       .replace(/^\/+/, "")
       .replace(/\.(md|mdx)$/, "");
     pathMap.set(sourceClean, out);
+
+    const sourceRelativeClean = getSourceRootRelativePath(page);
+    if (sourceRelativeClean) {
+      pathMap.set(sourceRelativeClean, out);
+    }
   }
 
   const repoBase = config.repo?.replace(/\/$/, "");
@@ -325,6 +348,14 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
     if (!docsSourcePath) continue;
 
     if (page.currentPage.kind === "markdown") {
+      page.currentPage.markdown.description = rewriteMarkdownLinks(
+        page.currentPage.markdown.description,
+        page.outputPath,
+        docsSourcePath,
+        pathMap,
+        sourceBase,
+        prettyUrls,
+      );
       page.currentPage.markdown.html = rewriteHtmlLinks(
         page.currentPage.markdown.html,
         page.outputPath,
@@ -363,7 +394,15 @@ export function resolveInternalLinks(pages: SitePage[], config: ResolvedConfig):
           );
           entry.links = entry.links.map((link) => ({
             ...link,
-            href: resolveInternalHref(link.href, page.outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls) ?? link.href,
+            href:
+              resolveInternalHref(
+                link.href,
+                page.outputPath,
+                docsSourcePath,
+                pathMap,
+                sourceBase,
+                prettyUrls,
+              ) ?? link.href,
           }));
         }
       }
@@ -379,9 +418,10 @@ function attachChangelogFeeds(
   if (!config.changelog.feed) return extraFiles;
 
   const changelogPages = pages.filter(isMainChangelogSitePage);
-  const globalFeedLinks = changelogPages.length === 1
-    ? createFeedLinks("feed.xml", "feed.rss", changelogPages[0].currentPage.changelog.title)
-    : null;
+  const globalFeedLinks =
+    changelogPages.length === 1
+      ? createFeedLinks("feed.xml", "feed.rss", changelogPages[0].currentPage.changelog.title)
+      : null;
 
   for (const page of changelogPages) {
     const changelog = page.currentPage.changelog;
@@ -398,12 +438,14 @@ function attachChangelogFeeds(
       return `${toPublicUrl(page.outputPath, config.siteUrl, config.baseUrl, config.prettyUrls)}#${version.id}`;
     };
 
-    const atomPath = globalFeedLinks && changelogPages.length === 1
-      ? "feed.xml"
-      : tabPath(page.tabSlug, `${changelog.slug}/feed.xml`);
-    const rssPath = globalFeedLinks && changelogPages.length === 1
-      ? "feed.rss"
-      : tabPath(page.tabSlug, `${changelog.slug}/feed.rss`);
+    const atomPath =
+      globalFeedLinks && changelogPages.length === 1
+        ? "feed.xml"
+        : tabPath(page.tabSlug, `${changelog.slug}/feed.xml`);
+    const rssPath =
+      globalFeedLinks && changelogPages.length === 1
+        ? "feed.rss"
+        : tabPath(page.tabSlug, `${changelog.slug}/feed.rss`);
 
     const feedConfig = config.changelog.feed || undefined;
     const feeds = generateChangelogFeeds(changelog, {
@@ -440,6 +482,18 @@ function attachChangelogFeeds(
   return extraFiles;
 }
 
+async function attachSourceAssets(
+  extraFiles: Map<string, string | Buffer>,
+  tabs: ResolvedTab[],
+): Promise<void> {
+  for (const tab of tabs) {
+    if (tab.source.kind !== "markdown") continue;
+    for (const asset of tab.source.assets ?? []) {
+      extraFiles.set(tabPath(tab.slug, asset.outputPath), await readFile(asset.file));
+    }
+  }
+}
+
 function addPermalinkPages(pageMap: Map<string, SitePage>, prettyUrls: PrettyUrls): void {
   const changelogPages = Array.from(pageMap.values()).filter(isMainChangelogSitePage);
   for (const page of changelogPages) {
@@ -453,7 +507,11 @@ function addPermalinkPages(pageMap: Map<string, SitePage>, prettyUrls: PrettyUrl
         permalinkVersionId: version.id,
       };
 
-      const outputPath = pageOutputPath(page.tabSlug, `${changelog.slug}/${version.id}`, prettyUrls);
+      const outputPath = pageOutputPath(
+        page.tabSlug,
+        `${changelog.slug}/${version.id}`,
+        prettyUrls,
+      );
       pageMap.set(outputPath, {
         outputPath,
         currentPage: { kind: "changelog", changelog: permalinkPage },
@@ -469,14 +527,14 @@ async function loadSpecs(tabs: ResolvedTab[]): Promise<Map<string, NormalizedSpe
   const specsBySlug = new Map<string, NormalizedSpec>();
 
   for (const tab of tabs) {
-    if (tab.openapi) {
-      const loaded = await loadSpec(tab.openapi);
+    if (tab.source.kind === "openapi") {
+      const loaded = await loadSpec(tab.source.spec);
       const parsed = await parseSpec(loaded);
       const openapi3 = await convertToOpenApi3(parsed);
       specsBySlug.set(tab.slug, normalizeSpec(openapi3));
-    } else if (tab.mcp) {
+    } else if (tab.source.kind === "mcp") {
       const { parse } = await import("mcp-parser");
-      const mcpSpec = await parse(tab.mcp);
+      const mcpSpec = await parse(tab.source.spec);
       specsBySlug.set(tab.slug, normalizeMcpSpec(mcpSpec));
     }
   }
@@ -503,7 +561,12 @@ const MIME_TYPES: Record<string, string> = {
 };
 
 async function resolveAssetUrl(pathOrUrl: string): Promise<string> {
-  if (!pathOrUrl || pathOrUrl.startsWith("data:") || pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
+  if (
+    !pathOrUrl ||
+    pathOrUrl.startsWith("data:") ||
+    pathOrUrl.startsWith("http://") ||
+    pathOrUrl.startsWith("https://")
+  ) {
     return pathOrUrl;
   }
 
@@ -519,10 +582,16 @@ function isMainChangelogSitePage(
   return page.currentPage.kind === "changelog" && !page.currentPage.changelog.permalinkVersionId;
 }
 
-function isSearchableDocsSitePage(
-  page: SitePage,
-): page is SitePage & { currentPage: { kind: "markdown"; markdown: MarkdownPage } | { kind: "changelog"; changelog: ChangelogPage } } {
+function isSearchableDocsSitePage(page: SitePage): page is SitePage & {
+  currentPage:
+    | { kind: "markdown"; markdown: MarkdownPage }
+    | { kind: "changelog"; changelog: ChangelogPage };
+} {
   return page.currentPage.kind === "markdown" || isMainChangelogSitePage(page);
+}
+
+function isDocsSource(kind: ResolvedTab["source"]["kind"]): boolean {
+  return kind === "markdown" || kind === "doxygen" || kind === "godoc";
 }
 
 function createFeedLinks(atomPath: string, rssPath: string, title: string) {
@@ -544,6 +613,49 @@ function getDocsSourcePath(page: SitePage): string | undefined {
   return undefined;
 }
 
+function getSourceRootRelativePath(page: SitePage): string | undefined {
+  if (page.currentPage.kind !== "markdown") return undefined;
+  const markdown = page.currentPage.markdown;
+  if (!markdown.sourceRoot) return undefined;
+
+  const sourceRoot = normalizeSourcePath(markdown.sourceRoot);
+  const sourcePath = normalizeSourcePath(markdown.sourcePath);
+  if (!sourcePath.startsWith(`${sourceRoot}/`)) return undefined;
+  return stripMarkdownExtension(sourcePath.slice(sourceRoot.length + 1));
+}
+
+function addSourceAssetAliases(pathMap: Map<string, string>, tabs: ResolvedTab[]): void {
+  for (const tab of tabs) {
+    if (tab.source.kind !== "markdown") continue;
+    for (const asset of tab.source.assets ?? []) {
+      const outputPath = tabPath(tab.slug, asset.outputPath);
+      pathMap.set(normalizeSourcePath(asset.outputPath), outputPath);
+      for (const sourceRoot of sourceRootsForMarkdownSource(tab.source)) {
+        const sourceRootPath = normalizeSourcePath(relative(process.cwd(), sourceRoot));
+        pathMap.set(posix.join(sourceRootPath, normalizeSourcePath(asset.outputPath)), outputPath);
+      }
+    }
+  }
+}
+
+function sourceRootsForMarkdownSource(source: ResolvedMarkdownSource): string[] {
+  const roots = new Set<string>();
+  for (const group of source.groups) {
+    for (const page of group.pages) {
+      if (page.sourceRoot) roots.add(page.sourceRoot);
+    }
+  }
+  return [...roots];
+}
+
+function normalizeSourcePath(value: string): string {
+  return value.replace(/\\/g, "/").replace(/^\/+/, "");
+}
+
+function stripMarkdownExtension(value: string): string {
+  return value.replace(/\.(md|mdx)$/, "");
+}
+
 function rewriteHtmlLinks(
   html: string,
   outputPath: string,
@@ -552,9 +664,16 @@ function rewriteHtmlLinks(
   sourceBase: string | undefined,
   prettyUrls: PrettyUrls,
 ): string {
-  return html.replace(/href="([^"]+)"/g, (match, href: string) => {
-    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls);
-    return resolved ? `href="${resolved}"` : match;
+  return html.replace(/\b(href|src)="([^"]+)"/g, (match, attr: string, href: string) => {
+    const resolved = resolveInternalHref(
+      href,
+      outputPath,
+      docsSourcePath,
+      pathMap,
+      sourceBase,
+      prettyUrls,
+    );
+    return resolved ? `${attr}="${resolved}"` : match;
   });
 }
 
@@ -566,10 +685,20 @@ function rewriteMarkdownLinks(
   sourceBase: string | undefined,
   prettyUrls: PrettyUrls,
 ): string {
-  return markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label: string, href: string) => {
-    const resolved = resolveInternalHref(href, outputPath, docsSourcePath, pathMap, sourceBase, prettyUrls);
-    return resolved ? `[${label}](${resolved})` : match;
-  });
+  return markdown.replace(
+    /\[((?:`[^`]*`|[^\]])+)\]\(([^)]+)\)/g,
+    (match, label: string, href: string) => {
+      const resolved = resolveInternalHref(
+        href,
+        outputPath,
+        docsSourcePath,
+        pathMap,
+        sourceBase,
+        prettyUrls,
+      );
+      return resolved ? `[${label}](${resolved})` : match;
+    },
+  );
 }
 
 function resolveInternalHref(
@@ -580,14 +709,22 @@ function resolveInternalHref(
   sourceBase: string | undefined,
   prettyUrls: PrettyUrls,
 ): string | null {
-  if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("mailto:")) {
+  if (
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("#") ||
+    href.startsWith("mailto:")
+  ) {
     return null;
   }
 
   const [path, hash] = href.split("#", 2);
   const hashSuffix = hash ? `#${hash}` : "";
-  const sourcePath = path.replace(/\\/g, "/");
-  const clean = sourcePath.replace(/^\/+/, "").replace(/\/+$/, "").replace(/\.(md|mdx|html)$/, "");
+  const sourcePath = decodeHrefPath(path).replace(/\\/g, "/");
+  const clean = sourcePath
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/\.(md|mdx|html)$/, "");
 
   const pageDir = outputPath.includes("/")
     ? outputPath.substring(0, outputPath.lastIndexOf("/"))
@@ -635,6 +772,14 @@ function resolveInternalHref(
   return null;
 }
 
+function decodeHrefPath(path: string): string {
+  try {
+    return decodeURIComponent(path);
+  } catch {
+    return path;
+  }
+}
+
 /**
  * Rewrite an on-disk output path into the relative href that a user visits.
  * - `"slash"`: trims trailing `index.html`, leaves a directory-style `foo/`.
@@ -649,7 +794,7 @@ function toPrettyLink(target: string, prettyUrls: PrettyUrls): string {
     return prettyUrls === "strip" ? withSlash.slice(0, -1) : withSlash;
   }
   if (prettyUrls === "strip" && target.endsWith(".html")) {
-    return target.slice(0, -(".html".length));
+    return target.slice(0, -".html".length);
   }
   return target;
 }

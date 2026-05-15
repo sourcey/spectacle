@@ -14,15 +14,15 @@ export function Head() {
 
   const siteName = site.name || spec.info.title || "";
   const pageTitle = page.kind === "markdown"
-    ? (siteName ? `${page.markdown.title} — ${siteName}` : page.markdown.title)
+    ? composePageTitle(page.markdown.title, siteName)
     : page.kind === "changelog"
       ? (() => {
           const baseTitle = changelogVersion
             ? `${changelogVersion.version ?? "Unreleased"} — ${page.changelog.title}`
             : page.changelog.title;
-          return siteName ? `${baseTitle} — ${siteName}` : baseTitle;
+          return composePageTitle(baseTitle, siteName);
         })()
-      : `${siteName} — API Reference`;
+      : composePageTitle(siteName, "API Reference");
 
   const pageDescription = page.kind === "markdown"
     ? page.markdown.description || pageTitle
@@ -97,4 +97,18 @@ export function Head() {
       {site.favicon && <link rel="icon" href={site.favicon} />}
     </head>
   );
+}
+
+function composePageTitle(title: string, siteName: string): string {
+  if (!siteName) return title;
+  if (!title) return siteName;
+  return sameTitle(title, siteName) ? title : `${title} — ${siteName}`;
+}
+
+function sameTitle(left: string, right: string): boolean {
+  return normalizeTitle(left) === normalizeTitle(right);
+}
+
+function normalizeTitle(value: string): string {
+  return value.trim().replace(/\s+/g, " ").toLowerCase();
 }

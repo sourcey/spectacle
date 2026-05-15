@@ -1,4 +1,4 @@
-import { defineConfig } from "sourcey";
+import { defineConfig, markdown } from "sourcey";
 
 export default defineConfig({
   name: "Changelog Test",
@@ -14,12 +14,14 @@ export default defineConfig({
       {
         tab: "Documentation",
         slug: "",
-        groups: [
-          {
-            group: "Guides",
-            pages: ["introduction", "CHANGELOG"],
-          },
-        ],
+        source: markdown({
+          groups: [
+            {
+              group: "Guides",
+              pages: ["introduction", "CHANGELOG"],
+            },
+          ],
+        }),
       },
     ],
   },

@@ -1,4 +1,4 @@
-import { defineConfig } from "sourcey";
+import { defineConfig, markdown } from "sourcey";
 
 export default defineConfig({
   name: "Sourcey",
@@ -13,23 +13,23 @@ export default defineConfig({
       {
         tab: "Docs",
         slug: "",
-        groups: [
-          {
-            group: "Start Here",
-            pages: ["introduction", "install", "configuration"],
-          },
-          {
-            group: "Project",
-            pages: ["roadmap", "changelog"],
-          },
-        ],
+        source: markdown({
+          groups: [
+            {
+              group: "Start Here",
+              pages: ["introduction", "install", "configuration"],
+            },
+            {
+              group: "Project",
+              pages: ["roadmap", "changelog"],
+            },
+          ],
+        }),
       },
     ],
   },
   navbar: {
-    links: [
-      { type: "github", href: "https://github.com/sourcey/sourcey" },
-    ],
+    links: [{ type: "github", href: "https://github.com/sourcey/sourcey" }],
     primary: {
       type: "button",
       label: "Documentation",

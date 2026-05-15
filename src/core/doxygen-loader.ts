@@ -84,6 +84,7 @@ export async function loadDoxygenTab(
   const generated = await generate({
     directory: config.xml,
     language: config.language,
+    sourceUrl: config.sourceUrl,
     quiet: true,
   });
 
@@ -98,15 +99,16 @@ export async function loadDoxygenTab(
     const html = rewriteGeneratedDoxygenHtmlLinks(renderMarkdown(markdown));
     const headings = extractHeadings(markdown);
 
-      pages.set(page.slug, {
-        kind: "markdown",
-        title: page.title,
-        description,
-        slug: page.slug,
-        html,
+    pages.set(page.slug, {
+      kind: "markdown",
+      title: page.title,
+      description,
+      slug: page.slug,
+      html,
       headings,
       sourcePath: `api/${page.slug}.md`,
       editPath: page.kind === "group" ? `api/${page.slug}.md` : null,
+      searchEntries: page.searchEntries,
     });
 
     // Group by the last segment of namespace (e.g. "icy::http" -> "http")

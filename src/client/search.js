@@ -21,16 +21,41 @@
       var url = searchMeta.getAttribute('content');
       fetch(url).then(function (r) { return r.json(); }).then(function (data) {
         entries = data.map(function (e) {
+          var title = e.title || '';
+          var qualifiedName = e.qualifiedName || '';
+          var owner = e.owner || '';
+          var tab = e.tab || '';
           return {
             url: e.url,
             method: e.method || '',
             path: e.path || '',
-            summary: e.title || '',
-            tag: e.tab || '',
+            title: title,
+            summary: qualifiedName || title,
+            tag: owner ? owner : tab,
             content: e.content || '',
             category: e.category || '',
             featured: !!e.featured,
-            searchText: [e.method || '', e.path || '', e.title || '', e.content || '', e.tab || ''].join(' ').toLowerCase()
+            symbolKind: e.symbolKind || '',
+            owner: owner,
+            ownerKind: e.ownerKind || '',
+            namespace: e.namespace || '',
+            qualifiedName: qualifiedName,
+            titleLower: title.toLowerCase(),
+            pathLower: (e.path || '').toLowerCase(),
+            qualifiedLower: qualifiedName.toLowerCase(),
+            ownerLower: owner.toLowerCase(),
+            searchText: [
+              e.method || '',
+              e.path || '',
+              title,
+              qualifiedName,
+              owner,
+              e.ownerKind || '',
+              e.namespace || '',
+              e.symbolKind || '',
+              e.content || '',
+              tab
+            ].join(' ').toLowerCase()
           };
         });
         indexLoaded = true;
@@ -84,18 +109,62 @@
         filtered = featured.concat(rest).slice(0, 30);
       } else {
         var terms = q.split(/\s+/);
-        filtered = entries.filter(function (e) {
-          return terms.every(function (t) { return e.searchText.indexOf(t) !== -1; });
+        filtered = entries.map(function (e) {
+          return { entry: e, score: scoreEntry(e, q, terms) };
+        }).filter(function (result) {
+          return result.score > 0;
         });
-        // Sort by category so groups stay together (only for search results)
-        var categoryOrder = { Pages: 0, Sections: 1, Endpoints: 2, Models: 3 };
+        var categoryOrder = {
+          Pages: 0,
+          Endpoints: 1,
+          Models: 2,
+          Functions: 3,
+          Types: 4,
+          Enums: 5,
+          'Enum Values': 6,
+          Variables: 7,
+          Friends: 8,
+          Properties: 9,
+          Members: 10,
+          Sections: 20
+        };
         filtered.sort(function (a, b) {
-          return (categoryOrder[a.category] || 9) - (categoryOrder[b.category] || 9);
+          if (b.score !== a.score) return b.score - a.score;
+          return (categoryOrder[a.entry.category] || 19) - (categoryOrder[b.entry.category] || 19);
         });
+        filtered = filtered.map(function (result) { return result.entry; }).slice(0, 50);
       }
 
       activeIndex = filtered.length ? 0 : -1;
       render();
+    }
+
+    function scoreEntry(e, q, terms) {
+      if (!terms.every(function (t) { return e.searchText.indexOf(t) !== -1; })) return 0;
+
+      var compactQuery = q.replace(/\s+/g, '');
+      var qualified = e.qualifiedLower || '';
+      var title = e.titleLower || '';
+      var path = e.pathLower || '';
+      var owner = e.ownerLower || '';
+      var score = 1;
+
+      if (qualified && qualified === compactQuery) score += 1200;
+      if (title && title === q) score += 900;
+      if (path && path === q) score += 850;
+      if (qualified && qualified.endsWith('::' + compactQuery)) score += 780;
+      if (owner && compactQuery === owner + '::' + title) score += 760;
+      if (qualified && compactQuery.indexOf('::') !== -1 && qualified.indexOf(compactQuery) !== -1) score += 700;
+      if (title && title.indexOf(q) === 0) score += 500;
+      if (qualified && qualified.indexOf(compactQuery) !== -1) score += 420;
+      if (owner && owner.indexOf(compactQuery) !== -1) score += 240;
+      if (path && path.indexOf(q) !== -1) score += 180;
+      if (e.content.toLowerCase().indexOf(q) !== -1) score += 80;
+
+      if (e.category === 'Sections') score -= 70;
+      if (e.symbolKind) score += 35;
+      if (e.featured) score += 20;
+      return score;
     }
 
     function render() {

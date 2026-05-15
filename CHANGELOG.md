@@ -2,6 +2,19 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.6.0 - 2026-05-15
+
+### Added
+
+- Source adapters as the primary tab configuration shape: `source: markdown(...)`, `mkdocs(...)`, `openapi(...)`, `mcp(...)`, `doxygen(...)`, and `godoc(...)`.
+- `mkdocs()` source adapter for importing existing `mkdocs.yml` / `mkdocs.yaml` sites. Sourcey reads `docs_dir`, `nav`, and legacy `pages`, preserves explicit page labels, flattens nested MkDocs sections into Sourcey sidebar groups, expands snippets, normalizes admonitions/tabs, and carries static assets into the build.
+- C++ Doxygen references now carry member-level search metadata, route-mapped source links, and richer moxygen output for class templates, default arguments, typedef aliases, modern qualifiers, source locations, examples, inherited members, all-member indexes, and relationship sections.
+
+### Changed
+
+- `sourcey init`, first-party docs, examples, and 0state docs configs now use the adapter form. Legacy direct tab fields remain supported for existing projects.
+- Search ranking now prefers exact symbol and `Class::member` matches over page prose, making large generated C++ references easier to navigate from the keyboard.
+
 ## 3.5.10 - 2026-05-10
 
 ### Changed

@@ -3,7 +3,7 @@ import { resolve, dirname, extname, basename, relative } from "node:path";
 import { access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { loadConfig, pageOutputPath, resolveConfigFromRaw, tabIndexOutputPath } from "./config.js";
-import type { ResolvedConfig } from "./config.js";
+import type { ResolvedConfig, ResolvedPage } from "./config.js";
 import { loadSpec } from "./core/loader.js";
 import { convertToOpenApi3 } from "./core/converter.js";
 import { parseSpec } from "./core/parser.js";
@@ -33,11 +33,21 @@ import preact from "@preact/preset-vite";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function exists(path: string): Promise<boolean> {
-  try { await access(path); return true; } catch { return false; }
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function log(msg: string): void {
-  const t = new Date().toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const t = new Date().toLocaleTimeString([], {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   console.log(`  \x1b[2m${t}\x1b[0m ${msg}`);
 }
 
@@ -61,16 +71,13 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
   const watchPaths: string[] = [configPath];
   for (const tab of config.tabs) {
-    if (tab.openapi) watchPaths.push(tab.openapi);
-    if (tab.mcp) watchPaths.push(tab.mcp);
-    if (tab.doxygen) watchPaths.push(tab.doxygen.xml);
-    if (tab.godoc) {
-      if (tab.godoc.snapshot) watchPaths.push(tab.godoc.snapshot);
+    watchPaths.push(...(tab.source.watchPaths ?? []));
+    if (tab.source.kind === "godoc") {
       // The Go module directory is large; watching every .go file slows the
       // dev server. Restart manually after broad source edits.
     }
-    if (tab.groups) {
-      for (const group of tab.groups) {
+    if (tab.source.kind === "markdown") {
+      for (const group of tab.source.groups) {
         for (const page of group.pages) {
           watchPaths.push(page.file);
         }
@@ -79,7 +86,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   }
 
   type ContentKind =
-    | { kind: "markdown"; tabSlug: string; pagePath: string; pageSlug: string }
+    | { kind: "markdown"; tabSlug: string; page: ResolvedPage }
     | { kind: "doxygen"; tabSlug: string; xmlDir: string }
     | { kind: "godoc"; tabSlug: string; snapshotPath: string }
     | { kind: "openapi"; tabSlug: string; specPath: string }
@@ -91,22 +98,41 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     map.set(configPath, { kind: "config" });
 
     for (const tab of cfg.tabs) {
-      if (tab.openapi) {
-        map.set(resolve(tab.openapi), { kind: "openapi", tabSlug: tab.slug, specPath: tab.openapi });
+      for (const watchPath of tab.source.watchPaths ?? []) {
+        map.set(resolve(watchPath), { kind: "config" });
       }
-      if (tab.mcp) {
-        map.set(resolve(tab.mcp), { kind: "mcp", tabSlug: tab.slug, specPath: tab.mcp });
+      if (tab.source.kind === "openapi") {
+        map.set(resolve(tab.source.spec), {
+          kind: "openapi",
+          tabSlug: tab.slug,
+          specPath: tab.source.spec,
+        });
       }
-      if (tab.doxygen) {
-        map.set(resolve(tab.doxygen.xml), { kind: "doxygen", tabSlug: tab.slug, xmlDir: tab.doxygen.xml });
+      if (tab.source.kind === "mcp") {
+        map.set(resolve(tab.source.spec), {
+          kind: "mcp",
+          tabSlug: tab.slug,
+          specPath: tab.source.spec,
+        });
       }
-      if (tab.godoc?.snapshot) {
-        map.set(resolve(tab.godoc.snapshot), { kind: "godoc", tabSlug: tab.slug, snapshotPath: tab.godoc.snapshot });
+      if (tab.source.kind === "doxygen") {
+        map.set(resolve(tab.source.config.xml), {
+          kind: "doxygen",
+          tabSlug: tab.slug,
+          xmlDir: tab.source.config.xml,
+        });
       }
-      if (tab.groups) {
-        for (const group of tab.groups) {
+      if (tab.source.kind === "godoc" && tab.source.config.snapshot) {
+        map.set(resolve(tab.source.config.snapshot), {
+          kind: "godoc",
+          tabSlug: tab.slug,
+          snapshotPath: tab.source.config.snapshot,
+        });
+      }
+      if (tab.source.kind === "markdown") {
+        for (const group of tab.source.groups) {
           for (const page of group.pages) {
-            map.set(resolve(page.file), { kind: "markdown", tabSlug: tab.slug, pagePath: page.file, pageSlug: page.slug });
+            map.set(resolve(page.file), { kind: "markdown", tabSlug: tab.slug, page });
           }
         }
       }
@@ -119,10 +145,19 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
 
   const projectRoot = resolve(__dirname, "..");
   const hasSrc = await exists(resolve(projectRoot, "src/client/index.ts"));
-  const tailwindCssPath = resolve(projectRoot, hasSrc ? "src/themes/default/main.css" : "dist/themes/default/main.css");
-  const sourceyCssPath = resolve(projectRoot, hasSrc ? "src/themes/default/sourcey.css" : "dist/themes/default/sourcey.css");
+  const tailwindCssPath = resolve(
+    projectRoot,
+    hasSrc ? "src/themes/default/main.css" : "dist/themes/default/main.css",
+  );
+  const sourceyCssPath = resolve(
+    projectRoot,
+    hasSrc ? "src/themes/default/sourcey.css" : "dist/themes/default/sourcey.css",
+  );
   const clientEntry = resolve(projectRoot, hasSrc ? "src/client/index.ts" : "dist/client/index.js");
-  const ssrRendererPath = resolve(projectRoot, hasSrc ? "src/renderer/static-renderer.ts" : "dist/renderer/static-renderer.js");
+  const ssrRendererPath = resolve(
+    projectRoot,
+    hasSrc ? "src/renderer/static-renderer.ts" : "dist/renderer/static-renderer.js",
+  );
 
   interface CachedSite {
     data: Awaited<ReturnType<typeof assembleSite>>;
@@ -131,7 +166,9 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   let cache: CachedSite | null = null;
   let cachePromise: Promise<CachedSite> | null = null;
 
-  function reportChangelogDiagnostics(diagnostics: CachedSite["data"]["changelogDiagnostics"]): void {
+  function reportChangelogDiagnostics(
+    diagnostics: CachedSite["data"]["changelogDiagnostics"],
+  ): void {
     for (const diagnostic of diagnostics) {
       const writer = diagnostic.severity === "error" ? console.error : console.warn;
       writer(`  ${formatChangelogDiagnostic(diagnostic)}`);
@@ -181,11 +218,13 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     const start = performance.now();
 
     if (content.kind === "markdown") {
-      const slug = slugFromPath(content.pageSlug);
-      log(`reloading ${shortPath(content.pagePath)}`);
-      const page = await loadDocsPage(content.pagePath, slug, {
+      const slug = slugFromPath(content.page.slug);
+      log(`reloading ${shortPath(content.page.file)}`);
+      const page = await loadDocsPage(content.page.file, slug, {
         changelog: config.changelog.enabled,
         repoUrl: config.repo,
+        sourceRoot: content.page.sourceRoot,
+        preprocess: content.page.preprocess,
       });
       if (cache !== snapshot) return;
 
@@ -201,13 +240,19 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       if (existing) {
         existing.currentPage = { kind: "markdown", markdown: page };
       }
-      rebuildMarkdownTabNavigation(data.pageMap, data.siteTabs, config.tabs, content.tabSlug, config.prettyUrls);
+      rebuildMarkdownTabNavigation(
+        data.pageMap,
+        data.siteTabs,
+        config.tabs,
+        content.tabSlug,
+        config.prettyUrls,
+      );
     } else if (content.kind === "doxygen") {
       const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
-      if (!tab?.doxygen) return;
+      if (!tab || tab.source.kind !== "doxygen") return;
 
       log(`rebuilding doxygen tab "${tab.label}"`);
-      const { pages, navTab } = await loadDoxygenTab(tab.doxygen, tab.slug, tab.label);
+      const { pages, navTab } = await loadDoxygenTab(tab.source.config, tab.slug, tab.label);
       if (cache !== snapshot) return;
 
       for (const [key, page] of data.pageMap) {
@@ -230,13 +275,13 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       else data.siteTabs.push(navTab);
     } else if (content.kind === "godoc") {
       const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
-      if (!tab?.godoc) return;
+      if (!tab || tab.source.kind !== "godoc") return;
 
       log(`rebuilding godoc tab "${tab.label}"`);
-      const { pages, navTab } = await loadGodocTab(tab.godoc, tab.slug, tab.label, {
+      const { pages, navTab } = await loadGodocTab(tab.source.config, tab.slug, tab.label, {
         repo: config.repo,
         editBranch: config.editBranch,
-        editBasePath: tab.godoc.sourceBasePath,
+        editBasePath: tab.source.config.sourceBasePath,
       });
       if (cache !== snapshot) return;
 
@@ -319,7 +364,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   }
 
   async function render(url: string): Promise<string | null> {
-    const { renderPage } = await vite.ssrLoadModule(ssrRendererPath) as {
+    const { renderPage } = (await vite.ssrLoadModule(ssrRendererPath)) as {
       renderPage: typeof import("./renderer/static-renderer.js").renderPage;
     };
 
@@ -342,7 +387,12 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     }
 
     let pageData = data.pageMap.get(pagePath);
-    if (!pageData && config.prettyUrls === "slash" && pagePath.endsWith(".html") && !pagePath.endsWith("/index.html")) {
+    if (
+      !pageData &&
+      config.prettyUrls === "slash" &&
+      pagePath.endsWith(".html") &&
+      !pagePath.endsWith("/index.html")
+    ) {
       // Fallback for stale `.html` links when prettyUrls is enabled.
       const pretty = pagePath.replace(/\.html$/, "/index.html");
       pageData = data.pageMap.get(pretty);
@@ -387,6 +437,11 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     );
   }
 
+  async function loadExtraFileForDev(outputPath: string): Promise<string | Buffer | undefined> {
+    const { data } = await getCached();
+    return data.extraFiles.get(outputPath);
+  }
+
   const viteConfig: InlineConfig = {
     root: process.cwd(),
     server: {
@@ -406,6 +461,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
         baseUrl: () => config.baseUrl,
         render,
         searchIndex: buildSearchIndexForDev,
+        extraFile: loadExtraFileForDev,
       }),
     ],
     clearScreen: false,
@@ -454,8 +510,12 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
   await vite.listen();
 
   const displayHost = !host || host === "127.0.0.1" || host === "localhost" ? "localhost" : host;
-  console.log(`\n  Sourcey dev server running at http://${displayHost}:${port}${config.baseUrl || "/"}`);
-  console.log(`  Watching: ${watchPaths.length} content file${watchPaths.length === 1 ? "" : "s"} + components + CSS (HMR)`);
+  console.log(
+    `\n  Sourcey dev server running at http://${displayHost}:${port}${config.baseUrl || "/"}`,
+  );
+  console.log(
+    `  Watching: ${watchPaths.length} content file${watchPaths.length === 1 ? "" : "s"} + components + CSS (HMR)`,
+  );
   console.log(`  Press Ctrl+C to stop\n`);
 
   fullRebuild().catch((err) => {

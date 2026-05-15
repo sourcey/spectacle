@@ -3,6 +3,8 @@ import { highlightCode } from "./highlighter.js";
 import { COPY_ICON_SVG } from "./copy-svg.js";
 import { htmlId } from "./html-id.js";
 
+const MARKDOWN_LINK_RE = /\[((?:`[^`]*`|[^\]])+)\]\(([^)]+)\)/g;
+
 /**
  * Shared code block renderer used by all markdown rendering.
  * Outputs the prose-code-block wrapper with copy button and Shiki highlighting.
@@ -125,7 +127,13 @@ const iframeExtension: import("marked").MarkedExtension = {
         if (!match) return undefined;
         const attrs = parseDirectiveAttrs(match[2] ?? "");
         const height = parseInt(attrs.height ?? "", 10);
-        return { type: "iframe", raw: match[0], url: match[1], title: attrs.title ?? "", height: Number.isFinite(height) ? height : 400 };
+        return {
+          type: "iframe",
+          raw: match[0],
+          url: match[1],
+          title: attrs.title ?? "",
+          height: Number.isFinite(height) ? height : 400,
+        };
       },
       renderer(token: Tokens.Generic): string {
         const { url, title, height } = token as IframeToken;
@@ -151,10 +159,15 @@ const marked = new Marked(videoExtension, iframeExtension, {
       return `<h${depth} id="${id}">${this.parser.parseInline(tokens)}</h${depth}>\n`;
     },
     table(token: Tokens.Table): string {
-      const header = token.header.map((cell) => `<th>${this.parser.parseInline(cell.tokens)}</th>`).join("");
-      const body = token.rows.map((row) =>
-        `<tr>${row.map((cell) => `<td>${this.parser.parseInline(cell.tokens)}</td>`).join("")}</tr>`
-      ).join("\n");
+      const header = token.header
+        .map((cell) => `<th>${this.parser.parseInline(cell.tokens)}</th>`)
+        .join("");
+      const body = token.rows
+        .map(
+          (row) =>
+            `<tr>${row.map((cell) => `<td>${this.parser.parseInline(cell.tokens)}</td>`).join("")}</tr>`,
+        )
+        .join("\n");
       return `<div class="table-wrap"><table><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table></div>`;
     },
     link({ href, title, tokens }: Tokens.Link): string {
@@ -221,7 +234,7 @@ export function extractFirstParagraph(input?: string): string {
  */
 export function stripMarkdownLinks(input?: string): string {
   if (!input) return "";
-  return input.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1");
+  return input.replace(MARKDOWN_LINK_RE, "$1");
 }
 
 /**

@@ -1,8 +1,18 @@
-import { access, readdir } from "node:fs/promises";
-import { resolve, relative, dirname, basename, extname } from "node:path";
+import { access } from "node:fs/promises";
+import { resolve, dirname } from "node:path";
 import { createJiti } from "jiti";
 import { normalizeBaseUrl, normalizeSiteUrl } from "./site-url.js";
 import type { PrettyUrls } from "./site-url.js";
+import {
+  doxygen as doxygenSource,
+  godoc as godocSource,
+  markdown as markdownSource,
+  mcp as mcpSource,
+  mkdocs as mkdocsSource,
+  openapi as openapiSource,
+} from "./adapters/index.js";
+import type { MarkdownPreprocessor } from "./core/markdown-loader.js";
+import type { ResolvedTabSource, SourceAdapter } from "./adapters/types.js";
 
 export type { PrettyUrls } from "./site-url.js";
 
@@ -56,11 +66,13 @@ export interface SourceyConfig {
    */
   prettyUrls?: PrettyUrls;
   theme?: ThemeConfig;
-  logo?: string | {
-    light: string;
-    dark?: string;
-    href?: string;
-  };
+  logo?:
+    | string
+    | {
+        light: string;
+        dark?: string;
+        href?: string;
+      };
   favicon?: string;
   /** Static OG image URL or local path. When set, skips automatic per-page OG image generation. */
   ogImage?: string;
@@ -96,6 +108,27 @@ export interface SourceyConfig {
 
 export type DoxygenIndexStyle = "auto" | "rich" | "structured" | "flat" | "none";
 
+export interface DoxygenSourceUrlInput {
+  path: string;
+  line?: string;
+  symbol?: string;
+}
+
+export interface DoxygenSourceUrlRoute {
+  /** Doxygen source path prefix. Longest matching prefix wins. */
+  prefix: string;
+  /**
+   * Base URL or template for this route. Omit or set false to suppress public
+   * links while still rendering the plain "Defined in path:line" location.
+   */
+  url?: string | false;
+}
+
+export type DoxygenSourceUrlResolver =
+  | string
+  | DoxygenSourceUrlRoute[]
+  | ((input: DoxygenSourceUrlInput) => string | undefined);
+
 export interface DoxygenConfig {
   /** Path to Doxygen XML output directory */
   xml: string;
@@ -112,6 +145,14 @@ export interface DoxygenConfig {
    * - "none" or false: no index page, land on the first API page
    */
   index?: DoxygenIndexStyle | false;
+  /**
+   * Base URL or template for source links in generated API pages.
+   * A plain URL is joined with the Doxygen file path and "#L<line>".
+   * Templates may use {path}, {fullPath}, and {line}. In route maps,
+   * {path} is the matched-prefix-relative path and {fullPath} is the original
+   * Doxygen path.
+   */
+  sourceUrl?: DoxygenSourceUrlResolver;
 }
 
 export type GodocMode = "auto" | "live" | "snapshot";
@@ -160,7 +201,11 @@ export interface TabConfig {
   tab: string;
   /** Custom URL slug for this tab. Defaults to slugified tab name. */
   slug?: string;
+  /** Source adapter object, usually created with `mkdocs()`, `openapi()`, `markdown()`, `doxygen()`, `godoc()`, or `mcp()`. */
+  source?: SourceAdapter;
   openapi?: string;
+  /** Path to a MkDocs mkdocs.yml/mkdocs.yaml file. Sourcey imports docs_dir and nav. */
+  mkdocs?: string;
   groups?: GroupConfig[];
   doxygen?: DoxygenConfig;
   /** Path to an mcp.json file (MCP server snapshot). */
@@ -177,7 +222,18 @@ export interface GroupConfig {
   pages: string[];
 }
 
-export type LinkType = "github" | "twitter" | "discord" | "linkedin" | "youtube" | "slack" | "mastodon" | "bluesky" | "reddit" | "npm" | "link";
+export type LinkType =
+  | "github"
+  | "twitter"
+  | "discord"
+  | "linkedin"
+  | "youtube"
+  | "slack"
+  | "mastodon"
+  | "bluesky"
+  | "reddit"
+  | "npm"
+  | "link";
 
 export interface NavbarLink {
   type: LinkType;
@@ -233,6 +289,7 @@ export interface ResolvedDoxygenConfig {
   language: string;
   groups: boolean;
   index: DoxygenIndexStyle;
+  sourceUrl?: DoxygenSourceUrlResolver;
 }
 
 export interface ResolvedGodocConfig {
@@ -254,7 +311,9 @@ export interface ResolvedGodocConfig {
 export interface ResolvedTab {
   label: string;
   slug: string;
+  source: ResolvedTabSource;
   openapi?: string;
+  mkdocs?: string;
   groups?: ResolvedGroup[];
   doxygen?: ResolvedDoxygenConfig;
   mcp?: string;
@@ -266,6 +325,12 @@ export interface ResolvedPage {
   slug: string;
   /** Absolute filesystem path to the .md/.mdx file */
   file: string;
+  /** Optional navigation label supplied by a source format such as MkDocs. */
+  label?: string;
+  /** Optional source root used for source-format-relative includes and assets. */
+  sourceRoot?: string;
+  /** Optional source-adapter Markdown preprocessors. */
+  preprocess?: MarkdownPreprocessor[];
 }
 
 export interface ResolvedGroup {
@@ -284,8 +349,10 @@ const DEFAULT_COLORS = {
 };
 
 const DEFAULT_FONT_SANS = "Inter";
-const SYSTEM_SANS = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-const SYSTEM_MONO = "ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace";
+const SYSTEM_SANS =
+  "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+const SYSTEM_MONO =
+  "ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', Menlo, monospace";
 
 const DEFAULT_LAYOUT = {
   sidebar: "18rem",
@@ -308,18 +375,20 @@ export async function loadConfig(configOrDir?: string): Promise<ResolvedConfig> 
   } catch {
     throw new Error(
       `Config not found: ${configPath}\n` +
-      `Create one with:\n\n` +
-      `  import { defineConfig } from "sourcey";\n` +
-      `  export default defineConfig({ navigation: { tabs: [...] } });\n`,
+        `Create one with:\n\n` +
+        `  import { defineConfig } from "sourcey";\n` +
+        `  export default defineConfig({ navigation: { tabs: [...] } });\n`,
     );
   }
 
   const jiti = createJiti(import.meta.url);
-  const mod = await jiti.import(configPath) as { default: SourceyConfig };
+  const mod = (await jiti.import(configPath)) as { default: SourceyConfig };
   const raw = mod.default;
 
   if (!raw?.navigation?.tabs) {
-    throw new Error("sourcey.config.ts must export default defineConfig({ navigation: { tabs: [...] } })");
+    throw new Error(
+      "sourcey.config.ts must export default defineConfig({ navigation: { tabs: [...] } })",
+    );
   }
 
   return resolveConfigFromRaw(raw, dirname(configPath));
@@ -338,12 +407,23 @@ export function configFromSpec(specPath: string): ResolvedConfig {
     theme: {
       preset: "default",
       colors: { ...DEFAULT_COLORS },
-      fonts: { sans: `'${DEFAULT_FONT_SANS}', ${SYSTEM_SANS}`, mono: SYSTEM_MONO, googleFont: DEFAULT_FONT_SANS },
+      fonts: {
+        sans: `'${DEFAULT_FONT_SANS}', ${SYSTEM_SANS}`,
+        mono: SYSTEM_MONO,
+        googleFont: DEFAULT_FONT_SANS,
+      },
       layout: { ...DEFAULT_LAYOUT },
       css: [],
     },
     codeSamples: ["curl", "javascript", "python"],
-    tabs: [{ label: "API Reference", slug: "api", openapi: absSpec }],
+    tabs: [
+      {
+        label: "API Reference",
+        slug: "api",
+        source: { kind: "openapi", spec: absSpec, watchPaths: [absSpec] },
+        openapi: absSpec,
+      },
+    ],
     navbar: { links: [] },
     footer: { links: [] },
     changelog: { enabled: true, feed: false, permalinks: false, ogImages: false },
@@ -355,7 +435,10 @@ export function configFromSpec(specPath: string): ResolvedConfig {
 // Resolution + validation
 // ---------------------------------------------------------------------------
 
-export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string): Promise<ResolvedConfig> {
+export async function resolveConfigFromRaw(
+  raw: SourceyConfig,
+  configDir: string,
+): Promise<ResolvedConfig> {
   const theme = resolveTheme(raw, configDir);
   const logo = resolveLogo(raw.logo, configDir);
   const tabs = await resolveTabs(raw.navigation.tabs, configDir);
@@ -368,8 +451,14 @@ export async function resolveConfigFromRaw(raw: SourceyConfig, configDir: string
     prettyUrls: resolvePrettyUrls(raw.prettyUrls),
     theme,
     logo,
-    favicon: raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:") ? resolve(configDir, raw.favicon) : raw.favicon,
-    ogImage: raw.ogImage && !raw.ogImage.startsWith("http") && !raw.ogImage.startsWith("data:") ? resolve(configDir, raw.ogImage) : raw.ogImage,
+    favicon:
+      raw.favicon && !raw.favicon.startsWith("http") && !raw.favicon.startsWith("data:")
+        ? resolve(configDir, raw.favicon)
+        : raw.favicon,
+    ogImage:
+      raw.ogImage && !raw.ogImage.startsWith("http") && !raw.ogImage.startsWith("data:")
+        ? resolve(configDir, raw.ogImage)
+        : raw.ogImage,
     repo: raw.repo,
     editBranch: raw.editBranch,
     editBasePath: raw.editBasePath,
@@ -398,7 +487,9 @@ const VALID_PRESETS: ThemePreset[] = ["default", "minimal", "api-first"];
 function resolveTheme(raw: SourceyConfig, configDir: string): ResolvedTheme {
   const preset = raw.theme?.preset ?? "default";
   if (!VALID_PRESETS.includes(preset)) {
-    throw new Error(`Invalid theme preset "${preset}". Must be one of: ${VALID_PRESETS.join(", ")}`);
+    throw new Error(
+      `Invalid theme preset "${preset}". Must be one of: ${VALID_PRESETS.join(", ")}`,
+    );
   }
 
   const rawColors = raw.theme?.colors;
@@ -424,14 +515,15 @@ function resolveTheme(raw: SourceyConfig, configDir: string): ResolvedTheme {
     content: raw.theme?.layout?.content ?? DEFAULT_LAYOUT.content,
   };
 
-  const css = (raw.theme?.css ?? []).map(p => resolve(configDir, p));
+  const css = (raw.theme?.css ?? []).map((p) => resolve(configDir, p));
 
   return { preset, colors, fonts, layout, css };
 }
 
 function resolveLogo(logo: SourceyConfig["logo"], configDir: string): ResolvedConfig["logo"] {
   if (!logo) return undefined;
-  const resolvePath = (p?: string) => p && !p.startsWith("http") && !p.startsWith("data:") ? resolve(configDir, p) : p;
+  const resolvePath = (p?: string) =>
+    p && !p.startsWith("http") && !p.startsWith("data:") ? resolve(configDir, p) : p;
   if (typeof logo === "string") return { light: resolvePath(logo) };
   return { light: resolvePath(logo.light), dark: resolvePath(logo.dark), href: logo.href };
 }
@@ -454,149 +546,78 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
   const resolved: ResolvedTab[] = [];
 
   for (const tab of tabs) {
-    if (!tab.tab) throw new Error("Tab missing \"tab\" name");
+    if (!tab.tab) throw new Error('Tab missing "tab" name');
 
     const slug = tab.slug !== undefined ? tab.slug : slugify(tab.tab);
     if (slugs.has(slug)) throw new Error(`Duplicate tab slug "${slug}" (from "${tab.tab}")`);
     slugs.add(slug);
 
-    const sources = [tab.openapi, tab.groups, tab.doxygen, tab.mcp, tab.godoc].filter(Boolean).length;
+    const sources = [
+      tab.source,
+      tab.openapi,
+      tab.mkdocs,
+      tab.groups,
+      tab.doxygen,
+      tab.mcp,
+      tab.godoc,
+    ].filter(Boolean).length;
     if (sources > 1) {
-      throw new Error(`Tab "${tab.tab}" has multiple sources; use only one of "openapi", "groups", "doxygen", "mcp", or "godoc"`);
+      throw new Error(
+        `Tab "${tab.tab}" has multiple sources; use only one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", or "godoc"`,
+      );
     }
     if (sources === 0) {
-      throw new Error(`Tab "${tab.tab}" needs one of "openapi", "groups", "doxygen", "mcp", or "godoc"`);
+      throw new Error(
+        `Tab "${tab.tab}" needs one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", or "godoc"`,
+      );
     }
 
-    if (tab.openapi) {
-      if (isUrl(tab.openapi)) {
-        resolved.push({ label: tab.tab, slug, openapi: tab.openapi });
-      } else {
-        const absPath = resolve(configDir, tab.openapi);
-        await assertExists(absPath, `OpenAPI spec "${tab.openapi}" in tab "${tab.tab}"`);
-        resolved.push({ label: tab.tab, slug, openapi: absPath });
-      }
-    } else if (tab.mcp) {
-      if (isUrl(tab.mcp)) {
-        resolved.push({ label: tab.tab, slug, mcp: tab.mcp });
-      } else {
-        const absPath = resolve(configDir, tab.mcp);
-        await assertExists(absPath, `MCP spec "${tab.mcp}" in tab "${tab.tab}"`);
-        resolved.push({ label: tab.tab, slug, mcp: absPath });
-      }
-    } else if (tab.doxygen) {
-      const absXml = resolve(configDir, tab.doxygen.xml);
-      await assertExists(absXml, `Doxygen XML directory "${tab.doxygen.xml}" in tab "${tab.tab}"`);
-      resolved.push({
-        label: tab.tab,
-        slug,
-        doxygen: {
-          xml: absXml,
-          language: tab.doxygen.language ?? "cpp",
-          groups: tab.doxygen.groups ?? false,
-          index: tab.doxygen.index === false ? "none" : (tab.doxygen.index ?? "auto"),
-        },
-      });
-    } else if (tab.godoc) {
-      const cfg = typeof tab.godoc === "string" ? { module: tab.godoc } : tab.godoc;
-      const moduleAbs = resolve(configDir, cfg.module ?? ".");
-      await assertExists(moduleAbs, `Go module directory "${cfg.module ?? "."}" in tab "${tab.tab}"`);
-      const snapshotAbs = cfg.snapshot ? resolve(configDir, cfg.snapshot) : undefined;
-      resolved.push({
-        label: tab.tab,
-        slug,
-        godoc: {
-          module: moduleAbs,
-          packages: cfg.packages?.length ? cfg.packages : ["./..."],
-          snapshot: snapshotAbs,
-          mode: cfg.mode ?? "auto",
-          includeTests: cfg.includeTests ?? true,
-          includeUnexported: cfg.includeUnexported ?? false,
-          hideUndocumented: cfg.hideUndocumented ?? false,
-          exclude: cfg.exclude ?? [],
-          goEnv: cfg.goEnv,
-          sourceBasePath: trimSlashes(cfg.sourceBasePath ?? ""),
-        },
-      });
-    } else {
-      const groups = await resolveGroups(tab.groups!, tab.tab, configDir);
-      resolved.push({ label: tab.tab, slug, groups });
-    }
+    const adapter = tab.source ?? legacySourceAdapter(tab);
+    const source = await adapter.resolve({
+      configDir,
+      tabName: tab.tab,
+      tabSlug: slug,
+      resolvePath: (path) => resolve(configDir, path),
+      assertExists,
+      isUrl,
+    });
+    resolved.push(resolvedTabFromSource(tab.tab, slug, source));
   }
 
   return resolved;
 }
 
-async function resolveGroups(groups: GroupConfig[], tabName: string, configDir: string): Promise<ResolvedGroup[]> {
-  const resolved: ResolvedGroup[] = [];
-
-  for (const group of groups) {
-    if (!group.group) throw new Error(`Group missing "group" name in tab "${tabName}"`);
-    if (!group.pages?.length) throw new Error(`Group "${group.group}" in tab "${tabName}" has no pages`);
-
-    const pages: ResolvedPage[] = [];
-    for (const pageSlug of group.pages) {
-      if (pageSlug.includes("*")) {
-        const expanded = await expandGlob(pageSlug, configDir);
-        for (const file of expanded) {
-          const rel = relative(configDir, file).replace(/\.[^.]+$/, "");
-          pages.push({ slug: rel, file });
-        }
-      } else {
-        const absPath = await resolvePagePath(pageSlug, configDir);
-        pages.push({ slug: pageSlug, file: absPath });
-      }
-    }
-
-    resolved.push({ label: group.group, pages });
-  }
-
-  return resolved;
+function legacySourceAdapter(tab: TabConfig): SourceAdapter {
+  if (tab.openapi) return openapiSource(tab.openapi);
+  if (tab.mkdocs) return mkdocsSource(tab.mkdocs);
+  if (tab.mcp) return mcpSource(tab.mcp);
+  if (tab.doxygen) return doxygenSource(tab.doxygen);
+  if (tab.godoc) return godocSource(tab.godoc);
+  return markdownSource({ groups: tab.groups! });
 }
 
-/**
- * Expand a simple glob pattern like "doc/api-*" into matching .md/.mdx files.
- * Supports trailing * only (e.g. "doc/api-*", "guides/*").
- */
-async function expandGlob(pattern: string, configDir: string): Promise<string[]> {
-  const absPattern = resolve(configDir, pattern);
-  const dir = dirname(absPattern);
-  const prefix = basename(absPattern).replace("*", "");
-
-  try {
-    const entries = await readdir(dir);
-    const matches = entries
-      .filter((f) => {
-        const ext = extname(f);
-        if (ext !== ".md" && ext !== ".mdx") return false;
-        const name = basename(f, ext);
-        return prefix ? name.startsWith(prefix) : true;
-      })
-      .sort()
-      .map((f) => resolve(dir, f));
-
-    if (!matches.length) {
-      throw new Error(`Glob "${pattern}" matched no files in ${dir}`);
-    }
-
-    return matches;
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      throw new Error(`Glob directory not found: ${dir}`);
-    }
-    throw err;
+function resolvedTabFromSource(
+  label: string,
+  slug: string,
+  source: ResolvedTabSource,
+): ResolvedTab {
+  const base: ResolvedTab = { label, slug, source };
+  switch (source.kind) {
+    case "openapi":
+      return { ...base, openapi: source.spec };
+    case "mcp":
+      return { ...base, mcp: source.spec };
+    case "markdown":
+      return {
+        ...base,
+        mkdocs: source.adapter === "mkdocs" ? source.configPath : undefined,
+        groups: source.groups,
+      };
+    case "doxygen":
+      return { ...base, doxygen: source.config };
+    case "godoc":
+      return { ...base, godoc: source.config };
   }
-}
-
-async function resolvePagePath(slug: string, configDir: string): Promise<string> {
-  for (const ext of [".md", ".mdx"]) {
-    const candidate = resolve(configDir, `${slug}${ext}`);
-    try {
-      await access(candidate);
-      return candidate;
-    } catch { /* try next */ }
-  }
-  throw new Error(`Page "${slug}" not found (tried ${slug}.md, ${slug}.mdx in ${configDir})`);
 }
 
 // ---------------------------------------------------------------------------
@@ -604,7 +625,10 @@ async function resolvePagePath(slug: string, configDir: string): Promise<string>
 // ---------------------------------------------------------------------------
 
 export function slugify(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 /** Build a path under a tab, handling empty slugs (root-level tabs). */
@@ -649,10 +673,6 @@ export function hexToRgb(hex: string): string {
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
   return `${r} ${g} ${b}`;
-}
-
-function trimSlashes(path: string): string {
-  return path.replace(/^\/+|\/+$/g, "");
 }
 
 async function assertExists(filePath: string, label: string): Promise<void> {

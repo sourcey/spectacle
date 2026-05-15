@@ -2,7 +2,11 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { buildSite as buildSiteHtml } from "./renderer/html-builder.js";
 import type { SitePage } from "./renderer/html-builder.js";
-import type { ChangelogDiagnostic, NormalizedChangelogVersion, NormalizedSpec } from "./core/types.js";
+import type {
+  ChangelogDiagnostic,
+  NormalizedChangelogVersion,
+  NormalizedSpec,
+} from "./core/types.js";
 import type { ResolvedConfig } from "./config.js";
 import { loadConfig, configFromSpec } from "./config.js";
 import { buildSiteNavigation } from "./core/navigation.js";
@@ -83,7 +87,7 @@ export interface SiteBuildResult {
 
 export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<SiteBuildResult> {
   const outputDir = resolve(options.outputDir ?? "dist");
-  const config = options.config ?? await loadConfig(options.configDir);
+  const config = options.config ?? (await loadConfig(options.configDir));
 
   const assembled = await assembleSite(config);
   const site = await buildSiteConfig(config);
@@ -134,7 +138,11 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
     }
   } else {
     const staticOg = config.ogImage;
-    if (staticOg.startsWith("http://") || staticOg.startsWith("https://") || staticOg.startsWith("data:")) {
+    if (
+      staticOg.startsWith("http://") ||
+      staticOg.startsWith("https://") ||
+      staticOg.startsWith("data:")
+    ) {
       for (const page of sitePages) {
         page.ogImagePath = staticOg;
       }
@@ -184,7 +192,9 @@ function describePageForOg(
     if (changelog.permalinkVersionId) {
       if (!changelogPermalinkOg) return null;
 
-      const version = changelog.changelog.versions.find((candidate) => candidate.id === changelog.permalinkVersionId);
+      const version = changelog.changelog.versions.find(
+        (candidate) => candidate.id === changelog.permalinkVersionId,
+      );
       if (!version) return null;
 
       return {
@@ -210,6 +220,7 @@ function summarizeVersion(version: NormalizedChangelogVersion): string | undefin
 }
 
 export { defineConfig } from "./config.js";
+export { doxygen, godoc, markdown, mcp, mkdocs, openapi } from "./adapters/index.js";
 export { resolveInternalLinks } from "./site-assembly.js";
 
 // Re-export types for consumers
@@ -222,3 +233,15 @@ export type {
   NormalizedRequestBody,
   NormalizedResponse,
 } from "./core/types.js";
+
+export type {
+  DoxygenSourceOptions,
+  GodocSourceOptions,
+  MarkdownSourceOptions,
+  McpSourceOptions,
+  MkDocsSourceOptions,
+  OpenApiSourceOptions,
+  ResolvedTabSource,
+  SourceAdapter,
+  SourceAdapterContext,
+} from "./adapters/index.js";

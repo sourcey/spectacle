@@ -27,6 +27,16 @@ export interface SearchEntry {
   category: string;
   /** Featured in default search results */
   featured?: boolean;
+  /** Source adapter symbol kind, e.g. C++ function, enumvalue, typedef */
+  symbolKind?: string;
+  /** Owning symbol, e.g. icy::Application */
+  owner?: string;
+  /** Owning symbol kind, e.g. class, struct, enum */
+  ownerKind?: string;
+  /** Namespace for source languages that expose one */
+  namespace?: string;
+  /** Fully qualified symbol name */
+  qualifiedName?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -119,6 +129,11 @@ export function buildSearchIndex(
             url: entry.anchor ? `${href}#${entry.anchor}` : href,
             tab: tabLabel,
             category: entry.category,
+            ...(entry.symbolKind && { symbolKind: entry.symbolKind }),
+            ...(entry.owner && { owner: entry.owner }),
+            ...(entry.ownerKind && { ownerKind: entry.ownerKind }),
+            ...(entry.namespace && { namespace: entry.namespace }),
+            ...(entry.qualifiedName && { qualifiedName: entry.qualifiedName }),
           });
         }
       } else {

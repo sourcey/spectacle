@@ -485,4 +485,25 @@ describe("renderPage (spec)", () => {
     expect(html).toContain('property="og:image" content="https://docs.example.com/reference/_og/changelog.png"');
     expect(html).toContain('rel="alternate" type="application/atom+xml" href="https://docs.example.com/reference/feed.xml"');
   });
+
+  it("does not duplicate the site name in markdown page titles", () => {
+    const spec = createMinimalSpec();
+    const navigation = createDocsNavigation();
+    const currentPage: CurrentPage = {
+      kind: "markdown",
+      markdown: createMarkdownPage({
+        title: "icey",
+        description: "C++ media stack",
+      }),
+    };
+
+    const html = renderPage(spec, defaultOptions, navigation, currentPage, {
+      ...defaultSite,
+      name: "icey",
+    });
+
+    expect(html).toContain("<title>icey</title>");
+    expect(html).toContain('property="og:title" content="icey"');
+    expect(html).not.toContain("icey — icey");
+  });
 });

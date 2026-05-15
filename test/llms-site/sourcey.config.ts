@@ -1,4 +1,4 @@
-import { defineConfig } from "sourcey";
+import { defineConfig, markdown, mcp, openapi } from "sourcey";
 
 export default defineConfig({
   name: "Mixed Docs",
@@ -7,22 +7,24 @@ export default defineConfig({
       {
         tab: "Documentation",
         slug: "",
-        groups: [
-          {
-            group: "Getting Started",
-            pages: ["introduction"],
-          },
-        ],
+        source: markdown({
+          groups: [
+            {
+              group: "Getting Started",
+              pages: ["introduction"],
+            },
+          ],
+        }),
       },
       {
         tab: "API Reference",
         slug: "api",
-        openapi: "../fixtures/petstore-openapi3.yaml",
+        source: openapi("../fixtures/petstore-openapi3.yaml"),
       },
       {
         tab: "MCP Reference",
         slug: "mcp",
-        mcp: "../fixtures/nitrosend.mcp.json",
+        source: mcp("../fixtures/nitrosend.mcp.json"),
       },
     ],
   },

@@ -1,4 +1,4 @@
-import { defineConfig } from "sourcey";
+import { defineConfig, mcp } from "sourcey";
 
 export default defineConfig({
   name: "Nitrosend MCP",
@@ -11,7 +11,7 @@ export default defineConfig({
       {
         tab: "MCP Reference",
         slug: "",
-        mcp: "../fixtures/nitrosend.mcp.json",
+        source: mcp("../fixtures/nitrosend.mcp.json"),
       },
     ],
   },

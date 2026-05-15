@@ -88,7 +88,11 @@ export const init = defineCommand({
     }
 
     if (existsSync(resolve(targetDir, "sourcey.config.ts"))) {
-      consola.error("sourcey.config.ts already exists in " + (targetDir === cwd ? "this directory" : relative(cwd, targetDir)) + ".");
+      consola.error(
+        "sourcey.config.ts already exists in " +
+          (targetDir === cwd ? "this directory" : relative(cwd, targetDir)) +
+          ".",
+      );
       process.exit(1);
     }
 
@@ -121,12 +125,13 @@ export const init = defineCommand({
     let addDoxygen: { doxyfile: string; xmlDir: string } | null = null;
 
     if (openapiSpecs.length > 0) {
-      const spec = openapiSpecs.length === 1
-        ? openapiSpecs[0]
-        : (await consola.prompt("Which OpenAPI spec?", {
-            type: "select",
-            options: openapiSpecs,
-          })) as string;
+      const spec =
+        openapiSpecs.length === 1
+          ? openapiSpecs[0]
+          : ((await consola.prompt("Which OpenAPI spec?", {
+              type: "select",
+              options: openapiSpecs,
+            })) as string);
 
       if (typeof spec === "symbol") process.exit(0);
 
@@ -154,7 +159,9 @@ export const init = defineCommand({
         const genXml = parseDoxyfileValue(doxyfilePath, "GENERATE_XML");
 
         if (genXml && genXml.toUpperCase() !== "YES") {
-          consola.warn(`${doxyfile} has GENERATE_XML = ${genXml}. Set it to YES and run doxygen first.`);
+          consola.warn(
+            `${doxyfile} has GENERATE_XML = ${genXml}. Set it to YES and run doxygen first.`,
+          );
         }
 
         addDoxygen = {
@@ -176,9 +183,7 @@ export const init = defineCommand({
     }
 
     // -- Generate files --
-    const pages = withExample
-      ? `["introduction", "quickstart"]`
-      : `["introduction"]`;
+    const pages = withExample ? `["introduction", "quickstart"]` : `["introduction"]`;
 
     // Build tabs array — paths relative from targetDir to cwd
     const relPath = (file: string) => {
@@ -187,36 +192,42 @@ export const init = defineCommand({
       return rel.startsWith(".") ? rel : "./" + rel;
     };
 
+    const imports = new Set(["defineConfig", "markdown"]);
+
     let tabs = `      {
         tab: "Documentation",
         slug: "",
-        groups: [
-          {
-            group: "Getting Started",
-            pages: ${pages},
-          },
-        ],
+        source: markdown({
+          groups: [
+            {
+              group: "Getting Started",
+              pages: ${pages},
+            },
+          ],
+        }),
       },`;
 
     if (addOpenAPI) {
+      imports.add("openapi");
       tabs += `
       {
         tab: "API Reference",
         slug: "api",
-        openapi: "${relPath(addOpenAPI)}",
+        source: openapi("${relPath(addOpenAPI)}"),
       },`;
     }
 
     if (addDoxygen) {
+      imports.add("doxygen");
       tabs += `
       {
         tab: "API Reference",
         slug: "api",
-        doxygen: { xml: "${relPath(addDoxygen.xmlDir)}" },
+        source: doxygen({ xml: "${relPath(addDoxygen.xmlDir)}" }),
       },`;
     }
 
-    const config = `import { defineConfig } from "sourcey";
+    const config = `import { ${[...imports].join(", ")} } from "sourcey";
 
 export default defineConfig({
   name: "${name}",
@@ -281,7 +292,7 @@ import { myFunction } from "my-package";
             build: "sourcey build",
           },
           dependencies: {
-            sourcey: "^3.4.3",
+            sourcey: "^3.6.0",
           },
         },
         null,

@@ -124,25 +124,26 @@ export function buildNavFromPages(
   pagesByPath: Map<string, DocsPage>,
   prettyUrls: PrettyUrls = false,
 ): SiteTab {
-  const groups: SiteNavGroup[] = [];
+  const navGroups: SiteNavGroup[] = [];
 
-  if (tab.groups) {
-    for (const group of tab.groups) {
+  const sourceGroups = tab.source.kind === "markdown" ? tab.source.groups : tab.groups;
+  if (sourceGroups) {
+    for (const group of sourceGroups) {
       const items: SiteNavItem[] = [];
       for (const rp of group.pages) {
         const page = pagesByPath.get(rp.slug);
         if (!page) continue;
         items.push({
-          label: page.title,
+          label: rp.label ?? page.title,
           href: navHref(pageOutputPath(tab.slug, page.slug, prettyUrls), prettyUrls),
           id: page.slug,
         });
       }
-      groups.push({ label: group.label, items });
+      navGroups.push({ label: group.label, items });
     }
   }
 
-  const firstItem = groups[0]?.items[0];
+  const firstItem = navGroups[0]?.items[0];
   const href = firstItem?.href ?? (tab.slug ? `${tab.slug}/` : "");
 
   return {
@@ -150,7 +151,7 @@ export function buildNavFromPages(
     slug: tab.slug,
     href,
     kind: "docs",
-    groups,
+    groups: navGroups,
   };
 }
 
