@@ -6,6 +6,7 @@ import type {
   McpSourceOptions,
   MkDocsSourceOptions,
   OpenApiSourceOptions,
+  RustdocSourceOptions,
   SourceAdapter,
 } from "./types.js";
 import { assertLocalPath, resolveMarkdownGroups, toWatchPaths } from "./shared.js";
@@ -115,6 +116,43 @@ export function godoc(configOrPath: GodocSourceOptions): SourceAdapter {
   };
 }
 
+export function rustdoc(configOrPath: RustdocSourceOptions): SourceAdapter {
+  return {
+    name: "rustdoc",
+    async resolve(ctx) {
+      const cfg = typeof configOrPath === "string" ? { manifest: configOrPath } : configOrPath;
+      const manifestAbs = resolve(ctx.configDir, cfg.manifest ?? ".");
+      await ctx.assertExists(
+        manifestAbs,
+        `Cargo manifest "${cfg.manifest ?? "."}" in tab "${ctx.tabName}"`,
+      );
+      const snapshotAbs = cfg.snapshot ? ctx.resolvePath(cfg.snapshot) : undefined;
+      const features = {
+        default: cfg.features?.default ?? true,
+        list: cfg.features?.list ?? [],
+        all: cfg.features?.all ?? false,
+      };
+      return {
+        kind: "rustdoc",
+        config: {
+          manifest: manifestAbs,
+          crates: cfg.crates?.length ? cfg.crates : [],
+          snapshot: snapshotAbs,
+          mode: cfg.mode ?? "auto",
+          features,
+          includePrivate: cfg.includePrivate ?? false,
+          includeHidden: cfg.includeHidden ?? false,
+          target: cfg.target,
+          toolchain: cfg.toolchain ?? "nightly",
+          sourceBasePath: trimSlashes(cfg.sourceBasePath ?? ""),
+          doctestsIndex: cfg.doctestsIndex ?? true,
+        },
+        watchPaths: toWatchPaths([snapshotAbs]),
+      };
+    },
+  };
+}
+
 function trimSlashes(value: string): string {
   return value.replace(/^\/+|\/+$/g, "");
 }
@@ -129,6 +167,7 @@ export type {
   OpenApiSourceOptions,
   PageMarkdownOptions,
   ResolvedTabSource,
+  RustdocSourceOptions,
   SourceAdapter,
   SourceAdapterContext,
 } from "./types.js";

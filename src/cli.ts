@@ -11,6 +11,7 @@ import type { GodocSnapshot } from "./core/godoc-types.js";
 import { init } from "./init.js";
 import { formatChangelogDiagnostic, formatGodocDiagnostic } from "./site-assembly.js";
 import type { GodocLoaderDiagnostic } from "./core/godoc-loader.js";
+import type { RustdocLoaderDiagnostic } from "./core/rustdoc-loader.js";
 import pkg from "../package.json" with { type: "json" };
 
 const build = defineCommand({
@@ -90,6 +91,7 @@ const build = defineCommand({
         if (!args.quiet) {
           logChangelogDiagnostics(result.changelogDiagnostics);
           logGodocDiagnostics(result.godocDiagnostics);
+          logRustdocDiagnostics(result.rustdocDiagnostics);
           const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
           console.log(`  Pages:  ${result.pageCount}`);
           console.log(`  Output: ${result.outputDir}`);
@@ -337,6 +339,17 @@ function logGodocDiagnostics(diagnostics: GodocLoaderDiagnostic[]): void {
   for (const diagnostic of diagnostics) {
     const writer = diagnostic.severity === "error" ? console.error : console.log;
     writer(`  ${formatGodocDiagnostic(diagnostic)}`);
+  }
+}
+
+function logRustdocDiagnostics(diagnostics: RustdocLoaderDiagnostic[]): void {
+  for (const diagnostic of diagnostics) {
+    const writer = diagnostic.severity === "error" ? console.error : console.log;
+    const location = diagnostic.file
+      ? ` (${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ""})`
+      : "";
+    const cratePrefix = diagnostic.crate ? `[${diagnostic.crate}] ` : "";
+    writer(`  rustdoc ${diagnostic.severity}: ${cratePrefix}${diagnostic.code}: ${diagnostic.message}${location}`);
   }
 }
 

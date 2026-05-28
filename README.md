@@ -12,6 +12,8 @@ No dashboard. No runtime. No API calls to render your own documentation.
 [![license](https://img.shields.io/npm/l/sourcey)](LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sourcey/sourcey/go/sourcey-godoc.svg)](https://pkg.go.dev/github.com/sourcey/sourcey/go/sourcey-godoc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sourcey/sourcey/go/sourcey-godoc)](https://goreportcard.com/report/github.com/sourcey/sourcey/go/sourcey-godoc)
+[![crates.io](https://img.shields.io/crates/v/sourcey.svg)](https://crates.io/crates/sourcey)
+[![docs.rs](https://docs.rs/sourcey/badge.svg)](https://docs.rs/sourcey)
 
 ```bash
 npx sourcey init
@@ -31,6 +33,7 @@ npx sourcey init
 - **Product story pages**: changelog, roadmap pages, examples, reference material, search, and portable context exports in one source-owned site
 - **C++ and Doxygen**: feed Doxygen XML output, get modern searchable API docs with exact member search, source links, templates, qualifiers, examples, inherited members, and relationship sections. No new parser, no four-tool Breathe/Exhale/Sphinx pipeline
 - **Go and godoc**: native package documentation extracted from Go source via the toolchain. Render Go modules as Sourcey tabs, generate standalone static Go docs sites, or commit `godoc.json` snapshots for JS-only docs hosts. No Doxygen detour
+- **Rust and rustdoc**: native API documentation from nightly rustdoc JSON, with doctests as a first-class extracted view. URL-encoded parametric impl anchors for deep-link parity with doc.rust-lang.org. Snapshot mode lets CI build on stable Rust toolchains. Aggregated doctests index across the workspace
 - **Context exports**: auto-generate llms.txt and llms-full.txt alongside your HTML as alternate views of the same documentation graph
 - **TypeScript config**: `sourcey.config.ts` with `defineConfig()` autocomplete; theme, navbar, CTA buttons, footer
 - **Theme presets**: default (sidebar + TOC), minimal (single column), api-first (Stripe-style three column); colors, fonts, layout dimensions, and custom CSS on top

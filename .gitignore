@@ -9,3 +9,8 @@ coverage/
 .test*
 result
 .sourcey/
+
+# Rust build artifacts (helper crate + fixture cargo target dirs)
+target/
+**/target/
+Cargo.lock.bak

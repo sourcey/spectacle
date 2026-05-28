@@ -1893,3 +1893,256 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 #sourcey .godoc-type .godoc-symbol {
   word-break: break-word;
 }
+
+/* ── Rust API rendering (rustdoc adapter) ────────────────────────── */
+/* Shared API primitives (api-*) introduced for rustdoc and reusable
+   by godoc/doxygen in a follow-on retrofit. Class names mirror
+   rustdoc's DOM so deep-links from a rustdoc URL line up with
+   sourcey output. */
+
+#sourcey .rust-item {
+  border-top: 1px solid rgb(var(--color-gray-200));
+  padding-top: 1rem;
+  margin-top: 1.25rem;
+}
+.dark #sourcey .rust-item {
+  border-top-color: rgb(var(--color-gray-800));
+}
+
+#sourcey .code-header,
+#sourcey .rust-signature {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9375rem;
+  color: rgb(var(--color-gray-900));
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.dark #sourcey .code-header,
+.dark #sourcey .rust-signature {
+  color: rgb(var(--color-gray-100));
+}
+
+#sourcey .rust-signature .kw {
+  color: rgb(var(--color-rose-600));
+  font-weight: 600;
+}
+.dark #sourcey .rust-signature .kw {
+  color: rgb(var(--color-rose-300));
+}
+
+#sourcey .rust-signature .ident {
+  color: rgb(var(--color-indigo-600));
+}
+.dark #sourcey .rust-signature .ident {
+  color: rgb(var(--color-indigo-300));
+}
+
+#sourcey .rust-signature .lifetime {
+  color: rgb(var(--color-amber-700));
+  font-style: italic;
+}
+.dark #sourcey .rust-signature .lifetime {
+  color: rgb(var(--color-amber-300));
+}
+
+#sourcey .api-rightside,
+#sourcey .rightside {
+  float: right;
+  font-size: 0.8125rem;
+  color: rgb(var(--color-gray-500));
+}
+
+#sourcey .api-since,
+#sourcey .since {
+  font-feature-settings: "tnum";
+}
+
+#sourcey .api-srclink,
+#sourcey .srclink {
+  color: rgb(var(--color-indigo-600));
+  text-decoration: none;
+}
+#sourcey .api-srclink:hover,
+#sourcey .srclink:hover {
+  text-decoration: underline;
+}
+.dark #sourcey .api-srclink,
+.dark #sourcey .srclink {
+  color: rgb(var(--color-indigo-300));
+}
+
+#sourcey .docblock,
+#sourcey .rust-doc {
+  color: rgb(var(--color-gray-700));
+  margin-top: 0.5rem;
+}
+.dark #sourcey .docblock,
+.dark #sourcey .rust-doc {
+  color: rgb(var(--color-gray-300));
+}
+
+#sourcey .stab,
+#sourcey .api-stab {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+}
+#sourcey .stab.unstable,
+#sourcey .api-stab-unstable {
+  background-color: rgb(var(--color-amber-50));
+  border-color: rgb(var(--color-amber-200));
+  color: rgb(var(--color-amber-900));
+}
+#sourcey .stab.deprecated,
+#sourcey .api-stab-deprecated {
+  background-color: rgb(var(--color-rose-50));
+  border-color: rgb(var(--color-rose-200));
+  color: rgb(var(--color-rose-900));
+}
+#sourcey .stab.portability,
+#sourcey .api-stab-portability {
+  background-color: rgb(var(--color-emerald-50));
+  border-color: rgb(var(--color-emerald-200));
+  color: rgb(var(--color-emerald-900));
+}
+.dark #sourcey .stab.unstable,
+.dark #sourcey .api-stab-unstable {
+  background-color: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.25);
+  color: rgb(var(--color-amber-200));
+}
+.dark #sourcey .stab.deprecated,
+.dark #sourcey .api-stab-deprecated {
+  background-color: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.25);
+  color: rgb(var(--color-rose-200));
+}
+.dark #sourcey .stab.portability,
+.dark #sourcey .api-stab-portability {
+  background-color: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: rgb(var(--color-emerald-200));
+}
+
+#sourcey .implementors-toggle,
+#sourcey .method-toggle,
+#sourcey .api-impl-toggle,
+#sourcey .api-method-toggle {
+  margin: 0.75rem 0;
+}
+#sourcey .implementors-toggle > summary,
+#sourcey .method-toggle > summary {
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+#sourcey .anchor,
+#sourcey .api-anchor {
+  margin-left: 0.4rem;
+  color: rgb(var(--color-gray-400));
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+#sourcey .section-header:hover .anchor,
+#sourcey .section-header:hover .api-anchor,
+#sourcey .code-header:hover .anchor,
+#sourcey .code-header:hover .api-anchor {
+  opacity: 1;
+}
+
+#sourcey .example-wrap {
+  position: relative;
+  margin: 0.75rem 0;
+}
+#sourcey .rust-example-rendered {
+  background-color: rgb(var(--color-gray-50));
+  border: 1px solid rgb(var(--color-gray-200));
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.dark #sourcey .rust-example-rendered {
+  background-color: rgb(var(--color-gray-900));
+  border-color: rgb(var(--color-gray-800));
+}
+
+#sourcey .rust-doctest-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+#sourcey .rust-doctest-badge {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  background-color: rgb(var(--color-gray-100));
+  color: rgb(var(--color-gray-700));
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+.dark #sourcey .rust-doctest-badge {
+  background-color: rgb(var(--color-gray-800));
+  color: rgb(var(--color-gray-300));
+}
+#sourcey .rust-doctest-badge-should_panic,
+#sourcey .rust-doctest-badge-compile_fail {
+  background-color: rgb(var(--color-rose-100));
+  color: rgb(var(--color-rose-800));
+}
+#sourcey .rust-doctest-badge-no_run,
+#sourcey .rust-doctest-badge-ignore {
+  background-color: rgb(var(--color-amber-100));
+  color: rgb(var(--color-amber-800));
+}
+
+#sourcey .rust-doctest-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+}
+#sourcey .rust-doctest-run,
+#sourcey .rust-doctest-copy,
+#sourcey .rust-doctest-toggle-hidden {
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(var(--color-gray-300));
+  background-color: rgb(var(--color-white));
+  color: rgb(var(--color-gray-800));
+  text-decoration: none;
+  line-height: 1;
+}
+#sourcey .rust-doctest-run:hover,
+#sourcey .rust-doctest-copy:hover,
+#sourcey .rust-doctest-toggle-hidden:hover {
+  background-color: rgb(var(--color-gray-50));
+}
+.dark #sourcey .rust-doctest-run,
+.dark #sourcey .rust-doctest-copy,
+.dark #sourcey .rust-doctest-toggle-hidden {
+  background-color: rgb(var(--color-gray-900));
+  border-color: rgb(var(--color-gray-700));
+  color: rgb(var(--color-gray-200));
+}
+
+#sourcey .rust-doctests-index .rust-doctest {
+  border: 1px solid rgb(var(--color-gray-200));
+  border-left: 3px solid rgb(var(--color-emerald-500));
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+.dark #sourcey .rust-doctests-index .rust-doctest {
+  border-color: rgb(var(--color-gray-800));
+  border-left-color: rgb(var(--color-emerald-400));
+}

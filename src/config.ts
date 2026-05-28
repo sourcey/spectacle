@@ -10,6 +10,7 @@ import {
   mcp as mcpSource,
   mkdocs as mkdocsSource,
   openapi as openapiSource,
+  rustdoc as rustdocSource,
 } from "./adapters/index.js";
 import type { MarkdownPreprocessor } from "./core/markdown-loader.js";
 import type { ResolvedTabSource, SourceAdapter } from "./adapters/types.js";
@@ -163,6 +164,67 @@ export interface GodocGoEnv {
   tags?: string[];
 }
 
+export type RustdocMode = "auto" | "live" | "snapshot";
+
+export interface RustdocFeatures {
+  /** Use the crate's default features. Defaults to `true`. */
+  default?: boolean;
+  /** Extra features to enable. */
+  list?: string[];
+  /** Enable every feature. Overrides `default` and `list`. */
+  all?: boolean;
+}
+
+export interface RustdocConfig {
+  /** Cargo manifest path. Either a Cargo.toml or a directory that contains one. */
+  manifest?: string;
+  /** Crates to document. Defaults to the manifest's own package. */
+  crates?: string[];
+  /** Optional path to a committed v1 RustdocSpec snapshot (rustdoc.json). */
+  snapshot?: string;
+  /**
+   * Source mode.
+   * - "live": invoke the bundled Rust helper at build time (requires nightly).
+   * - "snapshot": read the committed snapshot file; no Rust toolchain required.
+   * - "auto" (default): prefer live when nightly is available; fall back to snapshot.
+   */
+  mode?: RustdocMode;
+  /** Feature selection. Defaults to `{ default: true }`. */
+  features?: RustdocFeatures;
+  /** Include `pub(crate)` and private items (default: false). */
+  includePrivate?: boolean;
+  /** Include items marked `#[doc(hidden)]` (default: false). */
+  includeHidden?: boolean;
+  /** Target triple to build docs for. */
+  target?: string;
+  /** rustup toolchain name. Defaults to `nightly`. */
+  toolchain?: string;
+  /**
+   * Repository-relative base path for source links. Leave empty when the
+   * configured manifest is at the repository root.
+   */
+  sourceBasePath?: string;
+  /** Render a dedicated doctests index page. Defaults to `true`. */
+  doctestsIndex?: boolean;
+}
+
+export interface ResolvedRustdocConfig {
+  /** Absolute path to the Cargo manifest file. */
+  manifest: string;
+  /** Crates to document. Always at least one entry. */
+  crates: string[];
+  /** Absolute path to a snapshot file when configured. */
+  snapshot?: string;
+  mode: RustdocMode;
+  features: Required<RustdocFeatures>;
+  includePrivate: boolean;
+  includeHidden: boolean;
+  target?: string;
+  toolchain: string;
+  sourceBasePath: string;
+  doctestsIndex: boolean;
+}
+
 export interface GodocConfig {
   /** Module root (directory containing go.mod). Defaults to the directory containing sourcey.config.ts. */
   module?: string;
@@ -215,6 +277,11 @@ export interface TabConfig {
    * `{ module: <value>, packages: ["./..."], mode: "auto", includeTests: true }`.
    */
   godoc?: GodocConfig | string;
+  /**
+   * Native Rust API documentation. String shorthand expands to
+   * `{ manifest: <value>, mode: "auto", doctestsIndex: true }`.
+   */
+  rustdoc?: RustdocConfig | string;
 }
 
 export interface GroupConfig {
@@ -318,6 +385,7 @@ export interface ResolvedTab {
   doxygen?: ResolvedDoxygenConfig;
   mcp?: string;
   godoc?: ResolvedGodocConfig;
+  rustdoc?: ResolvedRustdocConfig;
 }
 
 export interface ResolvedPage {
@@ -560,15 +628,16 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
       tab.doxygen,
       tab.mcp,
       tab.godoc,
+      tab.rustdoc,
     ].filter(Boolean).length;
     if (sources > 1) {
       throw new Error(
-        `Tab "${tab.tab}" has multiple sources; use only one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", or "godoc"`,
+        `Tab "${tab.tab}" has multiple sources; use only one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", "godoc", or "rustdoc"`,
       );
     }
     if (sources === 0) {
       throw new Error(
-        `Tab "${tab.tab}" needs one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", or "godoc"`,
+        `Tab "${tab.tab}" needs one of "source", "openapi", "mkdocs", "groups", "doxygen", "mcp", "godoc", or "rustdoc"`,
       );
     }
 
@@ -593,6 +662,7 @@ function legacySourceAdapter(tab: TabConfig): SourceAdapter {
   if (tab.mcp) return mcpSource(tab.mcp);
   if (tab.doxygen) return doxygenSource(tab.doxygen);
   if (tab.godoc) return godocSource(tab.godoc);
+  if (tab.rustdoc) return rustdocSource(tab.rustdoc);
   return markdownSource({ groups: tab.groups! });
 }
 
@@ -617,6 +687,8 @@ function resolvedTabFromSource(
       return { ...base, doxygen: source.config };
     case "godoc":
       return { ...base, godoc: source.config };
+    case "rustdoc":
+      return { ...base, rustdoc: source.config };
   }
 }
 

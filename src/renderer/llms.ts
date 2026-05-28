@@ -119,6 +119,16 @@ function appendMarkdownPage(lines: string[], page: SitePage, site: SiteConfig): 
     lines.push("");
   }
 
+  const isRustdoc = doc.sourcePath?.startsWith("rustdoc/");
+  if (isRustdoc) {
+    const body = stripHtmlPreservingRustDoctests(doc.html);
+    if (body) {
+      lines.push(body);
+      lines.push("");
+    }
+    return;
+  }
+
   const body = stripHtml(doc.html);
   if (body) {
     lines.push(body);
@@ -382,6 +392,54 @@ function stripHtml(html: string): string {
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * Like stripHtml but preserves rustdoc doctest <pre><code> blocks as
+ * fenced ```rust ... ``` so they remain useful as runnable examples in
+ * llms-full.txt. Section headings and item names are also kept.
+ */
+function stripHtmlPreservingRustDoctests(html: string): string {
+  const tokens: string[] = [];
+  const sectionRe =
+    /<section class="rust-item rust-([a-z_]+) api-item"[^>]*>([\s\S]*?)<\/section>/g;
+  let lastIndex = 0;
+  let prose = "";
+  for (const match of html.matchAll(sectionRe)) {
+    prose += html.slice(lastIndex, match.index ?? 0);
+    lastIndex = (match.index ?? 0) + match[0].length;
+    tokens.push(formatRustItemForLlms(match[2], match[1]));
+  }
+  prose += html.slice(lastIndex);
+
+  const proseText = stripHtml(prose);
+  const parts: string[] = [];
+  if (proseText) parts.push(proseText);
+  if (tokens.length > 0) parts.push(tokens.join("\n\n"));
+  return parts.join("\n\n").trim();
+}
+
+function formatRustItemForLlms(inner: string, kind: string): string {
+  const titleMatch = inner.match(
+    /<h4[^>]*class="[^"]*code-header[^"]*"[^>]*>([\s\S]*?)<\/h4>/,
+  );
+  const title = titleMatch ? stripHtml(titleMatch[1]) : "";
+  const docMatch = inner.match(
+    /<div class="docblock[^"]*"[^>]*>([\s\S]*?)<\/div>/,
+  );
+  const docText = docMatch ? stripHtml(docMatch[1]) : "";
+  const doctests = Array.from(
+    inner.matchAll(/<pre class="rust rust-example-rendered"><code[^>]*>([\s\S]*?)<\/code><\/pre>/g),
+  ).map((m) => decodeEntities(m[1]).trim());
+  const out: string[] = [];
+  if (title) out.push(`#### ${kind}: ${title}`);
+  if (docText) out.push(docText);
+  for (const code of doctests) {
+    out.push("```rust");
+    out.push(code);
+    out.push("```");
+  }
+  return out.join("\n");
 }
 
 function decodeEntities(text: string): string {

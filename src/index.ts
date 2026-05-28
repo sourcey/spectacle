@@ -81,6 +81,7 @@ export interface SiteBuildResult {
   pageCount: number;
   changelogDiagnostics: ChangelogDiagnostic[];
   godocDiagnostics: import("./core/godoc-loader.js").GodocLoaderDiagnostic[];
+  rustdocDiagnostics: import("./core/rustdoc-loader.js").RustdocLoaderDiagnostic[];
   /** @internal specs by tab slug, for buildDocs compat */
   _specs?: Map<string, NormalizedSpec>;
 }
@@ -171,6 +172,7 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
     pageCount: sitePages.length,
     changelogDiagnostics: assembled.changelogDiagnostics,
     godocDiagnostics: assembled.godocDiagnostics,
+    rustdocDiagnostics: assembled.rustdocDiagnostics,
     _specs: assembled.specsBySlug,
   };
 }
@@ -220,7 +222,7 @@ function summarizeVersion(version: NormalizedChangelogVersion): string | undefin
 }
 
 export { defineConfig } from "./config.js";
-export { doxygen, godoc, markdown, mcp, mkdocs, openapi } from "./adapters/index.js";
+export { doxygen, godoc, markdown, mcp, mkdocs, openapi, rustdoc } from "./adapters/index.js";
 export { resolveInternalLinks } from "./site-assembly.js";
 
 // Re-export types for consumers
@@ -242,6 +244,14 @@ export type {
   MkDocsSourceOptions,
   OpenApiSourceOptions,
   ResolvedTabSource,
+  RustdocSourceOptions,
   SourceAdapter,
   SourceAdapterContext,
 } from "./adapters/index.js";
+
+export type {
+  RustdocConfig,
+  ResolvedRustdocConfig,
+  RustdocMode,
+  RustdocFeatures,
+} from "./config.js";

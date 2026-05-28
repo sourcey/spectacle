@@ -5,10 +5,10 @@ description: Set up Sourcey with TypeScript config, page groups, and reference t
 
 # Configuration
 
-Sourcey reads `sourcey.config.ts` from your project and keeps the structure explicit. Each tab has one `source`, usually created with `markdown()`, `mkdocs()`, `openapi()`, `mcp()`, `doxygen()`, or `godoc()`.
+Sourcey reads `sourcey.config.ts` from your project and keeps the structure explicit. Each tab has one `source`, usually created with `markdown()`, `mkdocs()`, `openapi()`, `mcp()`, `doxygen()`, `godoc()`, or `rustdoc()`.
 
 ```ts
-import { defineConfig, doxygen, markdown, mcp, mkdocs, openapi } from "sourcey";
+import { defineConfig, doxygen, godoc, markdown, mcp, mkdocs, openapi, rustdoc } from "sourcey";
 
 export default defineConfig({
   name: "My API",
@@ -53,10 +53,44 @@ export default defineConfig({
           ],
         }),
       },
+      {
+        tab: "Rust API",
+        slug: "rust-api",
+        source: rustdoc({
+          manifest: "../crates/Cargo.toml",
+          crates: ["my-crate", "my-other-crate"],
+          snapshot: "./snapshots/rustdoc.json",
+          mode: "auto",
+          features: { list: ["full"] },
+          sourceBasePath: "crates",
+          doctestsIndex: true,
+        }),
+      },
     ],
   },
 });
 ```
+
+## rustdoc()
+
+Native Rust API documentation generated from nightly rustdoc JSON.
+
+- `manifest` — path to `Cargo.toml` (file or directory).
+- `crates` — array of crate names to document; defaults to the manifest's own package.
+- `snapshot` — optional committed `RustdocSpec` v1 snapshot. Required for `mode: "snapshot"`.
+- `mode` — `"auto"` (default), `"live"`, or `"snapshot"`. Auto uses nightly when available, otherwise reads the snapshot.
+- `features` — `{ default?: boolean; list?: string[]; all?: boolean }`. Defaults to `{ default: true }`.
+- `includePrivate` — include `pub(crate)` and private items. Default `false`.
+- `includeHidden` — include `#[doc(hidden)]` items. Default `false`.
+- `target` — target triple to build docs for.
+- `toolchain` — rustup toolchain name. Default `"nightly"`.
+- `sourceBasePath` — repository-relative base for Rust source links.
+- `doctestsIndex` — render a workspace-wide doctests index page. Default `true`.
+
+Snapshot mode lets CI build documentation on stable Rust toolchains. Commit
+a generated `rustdoc.json` alongside your config and CI never needs nightly.
+See the [rustdoc adapter guide](./adapters/rustdoc.md) for the full snapshot
+lifecycle and rendering details.
 
 `doxygen().sourceUrl` accepts a base URL string, a resolver function, or a
 route map. Route maps use longest-prefix matching. `{path}` expands to the path

@@ -156,6 +156,50 @@
       });
     });
 
+    // ── Rust Doctest Copy + Hidden-Line Toggle ───────────────────────
+
+    document.addEventListener('click', function (e) {
+      var copyBtn = e.target.closest('.rust-doctest-copy');
+      if (copyBtn) {
+        var targetSel = copyBtn.getAttribute('data-clipboard-target');
+        var code = targetSel ? document.getElementById(targetSel.replace(/^#/, '')) : null;
+        if (!code) {
+          var pre = copyBtn.closest('.rust-doctest')?.querySelector('code:not([hidden])');
+          if (pre) code = pre;
+        }
+        if (!code) return;
+        navigator.clipboard.writeText(code.textContent || '').then(function () {
+          copyBtn.classList.add('copied');
+          setTimeout(function () {
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        });
+        return;
+      }
+
+      var toggleBtn = e.target.closest('.rust-doctest-toggle-hidden');
+      if (toggleBtn) {
+        var fullSel = toggleBtn.getAttribute('data-target');
+        var displaySel = toggleBtn.getAttribute('data-display');
+        var fullEl = fullSel ? document.getElementById(fullSel.replace(/^#/, '')) : null;
+        var displayEl = displaySel ? document.getElementById(displaySel.replace(/^#/, '')) : null;
+        if (!fullEl || !displayEl) return;
+        var fullPre = fullEl.closest('pre');
+        var displayPre = displayEl.closest('pre');
+        if (!fullPre || !displayPre) return;
+        var fullHidden = fullPre.hasAttribute('hidden');
+        if (fullHidden) {
+          fullPre.removeAttribute('hidden');
+          displayPre.setAttribute('hidden', '');
+          toggleBtn.textContent = 'Hide hidden lines';
+        } else {
+          fullPre.setAttribute('hidden', '');
+          displayPre.removeAttribute('hidden');
+          toggleBtn.textContent = 'Show hidden lines';
+        }
+      }
+    });
+
     // Close dropdowns on Escape
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {

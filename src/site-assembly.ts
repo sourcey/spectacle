@@ -8,6 +8,7 @@ import { normalizeMcpSpec } from "./core/mcp-normalizer.js";
 import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { loadGodocTab, type GodocLoaderDiagnostic } from "./core/godoc-loader.js";
+import { loadRustdocTab, type RustdocLoaderDiagnostic } from "./core/rustdoc-loader.js";
 import { buildNavFromSpec, buildNavFromPages } from "./core/navigation.js";
 import { generateChangelogFeeds } from "./renderer/changelog-feed.js";
 import { pageOutputPath, tabIndexOutputPath, tabPath } from "./config.js";
@@ -31,6 +32,7 @@ export interface SiteAssembly {
   pageMap: Map<string, SitePage>;
   changelogDiagnostics: ChangelogDiagnostic[];
   godocDiagnostics: GodocLoaderDiagnostic[];
+  rustdocDiagnostics: RustdocLoaderDiagnostic[];
   extraFiles: Map<string, string | Buffer>;
 }
 
@@ -41,6 +43,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
   const siteTabs: SiteTab[] = [];
   const changelogDiagnostics: ChangelogDiagnostic[] = [];
   const godocDiagnostics: GodocLoaderDiagnostic[] = [];
+  const rustdocDiagnostics: RustdocLoaderDiagnostic[] = [];
 
   for (const tab of config.tabs) {
     if (tab.source.kind === "openapi" || tab.source.kind === "mcp") {
@@ -90,6 +93,34 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
         },
       );
       godocDiagnostics.push(...diagnostics);
+
+      for (const [slug, page] of pages) {
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        pageMap.set(outputPath, {
+          outputPath,
+          currentPage: { kind: "markdown", markdown: page },
+          spec: primarySpec,
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      siteTabs.push(navTab);
+      continue;
+    }
+
+    if (tab.source.kind === "rustdoc") {
+      const { pages, navTab, diagnostics } = await loadRustdocTab(
+        tab.source.config,
+        tab.slug,
+        tab.label,
+        {
+          repo: config.repo,
+          editBranch: config.editBranch,
+          editBasePath: tab.source.config.sourceBasePath,
+        },
+      );
+      rustdocDiagnostics.push(...diagnostics);
 
       for (const [slug, page] of pages) {
         const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
@@ -163,6 +194,7 @@ export async function assembleSite(config: ResolvedConfig): Promise<SiteAssembly
     pageMap,
     changelogDiagnostics,
     godocDiagnostics,
+    rustdocDiagnostics,
     extraFiles,
   };
 }
@@ -591,7 +623,9 @@ function isSearchableDocsSitePage(page: SitePage): page is SitePage & {
 }
 
 function isDocsSource(kind: ResolvedTab["source"]["kind"]): boolean {
-  return kind === "markdown" || kind === "doxygen" || kind === "godoc";
+  return (
+    kind === "markdown" || kind === "doxygen" || kind === "godoc" || kind === "rustdoc"
+  );
 }
 
 function createFeedLinks(atomPath: string, rssPath: string, title: string) {

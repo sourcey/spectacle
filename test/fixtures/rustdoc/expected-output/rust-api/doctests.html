@@ -1,0 +1,37 @@
+<section class="rust-doctests-index">
+<h1>Doctests</h1>
+<p>8 runnable examples.</p>
+<section class="rust-doctest" id="doctest-fn.greet-0"><h3>basic::greet</h3><pre class="rust rust-example-rendered"><code>use basic::greet;
+
+assert_eq!(greet(&quot;Ada&quot;), &quot;hello, Ada&quot;);
+</code></pre></section>
+<section class="rust-doctest" id="doctest-struct.Widget-0"><h3>basic::Widget</h3><pre class="rust rust-example-rendered"><code>let mut w = Widget::new(&quot;hero&quot;);
+w.publish();
+assert!(w.is_published());
+</code></pre></section>
+<section class="rust-doctest" id="doctest-fn.new-0"><h3>new</h3><pre class="rust rust-example-rendered"><code>use basic::Widget;
+
+let w = Widget::new(&quot;alpha&quot;);
+assert!(!w.is_published());
+</code></pre></section>
+<section class="rust-doctest" id="doctest-fn.publish-0"><h3>publish</h3><pre class="rust rust-example-rendered"><code>use basic::Widget;
+
+let mut w = Widget::new(&quot;beta&quot;);
+w.publish();
+assert!(w.is_published());
+</code></pre></section>
+<section class="rust-doctest" id="doctest-trait.Introducer-0"><h3>basic::Introducer</h3><div class="rust-doctest-badges"><span class="rust-doctest-badge">no_run</span></div><pre class="rust rust-example-rendered"><code>use basic::{Introducer, Widget};
+
+let w = Widget::new(&quot;gamma&quot;);
+println!(&quot;{}&quot;, w.introduce());
+</code></pre></section>
+<section class="rust-doctest" id="doctest-struct.LegacyWidget-0"><h3>basic::LegacyWidget</h3><div class="rust-doctest-badges"><span class="rust-doctest-badge">should_panic</span></div><pre class="rust rust-example-rendered"><code>// Forces a panic at runtime for documentation purposes.
+let _w: basic::LegacyWidget = panic!(&quot;legacy&quot;);
+</code></pre></section>
+<section class="rust-doctest" id="doctest-fn.describe-0"><h3>basic::describe</h3><div class="rust-doctest-badges"><span class="rust-doctest-badge">compile_fail</span></div><pre class="rust rust-example-rendered"><code>let _w = basic::Widget::new(&quot;delta&quot;);
+let _d: i32 = _w; // type mismatch on purpose
+</code></pre></section>
+<section class="rust-doctest" id="doctest-macro.hello-0"><h3>basic::hello</h3><div class="rust-doctest-badges"><span class="rust-doctest-badge">ignore</span></div><pre class="rust rust-example-rendered"><code>let s = basic::hello!(&quot;world&quot;);
+assert_eq!(s, &quot;hello, world&quot;);
+</code></pre></section>
+</section>

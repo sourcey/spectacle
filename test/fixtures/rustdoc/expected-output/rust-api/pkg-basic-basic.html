@@ -1,0 +1,264 @@
+<div class="docblock rust-doc">Basic fixture crate used by the sourcey-rustdoc adapter tests.
+
+Exercises the minimum surface Phase 1 needs: a free function, a struct
+with an inherent impl, a trait with one method, a trait impl on the
+struct, and two doctests (one with hidden setup lines and an explicit
+`main` wrapper, one plain).</div>
+<h2 id="macros" class="section-header api-section-header">Macros <a class="anchor api-anchor" href="#macros">§</a></h2>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>hello</code></summary><section class="rust-item rust-macro api-item" id="macro.hello">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L118-L122">Source</a></div>
+<h4 id="macro.hello" class="section-header api-section-header code-header rust-item-header">hello <a class="anchor api-anchor" href="#macro.hello">§</a></h4>
+<pre class="code-header rust-signature rust-signature-fallback"><code>macro_rules! hello</code></pre>
+<div class="docblock rust-doc"><p>Greeting macro: expands to a hello string.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>let s = basic::hello!("world");</span></span>
+<span class="line"><span>assert_eq!(s, "hello, world");</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-macro.hello-0">
+<div class="rust-doctest-badges"><span class="rust-doctest-badge rust-doctest-badge-ignore" title="Excluded from testing.">ignore</span></div>
+<pre class="rust rust-example-rendered"><code id="doctest-macro.hello-0-code">let s = basic::hello!(&quot;world&quot;);
+assert_eq!(s, &quot;hello, world&quot;);
+</code></pre>
+<div class="rust-doctest-controls"><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-macro.hello-0-code">Copy</button></div>
+</div>
+</section></details>
+<h2 id="structs" class="section-header api-section-header">Structs <a class="anchor api-anchor" href="#structs">§</a></h2>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>Widget</code></summary><section class="rust-item rust-struct api-item" id="struct.Widget">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L33-L36">Source</a></div>
+<h4 id="struct.Widget" class="section-header api-section-header code-header rust-item-header">Widget <a class="anchor api-anchor" href="#struct.Widget">§</a></h4>
+<pre class="code-header rust-signature rust-signature-fallback"><code>pub struct basic::Widget { /* ... */ }</code></pre>
+<div class="docblock rust-doc"><p>A widget that can be published.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span># use basic::Widget;</span></span>
+<span class="line"><span># fn main() {</span></span>
+<span class="line"><span>let mut w = Widget::new("hero");</span></span>
+<span class="line"><span>w.publish();</span></span>
+<span class="line"><span>assert!(w.is_published());</span></span>
+<span class="line"><span># }</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-struct.Widget-0">
+<pre class="rust rust-example-rendered"><code id="doctest-struct.Widget-0-code">let mut w = Widget::new(&quot;hero&quot;);
+w.publish();
+assert!(w.is_published());
+</code></pre>
+<pre class="rust rust-example-rendered rust-doctest-full" hidden><code id="doctest-struct.Widget-0-full">use basic::Widget;
+fn main() {
+let mut w = Widget::new(&quot;hero&quot;);
+w.publish();
+assert!(w.is_published());
+}
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=use%20basic%3A%3AWidget%3B%0Afn%20main()%20%7B%0Alet%20mut%20w%20%3D%20Widget%3A%3Anew(%22hero%22)%3B%0Aw.publish()%3B%0Aassert!(w.is_published())%3B%0A%7D%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-struct.Widget-0-code">Copy</button><button class="rust-doctest-toggle-hidden" type="button" data-target="#doctest-struct.Widget-0-full" data-display="#doctest-struct.Widget-0-code">Show hidden lines</button></div>
+</div>
+<h3 id="impls-for-struct.Widget" class="section-header api-section-header rust-impls-header">Implementations <a class="anchor api-anchor" href="#impls-for-struct.Widget">§</a></h3><details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Widget"><code>impl Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.new"><code>new</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L49-L54">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">new</span>(name: <span class="ident">impl Into&lt;String&gt;</span>) -&gt; <span class="ident">Self</span></span>
+<div class="docblock rust-doc"><p>Construct a new widget with the given name.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>use basic::Widget;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>let w = Widget::new("alpha");</span></span>
+<span class="line"><span>assert!(!w.is_published());</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-fn.new-0">
+<pre class="rust rust-example-rendered"><code id="doctest-fn.new-0-code">use basic::Widget;
+
+let w = Widget::new(&quot;alpha&quot;);
+assert!(!w.is_published());
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=use%20basic%3A%3AWidget%3B%0A%0Alet%20w%20%3D%20Widget%3A%3Anew(%22alpha%22)%3B%0Aassert!(!w.is_published())%3B%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-fn.new-0-code">Copy</button></div>
+</div></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.publish"><code>publish</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L67-L69">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">publish</span>(self: <span class="ident">&amp;mut Self</span>)</span>
+<div class="docblock rust-doc"><p>Mark the widget as published.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>use basic::Widget;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>let mut w = Widget::new("beta");</span></span>
+<span class="line"><span>w.publish();</span></span>
+<span class="line"><span>assert!(w.is_published());</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-fn.publish-0">
+<pre class="rust rust-example-rendered"><code id="doctest-fn.publish-0-code">use basic::Widget;
+
+let mut w = Widget::new(&quot;beta&quot;);
+w.publish();
+assert!(w.is_published());
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=use%20basic%3A%3AWidget%3B%0A%0Alet%20mut%20w%20%3D%20Widget%3A%3Anew(%22beta%22)%3B%0Aw.publish()%3B%0Aassert!(w.is_published())%3B%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-fn.publish-0-code">Copy</button></div>
+</div></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.is_published"><code>is_published</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L72-L74">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">is_published</span>(self: <span class="ident">&amp;Self</span>) -&gt; <span class="ident">bool</span></span>
+<div class="docblock rust-doc"><p>Returns true if <code>publish</code> has been called.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Borrow-for-Widget"><code>impl Borrow for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow"><code>borrow</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow</span>(self: <span class="ident">&amp;Self</span>) -&gt; <span class="ident">&amp;T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-BorrowMut-for-Widget"><code>impl BorrowMut for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow_mut"><code>borrow_mut</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow_mut</span>(self: <span class="ident">&amp;mut Self</span>) -&gt; <span class="ident">&amp;mut T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Into-for-Widget"><code>impl Into for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.into"><code>into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">into</span>(self: <span class="ident">Self</span>) -&gt; <span class="ident">U</span></span>
+<div class="docblock rust-doc"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a class="rust-extern" href="https://doc.rust-lang.org/stable/core/convert/From" rel="noopener" target="_blank"><code>From</code></a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-From-for-Widget"><code>impl From for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.from"><code>from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">from</span>(t: <span class="ident">T</span>) -&gt; <span class="ident">T</span></span>
+<div class="docblock rust-doc"><p>Returns the argument unchanged.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryInto-for-Widget"><code>impl TryInto for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_into"><code>try_into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_into</span>(self: <span class="ident">Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;U, &lt;U as TryFrom&lt;T&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryFrom-for-Widget"><code>impl TryFrom for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_from"><code>try_from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_from</span>(value: <span class="ident">U</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;T, &lt;T as TryFrom&lt;U&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Any-for-Widget"><code>impl Any for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.type_id"><code>type_id</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">type_id</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::any::TypeId" href="https://doc.rust-lang.org/nightly/core/any/TypeId">TypeId</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Introducer-for-Widget"><code>impl Introducer for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.introduce"><code>introduce</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L93-L95">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">introduce</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="alloc::string::String" href="https://doc.rust-lang.org/nightly/alloc/string/String">String</a></span></details></details>
+</section></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>LegacyWidget</code></summary><section class="rust-item rust-struct api-item" id="struct.LegacyWidget">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L133-L133">Source</a></div>
+<h4 id="struct.LegacyWidget" class="section-header api-section-header code-header rust-item-header">LegacyWidget <a class="anchor api-anchor" href="#struct.LegacyWidget">§</a></h4>
+<pre class="code-header rust-signature rust-signature-fallback"><code>pub struct basic::LegacyWidget { /* ... */ }</code></pre>
+<div class="stab deprecated api-stab api-stab-deprecated">👎 Deprecated since 0.0.2: use Widget instead</div>
+<div class="docblock rust-doc"><p>An old wrapper that has been replaced by <a class="rust-symbol" href="rust-api/pkg-basic.html#struct.Widget"><code>Widget</code></a>.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>// Forces a panic at runtime for documentation purposes.</span></span>
+<span class="line"><span>let _w: basic::LegacyWidget = panic!("legacy");</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-struct.LegacyWidget-0">
+<div class="rust-doctest-badges"><span class="rust-doctest-badge rust-doctest-badge-should_panic" title="Test expected to panic.">should_panic</span></div>
+<pre class="rust rust-example-rendered"><code id="doctest-struct.LegacyWidget-0-code">// Forces a panic at runtime for documentation purposes.
+let _w: basic::LegacyWidget = panic!(&quot;legacy&quot;);
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=%2F%2F%20Forces%20a%20panic%20at%20runtime%20for%20documentation%20purposes.%0Alet%20_w%3A%20basic%3A%3ALegacyWidget%20%3D%20panic!(%22legacy%22)%3B%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-struct.LegacyWidget-0-code">Copy</button></div>
+</div>
+<h3 id="impls-for-struct.LegacyWidget" class="section-header api-section-header rust-impls-header">Implementations <a class="anchor api-anchor" href="#impls-for-struct.LegacyWidget">§</a></h3><details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Borrow-for-LegacyWidget"><code>impl Borrow for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow"><code>borrow</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow</span>(self: <span class="ident">&amp;Self</span>) -&gt; <span class="ident">&amp;T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-BorrowMut-for-LegacyWidget"><code>impl BorrowMut for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow_mut"><code>borrow_mut</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow_mut</span>(self: <span class="ident">&amp;mut Self</span>) -&gt; <span class="ident">&amp;mut T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Into-for-LegacyWidget"><code>impl Into for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.into"><code>into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">into</span>(self: <span class="ident">Self</span>) -&gt; <span class="ident">U</span></span>
+<div class="docblock rust-doc"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a class="rust-extern" href="https://doc.rust-lang.org/stable/core/convert/From" rel="noopener" target="_blank"><code>From</code></a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-From-for-LegacyWidget"><code>impl From for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.from"><code>from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">from</span>(t: <span class="ident">T</span>) -&gt; <span class="ident">T</span></span>
+<div class="docblock rust-doc"><p>Returns the argument unchanged.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryInto-for-LegacyWidget"><code>impl TryInto for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_into"><code>try_into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_into</span>(self: <span class="ident">Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;U, &lt;U as TryFrom&lt;T&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryFrom-for-LegacyWidget"><code>impl TryFrom for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_from"><code>try_from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_from</span>(value: <span class="ident">U</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;T, &lt;T as TryFrom&lt;U&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Any-for-LegacyWidget"><code>impl Any for LegacyWidget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.type_id"><code>type_id</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">type_id</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::any::TypeId" href="https://doc.rust-lang.org/nightly/core/any/TypeId">TypeId</a></span></details></details>
+</section></details>
+<h2 id="enums" class="section-header api-section-header">Enums <a class="anchor api-anchor" href="#enums">§</a></h2>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>Status</code></summary><section class="rust-item rust-enum api-item" id="enum.Status">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L100-L107">Source</a></div>
+<h4 id="enum.Status" class="section-header api-section-header code-header rust-item-header">Status <a class="anchor api-anchor" href="#enum.Status">§</a></h4>
+<pre class="code-header rust-signature rust-signature-fallback"><code>pub enum basic::Status { /* ... */ }</code></pre>
+<div class="docblock rust-doc"><p>Status that a widget can be in.</p>
+</div>
+<h3 id="impls-for-enum.Status" class="section-header api-section-header rust-impls-header">Implementations <a class="anchor api-anchor" href="#impls-for-enum.Status">§</a></h3><details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Borrow-for-Status"><code>impl Borrow for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow"><code>borrow</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow</span>(self: <span class="ident">&amp;Self</span>) -&gt; <span class="ident">&amp;T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-BorrowMut-for-Status"><code>impl BorrowMut for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.borrow_mut"><code>borrow_mut</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">borrow_mut</span>(self: <span class="ident">&amp;mut Self</span>) -&gt; <span class="ident">&amp;mut T</span></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Into-for-Status"><code>impl Into for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.into"><code>into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">into</span>(self: <span class="ident">Self</span>) -&gt; <span class="ident">U</span></span>
+<div class="docblock rust-doc"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a class="rust-extern" href="https://doc.rust-lang.org/stable/core/convert/From" rel="noopener" target="_blank"><code>From</code></a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-From-for-Status"><code>impl From for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.from"><code>from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">from</span>(t: <span class="ident">T</span>) -&gt; <span class="ident">T</span></span>
+<div class="docblock rust-doc"><p>Returns the argument unchanged.</p>
+</div></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryInto-for-Status"><code>impl TryInto for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_into"><code>try_into</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_into</span>(self: <span class="ident">Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;U, &lt;U as TryFrom&lt;T&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-TryFrom-for-Status"><code>impl TryFrom for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="associatedtype.Error"><code>Error</code></h4></summary></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.try_from"><code>try_from</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">try_from</span>(value: <span class="ident">U</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::result::Result" href="https://doc.rust-lang.org/nightly/core/result/Result">Result&lt;T, &lt;T as TryFrom&lt;U&gt;&gt;::Error&gt;</a></span></details></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Any-for-Status"><code>impl Any for Status</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="method.type_id"><code>type_id</code></h4></summary><span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">type_id</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="core::any::TypeId" href="https://doc.rust-lang.org/nightly/core/any/TypeId">TypeId</a></span></details></details>
+</section></details>
+<h2 id="traits" class="section-header api-section-header">Traits <a class="anchor api-anchor" href="#traits">§</a></h2>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>Introducer</code></summary><section class="rust-item rust-trait api-item" id="trait.Introducer">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L87-L90">Source</a></div>
+<h4 id="trait.Introducer" class="section-header api-section-header code-header rust-item-header">Introducer <a class="anchor api-anchor" href="#trait.Introducer">§</a></h4>
+<pre class="code-header rust-signature rust-signature-fallback"><code>pub trait basic::Introducer { /* ... */ }</code></pre>
+<div class="docblock rust-doc"><p>Anything that can introduce itself in one short sentence.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>use basic::{Introducer, Widget};</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>let w = Widget::new("gamma");</span></span>
+<span class="line"><span>println!("{}", w.introduce());</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-trait.Introducer-0">
+<div class="rust-doctest-badges"><span class="rust-doctest-badge rust-doctest-badge-no_run" title="Compiled but not executed.">no_run</span></div>
+<pre class="rust rust-example-rendered"><code id="doctest-trait.Introducer-0-code">use basic::{Introducer, Widget};
+
+let w = Widget::new(&quot;gamma&quot;);
+println!(&quot;{}&quot;, w.introduce());
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=use%20basic%3A%3A%7BIntroducer%2C%20Widget%7D%3B%0A%0Alet%20w%20%3D%20Widget%3A%3Anew(%22gamma%22)%3B%0Aprintln!(%22%7B%7D%22%2C%20w.introduce())%3B%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-trait.Introducer-0-code">Copy</button></div>
+</div>
+<h3 id="impls-for-trait.Introducer" class="section-header api-section-header rust-impls-header">Implementations <a class="anchor api-anchor" href="#impls-for-trait.Introducer">§</a></h3><h3 id="required-methods" class="section-header api-section-header">Required Methods <a class="anchor api-anchor" href="#required-methods">§</a></h3>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="tymethod.introduce"><code>introduce</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L89-L89">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">introduce</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="alloc::string::String" href="https://doc.rust-lang.org/nightly/alloc/string/String">String</a></span>
+<div class="docblock rust-doc"><p>Produce the introduction line.</p>
+</div></details>
+<details class="toggle implementors-toggle api-impl-toggle" open><summary class="hideme"><h3 class="code-header rust-impl-header" id="impl-Introducer-for-Widget"><code>impl Introducer for Widget</code></h3></summary><details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><h4 class="code-header rust-method-header" id="tymethod.introduce"><code>introduce</code></h4></summary><div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L93-L95">Source</a></div>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">introduce</span>(self: <span class="ident">&amp;Self</span>) -&gt; <a class="rust-extern api-symbol-link" title="alloc::string::String" href="https://doc.rust-lang.org/nightly/alloc/string/String">String</a></span></details></details>
+</section></details>
+<h2 id="functions" class="section-header api-section-header">Functions <a class="anchor api-anchor" href="#functions">§</a></h2>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>greet</code></summary><section class="rust-item rust-function api-item" id="fn.greet">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L17-L19">Source</a></div>
+<h4 id="fn.greet" class="section-header api-section-header code-header rust-item-header">greet <a class="anchor api-anchor" href="#fn.greet">§</a></h4>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">greet</span>(name: <span class="ident">&amp;str</span>) -&gt; <a class="rust-extern api-symbol-link" title="alloc::string::String" href="https://doc.rust-lang.org/nightly/alloc/string/String">String</a></span>
+<div class="docblock rust-doc"><p>Returns a greeting for the given name.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>use basic::greet;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>assert_eq!(greet("Ada"), "hello, Ada");</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-fn.greet-0">
+<pre class="rust rust-example-rendered"><code id="doctest-fn.greet-0-code">use basic::greet;
+
+assert_eq!(greet(&quot;Ada&quot;), &quot;hello, Ada&quot;);
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=use%20basic%3A%3Agreet%3B%0A%0Aassert_eq!(greet(%22Ada%22)%2C%20%22hello%2C%20Ada%22)%3B%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-fn.greet-0-code">Copy</button></div>
+</div>
+</section></details>
+<details class="toggle method-toggle api-method-toggle" open><summary class="hideme"><code>describe</code></summary><section class="rust-item rust-function api-item" id="fn.describe">
+<div class="rightside api-rightside"><a class="srclink api-srclink" href="https://github.com/nilstate/sourcey/blob/main/src/lib.rs#L144-L146">Source</a></div>
+<h4 id="fn.describe" class="section-header api-section-header code-header rust-item-header">describe <a class="anchor api-anchor" href="#fn.describe">§</a></h4>
+<span class="code-header rust-signature"><span class="kw">fn</span> <span class="ident">describe</span>(w: <a class="rust-symbol api-symbol-link" title="basic::Widget" href="rust-api/pkg-basic.html#struct.Widget">&amp;Widget</a>) -&gt; <a class="rust-extern api-symbol-link" title="alloc::string::String" href="https://doc.rust-lang.org/nightly/alloc/string/String">String</a></span>
+<div class="stab api-stab api-stab-must-use"><code>#[must_use]</code></div>
+<div class="docblock rust-doc"><p>Inspect a widget&#39;s display string.</p>
+<h1 id="examples">Examples</h1>
+<div class="prose-code-block not-prose">
+<div class="prose-code-copy">
+<button aria-label="Copy code" class="copy-btn" type="button" data-copy-source="code"><svg fill="none" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96397 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div class="prose-code-content"><pre class="shiki" tabindex="0"><code><span class="line"><span>let _w = basic::Widget::new("delta");</span></span>
+<span class="line"><span>let _d: i32 = _w; // type mismatch on purpose</span></span></code></pre></div>
+</div></div>
+<div class="rust-doctest example-wrap api-doctest" id="doctest-fn.describe-0">
+<div class="rust-doctest-badges"><span class="rust-doctest-badge rust-doctest-badge-compile_fail" title="Test expected to fail to compile.">compile_fail</span></div>
+<pre class="rust rust-example-rendered"><code id="doctest-fn.describe-0-code">let _w = basic::Widget::new(&quot;delta&quot;);
+let _d: i32 = _w; // type mismatch on purpose
+</code></pre>
+<div class="rust-doctest-controls"><a class="test-arrow rust-doctest-run" href="https://play.rust-lang.org/?code=let%20_w%20%3D%20basic%3A%3AWidget%3A%3Anew(%22delta%22)%3B%0Alet%20_d%3A%20i32%20%3D%20_w%3B%20%2F%2F%20type%20mismatch%20on%20purpose%0A&amp;edition=2024" target="_blank" rel="noopener">Run</a><button class="rust-doctest-copy" type="button" data-clipboard-target="#doctest-fn.describe-0-code">Copy</button></div>
+</div>
+</section></details>

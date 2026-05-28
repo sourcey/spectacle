@@ -1,0 +1,13 @@
+[package]
+name = "basic"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Minimal fixture crate for sourcey-rustdoc adapter tests."
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+default = []
+extra = []

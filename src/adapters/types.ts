@@ -6,6 +6,8 @@ import type {
   ResolvedDoxygenConfig,
   ResolvedGodocConfig,
   ResolvedGroup,
+  ResolvedRustdocConfig,
+  RustdocConfig,
 } from "../config.js";
 
 export interface SourceAdapterContext {
@@ -62,12 +64,19 @@ export interface ResolvedGodocSource {
   watchPaths?: string[];
 }
 
+export interface ResolvedRustdocSource {
+  kind: "rustdoc";
+  config: ResolvedRustdocConfig;
+  watchPaths?: string[];
+}
+
 export type ResolvedTabSource =
   | ResolvedOpenApiSource
   | ResolvedMcpSource
   | ResolvedMarkdownSource
   | ResolvedDoxygenSource
-  | ResolvedGodocSource;
+  | ResolvedGodocSource
+  | ResolvedRustdocSource;
 
 export interface MarkdownSourceOptions {
   groups: GroupConfig[];
@@ -87,6 +96,7 @@ export interface MkDocsSourceOptions {
 
 export type DoxygenSourceOptions = DoxygenConfig;
 export type GodocSourceOptions = GodocConfig | string;
+export type RustdocSourceOptions = RustdocConfig | string;
 
 export interface PageMarkdownOptions {
   sourceRoot?: string;

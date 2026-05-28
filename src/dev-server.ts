@@ -14,6 +14,7 @@ import type { SiteConfig } from "./renderer/context.js";
 import { loadDocsPage, slugFromPath } from "./core/markdown-loader.js";
 import { loadDoxygenTab } from "./core/doxygen-loader.js";
 import { loadGodocTab } from "./core/godoc-loader.js";
+import { loadRustdocTab } from "./core/rustdoc-loader.js";
 import { buildSearchIndex } from "./core/search-indexer.js";
 import { createRenderOptions } from "./renderer/html-builder.js";
 import {
@@ -76,6 +77,15 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       // The Go module directory is large; watching every .go file slows the
       // dev server. Restart manually after broad source edits.
     }
+    if (tab.source.kind === "rustdoc") {
+      // Cargo manifest is the watch surface; .rs files are intentionally not
+      // watched because rustdoc recompile is expensive. Restart manually
+      // after broad source edits, matching the godoc policy.
+      watchPaths.push(resolve(tab.source.config.manifest));
+      if (tab.source.config.snapshot) {
+        watchPaths.push(resolve(tab.source.config.snapshot));
+      }
+    }
     if (tab.source.kind === "markdown") {
       for (const group of tab.source.groups) {
         for (const page of group.pages) {
@@ -89,6 +99,7 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
     | { kind: "markdown"; tabSlug: string; page: ResolvedPage }
     | { kind: "doxygen"; tabSlug: string; xmlDir: string }
     | { kind: "godoc"; tabSlug: string; snapshotPath: string }
+    | { kind: "rustdoc"; tabSlug: string; snapshotPath: string }
     | { kind: "openapi"; tabSlug: string; specPath: string }
     | { kind: "mcp"; tabSlug: string; specPath: string }
     | { kind: "config" };
@@ -125,6 +136,13 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
       if (tab.source.kind === "godoc" && tab.source.config.snapshot) {
         map.set(resolve(tab.source.config.snapshot), {
           kind: "godoc",
+          tabSlug: tab.slug,
+          snapshotPath: tab.source.config.snapshot,
+        });
+      }
+      if (tab.source.kind === "rustdoc" && tab.source.config.snapshot) {
+        map.set(resolve(tab.source.config.snapshot), {
+          kind: "rustdoc",
           tabSlug: tab.slug,
           snapshotPath: tab.source.config.snapshot,
         });
@@ -283,6 +301,41 @@ export async function startDevServer(options: DevServerOptions): Promise<void> {
         editBranch: config.editBranch,
         editBasePath: tab.source.config.sourceBasePath,
       });
+      if (cache !== snapshot) return;
+
+      for (const [key, page] of data.pageMap) {
+        if (page.tabSlug === content.tabSlug) data.pageMap.delete(key);
+      }
+
+      for (const [slug, page] of pages) {
+        const outputPath = pageOutputPath(tab.slug, slug, config.prettyUrls);
+        data.pageMap.set(outputPath, {
+          outputPath,
+          spec: data.primarySpec,
+          currentPage: { kind: "markdown", markdown: page },
+          tabSlug: tab.slug,
+          pageSlug: slug,
+        });
+      }
+
+      const idx = data.siteTabs.findIndex((candidate) => candidate.slug === content.tabSlug);
+      if (idx !== -1) data.siteTabs[idx] = navTab;
+      else data.siteTabs.push(navTab);
+    } else if (content.kind === "rustdoc") {
+      const tab = config.tabs.find((candidate) => candidate.slug === content.tabSlug);
+      if (!tab || tab.source.kind !== "rustdoc") return;
+
+      log(`rebuilding rustdoc tab "${tab.label}"`);
+      const { pages, navTab } = await loadRustdocTab(
+        tab.source.config,
+        tab.slug,
+        tab.label,
+        {
+          repo: config.repo,
+          editBranch: config.editBranch,
+          editBasePath: tab.source.config.sourceBasePath,
+        },
+      );
       if (cache !== snapshot) return;
 
       for (const [key, page] of data.pageMap) {
