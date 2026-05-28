@@ -2,6 +2,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 import type { ResolvedRustdocConfig } from "../config.js";
 import { RUSTDOC_DIAGNOSTIC_CODES, SPEC_VERSION } from "./rustdoc-types.js";
@@ -101,7 +102,12 @@ async function loadSnapshot(cfg: ResolvedRustdocConfig): Promise<IntrospectResul
   }
   let raw: string;
   try {
-    raw = await readFile(snapshotPath, "utf8");
+    if (/\.gz$/i.test(snapshotPath)) {
+      const buf = await readFile(snapshotPath);
+      raw = gunzipSync(buf).toString("utf8");
+    } else {
+      raw = await readFile(snapshotPath, "utf8");
+    }
   } catch (err) {
     throw new RustdocIntrospectorError(
       RUSTDOC_DIAGNOSTIC_CODES.INVALID_SNAPSHOT_SCHEMA,

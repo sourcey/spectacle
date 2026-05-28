@@ -1,6 +1,6 @@
 [package]
 name = "sourcey"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Native documentation tooling for Rust APIs. Companion crate to the sourcey static documentation generator; re-exports the rustdoc snapshot pipeline."
 license = "AGPL-3.0-only"
@@ -17,4 +17,4 @@ name = "sourcey"
 path = "src/lib.rs"
 
 [dependencies]
-sourcey-rustdoc = { version = "0.1.0", path = "../sourcey-rustdoc" }
+sourcey-rustdoc = { version = "0.1.1", path = "../sourcey-rustdoc" }

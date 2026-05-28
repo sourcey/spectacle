@@ -1,6 +1,6 @@
 [package]
 name = "sourcey-rustdoc"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Convert nightly rustdoc JSON into a stable RustdocSpec snapshot. Powers sourcey's rustdoc() source adapter; works standalone for any tool that wants a stable Rust API surface representation."
 license = "AGPL-3.0-only"
@@ -31,6 +31,7 @@ clap = { version = "4", features = ["derive"] }
 pulldown-cmark = "0.10"
 time = { version = "0.3", features = ["formatting"] }
 toml = "0.8"
+flate2 = "1"
 
 [profile.release]
 lto = "thin"

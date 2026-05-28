@@ -1,10 +1,12 @@
 use std::fs;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use anyhow::{anyhow, Context, Result};
 use clap::Parser;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use rustdoc_json::Builder;
 use rustdoc_types::Crate;
 use time::OffsetDateTime;
@@ -123,8 +125,11 @@ fn run(args: Args) -> Result<ExitCode> {
         diagnostics,
     };
 
-    let serialized = serde_json::to_string_pretty(&snapshot)
-        .context("serializing RustdocSpec to JSON")?;
+    // Compact JSON: large snapshots (multi-crate workspaces) benefit from
+    // dropping pretty-print whitespace. Gzip is layered on top when the
+    // output path ends in `.gz`.
+    let serialized =
+        serde_json::to_vec(&snapshot).context("serializing RustdocSpec to JSON")?;
     write_output(&args.output, &serialized)?;
 
     if args.strict && has_error_diagnostic {
@@ -200,11 +205,11 @@ fn load_rustdoc_json(path: &PathBuf) -> Result<Crate> {
     Ok(krate)
 }
 
-fn write_output(target: &str, contents: &str) -> Result<()> {
+fn write_output(target: &str, contents: &[u8]) -> Result<()> {
     if target == "-" {
         let stdout = std::io::stdout();
         let mut handle = stdout.lock();
-        handle.write_all(contents.as_bytes())?;
+        handle.write_all(contents)?;
         handle.write_all(b"\n")?;
         return Ok(());
     }
@@ -214,8 +219,24 @@ fn write_output(target: &str, contents: &str) -> Result<()> {
             fs::create_dir_all(parent).with_context(|| format!("creating {}", parent.display()))?;
         }
     }
-    fs::write(&path, contents).with_context(|| format!("writing {}", path.display()))?;
+    if is_gz_path(&path) {
+        let file = fs::File::create(&path)
+            .with_context(|| format!("creating {}", path.display()))?;
+        let mut encoder = GzEncoder::new(file, Compression::default());
+        encoder
+            .write_all(contents)
+            .with_context(|| format!("writing gzip stream to {}", path.display()))?;
+        encoder.finish().with_context(|| format!("finalising {}", path.display()))?;
+    } else {
+        fs::write(&path, contents).with_context(|| format!("writing {}", path.display()))?;
+    }
     Ok(())
+}
+
+fn is_gz_path(path: &Path) -> bool {
+    path.extension()
+        .and_then(|e| e.to_str())
+        .is_some_and(|ext| ext.eq_ignore_ascii_case("gz"))
 }
 
 fn now_rfc3339() -> String {
