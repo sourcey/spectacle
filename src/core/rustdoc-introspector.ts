@@ -49,7 +49,15 @@ export async function runIntrospector(opts: IntrospectOptions): Promise<Introspe
   const cfg = opts.config;
   const mode = await resolveMode(cfg, opts);
   if (mode === "snapshot") {
-    return loadSnapshot(cfg);
+    const result = await loadSnapshot(cfg);
+    if (cfg.mode === "auto") {
+      result.diagnostics.unshift({
+        severity: "info",
+        code: RUSTDOC_DIAGNOSTIC_CODES.AUTO_FELL_BACK_TO_SNAPSHOT,
+        message: `Rustdoc auto mode did not find "${cfg.toolchain}" and used the configured snapshot.`,
+      });
+    }
+    return result;
   }
   return runLive(cfg, opts);
 }
@@ -167,7 +175,8 @@ async function runLive(
   };
 }
 
-function buildArgs(cfg: ResolvedRustdocConfig, _helperDir: string): string[] {
+function buildArgs(cfg: ResolvedRustdocConfig, helperDir: string): string[] {
+  void helperDir;
   const args = [
     "run",
     "--release",

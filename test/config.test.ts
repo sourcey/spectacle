@@ -25,6 +25,40 @@ function baseConfig(extra: Partial<SourceyConfig> = {}): SourceyConfig {
   };
 }
 
+describe("resolveConfigFromRaw – validation", () => {
+  it("rejects invalid theme presets", async () => {
+    await withTempDir(async (dir) => {
+      await expect(
+        resolveConfigFromRaw(baseConfig({ theme: { preset: "missing" as never } }), dir),
+      ).rejects.toThrow(/Invalid theme preset/);
+    });
+  });
+
+  it("rejects invalid hex colors", async () => {
+    await withTempDir(async (dir) => {
+      await expect(
+        resolveConfigFromRaw(baseConfig({ theme: { colors: { primary: "#zzzzzz" } } }), dir),
+      ).rejects.toThrow(/Invalid hex color/);
+    });
+  });
+
+  it("rejects invalid prettyUrls values", async () => {
+    await withTempDir(async (dir) => {
+      await expect(
+        resolveConfigFromRaw(baseConfig({ prettyUrls: "pretty" as never }), dir),
+      ).rejects.toThrow(/Invalid prettyUrls/);
+    });
+  });
+
+  it("rejects unknown code sample languages", async () => {
+    await withTempDir(async (dir) => {
+      await expect(
+        resolveConfigFromRaw(baseConfig({ codeSamples: ["node"] }), dir),
+      ).rejects.toThrow(/Invalid codeSamples/);
+    });
+  });
+});
+
 describe("resolveConfigFromRaw – source adapters", () => {
   it("resolves markdown groups from the source adapter form", async () => {
     await withTempDir(async (dir) => {
@@ -243,6 +277,30 @@ describe("resolveConfigFromRaw – godoc tabs", () => {
       });
 
       await expect(resolveConfigFromRaw(raw, dir)).rejects.toThrow(/multiple sources/);
+    });
+  });
+
+  it("rejects URL inputs for local-only adapters", async () => {
+    await withTempDir(async (dir) => {
+      await expect(
+        resolveConfigFromRaw(
+          baseConfig({
+            navigation: { tabs: [{ tab: "Go API", source: godoc("https://example.com/go") }] },
+          }),
+          dir,
+        ),
+      ).rejects.toThrow(/must be a local file path/);
+
+      await expect(
+        resolveConfigFromRaw(
+          baseConfig({
+            navigation: {
+              tabs: [{ tab: "C++ API", source: doxygen({ xml: "https://example.com/xml" }) }],
+            },
+          }),
+          dir,
+        ),
+      ).rejects.toThrow(/must be a local file path/);
     });
   });
 

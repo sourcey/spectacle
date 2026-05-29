@@ -221,8 +221,8 @@ export const init = defineCommand({
       imports.add("doxygen");
       tabs += `
       {
-        tab: "API Reference",
-        slug: "api",
+        tab: "C++ Reference",
+        slug: "cpp-api",
         source: doxygen({ xml: "${relPath(addDoxygen.xmlDir)}" }),
       },`;
     }

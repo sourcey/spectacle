@@ -206,6 +206,40 @@ export function formatGodocDiagnostic(diag: GodocLoaderDiagnostic): string {
   return `[${sev}] ${diag.code}${where}${loc} ${diag.message}`;
 }
 
+export function enforceGodocDiagnostics(diagnostics: GodocLoaderDiagnostic[]): void {
+  const error = diagnostics.find((diagnostic) => diagnostic.severity === "error");
+  if (error) throw new Error(formatGodocFailure(error));
+}
+
+export function enforceRustdocDiagnostics(diagnostics: RustdocLoaderDiagnostic[]): void {
+  const error = diagnostics.find((diagnostic) => diagnostic.severity === "error");
+  if (error) throw new Error(formatRustdocFailure(error));
+}
+
+function formatGodocFailure(diagnostic: GodocLoaderDiagnostic): string {
+  const where = diagnostic.package ? ` (${diagnostic.package})` : "";
+  const loc = diagnostic.file
+    ? ` ${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ""}`
+    : "";
+  return `[${diagnostic.code}]${where}${loc}: ${diagnostic.message}`;
+}
+
+export function formatRustdocDiagnostic(diagnostic: RustdocLoaderDiagnostic): string {
+  const location = diagnostic.file
+    ? ` ${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ""}`
+    : "";
+  const cratePrefix = diagnostic.crate ? ` [${diagnostic.crate}]` : "";
+  return `[${diagnostic.severity.toUpperCase()}] ${diagnostic.code}${cratePrefix}${location} ${diagnostic.message}`;
+}
+
+function formatRustdocFailure(diagnostic: RustdocLoaderDiagnostic): string {
+  const location = diagnostic.file
+    ? ` ${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ""}`
+    : "";
+  const cratePrefix = diagnostic.crate ? ` (${diagnostic.crate})` : "";
+  return `[${diagnostic.code}]${cratePrefix}${location}: ${diagnostic.message}`;
+}
+
 export function collectDocsPagesByTab(
   pageMap: Map<string, SitePage>,
   tabs: ResolvedTab[],
@@ -623,9 +657,7 @@ function isSearchableDocsSitePage(page: SitePage): page is SitePage & {
 }
 
 function isDocsSource(kind: ResolvedTab["source"]["kind"]): boolean {
-  return (
-    kind === "markdown" || kind === "doxygen" || kind === "godoc" || kind === "rustdoc"
-  );
+  return kind === "markdown" || kind === "doxygen" || kind === "godoc" || kind === "rustdoc";
 }
 
 function createFeedLinks(atomPath: string, rssPath: string, title: string) {

@@ -29,7 +29,6 @@ import type {
   CrateSpec,
   ExternalCrateRef,
   Item,
-  ItemId,
   LinkTarget,
   ModuleSpec,
   RustdocDiagnostic,
@@ -66,11 +65,7 @@ export function encodeImplAnchor(traitName: string, forType: string): string {
 
 /** Encode a single segment for anchor-ID use: <,>,space and special chars escaped rustdoc-style. */
 export function encodeGenericSegment(value: string): string {
-  return value
-    .replace(/</g, "%3C")
-    .replace(/>/g, "%3E")
-    .replace(/, /g, ",+")
-    .replace(/ /g, "+");
+  return value.replace(/</g, "%3C").replace(/>/g, "%3E").replace(/, /g, ",+").replace(/ /g, "+");
 }
 
 export function itemAnchor(item: Item): string {
@@ -244,9 +239,10 @@ function typePathHref(
     // Find the actual item in the snapshot so we can use ITS path (which
     // tells us which module page it lives on), not the inbound target.path
     // which may be a re-export shortcut.
-    const candidate = [...ctx.itemsById.values()].find(
-      (i) => i.name === name && i.path.join("::") === target.path.join("::"),
-    ) ?? [...ctx.itemsById.values()].find((i) => i.name === name);
+    const candidate =
+      [...ctx.itemsById.values()].find(
+        (i) => i.name === name && i.path.join("::") === target.path.join("::"),
+      ) ?? [...ctx.itemsById.values()].find((i) => i.name === name);
     if (candidate) {
       const crateName = candidate.path[0] ?? ctx.crate.name;
       const modulePath = candidate.path.slice(1, -1);
@@ -256,7 +252,9 @@ function typePathHref(
     // Last resort: guess from the inbound path.
     const crateName = target.path[0] === ctx.crate.name ? ctx.crate.name : target.path[0];
     const modulePath = target.path.slice(1, -1);
-    return tabHref(ctx.tabSlug, pageSlugFor(crateName, modulePath)) + `#${encodeURIComponent(name)}`;
+    return (
+      tabHref(ctx.tabSlug, pageSlugFor(crateName, modulePath)) + `#${encodeURIComponent(name)}`
+    );
   }
   if (target.html_root_url) {
     return joinUrl(target.html_root_url, target.path.join("/"));
@@ -346,11 +344,7 @@ function lookupLinkTarget(
 ): LinkTarget | undefined {
   // rustdoc's Item.links keys can include backticks, full paths, or aliases.
   // Try common variants before giving up.
-  return (
-    links[label] ??
-    links[`\`${label}\``] ??
-    links[label.replace(/^`(.+)`$/, "$1")]
-  );
+  return links[label] ?? links[`\`${label}\``] ?? links[label.replace(/^`(.+)`$/, "$1")];
 }
 
 function externalLinkHref(target: Extract<LinkTarget, { kind: "external" }>): string {
@@ -363,14 +357,6 @@ function externalLinkHref(target: Extract<LinkTarget, { kind: "external" }>): st
     return `${trimmed}/${target.path.join("/")}`;
   }
   return `https://docs.rs/${target.crate_name}/latest/${target.path.join("/")}`;
-}
-
-function renderMarkdownPlaceholder(markdown: string): string {
-  // Phase 3 keeps markdown rendering deliberately minimal; the loader applies
-  // sourcey's markdown pipeline before calling the renderer. This function
-  // does the single step the renderer cares about: HTML-escape any raw
-  // content that wasn't already a link target.
-  return markdown;
 }
 
 // ---------------------------------------------------------------------------
@@ -433,10 +419,7 @@ function extractMustUseReason(item: Item): string | null {
   return null;
 }
 
-export function renderItemInfoRow(
-  item: Item,
-  ctx: RenderContext,
-): string {
+export function renderItemInfoRow(item: Item, ctx: RenderContext): string {
   const since = item.stability?.level === "stable" ? item.stability.since : null;
   const sourceHref = renderSourceHref(item, ctx);
   return apiItemInfoRow({ since: since ?? null, sourceHref });
@@ -461,14 +444,17 @@ export function renderItemHtml(item: Item, ctx: RenderContext): string {
   const infoRow = renderItemInfoRow(item, ctx);
   const signatureHtml = renderItemSignature(item, ctx);
   const docs = renderItemDocs(item, ctx);
-  const doctests = item.doctests
-    .map((dt, idx) => renderDoctestBlock(item, dt, idx, ctx))
-    .join("\n");
+  const doctests = item.doctests.map((dt, idx) => renderDoctestBlock(item, dt, idx)).join("\n");
   const impls = renderItemImpls(item, ctx);
   return [
-    `<section class="rust-item rust-${item.inner.kind} api-item" id="${escapeAttr(anchor)}">`,
+    `<section class="rust-item rust-${item.inner.kind} api-item">`,
     infoRow,
-    apiSectionAnchor({ level: 4, id: anchor, text: item.name ?? anchor, className: "code-header rust-item-header" }),
+    apiSectionAnchor({
+      level: 4,
+      id: anchor,
+      text: item.name ?? anchor,
+      className: "code-header rust-item-header",
+    }),
     signatureHtml,
     callouts,
     docs,
@@ -491,9 +477,7 @@ function renderItemImpls(item: Item, ctx: RenderContext): string {
     if (!impl || impl.inner.kind !== "impl") continue;
     const traitName = impl.inner.trait_path?.display;
     const forName = impl.inner.for_type.display;
-    const header = traitName
-      ? `impl ${traitName} for ${forName}`
-      : `impl ${forName}`;
+    const header = traitName ? `impl ${traitName} for ${forName}` : `impl ${forName}`;
     const providedMethods = new Set(impl.inner.provided_trait_methods);
     const methodSections = impl.inner.items
       .map((mid) => ctx.itemsById.get(mid))
@@ -551,11 +535,23 @@ function renderTraitOwnMembers(item: Item, ctx: RenderContext): string {
   }
   const parts: string[] = [];
   if (assocTypes.length > 0) {
-    parts.push(apiSectionAnchor({ level: 3, id: "required-associated-types", text: "Required Associated Types" }));
+    parts.push(
+      apiSectionAnchor({
+        level: 3,
+        id: "required-associated-types",
+        text: "Required Associated Types",
+      }),
+    );
     parts.push(assocTypes.map((m) => renderImplMember(m, ctx, false)).join("\n"));
   }
   if (assocConsts.length > 0) {
-    parts.push(apiSectionAnchor({ level: 3, id: "required-associated-consts", text: "Required Associated Constants" }));
+    parts.push(
+      apiSectionAnchor({
+        level: 3,
+        id: "required-associated-consts",
+        text: "Required Associated Constants",
+      }),
+    );
     parts.push(assocConsts.map((m) => renderImplMember(m, ctx, false)).join("\n"));
   }
   if (required.length > 0) {
@@ -599,9 +595,7 @@ function renderImplMember(member: Item, ctx: RenderContext, isRequiredTraitMetho
   const sigHtml = renderItemSignature(member, ctx);
   const callouts = renderStabilityCallouts(member);
   const docs = renderItemDocs(member, ctx);
-  const doctests = member.doctests
-    .map((dt, idx) => renderDoctestBlock(member, dt, idx, ctx))
-    .join("\n");
+  const doctests = member.doctests.map((dt, idx) => renderDoctestBlock(member, dt, idx)).join("\n");
   const infoRow = renderItemInfoRow(member, ctx);
   return apiMethodToggle({
     summary: `<h4 class="code-header rust-method-header" id="${escapeAttr(anchor)}"><code>${escapeHtml(
@@ -675,7 +669,6 @@ export function renderDoctestBlock(
   parent: Item,
   dt: Item["doctests"][number],
   idx: number,
-  _ctx: RenderContext,
 ): string {
   const anchor = `doctest-${itemAnchor(parent)}-${idx}`;
   const isRust = dt.lang.toLowerCase() === "rust" || dt.lang === "";
@@ -684,9 +677,10 @@ export function renderDoctestBlock(
   const code = highlightRustCode(dt.display_code);
   const fullCode = highlightRustCode(dt.executable_code);
   const edition = pickEdition(dt.fence_attributes);
-  const playgroundHref = isRust && !dt.fence_attributes.includes("ignore")
-    ? `https://play.rust-lang.org/?code=${encodeURIComponent(dt.executable_code)}&edition=${edition}`
-    : null;
+  const playgroundHref =
+    isRust && !dt.fence_attributes.includes("ignore")
+      ? `https://play.rust-lang.org/?code=${encodeURIComponent(dt.executable_code)}&edition=${edition}`
+      : null;
 
   const runButton = playgroundHref
     ? `<a class="test-arrow rust-doctest-run" href="${escapeAttr(playgroundHref)}" target="_blank" rel="noopener">Run</a>`
@@ -786,7 +780,7 @@ export function renderModulePage(
 ): ModulePageRender {
   const parts: string[] = [];
   if (module.docs_markdown) {
-    parts.push(`<div class="docblock rust-doc">${escapeHtml(module.docs_markdown)}</div>`);
+    parts.push(`<div class="docblock rust-doc">${renderMarkdown(module.docs_markdown)}</div>`);
   }
   const grouped = groupItemsForRendering(items);
   const sidebar: SidebarSection[] = [];

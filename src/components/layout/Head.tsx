@@ -18,7 +18,7 @@ export function Head() {
     : page.kind === "changelog"
       ? (() => {
           const baseTitle = changelogVersion
-            ? `${changelogVersion.version ?? "Unreleased"} — ${page.changelog.title}`
+            ? `${changelogVersion.version ?? "Unreleased"} - ${page.changelog.title}`
             : page.changelog.title;
           return composePageTitle(baseTitle, siteName);
         })()
@@ -102,7 +102,7 @@ export function Head() {
 function composePageTitle(title: string, siteName: string): string {
   if (!siteName) return title;
   if (!title) return siteName;
-  return sameTitle(title, siteName) ? title : `${title} — ${siteName}`;
+  return sameTitle(title, siteName) ? title : `${title} - ${siteName}`;
 }
 
 function sameTitle(left: string, right: string): boolean {

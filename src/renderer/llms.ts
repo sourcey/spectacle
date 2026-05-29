@@ -55,7 +55,7 @@ export function generateLlmsTxt(
       for (const op of spec.operations) {
         if (op.hidden) continue;
         const opLabel = op.summary ?? operationDisplayName(op);
-        const opSummary = [operationKind(op), firstLine(op.description)].filter(Boolean).join(" — ");
+        const opSummary = [operationKind(op), firstLine(op.description)].filter(Boolean).join(" - ");
         lines.push(`- [${opLabel}](${href(page)}#${operationAnchor(op)})${opSummary ? `: ${opSummary}` : ""}`);
       }
     }
@@ -261,7 +261,7 @@ function appendOperation(lines: string[], op: NormalizedOperation): void {
       const type = param.schema
         ? formatSchemaType(param.schema)
         : firstContentSchemaType(param.content);
-      const desc = param.description ? ` — ${firstLine(param.description)}` : "";
+      const desc = param.description ? ` - ${firstLine(param.description)}` : "";
       lines.push(`- \`${param.name}\` (${param.in}, ${type}, ${req})${desc}`);
     }
     lines.push("");

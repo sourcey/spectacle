@@ -2,7 +2,6 @@ import type { ResolvedRustdocConfig } from "../config.js";
 import type { MarkdownPage, PageHeading, PageSearchEntry } from "./markdown-loader.js";
 import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
 import { runIntrospector, RustdocIntrospectorError } from "./rustdoc-introspector.js";
-import { RUSTDOC_DIAGNOSTIC_CODES } from "./rustdoc-types.js";
 import type {
   CrateSpec,
   Doctest,
@@ -11,12 +10,7 @@ import type {
   ModuleSpec,
   RustdocDiagnostic,
 } from "./rustdoc-types.js";
-import {
-  itemAnchor,
-  renderDoctestBlock,
-  renderModulePage,
-  type RenderContext,
-} from "./rustdoc-render.js";
+import { itemAnchor, renderModulePage, type RenderContext } from "./rustdoc-render.js";
 
 export interface RustdocLoaderDiagnostic {
   severity: "error" | "warning" | "info";
@@ -93,7 +87,7 @@ export async function loadRustdocTab(
       for (const d of renderDiagnostics) diagnostics.push(toLoaderDiagnostic(d));
     }
 
-    const indexPage = renderCrateIndexPage(crate, tabSlug);
+    const indexPage = renderCrateIndexPage(crate);
     pages.set(indexPage.slug, indexPage);
 
     for (const item of crateItems.values()) {
@@ -106,7 +100,7 @@ export async function loadRustdocTab(
   }
 
   if (config.doctestsIndex && allDoctests.length > 0) {
-    const dtPage = renderDoctestsIndexPage(allDoctests, tabSlug);
+    const dtPage = renderDoctestsIndexPage(allDoctests);
     pages.set(dtPage.slug, dtPage);
     navGroups.unshift({
       label: "Examples",
@@ -181,7 +175,9 @@ function renderWorkspaceIndexPage(
   const searchEntries: PageSearchEntry[] = [];
   const cards = crates.map((c) => {
     const href = tabRelativeHref(tabSlug, crateIndexSlug(c.name));
-    const version = c.version ? ` <span class="rust-crate-card-version">${escapeHtml(c.version)}</span>` : "";
+    const version = c.version
+      ? ` <span class="rust-crate-card-version">${escapeHtml(c.version)}</span>`
+      : "";
     const items = Object.keys(c.items).length;
     const modules = c.modules.length;
     const summary = `${items} item${items === 1 ? "" : "s"} across ${modules} module${modules === 1 ? "" : "s"}.`;
@@ -212,7 +208,7 @@ function renderWorkspaceIndexPage(
   };
 }
 
-function renderCrateIndexPage(crate: CrateSpec, _tabSlug: string): MarkdownPage {
+function renderCrateIndexPage(crate: CrateSpec): MarkdownPage {
   const slug = crateIndexSlug(crate.name);
   const moduleCount = crate.modules.length;
   const itemCount = Object.keys(crate.items).length;
@@ -233,7 +229,6 @@ function renderCrateIndexPage(crate: CrateSpec, _tabSlug: string): MarkdownPage 
 
 function renderDoctestsIndexPage(
   doctests: Array<{ crate: CrateSpec; item: Item; doctest: Doctest }>,
-  _tabSlug: string,
 ): MarkdownPage {
   const headings: PageHeading[] = [];
   const searchEntries: PageSearchEntry[] = [];

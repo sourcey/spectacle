@@ -14,6 +14,7 @@ import {
 } from "./adapters/index.js";
 import type { MarkdownPreprocessor } from "./core/markdown-loader.js";
 import type { ResolvedTabSource, SourceAdapter } from "./adapters/types.js";
+import { DEFAULT_CODE_SAMPLE_LANGS, SUPPORTED_CODE_SAMPLE_LANGS } from "./utils/code-samples.js";
 
 export type { PrettyUrls } from "./site-url.js";
 
@@ -530,7 +531,7 @@ export async function resolveConfigFromRaw(
     repo: raw.repo,
     editBranch: raw.editBranch,
     editBasePath: raw.editBasePath,
-    codeSamples: raw.codeSamples ?? ["curl", "javascript", "python"],
+    codeSamples: resolveCodeSamples(raw.codeSamples),
     tabs,
     navbar: {
       links: raw.navbar?.links ?? [],
@@ -624,7 +625,7 @@ async function resolveTabs(tabs: TabConfig[], configDir: string): Promise<Resolv
       tab.source,
       tab.openapi,
       tab.mkdocs,
-      tab.groups,
+      tab.groups?.length ? tab.groups : undefined,
       tab.doxygen,
       tab.mcp,
       tab.godoc,
@@ -739,12 +740,23 @@ function resolvePrettyUrls(value: PrettyUrls | undefined): PrettyUrls {
 }
 
 export function hexToRgb(hex: string): string {
-  const h = hex.replace("#", "");
-  if (h.length !== 6) throw new Error(`Invalid hex color: "${hex}"`);
+  const h = hex.replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) throw new Error(`Invalid hex color: "${hex}"`);
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
   return `${r} ${g} ${b}`;
+}
+
+function resolveCodeSamples(value: string[] | undefined): string[] {
+  const langs = value ?? DEFAULT_CODE_SAMPLE_LANGS;
+  const unsupported = langs.filter((lang) => !SUPPORTED_CODE_SAMPLE_LANGS.includes(lang));
+  if (unsupported.length) {
+    throw new Error(
+      `Invalid codeSamples value "${unsupported[0]}". Must be one of: ${SUPPORTED_CODE_SAMPLE_LANGS.join(", ")}`,
+    );
+  }
+  return [...langs];
 }
 
 async function assertExists(filePath: string, label: string): Promise<void> {

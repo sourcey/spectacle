@@ -22,11 +22,11 @@ page aggregates every runnable example across the workspace.
 
 ## Install prerequisites
 
-Live mode requires a nightly Rust toolchain. The adapter pins to
-`nightly-2026-05-15` (bumped per sourcey release).
+Live mode requires a nightly Rust toolchain. By default the adapter uses
+`nightly`; set `toolchain` in config when you need a dated pin.
 
 ```sh
-rustup toolchain install nightly-2026-05-15
+rustup toolchain install nightly
 ```
 
 Snapshot mode requires no Rust toolchain at all. Commit a generated
@@ -158,7 +158,7 @@ per-item `links` map.
 ## First-run compile cost
 
 The bundled Rust helper compiles on first invocation in live mode. Cold
-compile is 30–60 seconds on a fast workstation including `rustdoc-types`,
+compile is 30-60 seconds on a fast workstation including `rustdoc-types`,
 `rustdoc-json`, `serde`, `clap`, and `pulldown-cmark` dependencies.
 Subsequent invocations are near-instant. Snapshot mode skips this entirely.
 

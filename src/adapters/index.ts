@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import type {
   DoxygenSourceOptions,
   GodocSourceOptions,
@@ -65,7 +64,7 @@ export function doxygen(options: DoxygenSourceOptions): SourceAdapter {
   return {
     name: "doxygen",
     async resolve(ctx) {
-      const absXml = ctx.resolvePath(options.xml);
+      const absXml = assertLocalPath(ctx, options.xml, "Doxygen XML directory");
       await ctx.assertExists(
         absXml,
         `Doxygen XML directory "${options.xml}" in tab "${ctx.tabName}"`,
@@ -90,7 +89,7 @@ export function godoc(configOrPath: GodocSourceOptions): SourceAdapter {
     name: "godoc",
     async resolve(ctx) {
       const cfg = typeof configOrPath === "string" ? { module: configOrPath } : configOrPath;
-      const moduleAbs = resolve(ctx.configDir, cfg.module ?? ".");
+      const moduleAbs = assertLocalPath(ctx, cfg.module ?? ".", "Go module directory");
       await ctx.assertExists(
         moduleAbs,
         `Go module directory "${cfg.module ?? "."}" in tab "${ctx.tabName}"`,
@@ -121,7 +120,7 @@ export function rustdoc(configOrPath: RustdocSourceOptions): SourceAdapter {
     name: "rustdoc",
     async resolve(ctx) {
       const cfg = typeof configOrPath === "string" ? { manifest: configOrPath } : configOrPath;
-      const manifestAbs = resolve(ctx.configDir, cfg.manifest ?? ".");
+      const manifestAbs = assertLocalPath(ctx, cfg.manifest ?? ".", "Cargo manifest");
       await ctx.assertExists(
         manifestAbs,
         `Cargo manifest "${cfg.manifest ?? "."}" in tab "${ctx.tabName}"`,

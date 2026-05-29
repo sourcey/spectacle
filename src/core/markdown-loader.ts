@@ -3,6 +3,7 @@ import { basename, extname, relative } from "node:path";
 import { load as parseYaml } from "js-yaml";
 import { normalizeChangelog } from "./changelog-normalizer.js";
 import { htmlId } from "../utils/html-id.js";
+import { escapeAttr, safeUrl } from "../utils/html.js";
 import { renderIcon } from "../utils/icons.js";
 import {
   renderCodeBlock,
@@ -673,8 +674,9 @@ ${body}
 
     const cardHtml = cards
       .map((card) => {
-        const tag = card.attrs.href ? "a" : "div";
-        const href = card.attrs.href ? ` href="${escapeHtmlAttr(card.attrs.href)}"` : "";
+        const safeHref = card.attrs.href ? safeUrl(card.attrs.href) : null;
+        const tag = safeHref ? "a" : "div";
+        const href = safeHref ? ` href="${escapeHtmlAttr(safeHref)}"` : "";
         const iconHtml = renderIcon(card.attrs.icon || "");
         const title = renderMarkdownInline(card.attrs.title || "").trim();
         const body = renderComponentChildrenToHtml(card.children);
@@ -804,7 +806,7 @@ function escapeRegExp(value: string): string {
 }
 
 function escapeHtmlAttr(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  return escapeAttr(value);
 }
 
 function stripDirectiveIndent(line: string): string {
@@ -1114,8 +1116,9 @@ ${body}
   if (type === "card-group") {
     const cols = parseAttrs(meta.match(/^\{([^}]*)\}$/)?.[1] ?? "").cols || "2";
     const cards = splitChildren(content, "card").map((child) => {
-      const tag = child.attrs.href ? "a" : "div";
-      const href = child.attrs.href ? ` href="${escapeHtmlAttr(child.attrs.href)}"` : "";
+      const safeHref = child.attrs.href ? safeUrl(child.attrs.href) : null;
+      const tag = safeHref ? "a" : "div";
+      const href = safeHref ? ` href="${escapeHtmlAttr(safeHref)}"` : "";
       const iconHtml = renderIcon(child.attrs.icon || "");
       const title = renderMarkdownInline(child.attrs.title || "").trim();
       const body = renderDirectiveMarkdown(child.body);

@@ -5,6 +5,10 @@ description: Recent Sourcey releases.
 
 # Changelog
 
+## 3.6.1
+
+Sourcey 3.6.1 added the native rustdoc adapter with nightly live extraction, snapshot mode for stable CI hosts, rustdoc-style deep links, doctest extraction, and workspace-level Rust API pages.
+
 ## 3.6.0
 
 Sourcey 3.6.0 made source adapters the primary tab configuration shape (`source: markdown(...)`, `mkdocs(...)`, `openapi(...)`, `mcp(...)`, `doxygen(...)`, and `godoc(...)`), added MkDocs import for existing `mkdocs.yml` sites, and upgraded generated C++ references with member search, route-mapped source links, examples, modern signatures, inherited members, and relationship sections.

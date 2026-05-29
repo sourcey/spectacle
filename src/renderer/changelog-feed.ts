@@ -1,5 +1,6 @@
 import type { ChangelogPage } from "../core/markdown-loader.js";
 import type { NormalizedChangelogVersion } from "../core/types.js";
+import { renderMarkdownInline } from "../utils/markdown.js";
 
 export interface ChangelogFeedOptions {
   atomPath: string;
@@ -22,29 +23,32 @@ export function generateChangelogFeeds(
   options: ChangelogFeedOptions,
 ): ChangelogFeedFiles {
   const buildDate = options.buildDate ?? new Date();
-  const updated = page.changelog.versions
-    .map((version) => version.date ? new Date(`${version.date}T00:00:00Z`) : null)
-    .find(Boolean) ?? buildDate;
+  const datedVersions = page.changelog.versions
+    .map((version) => (version.date ? new Date(`${version.date}T00:00:00Z`).getTime() : NaN))
+    .filter(Number.isFinite);
+  const updated = datedVersions.length ? new Date(Math.max(...datedVersions)) : buildDate;
   const title = options.title ?? [options.siteName, page.title].filter(Boolean).join(" ").trim();
   const description = options.description ?? page.description ?? `${page.title} feed`;
   const feedId = toFeedId(options.atomPath);
 
-  const atomEntries = page.changelog.versions.map((version) => {
-    const href = options.versionHref(version);
-    const content = renderVersionHtml(version);
-    const updatedAt = version.date ? new Date(`${version.date}T00:00:00Z`) : updated;
-    const label = version.version ?? "Unreleased";
+  const atomEntries = page.changelog.versions
+    .map((version) => {
+      const href = options.versionHref(version);
+      const content = renderVersionHtml(version);
+      const updatedAt = version.date ? new Date(`${version.date}T00:00:00Z`) : updated;
+      const label = version.version ?? "Unreleased";
 
-    return [
-      "  <entry>",
-      `    <title>${escapeXml(label)}</title>`,
-      `    <id>${escapeXml(toFeedId(href))}</id>`,
-      `    <link href="${escapeXml(href)}" />`,
-      `    <updated>${updatedAt.toISOString()}</updated>`,
-      `    <content type="html">${escapeXml(content)}</content>`,
-      "  </entry>",
-    ].join("\n");
-  }).join("\n");
+      return [
+        "  <entry>",
+        `    <title>${escapeXml(label)}</title>`,
+        `    <id>${escapeXml(toFeedId(href))}</id>`,
+        `    <link href="${escapeXml(href)}" />`,
+        `    <updated>${updatedAt.toISOString()}</updated>`,
+        `    <content type="html">${escapeXml(content)}</content>`,
+        "  </entry>",
+      ].join("\n");
+    })
+    .join("\n");
 
   const atom = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -52,30 +56,33 @@ export function generateChangelogFeeds(
     `  <title>${escapeXml(title)}</title>`,
     `  <id>${escapeXml(feedId)}</id>`,
     `  <updated>${updated.toISOString()}</updated>`,
+    `  <author><name>${escapeXml(options.siteName || title)}</name></author>`,
     `  <subtitle>${escapeXml(description)}</subtitle>`,
     `  <link rel="self" href="${escapeXml(options.atomPath)}" />`,
     `  <link href="${escapeXml(options.pagePath)}" />`,
     page.changelog.versions.length ? atomEntries : "",
     `</feed>`,
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-  const rssItems = page.changelog.versions.map((version) => {
-    const href = options.versionHref(version);
-    const label = version.version ?? "Unreleased";
-    const pubDate = version.date
-      ? new Date(`${version.date}T00:00:00Z`)
-      : updated;
+  const rssItems = page.changelog.versions
+    .map((version) => {
+      const href = options.versionHref(version);
+      const label = version.version ?? "Unreleased";
+      const pubDate = version.date ? new Date(`${version.date}T00:00:00Z`) : updated;
 
-    return [
-      "    <item>",
-      `      <title>${escapeXml(label)}</title>`,
-      `      <link>${escapeXml(href)}</link>`,
-      `      <guid>${escapeXml(href)}</guid>`,
-      `      <pubDate>${pubDate.toUTCString()}</pubDate>`,
-      `      <description>${escapeXml(renderVersionHtml(version))}</description>`,
-      "    </item>",
-    ].join("\n");
-  }).join("\n");
+      return [
+        "    <item>",
+        `      <title>${escapeXml(label)}</title>`,
+        `      <link>${escapeXml(href)}</link>`,
+        `      <guid>${escapeXml(href)}</guid>`,
+        `      <pubDate>${pubDate.toUTCString()}</pubDate>`,
+        `      <description>${escapeXml(renderVersionHtml(version))}</description>`,
+        "    </item>",
+      ].join("\n");
+    })
+    .join("\n");
 
   const rss = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -87,17 +94,21 @@ export function generateChangelogFeeds(
     page.changelog.versions.length ? rssItems : "",
     `  </channel>`,
     `</rss>`,
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return { atom, rss };
 }
 
 function renderVersionHtml(version: NormalizedChangelogVersion): string {
-  const summary = version.summary ? `<p>${escapeHtml(version.summary)}</p>` : "";
-  const sections = version.sections.map((section) => {
-    const items = section.entries.map((entry) => `<li>${entry.html}</li>`).join("");
-    return `<section><h3>${escapeHtml(section.label)}</h3><ul>${items}</ul></section>`;
-  }).join("");
+  const summary = version.summary ? `<p>${renderMarkdownInline(version.summary)}</p>` : "";
+  const sections = version.sections
+    .map((section) => {
+      const items = section.entries.map((entry) => `<li>${entry.html}</li>`).join("");
+      return `<section><h3>${escapeHtml(section.label)}</h3><ul>${items}</ul></section>`;
+    })
+    .join("");
 
   return `<article><h2>${escapeHtml(version.version ?? "Unreleased")}</h2>${summary}${sections}</article>`;
 }
@@ -112,10 +123,7 @@ function escapeXml(value: string): string {
 }
 
 function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function toFeedId(value: string): string {

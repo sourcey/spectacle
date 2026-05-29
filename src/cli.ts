@@ -9,7 +9,11 @@ import { runIntrospector, GodocIntrospectorError } from "./core/godoc-introspect
 import { GODOC_SCHEMA_VERSION } from "./core/godoc-types.js";
 import type { GodocSnapshot } from "./core/godoc-types.js";
 import { init } from "./init.js";
-import { formatChangelogDiagnostic, formatGodocDiagnostic } from "./site-assembly.js";
+import {
+  formatChangelogDiagnostic,
+  formatGodocDiagnostic,
+  formatRustdocDiagnostic,
+} from "./site-assembly.js";
 import type { GodocLoaderDiagnostic } from "./core/godoc-loader.js";
 import type { RustdocLoaderDiagnostic } from "./core/rustdoc-loader.js";
 import pkg from "../package.json" with { type: "json" };
@@ -120,7 +124,8 @@ const dev = defineCommand({
     },
     host: {
       type: "string",
-      description: "Address to bind to (e.g. 0.0.0.0 to expose externally; defaults to 127.0.0.1, or $HOST if set)",
+      description:
+        "Address to bind to (e.g. 0.0.0.0 to expose externally; defaults to 127.0.0.1, or $HOST if set)",
       required: false,
     },
     config: {
@@ -137,8 +142,9 @@ const dev = defineCommand({
   },
   async run({ args }) {
     const { startDevServer } = await import("./dev-server.js");
+    const port = parsePort(args.port);
     await startDevServer({
-      port: parseInt(args.port, 10),
+      port,
       host: args.host ?? process.env.HOST,
       config: args.config,
       strictChangelog: args.strictChangelog,
@@ -224,9 +230,15 @@ const godoc = defineCommand({
   },
   async run({ args }) {
     const moduleDir = resolve(process.cwd(), args.module);
-    const patterns = args.packages.split(",").map((p) => p.trim()).filter(Boolean);
+    const patterns = args.packages
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean);
     const exclude = args.exclude
-      ? args.exclude.split(",").map((p) => p.trim()).filter(Boolean)
+      ? args.exclude
+          .split(",")
+          .map((p) => p.trim())
+          .filter(Boolean)
       : [];
     const outputPath = resolve(process.cwd(), args.out);
 
@@ -286,7 +298,8 @@ const main = defineCommand({
   meta: {
     name: "sourcey",
     version: pkg.version,
-    description: "Open source documentation platform for OpenAPI, MCP, Doxygen, godoc, and Markdown",
+    description:
+      "Open source documentation platform for OpenAPI, MCP, Doxygen, godoc, and Markdown",
   },
   subCommands: {
     init,
@@ -294,38 +307,6 @@ const main = defineCommand({
     dev,
     validate,
     godoc,
-  },
-  args: {
-    spec: {
-      type: "positional",
-      description: "Path to an OpenAPI spec (shorthand for 'sourcey build <spec>')",
-      required: false,
-    },
-  },
-  async run({ args, rawArgs }) {
-    if (
-      rawArgs.includes("init") ||
-      rawArgs.includes("build") ||
-      rawArgs.includes("dev") ||
-      rawArgs.includes("validate") ||
-      rawArgs.includes("godoc")
-    ) return;
-
-    if (args.spec) {
-      await build.run!({
-        args: {
-          _: [],
-          spec: args.spec,
-          output: "dist",
-          embed: false,
-          config: undefined as unknown as string,
-          quiet: false,
-          strictChangelog: false,
-        },
-        rawArgs: [],
-        cmd: build,
-      });
-    }
   },
 });
 
@@ -345,12 +326,19 @@ function logGodocDiagnostics(diagnostics: GodocLoaderDiagnostic[]): void {
 function logRustdocDiagnostics(diagnostics: RustdocLoaderDiagnostic[]): void {
   for (const diagnostic of diagnostics) {
     const writer = diagnostic.severity === "error" ? console.error : console.log;
-    const location = diagnostic.file
-      ? ` (${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ""})`
-      : "";
-    const cratePrefix = diagnostic.crate ? `[${diagnostic.crate}] ` : "";
-    writer(`  rustdoc ${diagnostic.severity}: ${cratePrefix}${diagnostic.code}: ${diagnostic.message}${location}`);
+    writer(`  ${formatRustdocDiagnostic(diagnostic)}`);
   }
+}
+
+function parsePort(value: string): number {
+  if (!/^\d+$/.test(value)) {
+    throw new Error(`Invalid port "${value}". Expected an integer from 1 to 65535.`);
+  }
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`Invalid port "${value}". Expected an integer from 1 to 65535.`);
+  }
+  return port;
 }
 
 runMain(main);

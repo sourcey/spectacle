@@ -116,7 +116,7 @@ export function buildSearchIndex(
         for (const heading of page.headings) {
           entries.push({
             title: heading.text,
-            content: `${page.title} — ${heading.text}`,
+            content: `${page.title} - ${heading.text}`,
             url: `${href}#${heading.id}`,
             tab: tabLabel,
             category: "Sections",

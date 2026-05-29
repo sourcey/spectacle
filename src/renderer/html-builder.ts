@@ -10,12 +10,18 @@ import type { AlternateLink, RenderOptions, CurrentPage, SiteConfig } from "./co
 import type { SiteNavigation } from "../core/navigation.js";
 import { withActivePage } from "../core/navigation.js";
 import { isAbsoluteHttpUrl, toAbsoluteUrl, toPublicPath } from "../site-url.js";
+import { escapeHtml as escapeXml } from "../utils/html.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../..");
 
 async function exists(path: string): Promise<boolean> {
-  try { await access(path); return true; } catch { return false; }
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -28,8 +34,8 @@ async function resolveAssetPaths(): Promise<{ clientEntry: string; sourceyCssPat
   const srcCss = resolve(projectRoot, "src/themes/default/sourcey.css");
   const distCss = resolve(projectRoot, "dist/themes/default/sourcey.css");
 
-  const clientEntry = await exists(srcClient) ? srcClient : distClient;
-  const sourceyCssPath = await exists(srcCss) ? srcCss : distCss;
+  const clientEntry = (await exists(srcClient)) ? srcClient : distClient;
+  const sourceyCssPath = (await exists(srcCss)) ? srcCss : distCss;
 
   return { clientEntry, sourceyCssPath };
 }
@@ -138,7 +144,7 @@ export async function buildSite(
   const urls = pages.map((page) => {
     const publicPath = toPublicPath(page.outputPath, site.baseUrl, site.prettyUrls);
     const loc = site.siteUrl ? toAbsoluteUrl(publicPath, site.siteUrl) : publicPath;
-    return `  <url><loc>${loc}</loc></url>`;
+    return `  <url><loc>${escapeXml(loc)}</loc></url>`;
   });
   const sitemap = [
     `<?xml version="1.0" encoding="UTF-8"?>`,

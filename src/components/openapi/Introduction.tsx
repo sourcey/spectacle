@@ -1,5 +1,6 @@
 import { useContext } from "preact/hooks";
 import { SpecContext } from "../../renderer/context.js";
+import { safeUrl } from "../../utils/html.js";
 import { Markdown } from "../ui/Markdown.js";
 
 /**
@@ -9,18 +10,43 @@ import { Markdown } from "../ui/Markdown.js";
 export function Introduction() {
   const spec = useContext(SpecContext);
   const { info, servers } = spec;
+  const termsUrl = info.termsOfService
+    ? safeUrl(info.termsOfService, {
+        allowedProtocols: ["http:", "https:"],
+        allowRelative: false,
+        allowAnchor: false,
+      })
+    : null;
+  const contactEmailUrl = info.contact?.email
+    ? safeUrl(`mailto:${info.contact.email}`, {
+        allowedProtocols: ["mailto:"],
+        allowRelative: false,
+        allowAnchor: false,
+      })
+    : null;
 
   return (
     <div id="introduction" data-traverse-target="introduction" class="mb-8">
-      {info.termsOfService && (
+      {termsUrl && (
         <p class="mt-4 text-sm text-[rgb(var(--color-gray-500))]">
-          <a href={info.termsOfService} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">Terms of Service</a>
+          <a
+            href={termsUrl}
+            class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]"
+          >
+            Terms of Service
+          </a>
         </p>
       )}
 
-      {info.contact?.email && (
+      {info.contact?.email && contactEmailUrl && (
         <p class="mt-2 text-sm text-[rgb(var(--color-gray-500))]">
-          Contact: <a href={`mailto:${info.contact.email}`} class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]">{info.contact.email}</a>
+          Contact:{" "}
+          <a
+            href={contactEmailUrl}
+            class="text-[rgb(var(--color-primary-ink))] dark:text-[rgb(var(--color-primary-light))]"
+          >
+            {info.contact.email}
+          </a>
         </p>
       )}
 
@@ -30,8 +56,13 @@ export function Introduction() {
             Base URL{servers.length > 1 ? "s" : ""}
           </div>
           {servers.map((s, i) => (
-            <div key={i} class={`flex items-baseline gap-3 px-4 py-2 ${i > 0 ? "border-t border-[rgb(var(--color-gray-100))] dark:border-[rgb(var(--color-gray-800))]" : ""}`}>
-              <code class="font-mono text-sm text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-200))]">{s.url}</code>
+            <div
+              key={i}
+              class={`flex items-baseline gap-3 px-4 py-2 ${i > 0 ? "border-t border-[rgb(var(--color-gray-100))] dark:border-[rgb(var(--color-gray-800))]" : ""}`}
+            >
+              <code class="font-mono text-sm text-[rgb(var(--color-gray-800))] dark:text-[rgb(var(--color-gray-200))]">
+                {s.url}
+              </code>
               {s.description && (
                 <span class="text-xs text-[rgb(var(--color-gray-500))]">{s.description}</span>
               )}

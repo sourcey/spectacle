@@ -2,8 +2,7 @@ import { Marked, type Token, type Tokens } from "marked";
 import { highlightCode } from "./highlighter.js";
 import { COPY_ICON_SVG } from "./copy-svg.js";
 import { htmlId } from "./html-id.js";
-
-const MARKDOWN_LINK_RE = /\[((?:`[^`]*`|[^\]])+)\]\(([^)]+)\)/g;
+import { escapeAttr, safeUrl, sanitizeRenderedHtml } from "./html.js";
 
 /**
  * Shared code block renderer used by all markdown rendering.
@@ -35,20 +34,6 @@ function parseDirectiveAttrs(raw: string): Record<string, string> {
   return attrs;
 }
 
-function escAttr(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-}
-
-function requireHttps(url: string): string | null {
-  try {
-    const u = new URL(url);
-    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
-    return u.href;
-  } catch {
-    return null;
-  }
-}
-
 /* ── Video directive ──────────────────────────────────────────────── */
 
 interface VideoToken extends Tokens.Generic {
@@ -58,17 +43,47 @@ interface VideoToken extends Tokens.Generic {
   title: string;
 }
 
-function parseVideoUrl(url: string): { src: string; type: "iframe" | "video"; mime?: string } {
-  // YouTube
-  let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-  if (m) return { src: `https://www.youtube-nocookie.com/embed/${m[1]}`, type: "iframe" };
-  // Vimeo
-  m = url.match(/vimeo\.com\/(\d+)/);
-  if (m) return { src: `https://player.vimeo.com/video/${m[1]}`, type: "iframe" };
-  // Raw video
-  const ext = url.split(".").pop()?.toLowerCase();
+function parseVideoUrl(
+  url: string,
+): { src: string; type: "iframe" | "video"; mime?: string } | null {
+  const webUrl = safeUrl(url, {
+    allowedProtocols: ["http:", "https:"],
+    allowRelative: false,
+    allowAnchor: false,
+  });
+  if (webUrl) {
+    const parsed = new URL(webUrl);
+    const hostname = parsed.hostname.replace(/^www\./, "");
+    if (hostname === "youtube.com" || hostname === "m.youtube.com") {
+      const id = parsed.searchParams.get("v");
+      if (id && /^[\w-]+$/.test(id)) {
+        return { src: `https://www.youtube-nocookie.com/embed/${id}`, type: "iframe" };
+      }
+    }
+    if (hostname === "youtu.be") {
+      const id = parsed.pathname.split("/").filter(Boolean)[0];
+      if (id && /^[\w-]+$/.test(id)) {
+        return { src: `https://www.youtube-nocookie.com/embed/${id}`, type: "iframe" };
+      }
+    }
+    if (hostname === "vimeo.com" || hostname.endsWith(".vimeo.com")) {
+      const id = parsed.pathname
+        .split("/")
+        .filter(Boolean)
+        .find((segment) => /^\d+$/.test(segment));
+      if (id) return { src: `https://player.vimeo.com/video/${id}`, type: "iframe" };
+    }
+  }
+
+  const rawVideoUrl = safeUrl(url, {
+    allowedProtocols: ["http:", "https:"],
+    allowRelative: true,
+    allowAnchor: false,
+  });
+  if (!rawVideoUrl) return null;
+  const ext = rawVideoUrl.split(/[?#]/)[0]?.split(".").pop()?.toLowerCase();
   const mime = ext === "webm" ? "video/webm" : "video/mp4";
-  return { src: url, type: "video", mime };
+  return { src: rawVideoUrl, type: "video", mime };
 }
 
 const videoExtension: import("marked").MarkedExtension = {
@@ -88,15 +103,16 @@ const videoExtension: import("marked").MarkedExtension = {
       renderer(token: Tokens.Generic): string {
         const { url, title } = token as VideoToken;
         const parsed = parseVideoUrl(url);
-        const safeTitle = escAttr(title);
+        if (!parsed) return `<p>[video: invalid URL]</p>\n`;
+        const safeTitle = escapeAttr(title);
         if (parsed.type === "iframe") {
           return `<div class="prose-video not-prose">
-<iframe src="${parsed.src}" title="${safeTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+<iframe src="${escapeAttr(parsed.src)}" title="${safeTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
 </div>\n`;
         }
         return `<div class="prose-video not-prose">
 <video controls preload="metadata" title="${safeTitle}">
-<source src="${parsed.src}" type="${parsed.mime}" />
+<source src="${escapeAttr(parsed.src)}" type="${escapeAttr(parsed.mime ?? "video/mp4")}" />
 </video>
 </div>\n`;
       },
@@ -137,10 +153,14 @@ const iframeExtension: import("marked").MarkedExtension = {
       },
       renderer(token: Tokens.Generic): string {
         const { url, title, height } = token as IframeToken;
-        const safeUrl = requireHttps(url);
-        if (!safeUrl) return `<p>[iframe: invalid URL]</p>\n`;
+        const iframeUrl = safeUrl(url, {
+          allowedProtocols: ["http:", "https:"],
+          allowRelative: false,
+          allowAnchor: false,
+        });
+        if (!iframeUrl) return `<p>[iframe: invalid URL]</p>\n`;
         return `<div class="prose-iframe not-prose" style="height:${height}px">
-<iframe src="${escAttr(safeUrl)}" title="${escAttr(title)}" frameborder="0" loading="lazy" allowfullscreen></iframe>
+<iframe src="${escapeAttr(iframeUrl)}" title="${escapeAttr(title)}" frameborder="0" loading="lazy" allowfullscreen></iframe>
 </div>\n`;
       },
     },
@@ -172,10 +192,12 @@ const marked = new Marked(videoExtension, iframeExtension, {
     },
     link({ href, title, tokens }: Tokens.Link): string {
       const text = this.parser.parseInline(tokens);
-      const titleAttr = title ? ` title="${title}"` : "";
-      const isExternal = href.startsWith("http://") || href.startsWith("https://");
+      const linkUrl = safeUrl(href);
+      if (!linkUrl) return text;
+      const titleAttr = title ? ` title="${escapeAttr(title)}"` : "";
+      const isExternal = linkUrl.startsWith("http://") || linkUrl.startsWith("https://");
       const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : "";
-      return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
+      return `<a href="${escapeAttr(linkUrl)}"${titleAttr}${target}>${text}</a>`;
     },
   },
 });
@@ -234,7 +256,51 @@ export function extractFirstParagraph(input?: string): string {
  */
 export function stripMarkdownLinks(input?: string): string {
   if (!input) return "";
-  return input.replace(MARKDOWN_LINK_RE, "$1");
+  let output = "";
+  let index = 0;
+
+  while (index < input.length) {
+    const isImage = input[index] === "!" && input[index + 1] === "[";
+    const isLink = input[index] === "[";
+    const labelStart = isImage ? index + 2 : isLink ? index + 1 : -1;
+
+    if (labelStart !== -1) {
+      const labelEnd = findMarkdownLabelEnd(input, labelStart);
+      if (labelEnd !== -1 && input[labelEnd + 1] === "(") {
+        const hrefEnd = findMarkdownHrefEnd(input, labelEnd + 2);
+        if (hrefEnd !== -1) {
+          output += input.slice(labelStart, labelEnd);
+          index = hrefEnd + 1;
+          continue;
+        }
+      }
+    }
+
+    output += input[index];
+    index += 1;
+  }
+
+  return output;
+}
+
+function findMarkdownLabelEnd(input: string, start: number): number {
+  let inCode = false;
+  for (let i = start; i < input.length; i += 1) {
+    const char = input[i];
+    if (char === "`") inCode = !inCode;
+    if (char === "\n") return -1;
+    if (char === "]" && !inCode) return i;
+  }
+  return -1;
+}
+
+function findMarkdownHrefEnd(input: string, start: number): number {
+  for (let i = start; i < input.length; i += 1) {
+    const char = input[i];
+    if (char === "\n") return -1;
+    if (char === ")") return i;
+  }
+  return -1;
 }
 
 /**
@@ -242,7 +308,7 @@ export function stripMarkdownLinks(input?: string): string {
  */
 export function renderMarkdown(input?: string): string {
   if (!input) return "";
-  return marked.parse(input, { async: false }) as string;
+  return sanitizeRenderedHtml(marked.parse(input, { async: false }) as string);
 }
 
 /**
@@ -250,5 +316,5 @@ export function renderMarkdown(input?: string): string {
  */
 export function renderMarkdownInline(input?: string): string {
   if (!input) return "";
-  return marked.parseInline(input, { async: false }) as string;
+  return sanitizeRenderedHtml(marked.parseInline(input, { async: false }) as string);
 }

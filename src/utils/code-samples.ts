@@ -21,9 +21,9 @@ type CodeSampleGenerator = (req: RequestInfo) => CodeSample;
 
 const generators: Record<string, CodeSampleGenerator> = {
   curl({ url, method, contentType, body }: RequestInfo): CodeSample {
-    const parts = [`curl -X ${method} '${url}'`];
-    if (contentType) parts.push(`  -H 'Content-Type: ${contentType}'`);
-    if (body) parts.push(`  -d '${indent(body, 2)}'`);
+    const parts = [`curl -X ${method} ${shellSingleQuoted(url)}`];
+    if (contentType) parts.push(`  -H ${shellSingleQuoted(`Content-Type: ${contentType}`)}`);
+    if (body) parts.push(`  -d ${shellSingleQuoted(indent(body, 2))}`);
     return { lang: "bash", label: "cURL", source: parts.join(" \\\n") };
   },
 
@@ -67,7 +67,7 @@ const generators: Record<string, CodeSampleGenerator> = {
   },
 
   go({ url, method, body }: RequestInfo): CodeSample {
-    const lines = ["package main", "", "import (", `  "fmt"`, `  "io"`, `  "net/http"`,];
+    const lines = ["package main", "", "import (", `  "fmt"`, `  "io"`, `  "net/http"`];
     if (body) lines.push(`  "strings"`);
     lines.push(")", "");
     lines.push("func main() {");
@@ -77,7 +77,7 @@ const generators: Record<string, CodeSampleGenerator> = {
     } else {
       lines.push(`  req, _ := http.NewRequest("${method}", "${url}", nil)`);
     }
-    lines.push(`  req.Header.Set("Content-Type", "application/json")`);
+    if (body) lines.push(`  req.Header.Set("Content-Type", "application/json")`);
     lines.push(`  resp, _ := http.DefaultClient.Do(req)`);
     lines.push(`  defer resp.Body.Close()`);
     lines.push(`  data, _ := io.ReadAll(resp.Body)`);
@@ -91,21 +91,26 @@ const generators: Record<string, CodeSampleGenerator> = {
       `require 'net/http'`,
       `require 'json'`,
       ``,
-      `uri = URI('${url}')`,
+      `uri = URI('${rubySingleQuoted(url)}')`,
     ];
     const methodClass = rubyShortcutMethod(method);
     if (methodClass) {
       lines.push(`request = Net::HTTP::${methodClass}.new(uri)`);
-      if (contentType) lines.push(`request['Content-Type'] = '${contentType}'`);
-      if (body) lines.push(`request.body = '${indent(body, 2)}'`);
+      if (contentType) lines.push(`request['Content-Type'] = '${rubySingleQuoted(contentType)}'`);
+      if (body) lines.push(`request.body = '${rubySingleQuoted(indent(body, 2))}'`);
     } else {
-      const headers = contentType ? `{ 'Content-Type' => '${contentType}' }` : "{}";
+      const headers = contentType
+        ? `{ 'Content-Type' => '${rubySingleQuoted(contentType)}' }`
+        : "{}";
       lines.push(
         `request = Net::HTTPGenericRequest.new('${method}', ${body ? "true" : "false"}, true, uri.request_uri, ${headers})`,
       );
-      if (body) lines.push(`request.body = '${indent(body, 2)}'`);
+      if (body) lines.push(`request.body = '${rubySingleQuoted(indent(body, 2))}'`);
     }
-    lines.push(``, `response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }`);
+    lines.push(
+      ``,
+      `response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }`,
+    );
     lines.push(`data = JSON.parse(response.body)`);
     return { lang: "ruby", label: "Ruby", source: lines.join("\n") };
   },
@@ -129,22 +134,26 @@ const generators: Record<string, CodeSampleGenerator> = {
       lines.push(`    .method("${method}", HttpRequest.BodyPublishers.noBody())`);
     }
     lines.push(`    .build();`, ``);
-    lines.push(`HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());`);
+    lines.push(
+      `HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());`,
+    );
     lines.push(`System.out.println(response.body());`);
     return { lang: "java", label: "Java", source: lines.join("\n") };
   },
 
   php({ url, method, contentType, body }: RequestInfo): CodeSample {
-    const lines = [`<?php`, `$ch = curl_init('${url}');`];
+    const lines = [`<?php`, `$ch = curl_init('${phpSingleQuoted(url)}');`];
     lines.push(`curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);`);
     if (method !== "GET") {
-      lines.push(`curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');`);
+      lines.push(`curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${phpSingleQuoted(method)}');`);
     }
     if (contentType) {
-      lines.push(`curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: ${contentType}']);`);
+      lines.push(
+        `curl_setopt($ch, CURLOPT_HTTPHEADER, ['${phpSingleQuoted(`Content-Type: ${contentType}`)}']);`,
+      );
     }
     if (body) {
-      lines.push(`curl_setopt($ch, CURLOPT_POSTFIELDS, '${indent(body, 2)}');`);
+      lines.push(`curl_setopt($ch, CURLOPT_POSTFIELDS, '${phpSingleQuoted(indent(body, 2))}');`);
     }
     lines.push(``, `$response = curl_exec($ch);`, `curl_close($ch);`);
     lines.push(`$data = json_decode($response, true);`);
@@ -180,18 +189,22 @@ const generators: Record<string, CodeSampleGenerator> = {
   },
 
   csharp({ url, method, body }: RequestInfo): CodeSample {
-    const lines = [
-      `using var client = new HttpClient();`,
-      ``,
-    ];
+    const lines = [`using var client = new HttpClient();`, ``];
     const httpMethod = csharpShortcutMethod(method)
       ? `HttpMethod.${method[0] + method.slice(1).toLowerCase()}`
       : `new HttpMethod("${method}")`;
     if (body) {
-      lines.push(`var content = new StringContent("""`, `    ${indent(body, 4)}""", System.Text.Encoding.UTF8, "application/json");`);
-      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}") { Content = content });`);
+      lines.push(
+        `var content = new StringContent("""`,
+        `    ${indent(body, 4)}""", System.Text.Encoding.UTF8, "application/json");`,
+      );
+      lines.push(
+        `var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}") { Content = content });`,
+      );
     } else {
-      lines.push(`var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}"));`);
+      lines.push(
+        `var response = await client.SendAsync(new HttpRequestMessage(${httpMethod}, "${url}"));`,
+      );
     }
     lines.push(`var data = await response.Content.ReadAsStringAsync();`);
     return { lang: "csharp", label: "C#", source: lines.join("\n") };
@@ -200,6 +213,7 @@ const generators: Record<string, CodeSampleGenerator> = {
 
 /** Default languages when none configured. */
 export const DEFAULT_CODE_SAMPLE_LANGS = ["curl", "javascript", "python"];
+export const SUPPORTED_CODE_SAMPLE_LANGS = Object.freeze(Object.keys(generators));
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -224,7 +238,7 @@ export function generateCodeSamples(
   const method = op.method.toUpperCase();
   const hasBody = !!op.requestBody;
   const contentType = hasBody
-    ? Object.keys(op.requestBody!.content)[0] ?? "application/json"
+    ? (Object.keys(op.requestBody!.content)[0] ?? "application/json")
     : undefined;
 
   const bodyExample = hasBody ? getRequestBodyExample(op) : undefined;
@@ -232,9 +246,7 @@ export function generateCodeSamples(
 
   const req: RequestInfo = { url, method, contentType, body };
 
-  return langs
-    .map((lang) => generators[lang]?.(req))
-    .filter((s): s is CodeSample => !!s);
+  return langs.map((lang) => generators[lang]?.(req)).filter((s): s is CodeSample => !!s);
 }
 
 // ---------------------------------------------------------------------------
@@ -287,6 +299,18 @@ function rustShortcutMethod(method: string): boolean {
 
 function csharpShortcutMethod(method: string): boolean {
   return ["GET", "POST", "PUT", "DELETE", "PATCH"].includes(method);
+}
+
+function shellSingleQuoted(value: string): string {
+  return `'${value.replace(/'/g, "'\\''")}'`;
+}
+
+function rubySingleQuoted(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+function phpSingleQuoted(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
 
 /** Indent all lines of a multi-line string except the first. */

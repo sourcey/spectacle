@@ -61,51 +61,31 @@ export function schemaRange(schema: {
   exclusiveMinimum?: number | boolean;
   exclusiveMaximum?: number | boolean;
 }): string | undefined {
-  const parts: string[] = [];
+  let min: { value: number; exclusive: boolean } | undefined;
+  let max: { value: number; exclusive: boolean } | undefined;
 
   if (schema.minimum !== undefined) {
     const exclusive =
-      schema.exclusiveMinimum === true ||
-      typeof schema.exclusiveMinimum === "number";
-    const min =
-      typeof schema.exclusiveMinimum === "number"
-        ? schema.exclusiveMinimum
-        : schema.minimum;
-    parts.push(`${exclusive ? "(" : "["}${min}`);
+      schema.exclusiveMinimum === true || typeof schema.exclusiveMinimum === "number";
+    min = {
+      value: typeof schema.exclusiveMinimum === "number" ? schema.exclusiveMinimum : schema.minimum,
+      exclusive,
+    };
   }
 
   if (schema.maximum !== undefined) {
     const exclusive =
-      schema.exclusiveMaximum === true ||
-      typeof schema.exclusiveMaximum === "number";
-    const max =
-      typeof schema.exclusiveMaximum === "number"
-        ? schema.exclusiveMaximum
-        : schema.maximum;
-    parts.push(`${max}${exclusive ? ")" : "]"}`);
+      schema.exclusiveMaximum === true || typeof schema.exclusiveMaximum === "number";
+    max = {
+      value: typeof schema.exclusiveMaximum === "number" ? schema.exclusiveMaximum : schema.maximum,
+      exclusive,
+    };
   }
 
-  return parts.length === 2 ? parts.join(", ") : undefined;
-}
-
-/** HTTP method color classes for badges */
-export function methodColor(method: string): string {
-  switch (method.toLowerCase()) {
-    case "get":
-      return "bg-emerald-600";
-    case "post":
-      return "bg-blue-600";
-    case "put":
-      return "bg-amber-600";
-    case "delete":
-      return "bg-red-600";
-    case "patch":
-      return "bg-purple-600";
-    case "options":
-      return "bg-gray-500";
-    case "head":
-      return "bg-gray-600";
-    default:
-      return "bg-gray-500";
+  if (min && max) {
+    return `${min.exclusive ? "(" : "["}${min.value}, ${max.value}${max.exclusive ? ")" : "]"}`;
   }
+  if (min) return `${min.exclusive ? ">" : ">="} ${min.value}`;
+  if (max) return `${max.exclusive ? "<" : "<="} ${max.value}`;
+  return undefined;
 }

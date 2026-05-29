@@ -18,6 +18,8 @@ import {
   collectDocsPagesByTab,
   createMinimalSpec,
   enforceChangelogDiagnostics,
+  enforceGodocDiagnostics,
+  enforceRustdocDiagnostics,
 } from "./site-assembly.js";
 
 // ---------------------------------------------------------------------------
@@ -96,6 +98,8 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
   const navigation = buildSiteNavigation(assembled.siteTabs);
 
   enforceChangelogDiagnostics(assembled.changelogDiagnostics, options.strictChangelog);
+  enforceGodocDiagnostics(assembled.godocDiagnostics);
+  enforceRustdocDiagnostics(assembled.rustdocDiagnostics);
 
   const docsPagesByTab = collectDocsPagesByTab(assembled.pageMap, config.tabs);
   const searchIndex = buildSearchIndex(
@@ -123,17 +127,22 @@ export async function buildSiteDocs(options: SiteBuildOptions = {}): Promise<Sit
           const ogMeta = describePageForOg(page, config.name || "API", config.changelog.ogImages);
           if (!ogMeta) return;
 
-          const ogPath = `_og/${page.outputPath.replace(/\.html$/, ".png")}`;
-          const png = await generateOgImage({
-            title: ogMeta.title,
-            description: ogMeta.description,
-            siteName: config.name,
-            theme: config.theme,
-            logo: site.logo?.light,
-          });
+          try {
+            const ogPath = `_og/${page.outputPath.replace(/\.html$/, ".png")}`;
+            const png = await generateOgImage({
+              title: ogMeta.title,
+              description: ogMeta.description,
+              siteName: config.name,
+              theme: config.theme,
+              logo: site.logo?.light,
+            });
 
-          page.ogImagePath = ogPath;
-          ogImages.set(ogPath, png);
+            page.ogImagePath = ogPath;
+            ogImages.set(ogPath, png);
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.warn(`Sourcey: skipping OG image for ${page.outputPath}: ${message}`);
+          }
         }),
       );
     }
@@ -200,7 +209,7 @@ function describePageForOg(
       if (!version) return null;
 
       return {
-        title: `${version.version ?? "Unreleased"} — ${changelog.title}`,
+        title: `${version.version ?? "Unreleased"} - ${changelog.title}`,
         description: version.summary || summarizeVersion(version),
       };
     }

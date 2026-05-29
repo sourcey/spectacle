@@ -6,6 +6,8 @@
  * DOM so deep-links from a rustdoc URL line up with sourcey output.
  */
 
+import { escapeAttr as sharedEscapeAttr, escapeHtml as sharedEscapeHtml } from "../utils/html.js";
+
 export interface ApiStabilityCalloutInput {
   kind: "unstable" | "deprecated" | "portability" | "non_exhaustive" | "must_use";
   since?: string | null;
@@ -130,14 +132,9 @@ export function apiSectionAnchor(input: ApiSectionAnchorInput): string {
 }
 
 export function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+  return sharedEscapeHtml(value);
 }
 
 export function escapeAttr(value: string): string {
-  return escapeHtml(value);
+  return sharedEscapeAttr(value);
 }

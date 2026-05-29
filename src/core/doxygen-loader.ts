@@ -1,6 +1,11 @@
 import { generate } from "moxygen";
 import type { DoxygenIndexStyle, ResolvedDoxygenConfig } from "../config.js";
-import { renderMarkdown, extractHeadings, extractFirstParagraph, stripMarkdownLinks } from "../utils/markdown.js";
+import {
+  renderMarkdown,
+  extractHeadings,
+  extractFirstParagraph,
+  stripMarkdownLinks,
+} from "../utils/markdown.js";
 import type { MarkdownPage } from "./markdown-loader.js";
 import type { SiteTab, SiteNavGroup, SiteNavItem } from "./navigation.js";
 
@@ -44,18 +49,19 @@ export function rewriteGeneratedDoxygenIncludePath(includePath: string): string 
 }
 
 export function rewriteGeneratedDoxygenMarkdown(markdown: string): string {
-  return markdown.replace(/^#include ([<"])([^>\n"]+)([>"])$/gm, (_match, open: string, includePath: string, close: string) => {
-    return `#include ${open}${rewriteGeneratedDoxygenIncludePath(includePath)}${close}`;
-  });
+  return markdown.replace(
+    /^#include ([<"])([^>\n"]+)([>"])$/gm,
+    (_match, open: string, includePath: string, close: string) => {
+      return `#include ${open}${rewriteGeneratedDoxygenIncludePath(includePath)}${close}`;
+    },
+  );
 }
 
 export function rewriteGeneratedDoxygenHref(href: string): string {
   const [path, hash] = href.split("#", 2);
   if (!path.startsWith("api_") || !path.endsWith(".md")) return href;
 
-  const slug = path
-    .slice("api_".length, -".md".length)
-    .replace(/--/g, "-");
+  const slug = path.slice("api_".length, -".md".length).replace(/--/g, "-");
 
   return `${slug}.html${hash ? `#${hash}` : ""}`;
 }
@@ -65,15 +71,21 @@ export function rewriteGeneratedDoxygenHtmlLinks(html: string): string {
     .replace(/href="(api_[^"]+?\.md(?:#[^"]*)?)"/g, (_match, href: string) => {
       return `href="${rewriteGeneratedDoxygenHref(href)}"`;
     })
-    .replace(/<code>\[([^\]]+)\]\((api_[^)]+?\.md(?:#[^)]+)?)\)<\/code>/g, (_match, label: string, href: string) => {
-      return `<a href="${rewriteGeneratedDoxygenHref(href)}"><code>${label}</code></a>`;
-    })
+    .replace(
+      /<code>\[([^\]]+)\]\((api_[^)]+?\.md(?:#[^)]+)?)\)<\/code>/g,
+      (_match, label: string, href: string) => {
+        return `<a href="${rewriteGeneratedDoxygenHref(href)}"><code>${label}</code></a>`;
+      },
+    )
     .replace(/<a href="\[([^\]"]+)\]\([^"]+"><\/a>/g, (_match, label: string) => {
       return `<code>${label}</code>`;
     })
-    .replace(/<a href="([A-Za-z][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)">([^<]+)<\/a>/g, (_match, _href: string, label: string) => {
-      return `<code>${label}</code>`;
-    });
+    .replace(
+      /<a href="([A-Za-z][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)">([^<]+)<\/a>/g,
+      (_match, _href: string, label: string) => {
+        return `<code>${label}</code>`;
+      },
+    );
 }
 
 export async function loadDoxygenTab(
@@ -81,12 +93,18 @@ export async function loadDoxygenTab(
   tabSlug: string,
   tabLabel: string,
 ): Promise<DoxygenResult> {
-  const generated = await generate({
-    directory: config.xml,
-    language: config.language,
-    sourceUrl: config.sourceUrl,
-    quiet: true,
-  });
+  let generated: Awaited<ReturnType<typeof generate>>;
+  try {
+    generated = await generate({
+      directory: config.xml,
+      language: config.language,
+      sourceUrl: config.sourceUrl,
+      quiet: true,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to load Doxygen XML from ${config.xml}: ${message}`);
+  }
 
   const pages = new Map<string, MarkdownPage>();
   const groupMap = new Map<string, GroupEntry[]>();
@@ -135,11 +153,13 @@ export async function loadDoxygenTab(
 
     groups.push({
       label,
-      items: sorted.map((p): SiteNavItem => ({
-        label: p.kind === "group" ? "Overview" : p.title,
-        href: `${tabSlug}/${p.slug}.html`,
-        id: p.slug,
-      })),
+      items: sorted.map(
+        (p): SiteNavItem => ({
+          label: p.kind === "group" ? "Overview" : p.title,
+          href: `${tabSlug}/${p.slug}.html`,
+          id: p.slug,
+        }),
+      ),
     });
   }
 
@@ -254,16 +274,19 @@ function buildRichIndex(
     const typeCount = items.filter((i) => i.kind !== "group" && i.kind !== "namespace").length;
     const href = `${groupEntry.slug}.html`;
     const desc = stripMarkdownLinks(page.description || "");
-    const meta = typeCount > 0
-      ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p>`
-      : "";
+    const meta =
+      typeCount > 0
+        ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p>`
+        : "";
 
     cards.push(
       `<a href="${href}" class="card-item">` +
-      `<div class="card-item-inner">` +
-      `<h3 class="card-item-title">${escHtml(page.title)}</h3>` +
-      (desc ? `<div class="card-item-content"><p>${escHtml(desc)}</p>${meta}</div>` : `<div class="card-item-content">${meta}</div>`) +
-      `</div></a>`,
+        `<div class="card-item-inner">` +
+        `<h3 class="card-item-title">${escHtml(page.title)}</h3>` +
+        (desc
+          ? `<div class="card-item-content"><p>${escHtml(desc)}</p>${meta}</div>`
+          : `<div class="card-item-content">${meta}</div>`) +
+        `</div></a>`,
     );
   }
 
@@ -279,10 +302,10 @@ function buildRichIndex(
 
     cards.push(
       `<a href="${href}" class="card-item">` +
-      `<div class="card-item-inner">` +
-      `<h3 class="card-item-title">${escHtml(key)}</h3>` +
-      `<div class="card-item-content"><p style="margin:0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p></div>` +
-      `</div></a>`,
+        `<div class="card-item-inner">` +
+        `<h3 class="card-item-title">${escHtml(key)}</h3>` +
+        `<div class="card-item-content"><p style="margin:0;font-size:0.8rem;opacity:0.5">${typeCount} type${typeCount !== 1 ? "s" : ""}</p></div>` +
+        `</div></a>`,
     );
   }
 
@@ -325,9 +348,7 @@ function buildStructuredIndex(
 /**
  * Flat: alphabetical list categorized by kind.
  */
-function buildFlatIndex(
-  groupMap: Map<string, GroupEntry[]>,
-): string {
+function buildFlatIndex(groupMap: Map<string, GroupEntry[]>): string {
   const byKind = new Map<string, GroupEntry[]>();
 
   for (const [, items] of groupMap) {
@@ -360,16 +381,26 @@ function lastSegment(name?: string): string | undefined {
 }
 
 function escHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function kindLabel(kind: string): string {
   switch (kind) {
-    case "class": return "Classes";
-    case "struct": return "Structs";
-    case "enum": return "Enums";
-    case "union": return "Unions";
-    case "typedef": return "Type Aliases";
-    default: return kind.charAt(0).toUpperCase() + kind.slice(1) + "s";
+    case "class":
+      return "Classes";
+    case "struct":
+      return "Structs";
+    case "enum":
+      return "Enums";
+    case "union":
+      return "Unions";
+    case "typedef":
+      return "Type Aliases";
+    default:
+      return kind.charAt(0).toUpperCase() + kind.slice(1) + "s";
   }
 }

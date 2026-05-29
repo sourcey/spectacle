@@ -5,15 +5,13 @@ import {
   encodeImplAnchor,
   itemAnchor,
   renderDoctestBadges,
+  renderItemHtml,
+  renderModulePage,
   renderSignature,
   resolveIntraDocLinks,
   __internals,
 } from "../../src/core/rustdoc-render.js";
-import type {
-  CrateSpec,
-  Item,
-  Signature,
-} from "../../src/core/rustdoc-types.js";
+import type { CrateSpec, Item, Signature } from "../../src/core/rustdoc-types.js";
 
 const baseCtx = () => ({
   crate: {
@@ -29,6 +27,7 @@ const baseCtx = () => ({
   externalCrates: new Map(),
   tabSlug: "rust-api",
   sourceLinks: {},
+  diagnostics: [],
 });
 
 function dummySig(opts: { name: string; long?: boolean }): Signature {
@@ -49,10 +48,7 @@ function dummySig(opts: { name: string; long?: boolean }): Signature {
       const tail =
         idx === inputs.length - 1
           ? []
-          : [
-              { kind: "punct" as const, text: "," },
-              { kind: "whitespace" as const },
-            ];
+          : [{ kind: "punct" as const, text: "," }, { kind: "whitespace" as const }];
       return [
         { kind: "punct" as const, text: inp.name },
         { kind: "punct" as const, text: ":" },
@@ -129,10 +125,62 @@ describe("anchor encoder", () => {
   });
 });
 
+describe("item and module rendering", () => {
+  it("emits each item anchor id once", () => {
+    const item: Item = {
+      id: "fn-greet",
+      name: "greet",
+      path: ["basic", "greet"],
+      visibility: { kind: "public" },
+      source: null,
+      docs_markdown: null,
+      doc_aliases: [],
+      deprecation: null,
+      stability: null,
+      feature_gates: [],
+      attrs_structured: [],
+      links: {},
+      inner: {
+        kind: "function",
+        signature: dummySig({ name: "greet" }),
+        generics: { params: [], where_predicates: [] },
+        is_const: false,
+        is_async: false,
+        is_unsafe: false,
+        has_body: true,
+      },
+      doctests: [],
+    };
+
+    const html = renderItemHtml(item, baseCtx());
+    expect(html.match(/id="fn\.greet"/g)).toHaveLength(1);
+  });
+
+  it("renders module docs as markdown", () => {
+    const { html } = renderModulePage(
+      {
+        id: "mod-basic",
+        path: ["basic"],
+        docs_markdown: "# Crate docs\n\nUses **markdown**.",
+        doc_aliases: [],
+        item_ids: [],
+        sub_module_paths: [],
+        source: null,
+      },
+      [],
+      baseCtx(),
+    );
+
+    expect(html).toContain("<h1");
+    expect(html).toContain("<strong>markdown</strong>");
+    expect(html).not.toContain("# Crate docs");
+  });
+});
+
 describe("signature formatter", () => {
   it("renders short signatures inline with code-header class", () => {
     const html = renderSignature(dummySig({ name: "greet" }), baseCtx());
-    expect(html).toContain("class=\"code-header rust-signature\"");
+    expect(html).toContain('class="code-header rust-signature"');
     expect(html).not.toContain("\n    ");
   });
 
@@ -182,8 +230,8 @@ describe("intra-doc link resolver", () => {
       { Widget: { kind: "internal", id: item.id } },
       ctx,
     );
-    expect(html).toContain('struct.Widget');
-    expect(html).toContain('rust-api/');
+    expect(html).toContain("struct.Widget");
+    expect(html).toContain("rust-api/");
     expect(html).toContain('title="unresolved intra-doc link"');
     expect(unresolved).toEqual(["Missing"]);
   });

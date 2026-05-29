@@ -47,7 +47,7 @@ npx sourcey init
 
 ### Sourcey CLI
 
-The full Sourcey binary handles OpenAPI, Doxygen, godoc, MCP, and Markdown sources.
+The full Sourcey binary handles OpenAPI, MCP, Doxygen, godoc, rustdoc, MkDocs, and Markdown sources.
 
 | Path     | Command                                        | Requires          |
 | -------- | ---------------------------------------------- | ----------------- |
@@ -96,7 +96,7 @@ export default defineConfig({
 });
 ```
 
-Each tab has one `source`, usually created with `markdown()`, `mkdocs()`, `openapi()`, `mcp()`, `doxygen()`, or `godoc()`. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`). See [docs/configuration.md](docs/configuration.md) for theme, navbar, footer, logo, and full tab options.
+Each tab has one `source`, usually created with `markdown()`, `mkdocs()`, `openapi()`, `mcp()`, `doxygen()`, `godoc()`, or `rustdoc()`. Pages are referenced by slug (e.g. `"quickstart"` resolves to `quickstart.md`). See [docs/configuration.md](docs/configuration.md) for theme, navbar, footer, logo, and full tab options.
 
 ### Go documentation (godoc)
 

@@ -9,7 +9,7 @@ Sourcey ships through every channel JavaScript, native, and container ecosystems
 
 ## Sourcey CLI
 
-The full Sourcey binary that handles OpenAPI, Doxygen, godoc, MCP, and Markdown sources.
+The full Sourcey binary handles OpenAPI, MCP, Doxygen, godoc, rustdoc, MkDocs, and Markdown sources.
 
 ### npm
 

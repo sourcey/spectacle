@@ -6,7 +6,14 @@
  * search, navigation, themes) works unchanged.
  */
 
-import type { McpSpec, McpTool, McpResource, McpResourceTemplate, McpPrompt, JsonSchema } from "mcp-parser";
+import type {
+  McpSpec,
+  McpTool,
+  McpResource,
+  McpResourceTemplate,
+  McpPrompt,
+  JsonSchema,
+} from "mcp-parser";
 import type {
   NormalizedSpec,
   NormalizedOperation,
@@ -24,28 +31,37 @@ import { generateExample } from "../utils/example-generator.js";
 
 export function normalizeMcpSpec(spec: McpSpec): NormalizedSpec {
   const connectionInfo: McpConnectionInfo = {
-    transport: spec.transport ? {
-      type: spec.transport.type,
-      command: spec.transport.command,
-      args: spec.transport.args,
-      url: spec.transport.url,
-    } : undefined,
+    transport: spec.transport
+      ? {
+          type: spec.transport.type,
+          command: spec.transport.command,
+          args: spec.transport.args,
+          url: spec.transport.url,
+        }
+      : undefined,
     serverName: spec.server.name,
     mcpVersion: spec.mcpVersion,
     capabilities: spec.capabilities as Record<string, unknown> | undefined,
   };
 
   const toolOps = (spec.tools ?? []).map((t: McpTool) => toolToOperation(t, connectionInfo));
-  const resourceOps = (spec.resources ?? []).map((r: McpResource) => resourceToOperation(r, connectionInfo));
-  const templateOps = (spec.resourceTemplates ?? []).map((t: McpResourceTemplate) => resourceTemplateToOperation(t, connectionInfo));
-  const promptOps = (spec.prompts ?? []).map((p: McpPrompt) => promptToOperation(p, connectionInfo));
+  const resourceOps = (spec.resources ?? []).map((r: McpResource) =>
+    resourceToOperation(r, connectionInfo),
+  );
+  const templateOps = (spec.resourceTemplates ?? []).map((t: McpResourceTemplate) =>
+    resourceTemplateToOperation(t, connectionInfo),
+  );
+  const promptOps = (spec.prompts ?? []).map((p: McpPrompt) =>
+    promptToOperation(p, connectionInfo),
+  );
 
   const allOps = [...toolOps, ...resourceOps, ...templateOps, ...promptOps];
 
   // Build tags — only for non-empty groups
   const tags: NormalizedTag[] = [];
   if (toolOps.length) tags.push({ name: "Tools", operations: toolOps });
-  if (resourceOps.length || templateOps.length) tags.push({ name: "Resources", operations: [...resourceOps, ...templateOps] });
+  if (resourceOps.length || templateOps.length)
+    tags.push({ name: "Resources", operations: [...resourceOps, ...templateOps] });
   if (promptOps.length) tags.push({ name: "Prompts", operations: promptOps });
 
   // Shared schema definitions from $defs
@@ -74,18 +90,20 @@ export function normalizeMcpSpec(spec: McpSpec): NormalizedSpec {
 // ── Tool → Operation ──────────────────────────────────────────────────
 
 function toolToOperation(tool: McpTool, connection: McpConnectionInfo): NormalizedOperation {
-  const group = (tool as unknown as Record<string, unknown>)["x-sourcey-group"] as string | undefined;
+  const group = (tool as unknown as Record<string, unknown>)["x-sourcey-group"] as
+    | string
+    | undefined;
   const inputSchema = convertSchema(tool.inputSchema);
   const outputSchema = tool.outputSchema ? convertSchema(tool.outputSchema) : undefined;
 
-  // Flat parameters from top-level inputSchema properties
-  const parameters = flattenInputSchema(tool.inputSchema);
-
-  // Only include requestBody for nested/complex schemas
-  const requestBody = hasNestedProperties(tool.inputSchema) ? {
-    required: true,
-    content: { "application/json": { schema: inputSchema } },
-  } satisfies NormalizedRequestBody : undefined;
+  const emitsRequestBody = hasNestedProperties(tool.inputSchema);
+  const parameters = emitsRequestBody ? [] : flattenInputSchema(tool.inputSchema);
+  const requestBody = emitsRequestBody
+    ? ({
+        required: true,
+        content: { "application/json": { schema: inputSchema } },
+      } satisfies NormalizedRequestBody)
+    : undefined;
 
   return {
     operationId: tool.name,
@@ -102,12 +120,14 @@ function toolToOperation(tool: McpTool, connection: McpConnectionInfo): Normaliz
     codeSamples: generateToolSamples(tool, inputSchema),
     mcpExtras: {
       type: "tool",
-      annotations: tool.annotations ? {
-        readOnlyHint: tool.annotations.readOnlyHint,
-        destructiveHint: tool.annotations.destructiveHint,
-        idempotentHint: tool.annotations.idempotentHint,
-        openWorldHint: tool.annotations.openWorldHint,
-      } : undefined,
+      annotations: tool.annotations
+        ? {
+            readOnlyHint: tool.annotations.readOnlyHint,
+            destructiveHint: tool.annotations.destructiveHint,
+            idempotentHint: tool.annotations.idempotentHint,
+            openWorldHint: tool.annotations.openWorldHint,
+          }
+        : undefined,
       outputSchema,
       connection,
     },
@@ -116,8 +136,13 @@ function toolToOperation(tool: McpTool, connection: McpConnectionInfo): Normaliz
 
 // ── Resource → Operation ──────────────────────────────────────────────
 
-function resourceToOperation(resource: McpResource, connection: McpConnectionInfo): NormalizedOperation {
-  const group = (resource as unknown as Record<string, unknown>)["x-sourcey-group"] as string | undefined;
+function resourceToOperation(
+  resource: McpResource,
+  connection: McpConnectionInfo,
+): NormalizedOperation {
+  const group = (resource as unknown as Record<string, unknown>)["x-sourcey-group"] as
+    | string
+    | undefined;
 
   return {
     operationId: slugify(resource.name),
@@ -140,8 +165,13 @@ function resourceToOperation(resource: McpResource, connection: McpConnectionInf
 
 // ── Resource Template → Operation ─────────────────────────────────────
 
-function resourceTemplateToOperation(template: McpResourceTemplate, connection: McpConnectionInfo): NormalizedOperation {
-  const group = (template as unknown as Record<string, unknown>)["x-sourcey-group"] as string | undefined;
+function resourceTemplateToOperation(
+  template: McpResourceTemplate,
+  connection: McpConnectionInfo,
+): NormalizedOperation {
+  const group = (template as unknown as Record<string, unknown>)["x-sourcey-group"] as
+    | string
+    | undefined;
 
   return {
     operationId: slugify(template.name),
@@ -165,9 +195,11 @@ function resourceTemplateToOperation(template: McpResourceTemplate, connection: 
 // ── Prompt → Operation ────────────────────────────────────────────────
 
 function promptToOperation(prompt: McpPrompt, connection: McpConnectionInfo): NormalizedOperation {
-  const group = (prompt as unknown as Record<string, unknown>)["x-sourcey-group"] as string | undefined;
+  const group = (prompt as unknown as Record<string, unknown>)["x-sourcey-group"] as
+    | string
+    | undefined;
 
-  const parameters: NormalizedParameter[] = (prompt.arguments ?? []).map(arg => ({
+  const parameters: NormalizedParameter[] = (prompt.arguments ?? []).map((arg) => ({
     name: arg.name,
     in: "argument" as const,
     description: arg.description,
@@ -217,18 +249,20 @@ function convertSchema(schema: JsonSchema, name?: string): NormalizedSchema {
     }
   }
   if (schema.additionalProperties !== undefined) {
-    result.additionalProperties = typeof schema.additionalProperties === "boolean"
-      ? schema.additionalProperties
-      : convertSchema(schema.additionalProperties);
+    result.additionalProperties =
+      typeof schema.additionalProperties === "boolean"
+        ? schema.additionalProperties
+        : convertSchema(schema.additionalProperties);
   }
   if (schema.required) result.required = schema.required;
 
   // Array — handle JsonSchema.items being JsonSchema | JsonSchema[]
   if (schema.items) {
     if (Array.isArray(schema.items)) {
-      result.items = schema.items.length === 1
-        ? convertSchema(schema.items[0])
-        : { oneOf: schema.items.map(s => convertSchema(s)) };
+      result.items =
+        schema.items.length === 1
+          ? convertSchema(schema.items[0])
+          : { oneOf: schema.items.map((s) => convertSchema(s)) };
     } else {
       result.items = convertSchema(schema.items);
     }
@@ -282,7 +316,13 @@ function hasNestedProperties(schema: JsonSchema): boolean {
   if (!schema.properties) return false;
   return Object.values(schema.properties).some((prop: JsonSchema) => {
     if (prop.type === "object" && prop.properties) return true;
-    if (prop.type === "array" && prop.items && !Array.isArray(prop.items) && (prop.items as JsonSchema).type === "object") return true;
+    if (
+      prop.type === "array" &&
+      prop.items &&
+      !Array.isArray(prop.items) &&
+      (prop.items as JsonSchema).type === "object"
+    )
+      return true;
     if (prop.allOf || prop.anyOf || prop.oneOf) return true;
     return false;
   });
@@ -291,7 +331,7 @@ function hasNestedProperties(schema: JsonSchema): boolean {
 function extractUriTemplateParams(uriTemplate: string): NormalizedParameter[] {
   const matches = uriTemplate.match(/\{([^}]+)\}/g);
   if (!matches) return [];
-  return matches.map(m => ({
+  return matches.map((m) => ({
     name: m.slice(1, -1),
     in: "path" as const,
     required: true,
@@ -307,11 +347,12 @@ function slugify(name: string): string {
 // ── Code sample generation ────────────────────────────────────────────
 
 function generateToolSamples(tool: McpTool, inputSchema: NormalizedSchema): CodeSample[] {
-  const example = inputSchema.properties
-    ? generateExample(inputSchema)
-    : {};
+  const example = inputSchema.properties ? generateExample(inputSchema) : {};
   const exampleJson = JSON.stringify(example, null, 2);
-  const indented = exampleJson.split("\n").map((line, i) => i === 0 ? line : "      " + line).join("\n");
+  const indented = exampleJson
+    .split("\n")
+    .map((line, i) => (i === 0 ? line : "      " + line))
+    .join("\n");
 
   return [
     {
@@ -366,12 +407,15 @@ function generateResourceSamples(resource: { uri: string; name: string }): CodeS
 }
 
 function generatePromptSamples(prompt: McpPrompt): CodeSample[] {
-  const args = (prompt.arguments ?? []);
+  const args = prompt.arguments ?? [];
   const exampleArgs = Object.fromEntries(
     args.map((a: { name: string }) => [a.name, `<${a.name}>`]),
   );
   const argsJson = JSON.stringify(exampleArgs, null, 2);
-  const indented = argsJson.split("\n").map((line, i) => i === 0 ? line : "      " + line).join("\n");
+  const indented = argsJson
+    .split("\n")
+    .map((line, i) => (i === 0 ? line : "      " + line))
+    .join("\n");
 
   const tsArgs = args.map((a: { name: string }) => `  ${a.name}: "<${a.name}>",`).join("\n");
   const pyArgs = args.map((a: { name: string }) => `    "${a.name}": "<${a.name}>",`).join("\n");

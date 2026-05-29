@@ -1,7 +1,7 @@
 {
   "name": "sourcey",
   "version": "3.6.1",
-  "description": "Precision documentation from OpenAPI, MCP, Doxygen, godoc, and Markdown. Static HTML you own.",
+  "description": "Precision documentation from OpenAPI, MCP, Doxygen, godoc, rustdoc, and Markdown. Static HTML you own.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -37,7 +37,6 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^13.0.5",
     "@preact/preset-vite": "^2.10.4",
-    "@readme/openapi-parser": "^4.0.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
@@ -50,6 +49,7 @@
     "moxygen": "^2.1.8",
     "preact": "^10.28.4",
     "preact-render-to-string": "^6.6.6",
+    "sanitize-html": "^2.17.4",
     "satori": "^0.26.0",
     "shiki": "^4.0.2",
     "swagger2openapi": "^7.0.8",
@@ -57,8 +57,10 @@
     "vite": "^8.0.9"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.19.15",
+    "@types/sanitize-html": "^2.16.1",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.0.0",
     "prettier": "^3.4.0",
@@ -78,9 +80,12 @@
     "developer-documentation",
     "doxygen",
     "godoc",
+    "rustdoc",
     "golang",
+    "rust",
     "go-docs",
     "go-documentation",
+    "rust-docs",
     "mcp",
     "llms-txt",
     "static-docs"

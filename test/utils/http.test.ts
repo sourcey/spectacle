@@ -19,21 +19,22 @@ describe("schemaRange", () => {
   });
 
   it("handles exclusive minimum (boolean)", () => {
-    expect(
-      schemaRange({ minimum: 0, maximum: 100, exclusiveMinimum: true }),
-    ).toBe("(0, 100]");
+    expect(schemaRange({ minimum: 0, maximum: 100, exclusiveMinimum: true })).toBe("(0, 100]");
   });
 
   it("handles exclusive maximum (boolean)", () => {
-    expect(
-      schemaRange({ minimum: 0, maximum: 100, exclusiveMaximum: true }),
-    ).toBe("[0, 100)");
+    expect(schemaRange({ minimum: 0, maximum: 100, exclusiveMaximum: true })).toBe("[0, 100)");
   });
 
   it("handles exclusive minimum (number, OpenAPI 3.1)", () => {
-    expect(
-      schemaRange({ minimum: 0, maximum: 100, exclusiveMinimum: 0 }),
-    ).toBe("(0, 100]");
+    expect(schemaRange({ minimum: 0, maximum: 100, exclusiveMinimum: 0 })).toBe("(0, 100]");
+  });
+
+  it("formats one-sided minimum and maximum constraints", () => {
+    expect(schemaRange({ minimum: 1 })).toBe(">= 1");
+    expect(schemaRange({ minimum: 1, exclusiveMinimum: true })).toBe("> 1");
+    expect(schemaRange({ maximum: 10 })).toBe("<= 10");
+    expect(schemaRange({ maximum: 10, exclusiveMaximum: true })).toBe("< 10");
   });
 
   it("returns undefined when no range", () => {
