@@ -11,6 +11,7 @@ import type {
   RustdocDiagnostic,
 } from "./rustdoc-types.js";
 import { itemAnchor, renderModulePage, type RenderContext } from "./rustdoc-render.js";
+import { renderCodeBlock } from "../utils/markdown.js";
 
 export interface RustdocLoaderDiagnostic {
   severity: "error" | "warning" | "info";
@@ -87,7 +88,7 @@ export async function loadRustdocTab(
       for (const d of renderDiagnostics) diagnostics.push(toLoaderDiagnostic(d));
     }
 
-    const indexPage = renderCrateIndexPage(crate);
+    const indexPage = renderCrateIndexPage(crate, tabSlug);
     pages.set(indexPage.slug, indexPage);
 
     for (const item of crateItems.values()) {
@@ -175,12 +176,12 @@ function renderWorkspaceIndexPage(
   const searchEntries: PageSearchEntry[] = [];
   const cards = crates.map((c) => {
     const href = tabRelativeHref(tabSlug, crateIndexSlug(c.name));
-    const version = c.version
-      ? ` <span class="rust-crate-card-version">${escapeHtml(c.version)}</span>`
-      : "";
     const items = Object.keys(c.items).length;
     const modules = c.modules.length;
     const summary = `${items} item${items === 1 ? "" : "s"} across ${modules} module${modules === 1 ? "" : "s"}.`;
+    const version = c.version
+      ? `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">v${escapeHtml(c.version)}</p>`
+      : "";
     headings.push({ id: crateIndexSlug(c.name), text: c.name, level: 3 });
     searchEntries.push({
       title: c.name,
@@ -190,39 +191,61 @@ function renderWorkspaceIndexPage(
       qualifiedName: c.name,
     });
     return (
-      `<a class="rust-crate-card api-card" href="${escapeHtml(href)}" id="${crateIndexSlug(c.name)}">` +
-      `<h3 class="rust-crate-card-title">${escapeHtml(c.name)}${version}</h3>` +
-      `<p class="rust-crate-card-summary">${escapeHtml(summary)}</p>` +
-      `</a>`
+      `<a class="card-item" href="${escapeHtml(href)}" id="${crateIndexSlug(c.name)}">` +
+      `<div class="card-item-inner">` +
+      `<h3 class="card-item-title">${escapeHtml(c.name)}</h3>` +
+      `<div class="card-item-content"><p>${escapeHtml(summary)}</p>${version}</div>` +
+      `</div></a>`
     );
   });
+  const cols = cards.length <= 2 ? "2" : "3";
   return {
     kind: "markdown",
     title: tabLabel,
     description: `Rust API across ${crates.length} crate${crates.length === 1 ? "" : "s"}.`,
     slug: "index",
-    html: `<section class="rust-workspace-index"><div class="rust-crate-cards">${cards.join("\n")}</div></section>`,
+    html: `<div class="card-group not-prose" data-cols="${cols}">\n${cards.join("\n")}\n</div>`,
     headings,
     sourcePath: `rustdoc/index.md`,
     searchEntries,
   };
 }
 
-function renderCrateIndexPage(crate: CrateSpec): MarkdownPage {
+function renderCrateIndexPage(crate: CrateSpec, tabSlug: string): MarkdownPage {
   const slug = crateIndexSlug(crate.name);
   const moduleCount = crate.modules.length;
   const itemCount = Object.keys(crate.items).length;
   const description = `Rust API for ${crate.name} (${itemCount} items across ${moduleCount} modules).`;
+  const headings: PageHeading[] = [];
+  const cards = [...crate.modules]
+    .sort((a, b) => a.path.join("::").localeCompare(b.path.join("::")))
+    .map((m) => {
+      const mSlug = moduleSlug(crate.name, m.path);
+      const href = tabRelativeHref(tabSlug, mSlug);
+      const label = m.path.length === 0 ? `${crate.name} (root)` : m.path.join("::");
+      const count = m.item_ids.length;
+      const lead = firstLine(m.docs_markdown);
+      const meta = `<p style="margin:0.5rem 0 0;font-size:0.8rem;opacity:0.5">${count} item${count === 1 ? "" : "s"}</p>`;
+      headings.push({ id: mSlug, text: label, level: 3 });
+      return (
+        `<a class="card-item" href="${escapeHtml(href)}" id="${mSlug}">` +
+        `<div class="card-item-inner">` +
+        `<h3 class="card-item-title">${escapeHtml(label)}</h3>` +
+        `<div class="card-item-content">${lead ? `<p>${escapeHtml(lead)}</p>` : ""}${meta}</div>` +
+        `</div></a>`
+      );
+    });
   const html =
-    `<section class="rust-crate-index"><h1>${escapeHtml(crate.name)}</h1>` +
-    `<p>${escapeHtml(description)}</p></section>`;
+    cards.length === 0
+      ? `<p>${escapeHtml(description)}</p>`
+      : `<div class="card-group not-prose" data-cols="${cards.length <= 2 ? "2" : "3"}">\n${cards.join("\n")}\n</div>`;
   return {
     kind: "markdown",
     title: crate.name,
     description,
     slug,
     html,
-    headings: [],
+    headings,
     sourcePath: `rustdoc/${slug}.md`,
   };
 }
@@ -252,7 +275,7 @@ function renderDoctestsIndexPage(
     parts.push(
       `<section class="rust-doctest" id="${anchor}"><h3>${escapeHtml(parentPath)}</h3>` +
         renderDoctestBadges(doctest) +
-        renderCodeBlockPlaceholder(doctest.display_code) +
+        renderCodeBlock(doctest.display_code, "rust") +
         `</section>`,
     );
   }
@@ -512,10 +535,6 @@ function renderDoctestBadges(dt: Doctest): string {
     .map((a) => `<span class="rust-doctest-badge">${escapeHtml(a)}</span>`)
     .join(" ");
   return `<div class="rust-doctest-badges">${badges}</div>`;
-}
-
-function renderCodeBlockPlaceholder(code: string): string {
-  return `<pre class="rust rust-example-rendered"><code>${escapeHtml(code)}</code></pre>`;
 }
 
 // Search-category sentinel constants so ac2_5 can grep for "rust function"

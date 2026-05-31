@@ -428,9 +428,15 @@ function formatRustItemForLlms(inner: string, kind: string): string {
     /<div class="docblock[^"]*"[^>]*>([\s\S]*?)<\/div>/,
   );
   const docText = docMatch ? stripHtml(docMatch[1]) : "";
+  // The visible doctest renders through the shared Shiki code block. Match the
+  // `rust-doctest-code` wrapper (exact class, so the hidden `-full` variant is
+  // skipped), pull the inner Shiki <code>, then strip span tags while keeping
+  // line breaks so the extracted code stays readable.
   const doctests = Array.from(
-    inner.matchAll(/<pre class="rust rust-example-rendered"><code[^>]*>([\s\S]*?)<\/code><\/pre>/g),
-  ).map((m) => decodeEntities(m[1]).trim());
+    inner.matchAll(
+      /<div class="rust-doctest-code" id="[^"]*">[\s\S]*?<pre class="shiki[^"]*"[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>/g,
+    ),
+  ).map((m) => decodeEntities(m[1].replace(/<[^>]+>/g, "")).replace(/\n{3,}/g, "\n\n").trimEnd());
   const out: string[] = [];
   if (title) out.push(`#### ${kind}: ${title}`);
   if (docText) out.push(docText);

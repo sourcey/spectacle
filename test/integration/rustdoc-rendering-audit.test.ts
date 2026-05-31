@@ -25,21 +25,36 @@ function snapshotConfig(): ResolvedRustdocConfig {
   };
 }
 
+// Sourcey-native output: items render inline as sourcey sections, code flows
+// through the shared Shiki block, and the only collapsible is the trait-impl
+// list. We assert that shape, not a copy of rustdoc's DOM.
 const baseChecks = [
-  { name: "code-header class", pattern: /class="code-header rust-signature"/ },
-  { name: "doctest example-wrap", pattern: /class="rust-doctest example-wrap api-doctest"/ },
+  { name: "code-header signature", pattern: /class="code-header rust-signature"/ },
+  { name: "doctest container", pattern: /class="rust-doctest api-doctest"/ },
   { name: "section anchor §", pattern: /class="anchor api-anchor"/ },
   { name: "rust-item section", pattern: /class="rust-item rust-/ },
   { name: "rust-doc docblock", pattern: /class="docblock rust-doc"/ },
-  { name: "method-toggle details", pattern: /class="toggle method-toggle api-method-toggle"/ },
+  { name: "inline impl member", pattern: /class="rust-member api-member"/ },
+  { name: "trait-impl collapsible", pattern: /class="api-toggle api-impl-toggle"/ },
   { name: "rightside item-info row", pattern: /class="rightside api-rightside"/ },
 ];
 
 const doctestChecks = [
   { name: "hidden-line toggle", pattern: /rust-doctest-toggle-hidden/ },
   { name: "run button", pattern: /class="test-arrow rust-doctest-run"/ },
-  { name: "copy button", pattern: /class="rust-doctest-copy"/ },
+  { name: "shared shiki code block", pattern: /class="prose-code-block not-prose"/ },
+  { name: "shiki highlighting", pattern: /class="shiki/ },
   { name: "fence badges container", pattern: /class="rust-doctest-badges"/ },
+];
+
+// The old build mirrored rustdoc's DOM and never styled it. None of this markup
+// should survive the sourcey-native rebuild.
+const regressionChecks = [
+  { name: "unstyled hideme summary", pattern: /hideme/ },
+  { name: "bespoke grey code block", pattern: /rust-example-rendered/ },
+  { name: "per-item method toggle", pattern: /api-method-toggle|method-toggle/ },
+  { name: "rustdoc-mirror implementors toggle", pattern: /implementors-toggle/ },
+  { name: "bespoke index cards", pattern: /rust-crate-card|rust-workspace-index/ },
 ];
 
 async function loadResult() {
@@ -65,17 +80,25 @@ describe("rustdoc rendering audit", () => {
     }
   });
 
-  it("renders doctest hidden-line toggle, fence badges, run, and copy controls", async () => {
+  it("renders doctests through the shared Shiki code block with run + hidden-line controls", async () => {
     const html = await concatenatedHtml();
     for (const check of doctestChecks) {
       expect(html, `missing doctest element: ${check.name}`).toMatch(check.pattern);
     }
   });
 
-  it("emits a real workspace index page (not the empty fallback)", async () => {
+  it("emits no leftover rustdoc-mirror markup", async () => {
+    const html = await concatenatedHtml();
+    for (const check of regressionChecks) {
+      expect(html, `leftover rustdoc-mirror markup: ${check.name}`).not.toMatch(check.pattern);
+    }
+  });
+
+  it("emits a real workspace index page using shared cards (not the empty fallback)", async () => {
     const result = await loadResult();
     const index = result.pages.get("index")!;
-    expect(index.html).toContain("rust-workspace-index");
+    expect(index.html).toContain("card-group not-prose");
+    expect(index.html).toContain("card-item");
     expect(index.html).not.toContain("No documented crates.");
   });
 

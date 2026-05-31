@@ -1,24 +1,18 @@
 /**
  * Rustdoc-grade rendering for the sourcey rustdoc adapter.
  *
- * Implements the must-have set from the rendering catalog:
- * - multi-line signature formatter
- * - URL-encoded parametric anchor encoder
- * - intra-doc link resolver against `Item.links`
- * - per-impl / per-method `<details>` wrappers
- * - sidebar groupings
- * - rustdoc-style anchors (#method.<name>, #impl-Trait-for-Type%3CK%3E)
- *
- * Class names mirror rustdoc's DOM so deep-links from a rustdoc URL line up
- * with sourcey output (see `.scafld/specs/active/rustdoc-adapter-3-6-1.md` for
- * the anchor algorithm contract).
+ * Renders sourcey-native output (the same look as the godoc/doxygen/openapi
+ * adapters), not a copy of rustdoc's own DOM. Items render inline as sourcey
+ * sections; the only collapsible is the trait-implementor list. Code blocks go
+ * through sourcey's shared Shiki pipeline. Anchors still follow rustdoc's
+ * scheme (#method.<name>, #impl-Trait-for-Type%3CK%3E) so inbound deep-links
+ * from a rustdoc URL keep working.
  */
 
-import { renderMarkdown } from "../utils/markdown.js";
+import { renderMarkdown, renderCodeBlock } from "../utils/markdown.js";
 import {
   apiImplToggle,
   apiItemInfoRow,
-  apiMethodToggle,
   apiSectionAnchor,
   apiStabilityCallout,
   apiSymbolLink,
@@ -470,14 +464,21 @@ function renderItemImpls(item: Item, ctx: RenderContext): string {
   const traitOwnMembers = renderTraitOwnMembers(item, ctx);
   const implIds = collectImplIds(item);
   if (implIds.length === 0 && !traitOwnMembers) return "";
-  const blocks: string[] = [];
-  if (traitOwnMembers) blocks.push(traitOwnMembers);
+
+  // Inherent impls render inline (they carry the type's own API). Trait impls
+  // can be numerous and are mostly boilerplate, so they collapse behind one
+  // styled toggle each, default closed.
+  const inherent: string[] = [];
+  const traitImpls: string[] = [];
+  const traitRows: string[] = [];
+
   for (const implId of implIds) {
     const impl = ctx.itemsById.get(implId);
     if (!impl || impl.inner.kind !== "impl") continue;
     const traitName = impl.inner.trait_path?.display;
     const forName = impl.inner.for_type.display;
     const header = traitName ? `impl ${traitName} for ${forName}` : `impl ${forName}`;
+    const implAnchorId = itemAnchor(impl);
     const providedMethods = new Set(impl.inner.provided_trait_methods);
     const methodSections = impl.inner.items
       .map((mid) => ctx.itemsById.get(mid))
@@ -491,26 +492,54 @@ function renderItemImpls(item: Item, ctx: RenderContext): string {
       })
       .filter(Boolean)
       .join("\n");
-    if (!methodSections) continue;
-    const implAnchorId = itemAnchor(impl);
-    blocks.push(
-      apiImplToggle({
-        summary: `<h3 class="code-header rust-impl-header" id="${escapeAttr(implAnchorId)}"><code>${escapeHtml(
-          header,
-        )}</code></h3>`,
-        body: methodSections,
+    // No <code> child: `.code-header` gives the mono font, and a bare <code>
+    // inside the prose container would render with backtick pseudo-elements.
+    const implHeader = `<h3 class="code-header rust-impl-header" id="${escapeAttr(
+      implAnchorId,
+    )}">${escapeHtml(header)}</h3>`;
+
+    if (traitName) {
+      if (methodSections) {
+        // Substantive trait impls collapse behind a chevron.
+        traitImpls.push(apiImplToggle({ open: false, summary: implHeader, body: methodSections }));
+      } else {
+        // Marker / auto / blanket traits (Send, Sync, From, …) carry no methods.
+        // Render them as a quiet, non-expandable row rather than an empty
+        // collapsible that opens onto nothing.
+        traitRows.push(`<div class="rust-impl-row">${implHeader}</div>`);
+      }
+    } else if (methodSections) {
+      inherent.push(implHeader + methodSections);
+    }
+  }
+
+  const parts: string[] = [];
+  if (traitOwnMembers) parts.push(traitOwnMembers);
+  if (inherent.length > 0) {
+    parts.push(
+      apiSectionAnchor({
+        level: 3,
+        id: `impls-for-${itemAnchor(item)}`,
+        text: "Implementations",
+        className: "rust-impls-header",
       }),
     );
+    parts.push(inherent.join("\n"));
   }
-  if (blocks.length === 0) return "";
-  return (
-    apiSectionAnchor({
-      level: 3,
-      id: `impls-for-${itemAnchor(item)}`,
-      text: "Implementations",
-      className: "rust-impls-header",
-    }) + blocks.join("\n")
-  );
+  if (traitImpls.length > 0 || traitRows.length > 0) {
+    parts.push(
+      apiSectionAnchor({
+        level: 3,
+        id: `trait-impls-for-${itemAnchor(item)}`,
+        text: "Trait Implementations",
+        className: "rust-impls-header",
+      }),
+    );
+    if (traitImpls.length > 0) parts.push(traitImpls.join("\n"));
+    if (traitRows.length > 0) parts.push(`<div class="rust-impl-rows">${traitRows.join("\n")}</div>`);
+  }
+  if (parts.length === 0) return "";
+  return parts.join("\n");
 }
 
 function renderTraitOwnMembers(item: Item, ctx: RenderContext): string {
@@ -597,12 +626,20 @@ function renderImplMember(member: Item, ctx: RenderContext, isRequiredTraitMetho
   const docs = renderItemDocs(member, ctx);
   const doctests = member.doctests.map((dt, idx) => renderDoctestBlock(member, dt, idx)).join("\n");
   const infoRow = renderItemInfoRow(member, ctx);
-  return apiMethodToggle({
-    summary: `<h4 class="code-header rust-method-header" id="${escapeAttr(anchor)}"><code>${escapeHtml(
+  const body = [
+    infoRow,
+    `<h4 class="code-header rust-method-header" id="${escapeAttr(anchor)}">${escapeHtml(
       member.name ?? "",
-    )}</code></h4>`,
-    body: [infoRow, sigHtml, callouts, docs, doctests].filter(Boolean).join("\n"),
-  });
+    )}</h4>`,
+    sigHtml,
+    callouts,
+    docs,
+    doctests,
+  ]
+    .filter(Boolean)
+    .join("\n");
+  if (!body) return "";
+  return `<section class="rust-member api-member">${body}</section>`;
 }
 
 function renderItemDocs(item: Item, ctx: RenderContext): string {
@@ -628,9 +665,12 @@ function renderItemSignature(item: Item, ctx: RenderContext): string {
   }
   const fallback = fallbackSignatureText(item);
   if (!fallback) return "";
-  return `<pre class="code-header rust-signature rust-signature-fallback"><code>${escapeHtml(
+  // A <div>, not <pre><code>: inside the page's prose container a bare <pre>
+  // picks up the dark fenced-code-block treatment and a <code> gets backtick
+  // pseudo-elements. `.code-header` already supplies the mono font + wrapping.
+  return `<div class="code-header rust-signature rust-signature-fallback">${escapeHtml(
     fallback,
-  )}</code></pre>`;
+  )}</div>`;
 }
 
 function fallbackSignatureText(item: Item): string | null {
@@ -672,10 +712,9 @@ export function renderDoctestBlock(
 ): string {
   const anchor = `doctest-${itemAnchor(parent)}-${idx}`;
   const isRust = dt.lang.toLowerCase() === "rust" || dt.lang === "";
+  const lang = isRust ? "rust" : dt.lang || "text";
   const badges = renderDoctestBadges(dt);
   const hasHidden = dt.display_code !== dt.executable_code;
-  const code = highlightRustCode(dt.display_code);
-  const fullCode = highlightRustCode(dt.executable_code);
   const edition = pickEdition(dt.fence_attributes);
   const playgroundHref =
     isRust && !dt.fence_attributes.includes("ignore")
@@ -685,19 +724,25 @@ export function renderDoctestBlock(
   const runButton = playgroundHref
     ? `<a class="test-arrow rust-doctest-run" href="${escapeAttr(playgroundHref)}" target="_blank" rel="noopener">Run</a>`
     : "";
-  const copyButton = `<button class="rust-doctest-copy" type="button" data-clipboard-target="#${anchor}-code">Copy</button>`;
   const hiddenToggle = hasHidden
     ? `<button class="rust-doctest-toggle-hidden" type="button" data-target="#${anchor}-full" data-display="#${anchor}-code">Show hidden lines</button>`
     : "";
+  const controls =
+    runButton || hiddenToggle
+      ? `<div class="rust-doctest-controls">${runButton}${hiddenToggle}</div>`
+      : "";
 
   return [
-    `<div class="rust-doctest example-wrap api-doctest" id="${anchor}">`,
+    `<div class="rust-doctest api-doctest" id="${anchor}">`,
     badges,
-    `<pre class="rust rust-example-rendered"><code id="${anchor}-code">${code}</code></pre>`,
+    `<div class="rust-doctest-code" id="${anchor}-code">${renderCodeBlock(dt.display_code, lang)}</div>`,
     hasHidden
-      ? `<pre class="rust rust-example-rendered rust-doctest-full" hidden><code id="${anchor}-full">${fullCode}</code></pre>`
+      ? `<div class="rust-doctest-code rust-doctest-full" id="${anchor}-full" hidden>${renderCodeBlock(
+          dt.executable_code,
+          lang,
+        )}</div>`
       : "",
-    `<div class="rust-doctest-controls">${runButton}${copyButton}${hiddenToggle}</div>`,
+    controls,
     `</div>`,
   ]
     .filter(Boolean)
@@ -747,13 +792,6 @@ function pickEdition(attrs: string[]): string {
   return RUST_EDITION_DEFAULT;
 }
 
-function highlightRustCode(code: string): string {
-  // Phase 3 keeps the highlighter minimal; we class-prefix tokens that the
-  // theme styles. A future iteration can swap in sourcey's Shiki pipeline
-  // without changing this function's signature.
-  return escapeHtml(code);
-}
-
 // ---------------------------------------------------------------------------
 // Module page rendering
 // ---------------------------------------------------------------------------
@@ -788,11 +826,9 @@ export function renderModulePage(
     if (members.length === 0) continue;
     parts.push(apiSectionAnchor({ level: 2, id: groupAnchor(group), text: group }));
     for (const m of members) {
-      const detail = apiMethodToggle({
-        summary: `<code>${escapeHtml(m.name ?? "")}</code>`,
-        body: renderItemHtml(m, ctx),
-      });
-      parts.push(detail);
+      const html = renderItemHtml(m, ctx);
+      if (!html) continue;
+      parts.push(html);
     }
     sidebar.push({
       label: group,
@@ -803,9 +839,6 @@ export function renderModulePage(
     });
   }
 
-  // Synthesised impl blocks: wrap them in implementors-toggle for parity with
-  // rustdoc. Phase 3 keeps the visual scope minimal; trait-impl walks land in
-  // Phase 4 if needed.
   return {
     html: parts.join("\n"),
     sidebarSections: sidebar,

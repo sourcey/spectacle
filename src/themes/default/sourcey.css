@@ -2027,16 +2027,69 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   color: rgb(var(--color-emerald-200));
 }
 
-#sourcey .implementors-toggle,
-#sourcey .method-toggle,
-#sourcey .api-impl-toggle,
-#sourcey .api-method-toggle {
+/* Collapsible trait-impl block. Chevron pattern mirrors .godoc-example so the
+   disclosure reads the same across adapters. */
+#sourcey .api-toggle {
   margin: 0.75rem 0;
+  border: 1px solid rgb(var(--color-gray-200));
+  border-radius: 6px;
+  background: rgba(var(--color-gray-50), 0.4);
 }
-#sourcey .implementors-toggle > summary,
-#sourcey .method-toggle > summary {
+.dark #sourcey .api-toggle {
+  border-color: rgb(var(--color-gray-800));
+}
+#sourcey .api-toggle > summary {
   cursor: pointer;
-  padding: 0.25rem 0;
+  padding: 0.5rem 0.875rem;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: rgb(var(--color-gray-700));
+}
+.dark #sourcey .api-toggle > summary {
+  color: rgb(var(--color-gray-300));
+}
+#sourcey .api-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+#sourcey .api-toggle > summary::before {
+  content: "▸ ";
+  color: rgb(var(--color-gray-400));
+  margin-right: 0.25rem;
+}
+#sourcey .api-toggle[open] > summary::before {
+  content: "▾ ";
+}
+/* The impl header lives inside the summary; keep it inline with the chevron
+   and strip heading margins. */
+#sourcey .api-toggle > summary .rust-impl-header {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+}
+#sourcey .api-toggle-body {
+  padding: 0.25rem 0.875rem 0.5rem;
+  border-top: 1px solid rgb(var(--color-gray-200));
+}
+.dark #sourcey .api-toggle-body {
+  border-top-color: rgb(var(--color-gray-800));
+}
+/* Marker / auto / blanket trait impls: a quiet list, not expandable boxes. */
+#sourcey .rust-impl-rows {
+  margin: 0.5rem 0 0.75rem;
+}
+#sourcey .rust-impl-row {
+  padding: 0.2rem 0;
+}
+#sourcey .rust-impl-row .rust-impl-header {
+  display: inline;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: rgb(var(--color-gray-600));
+}
+.dark #sourcey .rust-impl-row .rust-impl-header {
+  color: rgb(var(--color-gray-400));
 }
 
 #sourcey .anchor,
@@ -2054,22 +2107,17 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   opacity: 1;
 }
 
-#sourcey .example-wrap {
-  position: relative;
+/* Inherent-impl methods and trait members render inline as their own sections.
+   Code (signatures, doctests) flows through the shared Shiki code block, so no
+   bespoke code styling lives here. */
+#sourcey .rust-member {
   margin: 0.75rem 0;
 }
-#sourcey .rust-example-rendered {
-  background-color: rgb(var(--color-gray-50));
-  border: 1px solid rgb(var(--color-gray-200));
-  border-radius: 0.375rem;
-  padding: 0.75rem 1rem;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  line-height: 1.5;
+#sourcey .rust-method-header {
+  margin: 0.5rem 0 0.25rem;
 }
-.dark #sourcey .rust-example-rendered {
-  background-color: rgb(var(--color-gray-900));
-  border-color: rgb(var(--color-gray-800));
+#sourcey .rust-doctest {
+  margin: 0.75rem 0;
 }
 
 #sourcey .rust-doctest-badges {
@@ -2111,7 +2159,6 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   font-size: 0.8125rem;
 }
 #sourcey .rust-doctest-run,
-#sourcey .rust-doctest-copy,
 #sourcey .rust-doctest-toggle-hidden {
   cursor: pointer;
   padding: 0.2rem 0.6rem;
@@ -2123,26 +2170,26 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   line-height: 1;
 }
 #sourcey .rust-doctest-run:hover,
-#sourcey .rust-doctest-copy:hover,
 #sourcey .rust-doctest-toggle-hidden:hover {
   background-color: rgb(var(--color-gray-50));
 }
 .dark #sourcey .rust-doctest-run,
-.dark #sourcey .rust-doctest-copy,
 .dark #sourcey .rust-doctest-toggle-hidden {
   background-color: rgb(var(--color-gray-900));
   border-color: rgb(var(--color-gray-700));
   color: rgb(var(--color-gray-200));
 }
 
+/* On the aggregated doctests page the code block already renders as a card, so
+   the section itself stays borderless. Just space the entries and accent the
+   heading so they don't read as cards within cards. */
 #sourcey .rust-doctests-index .rust-doctest {
-  border: 1px solid rgb(var(--color-gray-200));
-  border-left: 3px solid rgb(var(--color-emerald-500));
-  border-radius: 0.375rem;
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 }
-.dark #sourcey .rust-doctests-index .rust-doctest {
-  border-color: rgb(var(--color-gray-800));
+#sourcey .rust-doctests-index .rust-doctest > h3 {
+  padding-left: 0.625rem;
+  border-left: 3px solid rgb(var(--color-emerald-500));
+}
+.dark #sourcey .rust-doctests-index .rust-doctest > h3 {
   border-left-color: rgb(var(--color-emerald-400));
 }

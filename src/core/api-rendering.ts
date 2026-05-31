@@ -96,14 +96,7 @@ export interface ApiToggleInput {
 export function apiImplToggle(input: Omit<ApiToggleInput, "cssClass">): string {
   return apiToggle({
     ...input,
-    cssClass: "toggle implementors-toggle api-impl-toggle",
-  });
-}
-
-export function apiMethodToggle(input: Omit<ApiToggleInput, "cssClass">): string {
-  return apiToggle({
-    ...input,
-    cssClass: "toggle method-toggle api-method-toggle",
+    cssClass: "api-toggle api-impl-toggle",
   });
 }
 
@@ -111,7 +104,7 @@ function apiToggle(input: ApiToggleInput): string {
   const openAttr = input.open === false ? "" : " open";
   return `<details class="${escapeAttr(
     input.cssClass,
-  )}"${openAttr}><summary class="hideme">${input.summary}</summary>${input.body}</details>`;
+  )}"${openAttr}><summary class="api-toggle-summary">${input.summary}</summary><div class="api-toggle-body">${input.body}</div></details>`;
 }
 
 export interface ApiSectionAnchorInput {

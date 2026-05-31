@@ -2,13 +2,13 @@
 
 All notable changes to Sourcey. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
-## 3.6.1 - 2026-05-28
+## 3.6.1 - 2026-05-31
 
 ### Added
 
-- `rustdoc()` source adapter for native Rust API documentation. Consumes nightly rustdoc JSON via a bundled Rust helper crate, emits a stable v1 `RustdocSpec` snapshot, and renders pages that match doc.rust-lang.org conventions including URL-encoded parametric impl anchors. Supports `auto`, `live`, and `snapshot` modes; snapshot mode requires no Rust toolchain so CI can build docs on stable.
+- `rustdoc()` source adapter for native Rust API documentation. Consumes nightly rustdoc JSON via a bundled Rust helper crate, emits a stable v1 `RustdocSpec` snapshot, and renders sourcey-native pages consistent with the openapi, mcp, godoc, and doxygen adapters; inbound docs.rs-style deep-link anchors still resolve. Supports `auto`, `live`, and `snapshot` modes; snapshot mode requires no Rust toolchain so CI can build docs on stable.
+- Sourcey-native rustdoc rendering: workspace and crate indexes use the shared card grid, items render inline as sections, signatures keep clickable cross-references, doctests flow through the shared syntax-highlighting pipeline, and trait implementations collapse behind a single styled disclosure while auto/marker traits stay a quiet list.
 - First-class rustdoc doctest extraction with hidden-line stripping, fence-attribute badges (`ignore`, `no_run`, `should_panic`, `compile_fail`, `editionYYYY`), Rust Playground deep-links, and a workspace-wide doctests index page that aggregates every runnable example.
-- Shared `api-*` rendering primitives (stability callout, item-info row, symbol link, impl toggle, method toggle, section anchor) introduced for the rustdoc adapter and available for godoc/doxygen retrofit.
 - runx Rust API as the live showcase of the rustdoc adapter, alongside icey (doxygen) and scafld (godoc).
 
 ## 3.6.0 - 2026-05-15
